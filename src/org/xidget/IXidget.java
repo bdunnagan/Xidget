@@ -4,6 +4,7 @@
  */
 package org.xidget;
 
+import org.xidget.layout.IAnchor;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -11,8 +12,6 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public interface IXidget
 {
-  public enum Side { top, left, right, bottom};
-  
   /**
    * Build the Xidget hierarchy.
    * @param parent The parent.
@@ -29,6 +28,15 @@ public interface IXidget
    * Unbind the Xidget.
    */
   public void unbind();
+  
+  /**
+   * Returns the anchor with the specified name (e.g. top, left, right, bottom).
+   * The reason the argument is a string instead of an enum is that it is left
+   * to the implementation to decide what types of anchors it supports.
+   * @param name The name of the anchor.
+   * @return Returns the anchor with the specified name.
+   */
+  public IAnchor getAnchor( String name);
   
   /**
    * Layout the widget relative to its parent.
