@@ -36,6 +36,7 @@ public class FreeAnchor extends AbstractAnchor
    */
   public boolean moveTo( int x, int y)
   {
+    if ( point.x == x && point.y == y) return false;
     point.x = x;
     point.y = y;
     return true;
