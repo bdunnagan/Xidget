@@ -12,19 +12,30 @@ import org.xmodel.IModelObject;
 public interface ITagHandler
 {
   /**
+   * Returns the tag associated with this handler.
+   * @return Returns the tag associated with this handler.
+   */
+  public String getTag();
+  
+  /**
    * Returns true if this tag handler processes the specified element. This method is
-   * only called if more than one tag handler is registered for a given element name.
+   * only called if more than one tag handler is registered for a given tag.
    * @param processor The processor.
+   * @param parent The parent handler.
    * @param element The element to be processed.
    * @return Returns true if this tag handler processes the specified element.
    */
-  public boolean filter( TagProcessor processor, IModelObject element);
+  public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element);
   
   /**
-   * Process the specified element.
+   * Process the specified element. If the method returns true then the tag processor
+   * will push the children of the element onto its stack for processing. The tag
+   * processor keeps track of the handler which processed the nearest ancestor of
+   * the specified element.
    * @param processor The processor.
+   * @param parent The parent handler.
    * @param element The element.
-   * @return Returns false to stop tag processing.
+   * @return Returns true if processor should process the children of the element.
    */
-  public boolean process( TagProcessor processor, IModelObject element);
+  public boolean process( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException;
 }

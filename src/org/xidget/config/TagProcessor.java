@@ -4,9 +4,10 @@
  */
 package org.xidget.config;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.xmodel.BreadthFirstIterator;
 import org.xmodel.IModelObject;
+import org.xmodel.util.Fifo;
 import org.xmodel.util.HashMultiMap;
 import org.xmodel.util.MultiMap;
 
@@ -45,55 +46,113 @@ public class TagProcessor
   /**
    * Process the specified fragment.
    * @param root The root of the fragment.
-   * @return Returns false if processing was stopped by a handler.
    */
-  public boolean process( IModelObject root)
+  public void process( IModelObject root) throws TagException
   {
-    BreadthFirstIterator iterator = new BreadthFirstIterator( root);
-    while( iterator.hasNext())
+    process( null, root);
+  }
+  
+  /**
+   * Process the specified fragment specifying the initial parent handler.
+   * @param parent The parent handler of the root.
+   * @param root The root of the fragment.
+   */
+  private void process( ITagHandler parent, IModelObject root) throws TagException
+  {
+    // process tree in breadth-first order
+    Fifo<Entry> fifo = new Fifo<Entry>();
+    fifo.push( new Entry( parent, root));
+    
+    while( !fifo.empty())
     {
-      IModelObject element = iterator.next();
-      List<ITagHandler> handlers = map.get( element.getType());
+      Entry entry = fifo.pop();
+      List<ITagHandler> handlers = map.get( entry.element.getType());
       if ( handlers.size() == 1)
       {
-        if ( !handlers.get( 0).process( this, element))
-          return false;
+        ITagHandler handler = handlers.get( 0);
+        if ( handler.filter( this, entry.parent, entry.element))
+        {
+          if ( handler.process( this, entry.parent, entry.element))
+          {
+            for( IModelObject child: entry.element.getChildren())
+            {
+              fifo.add( new Entry( handler, child));
+            }
+          }
+        }
       }
       else if ( handlers.size() > 1)
       {
-        for( ITagHandler handler: handlers)
+        List<ITagHandler> list = process( handlers, entry);
+        for( IModelObject child: entry.element.getChildren())
         {
-          if ( handler.filter( this, element))
-            if ( !handler.process( this, element))
-              return false;
+          for( ITagHandler handler: list)
+          {
+            fifo.add( new Entry( handler, child));
+          }
         }
       }
     }
-    return true;
   }
   
+  /**
+   * Process tag with multiple handlers.
+   * @param handlers A list containing more than one handler.
+   * @param entry The entry to be processed.
+   * @return Returns the list of handlers that requested child processing.
+   */
+  private List<ITagHandler> process( List<ITagHandler> handlers, Entry entry) throws TagException
+  {
+    List<ITagHandler> list = new ArrayList<ITagHandler>();
+    for( int i=handlers.size()-1; i>=0; i--)
+    {
+      ITagHandler handler = handlers.get( i);
+      if ( handler.filter( this, entry.parent, entry.element))
+      {
+        if ( handler.process( this, entry.parent, entry.element))
+        {
+          list.add( handler);
+        }
+      }
+    }
+    return list;
+  }
+    
   /**
    * Add a tag handler. More than one handler can be registered for a particular
    * element name. In this case the handler <code>filter</code> method will be
    * called to disambiguate.
-   * @param tag The element name.
    * @param handler The handler.
    */
-  public void addHandler( String tag, ITagHandler handler)
+  public void addHandler( ITagHandler handler)
   {
-    map.put( tag, handler);
+    map.put( handler.getTag(), handler);
   }
   
   /**
    * Remove a tag handler.
-   * @param tag The element name.
    * @param handler The handler.
    */
-  public void removeHandler( String tag, ITagHandler handler)
+  public void removeHandler( ITagHandler handler)
   {
-    map.remove( tag, handler);
+    map.remove( handler.getTag(), handler);
   }
 
+  /**
+   * An entry in the tag processing fifo used to keep track of parentage.
+   */
+  private class Entry
+  {
+    public Entry( ITagHandler parent, IModelObject element)
+    {
+      this.parent = parent;
+      this.element = element;
+    }
+    
+    public ITagHandler parent;
+    public IModelObject element;
+  }
+  
   private ITagHandler parent;
   private MultiMap<String, ITagHandler> map;
 }
