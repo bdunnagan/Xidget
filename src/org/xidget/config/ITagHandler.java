@@ -12,12 +12,6 @@ import org.xmodel.IModelObject;
 public interface ITagHandler
 {
   /**
-   * Returns the tag associated with this handler.
-   * @return Returns the tag associated with this handler.
-   */
-  public String getTag();
-  
-  /**
    * Returns true if this tag handler processes the specified element. This method is
    * only called if more than one tag handler is registered for a given tag.
    * @param processor The processor.

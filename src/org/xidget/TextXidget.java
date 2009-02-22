@@ -10,7 +10,8 @@ import org.xmodel.IModelObject;
 /**
  * An implementation of IXidget for use with the text widgets and other widgets
  * which have one input/output text value. A text xidget is registered for the
- * <i>text</i> tag.
+ * <i>text</i> tag.  Subclasses should usually export an ITextAdapter and an
+ * IErrorAdapter.
  */
 public abstract class TextXidget extends AbstractXidget
 {
@@ -22,12 +23,21 @@ public abstract class TextXidget extends AbstractXidget
     return true;
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.AbstractXidget#getTag()
+  /**
+   * Returns true if the specifid text is valid for this xidget.
+   * @param text The text.
+   * @return Returns true if the specifid text is valid for this xidget.
    */
-  @Override
-  protected String getTag()
+  protected boolean validate( String text)
   {
-    return "text";
+    return true;
+  }
+  
+  /**
+   * Commit the specified text to the xidget datamodel.
+   * @param text The text.
+   */
+  protected void commit( String text)
+  {
   }
 }

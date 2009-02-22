@@ -14,29 +14,15 @@ import org.xmodel.IModelObject;
  */
 public class XidgetTagHandler implements ITagHandler
 {
-  public XidgetTagHandler( String tag, IXidget xidget)
-  {
-    this.tag = tag;
-    this.xidget = xidget;
-  }
-  
   /**
-   * Returns the xidget associated with this tag handler.
-   * @return Returns the xidget associated with this tag handler.
+   * Create a xidget tag handler which instantiates xidgets of the specified class.
+   * @param xidgetClass The implementation class of IXidget.
    */
-  public IXidget getXidget()
+  public XidgetTagHandler( Class<? extends IXidget> xidgetClass)
   {
-    return xidget;
+    this.xidgetClass = xidgetClass;
   }
-  
-  /* (non-Javadoc)
-   * @see org.xidget.config.ITagHandler#getTag()
-   */
-  public String getTag()
-  {
-    return tag;
-  }
-
+    
   /* (non-Javadoc)
    * @see org.xidget.config.ITagHandler#filter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
@@ -50,10 +36,34 @@ public class XidgetTagHandler implements ITagHandler
    */
   public boolean process( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( parent instanceof XidgetTagHandler) xidget.setParent( ((XidgetTagHandler)parent).getXidget());
-    return true;
+    try
+    {
+      // instantiate xidget class and store on tag handler to support parenting
+      xidget = xidgetClass.newInstance();
+      
+      // configure new xidget
+      IXidget xidgetParent = (parent instanceof XidgetTagHandler)? ((XidgetTagHandler)parent).getLastXidget(): null;
+      return xidget.configure( processor, xidgetParent, element);
+    }
+    catch( InstantiationException e)
+    {
+      throw new TagException( "Unable to create xidget of class: "+xidgetClass, e);
+    }
+    catch( IllegalAccessException e)
+    {
+      throw new TagException( "Access denied for xidget class: "+xidgetClass, e);
+    }
   }
 
-  private String tag;
+  /**
+   * Returns the last xidget created by this handler. 
+   * @return Returns the last xidget created by this handler.
+   */
+  protected IXidget getLastXidget()
+  {
+    return xidget;
+  }
+  
+  private Class<? extends IXidget> xidgetClass;
   private IXidget xidget;
 }

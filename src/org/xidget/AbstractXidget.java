@@ -6,11 +6,7 @@ package org.xidget;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.xidget.config.ITagHandler;
-import org.xidget.config.TagException;
-import org.xidget.config.TagProcessor;
 import org.xidget.layout.IAnchor;
-import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -81,35 +77,7 @@ public abstract class AbstractXidget implements IXidget
   {
     return context;
   }
-    
-  /**
-   * Called with the configuration information for this xidget. This implementation does nothing.
-   * @param processor The tag processor.
-   * @param element The configuration element identified by tag processing.
-   * @return Returns true if processing should descend into subtree.
-   */
-  protected abstract boolean configure( TagProcessor processor, IModelObject element);
-
-  /**
-   * Returns the tag used for tag processing.
-   * @return Returns the tag used for tag processing.
-   */
-  protected abstract String getTag();
-  
-  /* (non-Javadoc)
-   * @see org.xidget.AbstractXidget#getTagHandler()
-   */
-  public XidgetTagHandler getTagHandler()
-  {
-    return new XidgetTagHandler( getTag(), this) {
-      public boolean process( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
-      {
-        super.process( processor, parent, element);
-        return configure( processor, element);
-      }
-    };
-  }  
-  
+      
   private IXidget parent;
   private StatefulContext context;
   private Map<String, IAnchor> anchors;

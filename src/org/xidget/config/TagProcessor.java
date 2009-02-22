@@ -123,20 +123,22 @@ public class TagProcessor
    * Add a tag handler. More than one handler can be registered for a particular
    * element name. In this case the handler <code>filter</code> method will be
    * called to disambiguate.
+   * @param tag The tag.
    * @param handler The handler.
    */
-  public void addHandler( ITagHandler handler)
+  public void addHandler( String tag, ITagHandler handler)
   {
-    map.put( handler.getTag(), handler);
+    map.put( tag, handler);
   }
   
   /**
    * Remove a tag handler.
+   * @param tag The tag.
    * @param handler The handler.
    */
-  public void removeHandler( ITagHandler handler)
+  public void removeHandler( String tag, ITagHandler handler)
   {
-    map.remove( handler.getTag(), handler);
+    map.remove( tag, handler);
   }
 
   /**

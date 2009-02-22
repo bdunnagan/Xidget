@@ -4,7 +4,9 @@
  */
 package org.xidget;
 
+import org.xidget.config.TagProcessor;
 import org.xidget.layout.IAnchor;
+import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -12,12 +14,6 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public interface IXidget
 {
-  /**
-   * Set the parent of this xidget.
-   * @param parent The parent.
-   */
-  public void setParent( IXidget parent);
-  
   /**
    * Returns the parent of this xidget.
    * @return Returns the parent of this xidget.
@@ -37,12 +33,13 @@ public interface IXidget
   public StatefulContext getContext();
   
   /**
-   * Returns null or a tag handler for this xidget. The tag handler provides the
-   * mechanism for this xidget to get its configuration. If a xidget does not
-   * return a tag handler then it doesn't require configuration.
-   * @return Returns null or a tag handler.
+   * Configure this xidget from the specified configuration.
+   * @param processor The tag processor.
+   * @param parent Null or the parent of this xidget.
+   * @param element The configuration element.
+   * @return Returns true if the tag processor should process the children of the specified element.
    */
-  public XidgetTagHandler getTagHandler();
+  public boolean configure( TagProcessor processor, IXidget parent, IModelObject element);
   
   /**
    * Returns the anchor with the specified name (e.g. top, left, right, bottom).
@@ -52,18 +49,11 @@ public interface IXidget
    * @return Returns the anchor with the specified name.
    */
   public IAnchor getAnchor( String name);
-  
+
   /**
-   * Display the specified content value error. A content value error is generated
-   * when the content of the xidget does not pass schema value validation.
-   * @param text The content value error.
+   * Returns null or an instance of the specified interface.
+   * @param clss The interface class.
+   * @return Returns null or an instance of the specified interface.
    */
-  public void showValueError( String text);
-  
-  /**
-   * Display a content structure error. A content structure error is generated
-   * when the content of the xidget does not have the correct schematic structure.
-   * @param text The structure error.
-   */
-  public void showStructureError( String text);
+  public Object getAdapter( Class<? extends Object> clss);  
 }
