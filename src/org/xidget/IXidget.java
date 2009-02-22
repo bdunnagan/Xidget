@@ -4,6 +4,7 @@
  */
 package org.xidget;
 
+import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.layout.IAnchor;
 import org.xmodel.IModelObject;
@@ -33,13 +34,19 @@ public interface IXidget
   public StatefulContext getContext();
   
   /**
-   * Configure this xidget from the specified configuration.
+   * Called when the start tag of the configuration is encountered - before children.
    * @param processor The tag processor.
    * @param parent Null or the parent of this xidget.
    * @param element The configuration element.
    * @return Returns true if the tag processor should process the children of the specified element.
    */
-  public boolean configure( TagProcessor processor, IXidget parent, IModelObject element);
+  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException;
+  
+  /**
+   * Called when the end tag of the configuration is encountered - after children.
+   * @param processor The tag processor.
+   */
+  public void endConfig( TagProcessor processor) throws TagException;
   
   /**
    * Returns the anchor with the specified name (e.g. top, left, right, bottom).

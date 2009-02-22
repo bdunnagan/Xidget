@@ -32,11 +32,20 @@ public class SimpleSchemaDetail implements ITagHandler
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.config.ITagHandler#process(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
+   * @see org.xidget.config.ITagHandler#enter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
-  public boolean process( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
+  public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
     // TODO Auto-generated method stub
     return false;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.config.ITagHandler#exit(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
+   */
+  public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
+  {
+    // TODO Auto-generated method stub
+    
   }
 }

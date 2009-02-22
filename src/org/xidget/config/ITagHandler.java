@@ -22,14 +22,17 @@ public interface ITagHandler
   public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element);
   
   /**
-   * Process the specified element. If the method returns true then the tag processor
-   * will push the children of the element onto its stack for processing. The tag
-   * processor keeps track of the handler which processed the nearest ancestor of
-   * the specified element.
+   * Called when the tag processor enters an element associated with this tag handler.
    * @param processor The processor.
    * @param parent The parent handler.
    * @param element The element.
    * @return Returns true if processor should process the children of the element.
    */
-  public boolean process( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException;
+  public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException;
+  
+  /**
+   * Called when the tag processor exits an element associated with this tag handler.
+   * @param processor The processor.
+   */
+  public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException;
 }

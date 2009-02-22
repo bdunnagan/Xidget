@@ -60,23 +60,43 @@ public class TagProcessor
   private void process( ITagHandler parent, IModelObject root) throws TagException
   {
     Stack<Entry> stack = new Stack<Entry>();
-    stack.push( new Entry( parent, root));
+    stack.push( new Entry( parent, null, root, false));
     
     while( !stack.empty())
     {
       Entry entry = stack.pop();
+     
+      // check for exit entry
+      if ( entry.end)
+      {
+        entry.handler.exit( this, entry.parent, entry.element);
+        continue;
+      }
+      
+      // process tag
       List<ITagHandler> handlers = map.get( entry.element.getType());
       if ( handlers.size() == 1)
       {
         ITagHandler handler = handlers.get( 0);
         if ( handler.filter( this, entry.parent, entry.element))
         {
-          if ( handler.process( this, entry.parent, entry.element))
+          if ( handler.enter( this, entry.parent, entry.element))
           {
             List<IModelObject> children = entry.element.getChildren();
-            for( int i=children.size()-1; i>=0; i--)
+            if ( children.size() > 0)
             {
-              stack.add( new Entry( handler, children.get( i)));
+              // push special exit entry
+              stack.push( new Entry( parent, handler, entry.element, true));
+              
+              // push children
+              for( int i=children.size()-1; i>=0; i--)
+              {
+                stack.add( new Entry( handler, null, children.get( i), false));
+              }
+            }
+            else
+            {
+              handler.exit( this, entry.parent, entry.element);
             }
           }
         }
@@ -85,11 +105,22 @@ public class TagProcessor
       {
         List<ITagHandler> list = process( handlers, entry);
         List<IModelObject> children = entry.element.getChildren();
-        for( int i=children.size()-1; i>=0; i--)
+        for( ITagHandler handler: list)
         {
-          for( ITagHandler handler: list)
+          if ( children.size() > 0)
           {
-            stack.add( new Entry( handler, children.get( i)));
+            // push special exit entry
+            stack.push( new Entry( parent, handler, entry.element, true));
+            
+            // push children
+            for( int i=children.size()-1; i>=0; i--)
+            {
+              stack.add( new Entry( handler, null, children.get( i), false));
+            }
+          }
+          else
+          {
+            handler.exit( this, entry.parent, entry.element);
           }
         }
       }
@@ -110,7 +141,7 @@ public class TagProcessor
       ITagHandler handler = handlers.get( i);
       if ( handler.filter( this, entry.parent, entry.element))
       {
-        if ( handler.process( this, entry.parent, entry.element))
+        if ( handler.enter( this, entry.parent, entry.element))
         {
           list.add( handler);
         }
@@ -146,14 +177,18 @@ public class TagProcessor
    */
   private class Entry
   {
-    public Entry( ITagHandler parent, IModelObject element)
+    public Entry( ITagHandler parent, ITagHandler handler, IModelObject element, boolean end)
     {
       this.parent = parent;
+      this.handler = handler;
       this.element = element;
+      this.end = end;
     }
     
     public ITagHandler parent;
+    public ITagHandler handler;
     public IModelObject element;
+    public boolean end;
   }
   
   private ITagHandler parent;

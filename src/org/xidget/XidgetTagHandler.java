@@ -32,9 +32,9 @@ public class XidgetTagHandler implements ITagHandler
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.config.ITagHandler#process(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
+   * @see org.xidget.config.ITagHandler#enter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
-  public boolean process( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
+  public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
     try
     {
@@ -43,7 +43,7 @@ public class XidgetTagHandler implements ITagHandler
       
       // configure new xidget
       IXidget xidgetParent = (parent instanceof XidgetTagHandler)? ((XidgetTagHandler)parent).getLastXidget(): null;
-      return xidget.configure( processor, xidgetParent, element);
+      return xidget.startConfig( processor, xidgetParent, element);
     }
     catch( InstantiationException e)
     {
@@ -53,6 +53,15 @@ public class XidgetTagHandler implements ITagHandler
     {
       throw new TagException( "Access denied for xidget class: "+xidgetClass, e);
     }
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.config.ITagHandler#exit(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
+   */
+  public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
+  {
+    xidget.endConfig( processor);
+    xidget = null;
   }
 
   /**
