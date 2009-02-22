@@ -6,8 +6,8 @@ package org.xidget.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import org.xmodel.IModelObject;
-import org.xmodel.util.Fifo;
 import org.xmodel.util.HashMultiMap;
 import org.xmodel.util.MultiMap;
 
@@ -59,13 +59,12 @@ public class TagProcessor
    */
   private void process( ITagHandler parent, IModelObject root) throws TagException
   {
-    // process tree in breadth-first order
-    Fifo<Entry> fifo = new Fifo<Entry>();
-    fifo.push( new Entry( parent, root));
+    Stack<Entry> stack = new Stack<Entry>();
+    stack.push( new Entry( parent, root));
     
-    while( !fifo.empty())
+    while( !stack.empty())
     {
-      Entry entry = fifo.pop();
+      Entry entry = stack.pop();
       List<ITagHandler> handlers = map.get( entry.element.getType());
       if ( handlers.size() == 1)
       {
@@ -74,9 +73,10 @@ public class TagProcessor
         {
           if ( handler.process( this, entry.parent, entry.element))
           {
-            for( IModelObject child: entry.element.getChildren())
+            List<IModelObject> children = entry.element.getChildren();
+            for( int i=children.size()-1; i>=0; i--)
             {
-              fifo.add( new Entry( handler, child));
+              stack.add( new Entry( handler, children.get( i)));
             }
           }
         }
@@ -84,11 +84,12 @@ public class TagProcessor
       else if ( handlers.size() > 1)
       {
         List<ITagHandler> list = process( handlers, entry);
-        for( IModelObject child: entry.element.getChildren())
+        List<IModelObject> children = entry.element.getChildren();
+        for( int i=children.size()-1; i>=0; i--)
         {
           for( ITagHandler handler: list)
           {
-            fifo.add( new Entry( handler, child));
+            stack.add( new Entry( handler, children.get( i)));
           }
         }
       }

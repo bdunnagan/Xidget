@@ -15,10 +15,19 @@ import org.xmodel.IModelObject;
 public abstract class TextXidget extends AbstractXidget
 {
   /* (non-Javadoc)
-   * @see org.xidget.AbstractXidget#configure(org.xidget.config.TagProcessor, org.xidget.FormXidget, org.xmodel.IModelObject)
+   * @see org.xidget.AbstractXidget#configure(org.xidget.config.TagProcessor, org.xmodel.IModelObject)
    */
-  protected boolean configure( TagProcessor processor, FormXidget parent, IModelObject element)
+  protected boolean configure( TagProcessor processor, IModelObject element)
   {
     return true;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.AbstractXidget#getTag()
+   */
+  @Override
+  protected String getTag()
+  {
+    return "text";
   }
 }

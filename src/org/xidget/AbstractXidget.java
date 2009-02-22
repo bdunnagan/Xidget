@@ -81,27 +81,23 @@ public abstract class AbstractXidget implements IXidget
   {
     return context;
   }
-  
+    
   /**
    * Called with the configuration information for this xidget. This implementation does nothing.
    * @param processor The tag processor.
    * @param element The configuration element identified by tag processing.
    * @return Returns true if processing should descend into subtree.
    */
-  protected boolean configure( TagProcessor processor, FormXidget parent, IModelObject element)
-  {
-    return false;
-  }
-  
-  /**
-   * Returns the tag to use for tag processing.
-   * @return Returns the tag to use for tag processing.
-   */
-  protected abstract String getTag();
+  protected abstract boolean configure( TagProcessor processor, IModelObject element);
 
   /**
-   * Returns a tag processor which handles parentage and calls the <code>configure</code> method.
-   * This implementation can be overridden if more complex filtering is required.
+   * Returns the tag used for tag processing.
+   * @return Returns the tag used for tag processing.
+   */
+  protected abstract String getTag();
+  
+  /* (non-Javadoc)
+   * @see org.xidget.AbstractXidget#getTagHandler()
    */
   public XidgetTagHandler getTagHandler()
   {
@@ -109,11 +105,11 @@ public abstract class AbstractXidget implements IXidget
       public boolean process( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
       {
         super.process( processor, parent, element);
-        return configure( processor, (FormXidget)parent, element);
+        return configure( processor, element);
       }
     };
-  }
-
+  }  
+  
   private IXidget parent;
   private StatefulContext context;
   private Map<String, IAnchor> anchors;

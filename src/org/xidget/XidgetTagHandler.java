@@ -42,7 +42,7 @@ public class XidgetTagHandler implements ITagHandler
    */
   public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
   {
-    return (parent == null || parent instanceof XidgetTagHandler);
+    return true;
   }
 
   /* (non-Javadoc)
@@ -50,7 +50,7 @@ public class XidgetTagHandler implements ITagHandler
    */
   public boolean process( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    xidget.setParent( ((XidgetTagHandler)parent).getXidget());
+    if ( parent instanceof XidgetTagHandler) xidget.setParent( ((XidgetTagHandler)parent).getXidget());
     return true;
   }
 
