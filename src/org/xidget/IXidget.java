@@ -6,7 +6,6 @@ package org.xidget;
 
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
-import org.xidget.layout.IAnchor;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -48,15 +47,6 @@ public interface IXidget
    * @param element The configuration element.
    */
   public void endConfig( TagProcessor processor, IModelObject element) throws TagException;
-  
-  /**
-   * Returns the anchor with the specified name (e.g. top, left, right, bottom).
-   * The reason the argument is a string instead of an enum is that it is left
-   * to the implementation to decide what types of anchors it supports.
-   * @param name The name of the anchor.
-   * @return Returns the anchor with the specified name.
-   */
-  public IAnchor getAnchor( String name);
 
   /**
    * Returns null or an instance of the specified interface.

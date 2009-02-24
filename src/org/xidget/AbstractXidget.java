@@ -4,9 +4,6 @@
  */
 package org.xidget;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.xidget.layout.IAnchor;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -16,34 +13,6 @@ public abstract class AbstractXidget implements IXidget
 {
   protected AbstractXidget()
   {
-    anchors = new HashMap<String, IAnchor>();
-  }
-
-  /**
-   * Subclasses call this method to define their anchors.
-   * @param name The name of the anchor.
-   * @param anchor The anchor.
-   */
-  protected void addAnchor( String name, IAnchor anchor)
-  {
-    anchors.put( name, anchor);
-  }
-  
-  /**
-   * Subclass may call this method to remove an anchor.
-   * @param name The name of the anchor.
-   */
-  protected void removeAnchor( String name)
-  {
-    anchors.remove( name);
-  }
-  
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#getAnchor(java.lang.String)
-   */
-  public IAnchor getAnchor( String name)
-  {
-    return anchors.get( name);
   }
 
   /* (non-Javadoc)
@@ -80,5 +49,4 @@ public abstract class AbstractXidget implements IXidget
       
   private IXidget parent;
   private StatefulContext context;
-  private Map<String, IAnchor> anchors;
 }
