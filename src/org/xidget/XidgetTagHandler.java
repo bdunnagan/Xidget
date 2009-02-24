@@ -60,7 +60,7 @@ public class XidgetTagHandler implements ITagHandler
    */
   public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    xidget.endConfig( processor);
+    xidget.endConfig( processor, element);
     xidget = null;
   }
 

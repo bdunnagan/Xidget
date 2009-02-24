@@ -45,8 +45,9 @@ public interface IXidget
   /**
    * Called when the end tag of the configuration is encountered - after children.
    * @param processor The tag processor.
+   * @param element The configuration element.
    */
-  public void endConfig( TagProcessor processor) throws TagException;
+  public void endConfig( TagProcessor processor, IModelObject element) throws TagException;
   
   /**
    * Returns the anchor with the specified name (e.g. top, left, right, bottom).
