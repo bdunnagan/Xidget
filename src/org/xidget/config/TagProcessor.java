@@ -149,7 +149,7 @@ public class TagProcessor
     }
     return list;
   }
-    
+  
   /**
    * Add a tag handler. More than one handler can be registered for a particular
    * element name. In this case the handler <code>filter</code> method will be
@@ -170,6 +170,16 @@ public class TagProcessor
   public void removeHandler( String tag, ITagHandler handler)
   {
     map.remove( tag, handler);
+  }
+  
+  /**
+   * Returns the handlers for the specified tag.
+   * @param tag The tag.
+   * @return Returns the handlers for the specified tag.
+   */
+  public List<ITagHandler> getHandlers( String tag)
+  {
+    return map.get( tag);
   }
 
   /**

@@ -2,7 +2,9 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.widget;
+package org.xidget.text;
+
+import org.xidget.IWidgetAdapter;
 
 /**
  * An interface for a text widget used by TextXidget.

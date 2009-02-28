@@ -4,6 +4,7 @@
  */
 package org.xidget;
 
+import java.util.List;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xmodel.IModelObject;
@@ -12,14 +13,20 @@ import org.xmodel.xpath.expression.StatefulContext;
 /**
  * An interface for widget adapters.
  */
-public interface IXidget
+public interface IXidget extends IAdaptable
 {
   /**
    * Returns the parent of this xidget.
    * @return Returns the parent of this xidget.
    */
   public IXidget getParent();
-    
+
+  /**
+   * Returns the children of this xidget.
+   * @return Returns the children of this xidget.
+   */
+  public List<IXidget> getChildren();
+  
   /**
    * Set the context.
    * @param context The context.
@@ -47,11 +54,4 @@ public interface IXidget
    * @param element The configuration element.
    */
   public void endConfig( TagProcessor processor, IModelObject element) throws TagException;
-
-  /**
-   * Returns null or an instance of the specified interface.
-   * @param clss The interface class.
-   * @return Returns null or an instance of the specified interface.
-   */
-  public Object getAdapter( Class<? extends Object> clss);  
 }

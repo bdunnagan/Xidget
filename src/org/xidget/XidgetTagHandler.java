@@ -68,7 +68,7 @@ public class XidgetTagHandler implements ITagHandler
    * Returns the last xidget created by this handler. 
    * @return Returns the last xidget created by this handler.
    */
-  protected IXidget getLastXidget()
+  public IXidget getLastXidget()
   {
     return xidget;
   }
