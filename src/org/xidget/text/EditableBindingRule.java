@@ -16,26 +16,39 @@ import org.xmodel.xpath.expression.IExpressionListener;
  */
 public class EditableBindingRule implements IBindingRule
 {
+  /**
+   * Create an rule for the specified text channel.
+   * @param channel The text channel.
+   */
+  public EditableBindingRule( String channel)
+  {
+    this.channel = channel;
+  }
+  
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
   public IExpressionListener getListener( IXidget xidget)
   {
-    return new Listener( (ITextWidgetAdapter)xidget.getAdapter( ITextWidgetAdapter.class));
-  }  
+    return new Listener( xidget, channel);
+  }
+  
+  private String channel;
 }
 
 final class Listener extends ExpressionListener
 {
-  Listener( ITextWidgetAdapter adapter)
+  Listener( IXidget xidget, String channel)
   {
-    this.adapter = adapter;
+    ITextChannelAdapter channelAdapter = (ITextChannelAdapter)xidget.getAdapter( ITextChannelAdapter.class);
+    if ( channelAdapter == null) return;      
+    this.channel = channelAdapter.getChannel( channel).getWidgetChannel(); 
   }
   
   public void notifyChange( IExpression expression, IContext context, boolean newValue)
   {
-    adapter.setEditable( newValue);
+    channel.setEditable( newValue);
   }
-  
-  private ITextWidgetAdapter adapter;
+
+  private IWidgetTextChannel channel;
 }

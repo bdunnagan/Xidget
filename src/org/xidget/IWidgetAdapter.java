@@ -16,4 +16,10 @@ public interface IWidgetAdapter
    * @param enabled True if enabled.
    */
   public void setEnabled( boolean enabled);
+  
+  /**
+   * Set the tooltip of the widget.
+   * @param tooltip The tooltip.
+   */
+  public void setTooltip( String tooltip);
 }

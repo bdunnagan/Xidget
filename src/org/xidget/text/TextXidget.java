@@ -15,11 +15,10 @@ import org.xmodel.Xlate;
 /**
  * An implementation of IXidget for use with the text widgets and other widgets
  * which have one input/output text value. A text xidget is registered for the
- * <i>text</i> tag.  Subclasses should usually export an ITextAdapter and an
- * IErrorAdapter.
+ * <i>text</i> tag. Subclasses should usually export an IErrorAdapter.
  */
 public abstract class TextXidget extends AbstractXidget
-{
+{  
   /* (non-Javadoc)
    * @see org.xidget.IXidget#startConfig(org.xidget.config.TagProcessor, org.xidget.IXidget, org.xmodel.IModelObject)
    */
@@ -29,7 +28,8 @@ public abstract class TextXidget extends AbstractXidget
    
     // create widget
     Size size = new Size( Xlate.childGet( element, "size", ""), 1, 0);
-    createWidget( size);
+    IWidgetTextChannel widgetChannel = createWidget( size);
+    channel = new TextChannel( this, widgetChannel);
     
     return true;
   }
@@ -39,24 +39,24 @@ public abstract class TextXidget extends AbstractXidget
    * y-coordinate is 0 then the column size is unbounded. The row size will 
    * always be bounded.
    * @param size The size of the widget in characters.
+   * @return Returns a widget channel.
    */
-  protected abstract void createWidget( Size size) throws TagException;
-  
-  /**
-   * Returns true if the specifid text is valid for this xidget.
-   * @param text The text.
-   * @return Returns true if the specifid text is valid for this xidget.
+  protected abstract IWidgetTextChannel createWidget( Size size) throws TagException;
+    
+  /* (non-Javadoc)
+   * @see org.xidget.IAdaptable#getAdapter(java.lang.Class)
    */
-  protected boolean validate( String text)
+  public Object getAdapter( Class<? extends Object> clss)
   {
-    return true;
+    if ( clss == ITextChannelAdapter.class) return new ITextChannelAdapter() {
+      public TextChannel getChannel( String name)
+      {
+        return channel;
+      }
+    };
+    
+    return null;
   }
-  
-  /**
-   * Commit the specified text to the xidget datamodel.
-   * @param text The text.
-   */
-  protected void commit( String text)
-  {
-  }
+
+  private TextChannel channel;
 }

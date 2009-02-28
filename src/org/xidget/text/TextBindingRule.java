@@ -19,53 +19,62 @@ import org.xmodel.xpath.expression.IExpressionListener;
  */
 public class TextBindingRule implements IBindingRule
 {
+  /**
+   * Create a rule for the specified text channel.
+   * @param channel The text channel.
+   */
+  public TextBindingRule( String channel)
+  {
+    this.channel = channel;
+  }
+  
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
   public IExpressionListener getListener( IXidget xidget)
   {
-    return new Listener( (ITextWidgetAdapter)xidget.getAdapter( ITextWidgetAdapter.class)); 
+    return new Listener( xidget, channel);
   }
 
   final class Listener extends ExpressionListener
   {
-    Listener( ITextWidgetAdapter adapter)
+    Listener( IXidget xidget, String channel)
     {
-      this.adapter = adapter;
+      ITextChannelAdapter channelAdapter = (ITextChannelAdapter)xidget.getAdapter( ITextChannelAdapter.class);
+      if ( channelAdapter == null) return;      
+      this.channel = channelAdapter.getChannel( channel); 
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      if ( nodes.contains( source)) return;
-      source = nodes.get( 0);
-      adapter.setText( Xlate.get( source, ""));
+      if ( nodes.contains( channel.getSource())) return;
+      channel.setSource( nodes.get( 0));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      if ( !nodes.contains( source)) return;
-      source = expression.queryFirst( context);
-      adapter.setText( Xlate.get( source, ""));      
+      if ( !nodes.contains( channel.getSource())) return;
+      channel.setSource( expression.queryFirst( context));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
-      adapter.setText( Boolean.toString( newValue));
+      channel.setTextFromModel( Boolean.toString( newValue));
     }
 
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
-      adapter.setText( Double.toString( newValue));
+      channel.setTextFromModel( Double.toString( newValue));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      adapter.setText( newValue);
+      channel.setTextFromModel( newValue);
     }
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
-      adapter.setText( Xlate.get( object, ""));
+      channel.setTextFromModel( Xlate.get( object, ""));
     }
     
     public boolean requiresValueNotification()
@@ -73,7 +82,8 @@ public class TextBindingRule implements IBindingRule
       return true;
     }
 
-    private ITextWidgetAdapter adapter;
-    private IModelObject source;
+    private TextChannel channel;
   }
+  
+  private String channel;
 }
