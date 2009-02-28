@@ -4,6 +4,7 @@
  */
 package org.xidget;
 
+import java.util.Stack;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
@@ -21,6 +22,7 @@ public class XidgetTagHandler implements ITagHandler
   public XidgetTagHandler( Class<? extends IXidget> xidgetClass)
   {
     this.xidgetClass = xidgetClass;
+    this.xidgets = new Stack<IXidget>();
   }
     
   /* (non-Javadoc)
@@ -39,7 +41,8 @@ public class XidgetTagHandler implements ITagHandler
     try
     {
       // instantiate xidget class and store on tag handler to support parenting
-      xidget = xidgetClass.newInstance();
+      IXidget xidget = xidgetClass.newInstance();
+      xidgets.push( xidget);
       
       // configure new xidget
       IXidget xidgetParent = (parent instanceof XidgetTagHandler)? ((XidgetTagHandler)parent).getLastXidget(): null;
@@ -60,8 +63,8 @@ public class XidgetTagHandler implements ITagHandler
    */
   public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
+    IXidget xidget = xidgets.pop();
     xidget.endConfig( processor, element);
-    xidget = null;
   }
 
   /**
@@ -70,9 +73,9 @@ public class XidgetTagHandler implements ITagHandler
    */
   public IXidget getLastXidget()
   {
-    return xidget;
+    return xidgets.peek();
   }
   
   private Class<? extends IXidget> xidgetClass;
-  private IXidget xidget;
+  private Stack<IXidget> xidgets;
 }

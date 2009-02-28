@@ -40,6 +40,16 @@ public interface IXidget extends IAdaptable
   public StatefulContext getContext();
   
   /**
+   * Bind this xidget.
+   */
+  public void bind();
+  
+  /**
+   * Unbind this xidget.
+   */
+  public void unbind();
+  
+  /**
    * Called when the start tag of the configuration is encountered - before children.
    * @param processor The tag processor.
    * @param parent Null or the parent of this xidget.
@@ -54,4 +64,10 @@ public interface IXidget extends IAdaptable
    * @param element The configuration element.
    */
   public void endConfig( TagProcessor processor, IModelObject element) throws TagException;
+  
+  /**
+   * Add a binding to the xidget.
+   * @param binding The binding.
+   */
+  public void addBinding( XidgetBinding binding);
 }

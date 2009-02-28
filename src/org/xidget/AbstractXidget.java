@@ -63,6 +63,35 @@ public abstract class AbstractXidget implements IXidget
     return context;
   }
 
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#addBinding(org.xidget.XidgetBinding)
+   */
+  public void addBinding( XidgetBinding binding)
+  {
+    if ( bindings == null) bindings = new ArrayList<XidgetBinding>( 3);
+    bindings.add( binding);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#bind()
+   */
+  public void bind()
+  {
+    if ( bindings == null) return;
+    for( XidgetBinding binding: bindings)
+      binding.bind( context);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#unbind()
+   */
+  public void unbind()
+  {
+    if ( bindings == null) return;
+    for( XidgetBinding binding: bindings)
+      binding.unbind( context);
+  }
+
   /**
    * Stubbed implementation for convenience.
    * @param processor The tag processor.
@@ -75,4 +104,5 @@ public abstract class AbstractXidget implements IXidget
   private IXidget parent;
   private List<IXidget> children;
   private StatefulContext context;
+  private List<XidgetBinding> bindings;
 }
