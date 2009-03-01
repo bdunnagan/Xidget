@@ -30,8 +30,28 @@ public class TagProcessor
    */
   public TagProcessor( ITagHandler parent)
   {
+    this.loader = getClass().getClassLoader();
     this.parent = parent;
     this.map = new HashMultiMap<String, ITagHandler>();
+  }
+  
+  /**
+   * Set the ClassLoader associated with this tag processor for use by tag handlers
+   * which need to dynamic load classes.
+   * @param loader The loader.
+   */
+  public void setClassLoader( ClassLoader loader)
+  {
+    this.loader = loader;
+  }
+  
+  /**
+   * Returns the ClassLoader associated with this processor.
+   * @return Returns the ClassLoader associated with this processor.
+   */
+  public ClassLoader getClassLoader()
+  {
+    return loader;
   }
   
   /**
@@ -200,7 +220,8 @@ public class TagProcessor
     public IModelObject element;
     public boolean end;
   }
-  
+ 
   private ITagHandler parent;
+  private ClassLoader loader;
   private MultiMap<String, ITagHandler> map;
 }

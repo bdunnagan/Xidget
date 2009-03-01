@@ -14,6 +14,12 @@ import org.xidget.config.processor.ITagHandler;
 public interface IXidgetKit
 {
   /**
+   * Returns the handler for the <i>form</i> element.
+   * @return Returns the handler for the <i>form</i> element.
+   */
+  public ITagHandler getFormHandler();
+  
+  /**
    * Returns the handler for the <i>button</i> element.
    * @return Returns the handler for the <i>button</i> element.
    */

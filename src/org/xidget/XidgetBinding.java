@@ -11,10 +11,8 @@ import org.xmodel.xpath.expression.StatefulContext;
 /**
  * A class which manages the details of xpath expression bindings for xidgets.
  */
-public class XidgetBinding
+public class XidgetBinding implements IXidgetBinding
 {
-  public enum Notify { bind, unbind, both, none};
-  
   /**
    * Create a binding with the default notification scheme: <i>bind</i>.
    * @param expression The expression.
@@ -38,10 +36,8 @@ public class XidgetBinding
     this.notify = notify;
   }
   
-  /**
-   * Bind the listener to the expression in the specified context.
-   * @param context The context.
-   * @param notify True if initial notification should be performed.
+  /* (non-Javadoc)
+   * @see org.xidget.IXidgetBinding#bind(org.xmodel.xpath.expression.StatefulContext)
    */
   public void bind( StatefulContext context)
   {
@@ -49,10 +45,9 @@ public class XidgetBinding
       expression.addNotifyListener( context, listener); 
     else expression.addListener( context, listener);
   }
-  
-  /**
-   * Unbind the listener from the expression in the specified context.
-   * @param context The context.
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidgetBinding#unbind(org.xmodel.xpath.expression.StatefulContext)
    */
   public void unbind( StatefulContext context)
   {

@@ -69,5 +69,5 @@ public interface IXidget extends IAdaptable
    * Add a binding to the xidget.
    * @param binding The binding.
    */
-  public void addBinding( XidgetBinding binding);
+  public void addBinding( IXidgetBinding binding);
 }

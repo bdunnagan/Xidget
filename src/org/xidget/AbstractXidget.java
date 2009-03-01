@@ -64,11 +64,11 @@ public abstract class AbstractXidget implements IXidget
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.IXidget#addBinding(org.xidget.XidgetBinding)
+   * @see org.xidget.IXidget#addBinding(org.xidget.IXidgetBinding)
    */
-  public void addBinding( XidgetBinding binding)
+  public void addBinding( IXidgetBinding binding)
   {
-    if ( bindings == null) bindings = new ArrayList<XidgetBinding>( 3);
+    if ( bindings == null) bindings = new ArrayList<IXidgetBinding>( 3);
     bindings.add( binding);
   }
 
@@ -78,7 +78,7 @@ public abstract class AbstractXidget implements IXidget
   public void bind()
   {
     if ( bindings == null) return;
-    for( XidgetBinding binding: bindings)
+    for( IXidgetBinding binding: bindings)
       binding.bind( context);
   }
 
@@ -88,7 +88,7 @@ public abstract class AbstractXidget implements IXidget
   public void unbind()
   {
     if ( bindings == null) return;
-    for( XidgetBinding binding: bindings)
+    for( IXidgetBinding binding: bindings)
       binding.unbind( context);
   }
 
@@ -104,5 +104,5 @@ public abstract class AbstractXidget implements IXidget
   private IXidget parent;
   private List<IXidget> children;
   private StatefulContext context;
-  private List<XidgetBinding> bindings;
+  private List<IXidgetBinding> bindings;
 }
