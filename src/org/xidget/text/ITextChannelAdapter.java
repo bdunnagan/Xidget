@@ -10,9 +10,9 @@ package org.xidget.text;
 public interface ITextChannelAdapter
 {
   /**
-   * Returns the named text channel.
-   * @param name The name of the channel.
-   * @return Returns the named text channel.
+   * Returns the specified channel.
+   * @param index The channel index.
+   * @return Returns the specified channel.
    */
-  public TextChannel getChannel( String name);
+  public TextChannel getChannel( int index);
 }

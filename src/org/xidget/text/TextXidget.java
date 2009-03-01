@@ -6,8 +6,8 @@ package org.xidget.text;
 
 import org.xidget.AbstractXidget;
 import org.xidget.IXidget;
-import org.xidget.config.TagException;
-import org.xidget.config.TagProcessor;
+import org.xidget.config.processor.TagException;
+import org.xidget.config.processor.TagProcessor;
 import org.xidget.config.util.Size;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -49,7 +49,7 @@ public abstract class TextXidget extends AbstractXidget
   public Object getAdapter( Class<? extends Object> clss)
   {
     if ( clss == ITextChannelAdapter.class) return new ITextChannelAdapter() {
-      public TextChannel getChannel( String name)
+      public TextChannel getChannel( int index)
       {
         return channel;
       }

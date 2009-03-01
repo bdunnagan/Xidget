@@ -6,9 +6,9 @@ package org.xidget.layout;
 
 import org.xidget.IXidget;
 import org.xidget.XidgetTagHandler;
-import org.xidget.config.ITagHandler;
-import org.xidget.config.TagException;
-import org.xidget.config.TagProcessor;
+import org.xidget.config.processor.ITagHandler;
+import org.xidget.config.processor.TagException;
+import org.xidget.config.processor.TagProcessor;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.util.Radix;

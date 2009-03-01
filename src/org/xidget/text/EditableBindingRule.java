@@ -18,11 +18,11 @@ public class EditableBindingRule implements IBindingRule
 {
   /**
    * Create an rule for the specified text channel.
-   * @param channel The text channel.
+   * @param index The text channel.
    */
-  public EditableBindingRule( String channel)
+  public EditableBindingRule( int index)
   {
-    this.channel = channel;
+    this.index = index;
   }
   
   /* (non-Javadoc)
@@ -30,25 +30,25 @@ public class EditableBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget)
   {
-    return new Listener( xidget, channel);
+    return new Listener( xidget, index);
   }
   
-  private String channel;
-}
-
-final class Listener extends ExpressionListener
-{
-  Listener( IXidget xidget, String channel)
+  private final static class Listener extends ExpressionListener
   {
-    ITextChannelAdapter channelAdapter = (ITextChannelAdapter)xidget.getAdapter( ITextChannelAdapter.class);
-    if ( channelAdapter == null) return;      
-    this.channel = channelAdapter.getChannel( channel).getWidgetChannel(); 
+    Listener( IXidget xidget, int index)
+    {
+      ITextChannelAdapter channelAdapter = (ITextChannelAdapter)xidget.getAdapter( ITextChannelAdapter.class);
+      if ( channelAdapter == null) return;      
+      this.channel = channelAdapter.getChannel( index).getWidgetChannel(); 
+    }
+    
+    public void notifyChange( IExpression expression, IContext context, boolean newValue)
+    {
+      channel.setEditable( newValue);
+    }
+
+    private IWidgetTextChannel channel;
   }
   
-  public void notifyChange( IExpression expression, IContext context, boolean newValue)
-  {
-    channel.setEditable( newValue);
-  }
-
-  private IWidgetTextChannel channel;
+  private int index;
 }

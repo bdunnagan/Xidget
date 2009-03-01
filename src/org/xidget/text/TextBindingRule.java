@@ -21,11 +21,11 @@ public class TextBindingRule implements IBindingRule
 {
   /**
    * Create a rule for the specified text channel.
-   * @param channel The text channel.
+   * @param index The text channel.
    */
-  public TextBindingRule( String channel)
+  public TextBindingRule( int index)
   {
-    this.channel = channel;
+    this.index = index;
   }
   
   /* (non-Javadoc)
@@ -33,16 +33,16 @@ public class TextBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget)
   {
-    return new Listener( xidget, channel);
+    return new Listener( xidget, index);
   }
 
-  final class Listener extends ExpressionListener
+  private final static class Listener extends ExpressionListener
   {
-    Listener( IXidget xidget, String channel)
+    Listener( IXidget xidget, int index)
     {
       ITextChannelAdapter channelAdapter = (ITextChannelAdapter)xidget.getAdapter( ITextChannelAdapter.class);
       if ( channelAdapter == null) return;      
-      this.channel = channelAdapter.getChannel( channel); 
+      this.channel = channelAdapter.getChannel( index); 
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
@@ -85,5 +85,5 @@ public class TextBindingRule implements IBindingRule
     private TextChannel channel;
   }
   
-  private String channel;
+  private int index;
 }

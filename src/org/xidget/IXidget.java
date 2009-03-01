@@ -5,8 +5,8 @@
 package org.xidget;
 
 import java.util.List;
-import org.xidget.config.TagException;
-import org.xidget.config.TagProcessor;
+import org.xidget.config.processor.TagException;
+import org.xidget.config.processor.TagProcessor;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 

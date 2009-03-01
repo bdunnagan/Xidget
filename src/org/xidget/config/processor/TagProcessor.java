@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.config;
+package org.xidget.config.processor;
 
 import java.util.ArrayList;
 import java.util.List;
