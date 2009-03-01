@@ -63,7 +63,7 @@ final class TextChannel implements IWidgetTextChannel.IListener
    */
   void setTextFromWidget( String text)
   {
-    if ( source == null) return;
+    if ( updating || source == null) return;
     
     // transform
     if ( xoutExpr != null)
@@ -80,7 +80,15 @@ final class TextChannel implements IWidgetTextChannel.IListener
     }
     
     // write to model
-    source.setValue( text);
+    try
+    {
+      updating = true;
+      source.setValue( text);
+    }
+    finally
+    {
+      updating = false;
+    }
   }
   
   /**
@@ -89,6 +97,8 @@ final class TextChannel implements IWidgetTextChannel.IListener
    */
   void setTextFromModel( String text)
   {
+    if ( updating) return;
+    
     // validate
     if ( validator != null)
     {
@@ -104,7 +114,15 @@ final class TextChannel implements IWidgetTextChannel.IListener
     }
     
     // write to widget
-    widgetChannel.setText( text);
+    try
+    {
+      updating = true;
+      widgetChannel.setText( text);
+    }
+    finally
+    {
+      updating = false;
+    }
   }
   
   /**
@@ -149,4 +167,5 @@ final class TextChannel implements IWidgetTextChannel.IListener
   private IExpression xoutExpr;
   private ITextValidator validator;
   private IErrorAdapter errorAdapter;
+  private boolean updating;
 }
