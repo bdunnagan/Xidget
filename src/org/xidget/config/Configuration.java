@@ -6,6 +6,7 @@ package org.xidget.config;
 
 import org.xidget.BindingTagHandler;
 import org.xidget.EnableBindingRule;
+import org.xidget.TooltipBindingRule;
 import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
@@ -37,6 +38,7 @@ public class Configuration
     
     // install other handlers
     addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
+    addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     addHandler( "editable", new BindingTagHandler( new EditableBindingRule( 0)));
     addHandler( "source", new BindingTagHandler( new TextBindingRule( 0)));
   }

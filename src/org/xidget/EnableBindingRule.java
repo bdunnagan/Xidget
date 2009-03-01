@@ -21,19 +21,19 @@ public class EnableBindingRule implements IBindingRule
   {
     return new Listener( (IWidgetAdapter)xidget.getAdapter( IWidgetAdapter.class));
   }  
-}
 
-final class Listener extends ExpressionListener
-{
-  Listener( IWidgetAdapter adapter)
+  private static final class Listener extends ExpressionListener
   {
-    this.adapter = adapter;
+    Listener( IWidgetAdapter adapter)
+    {
+      this.adapter = adapter;
+    }
+    
+    public void notifyChange( IExpression expression, IContext context, boolean newValue)
+    {
+      adapter.setEnabled( newValue);
+    }
+    
+    private IWidgetAdapter adapter;
   }
-  
-  public void notifyChange( IExpression expression, IContext context, boolean newValue)
-  {
-    adapter.setEnabled( newValue);
-  }
-  
-  private IWidgetAdapter adapter;
 }
