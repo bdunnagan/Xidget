@@ -4,23 +4,28 @@
  */
 package org.xidget.layout;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.xidget.IXidget;
 import org.xidget.XidgetTagHandler;
 import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
+import org.xidget.config.util.Pair;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
-import org.xmodel.util.Radix;
 
 /**
  * A class which creates a layout for its components from the configuration.
+ * <code>
  * <layout name="l1">
+ *   [<size>x,y</size>]
  *   <x0>[[p|n].[x0|x1|y0|y1|c]][(+/-)N]</x0>
  *   <y0>[[p|n].[x0|x1|y0|y1|c]][(+/-)N]</y0>
  *   <x1>[[p|n].[x0|x1|y0|y1|c]][(+/-)N]</x1>
  *   <y1>[[p|n].[x0|x1|y0|y1|c]][(+/-)N]</y1>
  * </layout>
+ * </code>
  * <p>
  * This class handles tags for both layout declarations and layout references which
  * take the form of an element named <i>layout</i> whose value is the name of the
@@ -28,9 +33,9 @@ import org.xmodel.util.Radix;
  */
 public class LayoutTagHandler implements ITagHandler
 {  
-  public LayoutTagHandler( LayoutRegistry registry)
+  public LayoutTagHandler()
   {
-    this.registry = registry;
+    layouts = new HashMap<String, Layout>();
   }
     
   /* (non-Javadoc)
@@ -63,6 +68,9 @@ public class LayoutTagHandler implements ITagHandler
       text = Xlate.childGet( element, "y1", (String)null);
       if ( text != null) layout.y1 = createAttachment( text);
       
+      text = Xlate.childGet( element, "size", (String)null);
+      if ( text != null) layout.size = new Pair( text);
+      
       String name = Xlate.get( element, "name", (String)null);
       if ( name == null)
       {
@@ -72,13 +80,11 @@ public class LayoutTagHandler implements ITagHandler
 
         // generate unique key to associate xidget with its layout
         IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
-        String key = Radix.convert( xidget.hashCode());
-        registry.associateLayout( xidget, key);
-        registry.defineLayout( key, layout);
+        xidget.setLayout( layout);
       }
       else
       {
-        registry.defineLayout( name, layout);
+        layouts.put( name, layout);
       }
     }
     else
@@ -88,7 +94,7 @@ public class LayoutTagHandler implements ITagHandler
           "Layout reference not associated with xidget.");
       
       IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
-      registry.associateLayout( xidget, reference);
+      xidget.setLayout( layouts.get( reference));
     }
     
     return false;
@@ -116,7 +122,7 @@ public class LayoutTagHandler implements ITagHandler
     coordinate.previous = (attach == 'p');
     
     int index = text.indexOf( '.') + 1;
-    char letter = text.charAt( index);
+    char letter = text.charAt( index++);
     if ( letter != 'x' && letter != 'y')
       throw new TagException( "Illegal: coordinate must follow period."); 
 
@@ -133,13 +139,16 @@ public class LayoutTagHandler implements ITagHandler
       coordinate.relative = (number == '0')? Relative.y0: Relative.y1; 
     }
     
-    try
+    if ( index < text.length())
     {
-      coordinate.offset = Integer.parseInt( text.substring( index));
-    }
-    catch( NumberFormatException e)
-    {
-      throw new TagException( "Illegal: coordinate offset is not an integer.", e);
+      try
+      {
+        coordinate.offset = Integer.parseInt( text.substring( index));
+      }
+      catch( NumberFormatException e)
+      {
+        throw new TagException( "Illegal: coordinate offset is not an integer.", e);
+      }
     }
     
     return coordinate;
@@ -156,11 +165,12 @@ public class LayoutTagHandler implements ITagHandler
   
   public class Layout
   {
+    public Pair size;
     public Attachment x0;
     public Attachment y0;
     public Attachment x1;
     public Attachment y1;
   }
-  
-  private LayoutRegistry registry;
+
+  private Map<String, Layout> layouts;
 }

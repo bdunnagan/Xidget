@@ -4,13 +4,17 @@
  */
 package org.xidget.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.xidget.BindingTagHandler;
 import org.xidget.EnableBindingRule;
+import org.xidget.IXidget;
 import org.xidget.TooltipBindingRule;
 import org.xidget.TriggerTagHandler;
 import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
+import org.xidget.layout.LayoutTagHandler;
 import org.xidget.text.EditableBindingRule;
 import org.xidget.text.TextBindingRule;
 import org.xmodel.IModelObject;
@@ -37,8 +41,9 @@ public class Configuration
     addHandler( "combo", kit.getComboHandler());
     addHandler( "table", kit.getTableHandler());
     addHandler( "tree", kit.getTreeHandler());
-    
+
     // install other handlers
+    addHandler( "layout", new LayoutTagHandler());
     addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     addHandler( "editable", new BindingTagHandler( new EditableBindingRule( 0)));
@@ -50,9 +55,12 @@ public class Configuration
    * Parse the specified root of a xidget configuration.
    * @param root The root element.
    */
-  public void parse( IModelObject root) throws TagException
+  public List<IXidget> parse( IModelObject root) throws TagException
   {
-    processor.process( root);
+    List<Object> objects = processor.process( root);
+    List<IXidget> xidgets = new ArrayList<IXidget>( objects.size());
+    for( Object object: objects) xidgets.add( (IXidget)object);
+    return xidgets;
   }
   
   /**
@@ -60,9 +68,19 @@ public class Configuration
    * @param tag The tag.
    * @param handler The handler.
    */
-  private void addHandler( String tag, ITagHandler handler)
+  public void addHandler( String tag, ITagHandler handler)
   {
     if ( handler != null) processor.addHandler( tag, handler);
+  }
+ 
+  /**
+   * Remove the specified handler from the tag processor.
+   * @param tag The tag.
+   * @param handler The handler.
+   */
+  public void removeHandler( String tag, ITagHandler handler)
+  {
+    processor.removeHandler( tag, handler);
   }
   
   private TagProcessor processor;

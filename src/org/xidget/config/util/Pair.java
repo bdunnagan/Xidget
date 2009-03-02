@@ -5,22 +5,22 @@
 package org.xidget.config.util;
 
 /**
- * An object which represents a size definition in a xidget configuration.
+ * An object which represents a pair of coordinates in a xidget configuration.
  */
-public class Size
+public class Pair
 {
-  public Size( String string)
+  public Pair( String string)
   {
     this( string, 0, 0);
   }
   
   /**
-   * Parse the size and use the specified defaults if the string is null or empty.
+   * Parse the pair and use the specified defaults if the string is null or empty.
    * @param string The string.
    * @param defaultX The default x-coordinate to use when the string is null or empty.
    * @param defaultY The default y-coordinate to use when the string is null or empty. 
    */
-  public Size( String string, int defaultX, int defaultY)
+  public Pair( String string, int defaultX, int defaultY)
   {
     if ( string == null || string.length() == 0)
     {
@@ -29,7 +29,7 @@ public class Size
       return;
     }
     
-    String[] parts = string.split( "\\s*[x]\\s*");
+    String[] parts = string.split( "\\s*,\\s*");
     x = Integer.parseInt( parts[ 0].trim());
     y = Integer.parseInt( parts[ 1].trim());    
   }

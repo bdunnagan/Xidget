@@ -65,6 +65,9 @@ public class XidgetTagHandler implements ITagHandler
   {
     IXidget xidget = xidgets.pop();
     xidget.endConfig( processor, element);
+
+    // emit root object
+    if ( parent == null) processor.addRoot( xidget);
   }
 
   /**

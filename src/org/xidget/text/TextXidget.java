@@ -8,7 +8,7 @@ import org.xidget.AbstractXidget;
 import org.xidget.IXidget;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
-import org.xidget.config.util.Size;
+import org.xidget.config.util.Pair;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 
@@ -27,7 +27,7 @@ public abstract class TextXidget extends AbstractXidget
     setParent( parent);
    
     // create widget
-    Size size = new Size( Xlate.childGet( element, "size", ""), 1, 0);
+    Pair size = new Pair( Xlate.childGet( element, "size", ""), 1, 0);
     IWidgetTextChannel widgetChannel = createWidget( size);
     channel = new TextChannel( this, widgetChannel);
     
@@ -41,7 +41,7 @@ public abstract class TextXidget extends AbstractXidget
    * @param size The size of the widget in characters.
    * @return Returns a widget channel.
    */
-  protected abstract IWidgetTextChannel createWidget( Size size) throws TagException;
+  protected abstract IWidgetTextChannel createWidget( Pair size) throws TagException;
     
   /* (non-Javadoc)
    * @see org.xidget.IAdaptable#getAdapter(java.lang.Class)

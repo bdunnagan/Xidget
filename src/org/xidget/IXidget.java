@@ -7,6 +7,7 @@ package org.xidget;
 import java.util.List;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
+import org.xidget.layout.LayoutTagHandler.Layout;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -70,4 +71,16 @@ public interface IXidget extends IAdaptable
    * @param binding The binding.
    */
   public void addBinding( IXidgetBinding binding);
+  
+  /**
+   * Set the layout data for this xidget.
+   * @param layout The layout data.
+   */
+  public void setLayout( Layout layout);
+  
+  /**
+   * Returns the layout data for this xidget.
+   * @return Returns the layout data for this xidget.
+   */
+  public Layout getLayout();
 }

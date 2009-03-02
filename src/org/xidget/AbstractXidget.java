@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
+import org.xidget.layout.LayoutTagHandler.Layout;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -95,14 +96,43 @@ public abstract class AbstractXidget implements IXidget
   /**
    * Stubbed implementation for convenience.
    * @param processor The tag processor.
+   * @param parent Null or the parent of this xidget.
+   * @param element The configuration element.
+   * @return Returns true.
+   */
+  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
+  {
+    return true;
+  }
+
+  /**
+   * Stubbed implementation for convenience.
+   * @param processor The tag processor.
    * @param element The element.
    */
   public void endConfig( TagProcessor processor, IModelObject element) throws TagException
   {
+  }
+ 
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#getLayout()
+   */
+  public Layout getLayout()
+  {
+    return layout;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#setLayout(org.xidget.layout.LayoutTagHandler.Layout)
+   */
+  public void setLayout( Layout layout)
+  {
+    this.layout = layout;
   }
 
   private IXidget parent;
   private List<IXidget> children;
   private StatefulContext context;
   private List<IXidgetBinding> bindings;
+  private Layout layout;
 }
