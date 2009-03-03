@@ -5,16 +5,14 @@
 package org.xidget.text;
 
 /**
- * An interface for a text validator used by the TextProcessor class to determine
- * when an error should be published. The validator always validates text in the
- * form in which it exists in the datamodel, as opposed to the widget display form.
+ * An interface for validating text when it is committed to the model.
  */
 public interface ITextValidator
 {
   /**
-   * Returns null or the error string for the specified text.
-   * @param text The text.
-   * @return Returns null or the error string for the specified text.
+   * Validate the specified text and return null or a validation error string.
+   * @param text The text to be validated.
+   * @return Returns null or the validation error string.
    */
   public String validate( String text);
 }
