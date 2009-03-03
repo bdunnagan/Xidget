@@ -9,6 +9,8 @@ import org.xidget.IXidget;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.config.util.Pair;
+import org.xidget.text.adapter.IModelTextAdapter;
+import org.xidget.text.adapter.ModelTextAdapter;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 
@@ -20,6 +22,12 @@ import org.xmodel.Xlate;
 public abstract class TextXidget extends AbstractXidget
 {  
   public final static String allChannel = "all";
+  public final static String selectedChannel = "selected";
+  
+  protected TextXidget()
+  {
+    modelAdapter = new ModelTextAdapter();
+  }
   
   /**
    * Add a channel.
@@ -58,4 +66,16 @@ public abstract class TextXidget extends AbstractXidget
    * @param size The size of the widget in characters.
    */
   protected abstract void createWidget( Pair size) throws TagException;
+  
+  /* (non-Javadoc)
+   * @see org.xidget.IAdaptable#getAdapter(java.lang.Class)
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> clss)
+  {
+    if ( clss == IModelTextAdapter.class) return (T)modelAdapter;
+    return null;
+  }
+
+  private ModelTextAdapter modelAdapter;
 }
