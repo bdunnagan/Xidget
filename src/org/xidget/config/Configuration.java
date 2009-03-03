@@ -17,6 +17,7 @@ import org.xidget.config.processor.TagProcessor;
 import org.xidget.layout.LayoutTagHandler;
 import org.xidget.text.EditableBindingRule;
 import org.xidget.text.TextBindingRule;
+import org.xidget.text.TextXidget;
 import org.xmodel.IModelObject;
 
 /**
@@ -46,8 +47,8 @@ public class Configuration
     addHandler( "layout", new LayoutTagHandler());
     addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
-    addHandler( "editable", new BindingTagHandler( new EditableBindingRule( 0)));
-    addHandler( "source", new BindingTagHandler( new TextBindingRule( 0)));
+    addHandler( "editable", new BindingTagHandler( new EditableBindingRule( TextXidget.allChannel)));
+    addHandler( "source", new BindingTagHandler( new TextBindingRule( TextXidget.allChannel)));
     addHandler( "trigger", new TriggerTagHandler());
   }
   

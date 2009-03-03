@@ -14,5 +14,5 @@ public interface IAdaptable
    * @param clss The interface class.
    * @return Returns null or an instance of the specified adapter.
    */
-  public Object getAdapter( Class<? extends Object> clss);  
+  public <T> T getAdapter( Class<T> clss);  
 }

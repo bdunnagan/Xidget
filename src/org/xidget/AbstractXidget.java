@@ -78,9 +78,17 @@ public abstract class AbstractXidget implements IXidget
    */
   public void bind()
   {
-    if ( bindings == null) return;
-    for( IXidgetBinding binding: bindings)
-      binding.bind( context);
+    // children
+    if ( children != null)
+      for( IXidget child: children)
+      {
+        child.setContext( getContext());
+        child.bind();
+      }
+    
+    if ( bindings != null)
+      for( IXidgetBinding binding: bindings)
+        binding.bind( context);
   }
 
   /* (non-Javadoc)
@@ -88,9 +96,15 @@ public abstract class AbstractXidget implements IXidget
    */
   public void unbind()
   {
-    if ( bindings == null) return;
-    for( IXidgetBinding binding: bindings)
-      binding.unbind( context);
+    // internal bindings
+    if ( bindings != null)
+      for( IXidgetBinding binding: bindings)
+        binding.unbind( context);
+
+    // children
+    if ( children != null)
+      for( IXidget child: children)
+        child.unbind();
   }
 
   /**

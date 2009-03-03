@@ -7,6 +7,8 @@ package org.xidget.text;
 import java.util.List;
 import org.xidget.IBindingRule;
 import org.xidget.IXidget;
+import org.xidget.text.adapter.IModelTextAdapter;
+import org.xidget.text.adapter.IWidgetTextAdapter;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -21,11 +23,11 @@ public class TextBindingRule implements IBindingRule
 {
   /**
    * Create a rule for the specified text channel.
-   * @param index The text channel.
+   * @param channel The text channel.
    */
-  public TextBindingRule( int index)
+  public TextBindingRule( String channel)
   {
-    this.index = index;
+    this.channel = channel;
   }
   
   /* (non-Javadoc)
@@ -33,48 +35,50 @@ public class TextBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget)
   {
-    return new Listener( xidget, index);
+    return new Listener( xidget, channel);
   }
 
   private final static class Listener extends ExpressionListener
   {
-    Listener( IXidget xidget, int index)
+    Listener( IXidget xidget, String channel)
     {
-      ITextChannelAdapter channelAdapter = (ITextChannelAdapter)xidget.getAdapter( ITextChannelAdapter.class);
-      if ( channelAdapter == null) return;      
-      this.channel = channelAdapter.getChannel( index); 
+      this.channel = channel;
+      widgetAdapter = xidget.getAdapter( IWidgetTextAdapter.class);
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      if ( nodes.contains( channel.getSource())) return;
-      channel.setSource( nodes.get( 0));
+      if ( nodes.contains( modelAdapter.getSource( channel))) return;
+      
+      IModelObject source = nodes.get( 0);
+      modelAdapter.setSource( channel, source);
+      widgetAdapter.setText( channel, Xlate.get( source, ""));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      if ( !nodes.contains( channel.getSource())) return;
-      channel.setSource( expression.queryFirst( context));
+      if ( !nodes.contains( modelAdapter.getSource( channel))) return;
+      modelAdapter.setSource( channel, expression.queryFirst( context));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
-      channel.setTextFromModel( Boolean.toString( newValue));
+      widgetAdapter.setText( channel, Boolean.toString( newValue));
     }
 
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
-      channel.setTextFromModel( Double.toString( newValue));
+      widgetAdapter.setText( channel, Double.toString( newValue));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      channel.setTextFromModel( newValue);
+      widgetAdapter.setText( channel, newValue);
     }
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
-      channel.setTextFromModel( Xlate.get( object, ""));
+      widgetAdapter.setText( channel, Xlate.get( object, ""));
     }
     
     public boolean requiresValueNotification()
@@ -82,8 +86,10 @@ public class TextBindingRule implements IBindingRule
       return true;
     }
 
-    private TextChannel channel;
+    private String channel;
+    private IModelTextAdapter modelAdapter;
+    private IWidgetTextAdapter widgetAdapter;
   }
-  
-  private int index;
+
+  private String channel;
 }

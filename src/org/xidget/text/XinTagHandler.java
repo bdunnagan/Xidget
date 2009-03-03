@@ -9,6 +9,7 @@ import org.xidget.XidgetTagHandler;
 import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
+import org.xidget.text.adapter.IModelTextAdapter;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IExpression;
@@ -20,11 +21,11 @@ public class XinTagHandler implements ITagHandler
 {
   /**
    * Create a tag handler associated with the specified text channel.
-   * @param index The text channel.
+   * @param channel The text channel.
    */
-  public XinTagHandler( int index)
+  public XinTagHandler( String channel)
   {
-    this.index = index;
+    this.channel = channel;
   }
   
   /* (non-Javadoc)
@@ -37,13 +38,12 @@ public class XinTagHandler implements ITagHandler
       throw new TagException(
         "XinTagHandler must occur as child of XidgetTagHandler.");
 
-    // get xin expression
+    // get transform
     IExpression xinExpr = Xlate.get( element, (IExpression)null);
     
     IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
-    ITextChannelAdapter adapter = (ITextChannelAdapter)xidget.getAdapter( ITextChannelAdapter.class);
-    TextChannel channel = adapter.getChannel( this.index);
-    channel.setInputTransform( xinExpr);    
+    IModelTextAdapter adapter = xidget.getAdapter( IModelTextAdapter.class);
+    adapter.setTransform( channel, xinExpr);
     
     return false;
   }
@@ -65,5 +65,5 @@ public class XinTagHandler implements ITagHandler
     return true;
   }
   
-  private int index;
+  private String channel;
 }

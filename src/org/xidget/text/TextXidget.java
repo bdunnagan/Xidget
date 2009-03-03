@@ -19,6 +19,24 @@ import org.xmodel.Xlate;
  */
 public abstract class TextXidget extends AbstractXidget
 {  
+  public final static String allChannel = "all";
+  
+  /**
+   * Add a channel.
+   * @param channel The name of the channel.
+   */
+  public void addChannel( String channel)
+  {
+  }
+  
+  /**
+   * Remove the specified channel.
+   * @param channel The name of the channel.
+   */
+  public void removeChannel( String channel)
+  {
+  }
+      
   /* (non-Javadoc)
    * @see org.xidget.IXidget#startConfig(org.xidget.config.TagProcessor, org.xidget.IXidget, org.xmodel.IModelObject)
    */
@@ -27,36 +45,17 @@ public abstract class TextXidget extends AbstractXidget
     setParent( parent);
    
     // create widget
-    Pair size = new Pair( Xlate.childGet( element, "size", ""), 1, 0);
-    IWidgetTextChannel widgetChannel = createWidget( size);
-    channel = new TextChannel( this, widgetChannel);
+    Pair size = new Pair( Xlate.childGet( element, "size", ""), 0, 0);
+    createWidget( size);
     
     return true;
-  }
+  }  
 
   /**
    * Create the widget with the specified configuration parameters. If the 
    * y-coordinate is 0 then the column size is unbounded. The row size will 
    * always be bounded.
    * @param size The size of the widget in characters.
-   * @return Returns a widget channel.
    */
-  protected abstract IWidgetTextChannel createWidget( Pair size) throws TagException;
-    
-  /* (non-Javadoc)
-   * @see org.xidget.IAdaptable#getAdapter(java.lang.Class)
-   */
-  public Object getAdapter( Class<? extends Object> clss)
-  {
-    if ( clss == ITextChannelAdapter.class) return new ITextChannelAdapter() {
-      public TextChannel getChannel( int index)
-      {
-        return channel;
-      }
-    };
-    
-    return null;
-  }
-
-  private TextChannel channel;
+  protected abstract void createWidget( Pair size) throws TagException;
 }

@@ -6,6 +6,7 @@ package org.xidget.text;
 
 import org.xidget.IBindingRule;
 import org.xidget.IXidget;
+import org.xidget.text.adapter.IWidgetTextAdapter;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -18,11 +19,11 @@ public class EditableBindingRule implements IBindingRule
 {
   /**
    * Create an rule for the specified text channel.
-   * @param index The text channel.
+   * @param channel The text channel.
    */
-  public EditableBindingRule( int index)
+  public EditableBindingRule( String channel)
   {
-    this.index = index;
+    this.channel = channel;
   }
   
   /* (non-Javadoc)
@@ -30,25 +31,23 @@ public class EditableBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget)
   {
-    return new Listener( xidget, index);
+    return new Listener( xidget, channel);
   }
   
   private final static class Listener extends ExpressionListener
   {
-    Listener( IXidget xidget, int index)
+    Listener( IXidget xidget, String channel)
     {
-      ITextChannelAdapter channelAdapter = (ITextChannelAdapter)xidget.getAdapter( ITextChannelAdapter.class);
-      if ( channelAdapter == null) return;      
-      this.channel = channelAdapter.getChannel( index).getWidgetChannel(); 
+      adapter = xidget.getAdapter( IWidgetTextAdapter.class);
     }
     
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
-      channel.setEditable( newValue);
+      adapter.setEditable( newValue);
     }
 
-    private IWidgetTextChannel channel;
+    private IWidgetTextAdapter adapter;
   }
   
-  private int index;
+  private String channel;
 }
