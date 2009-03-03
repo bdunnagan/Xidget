@@ -20,12 +20,6 @@ import org.xmodel.xpath.expression.IExpression;
 public interface IModelTextAdapter
 {
   /**
-   * Set whether the text is editable.
-   * @param editable True if editable.
-   */
-  public void setEditable( boolean editable); 
-  
-  /**
    * Set the source node which stores the text. 
    * This method does not need to call <code>setText</code>.
    * @param channel The channel.

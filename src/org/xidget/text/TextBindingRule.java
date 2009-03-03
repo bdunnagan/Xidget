@@ -43,6 +43,7 @@ public class TextBindingRule implements IBindingRule
     Listener( IXidget xidget, String channel)
     {
       this.channel = channel;
+      modelAdapter = xidget.getAdapter( IModelTextAdapter.class);
       widgetAdapter = xidget.getAdapter( IWidgetTextAdapter.class);
     }
     

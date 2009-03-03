@@ -26,7 +26,7 @@ public abstract class TextXidget extends AbstractXidget
   
   protected TextXidget()
   {
-    modelAdapter = new ModelTextAdapter();
+    modelAdapter = new ModelTextAdapter( this);
   }
   
   /**
