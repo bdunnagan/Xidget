@@ -19,7 +19,7 @@ public class EnableBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget)
   {
-    return new Listener( (IWidgetAdapter)xidget.getAdapter( IWidgetAdapter.class));
+    return new Listener( (IWidgetAdapter)xidget.getFeature( IWidgetAdapter.class));
   }  
 
   private static final class Listener extends ExpressionListener

@@ -9,8 +9,8 @@ import org.xidget.IXidget;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.config.util.Pair;
-import org.xidget.text.adapter.IModelTextAdapter;
-import org.xidget.text.adapter.ModelTextAdapter;
+import org.xidget.text.feature.IModelTextAdapter;
+import org.xidget.text.feature.ModelTextAdapter;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 
@@ -53,7 +53,7 @@ public abstract class TextXidget extends AbstractXidget
     setParent( parent);
    
     // create widget
-    Pair size = new Pair( Xlate.childGet( element, "size", ""), 0, 0);
+    Pair size = new Pair( Xlate.get( element, "size", Xlate.childGet( element, "size", "")), 0, 0);
     createWidget( size);
     
     return true;
@@ -71,7 +71,7 @@ public abstract class TextXidget extends AbstractXidget
    * @see org.xidget.IAdaptable#getAdapter(java.lang.Class)
    */
   @SuppressWarnings("unchecked")
-  public <T> T getAdapter( Class<T> clss)
+  public <T> T getFeature( Class<T> clss)
   {
     if ( clss == IModelTextAdapter.class) return (T)modelAdapter;
     return null;

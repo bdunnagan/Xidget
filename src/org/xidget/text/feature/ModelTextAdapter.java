@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.text.adapter;
+package org.xidget.text.feature;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +76,7 @@ public class ModelTextAdapter implements IModelTextAdapter
         text = channel.transform.transform( text);
       
       // validate
-      IErrorAdapter errorAdapter = xidget.getAdapter( IErrorAdapter.class);
+      IErrorAdapter errorAdapter = xidget.getFeature( IErrorAdapter.class);
       if ( errorAdapter != null && channel.validator != null)
       {
         String error = channel.validator.validate( text);

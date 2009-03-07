@@ -14,7 +14,7 @@ import org.xmodel.xpath.expression.StatefulContext;
 /**
  * An interface for widget adapters.
  */
-public interface IXidget extends IAdaptable
+public interface IXidget extends IFeature
 {
   /**
    * Returns the parent of this xidget.

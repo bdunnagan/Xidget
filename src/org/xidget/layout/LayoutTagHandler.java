@@ -20,10 +20,10 @@ import org.xmodel.Xlate;
  * <code>
  * <layout name="l1">
  *   [<size>x,y</size>]
- *   <x0>[[p|n].[x0|x1|y0|y1|c]][(+/-)N]</x0>
- *   <y0>[[p|n].[x0|x1|y0|y1|c]][(+/-)N]</y0>
- *   <x1>[[p|n].[x0|x1|y0|y1|c]][(+/-)N]</x1>
- *   <y1>[[p|n].[x0|x1|y0|y1|c]][(+/-)N]</y1>
+ *   <x0>[[p|n|c].[x0|x1|y0|y1|c]][(+/-)N]</x0>
+ *   <y0>[[p|n|c].[x0|x1|y0|y1|c]][(+/-)N]</y0>
+ *   <x1>[[p|n|c].[x0|x1|y0|y1|c]][(+/-)N]</x1>
+ *   <y1>[[p|n|c].[x0|x1|y0|y1|c]][(+/-)N]</y1>
  * </layout>
  * </code>
  * <p>
@@ -116,10 +116,15 @@ public class LayoutTagHandler implements ITagHandler
     Attachment coordinate = new Attachment();
     
     char attach = text.charAt( 0);
-    if ( attach != 'p' && attach != 'n') 
-      throw new TagException( "Illegal: first character must be 'p' or 'n'.");
+    if ( attach != 'p' && attach != 'n' && attach != 'c') 
+      throw new TagException( "Illegal: first character must be [pnc].");
     
-    coordinate.previous = (attach == 'p');
+    switch( attach)
+    {
+      case 'p': coordinate.connected = Connected.previous; break;
+      case 'n': coordinate.connected = Connected.next; break;
+      case 'c': coordinate.connected = Connected.container; break;
+    }
     
     int index = text.indexOf( '.') + 1;
     char letter = text.charAt( index++);
@@ -154,11 +159,12 @@ public class LayoutTagHandler implements ITagHandler
     return coordinate;
   }
     
+  public enum Connected { previous, next, container};
   public enum Relative { x0, y0, x1, y1, center};
 
   public class Attachment
   {
-    public boolean previous;
+    public Connected connected; 
     public Relative relative;
     public int offset;
   }

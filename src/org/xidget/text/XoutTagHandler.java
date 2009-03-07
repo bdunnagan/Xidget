@@ -9,7 +9,7 @@ import org.xidget.XidgetTagHandler;
 import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
-import org.xidget.text.adapter.IModelTextAdapter;
+import org.xidget.text.feature.IModelTextAdapter;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IExpression;
@@ -42,7 +42,7 @@ public class XoutTagHandler implements ITagHandler
     IExpression xoutExpr = Xlate.get( element, (IExpression)null);
     
     IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
-    IModelTextAdapter adapter = xidget.getAdapter( IModelTextAdapter.class);
+    IModelTextAdapter adapter = xidget.getFeature( IModelTextAdapter.class);
     adapter.setTransform( channel, xoutExpr);
     
     return false;
