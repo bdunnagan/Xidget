@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget;
+package org.xidget.feature;
 
 /**
  * An interface for all widgets used by IXidget implementations. Instances of this interface

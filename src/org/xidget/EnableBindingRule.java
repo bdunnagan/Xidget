@@ -4,6 +4,7 @@
  */
 package org.xidget;
 
+import org.xidget.feature.IWidgetFeature;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
