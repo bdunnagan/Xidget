@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.adapter;
+package org.xidget.feature;
 
 /**
  * An adapter for reporting a xidget data error.
