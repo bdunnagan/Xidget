@@ -15,7 +15,7 @@ import org.xmodel.xpath.expression.IExpression;
  * <li><i>selected</i> - The selected text channel.
  * </ul>
  */
-public interface IWidgetTextAdapter
+public interface IWidgetTextFeature
 {
   /**
    * Set whether the text is editable.

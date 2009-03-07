@@ -7,7 +7,7 @@ package org.xidget.text.feature;
 import java.util.HashMap;
 import java.util.Map;
 import org.xidget.IXidget;
-import org.xidget.adapter.IErrorAdapter;
+import org.xidget.adapter.IErrorFeature;
 import org.xidget.config.util.TextTransform;
 import org.xidget.text.ITextValidator;
 import org.xidget.text.TextXidget;
@@ -17,9 +17,9 @@ import org.xmodel.xpath.expression.IExpression;
 /**
  * An implementation of IModelTextAdapter which supports a variable number of channels.
  */
-public class ModelTextAdapter implements IModelTextAdapter
+public class ModelTextFeature implements IModelTextFeature
 {
-  public ModelTextAdapter( IXidget xidget)
+  public ModelTextFeature( IXidget xidget)
   {
     this.xidget = xidget;
     channels = new HashMap<String, Channel>();
@@ -76,7 +76,7 @@ public class ModelTextAdapter implements IModelTextAdapter
         text = channel.transform.transform( text);
       
       // validate
-      IErrorAdapter errorAdapter = xidget.getFeature( IErrorAdapter.class);
+      IErrorFeature errorAdapter = xidget.getFeature( IErrorFeature.class);
       if ( errorAdapter != null && channel.validator != null)
       {
         String error = channel.validator.validate( text);

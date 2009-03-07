@@ -17,7 +17,7 @@ import org.xmodel.xpath.expression.IExpression;
  * <li><i>selected</i> - The selected text channel.
  * </ul>
  */
-public interface IModelTextAdapter
+public interface IModelTextFeature
 {
   /**
    * Set the source node which stores the text. 

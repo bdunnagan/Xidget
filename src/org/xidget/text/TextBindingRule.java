@@ -7,8 +7,8 @@ package org.xidget.text;
 import java.util.List;
 import org.xidget.IBindingRule;
 import org.xidget.IXidget;
-import org.xidget.text.feature.IModelTextAdapter;
-import org.xidget.text.feature.IWidgetTextAdapter;
+import org.xidget.text.feature.IModelTextFeature;
+import org.xidget.text.feature.IWidgetTextFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -43,8 +43,8 @@ public class TextBindingRule implements IBindingRule
     Listener( IXidget xidget, String channel)
     {
       this.channel = channel;
-      modelAdapter = xidget.getFeature( IModelTextAdapter.class);
-      widgetAdapter = xidget.getFeature( IWidgetTextAdapter.class);
+      modelAdapter = xidget.getFeature( IModelTextFeature.class);
+      widgetAdapter = xidget.getFeature( IWidgetTextFeature.class);
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
@@ -88,8 +88,8 @@ public class TextBindingRule implements IBindingRule
     }
 
     private String channel;
-    private IModelTextAdapter modelAdapter;
-    private IWidgetTextAdapter widgetAdapter;
+    private IModelTextFeature modelAdapter;
+    private IWidgetTextFeature widgetAdapter;
   }
 
   private String channel;

@@ -9,8 +9,8 @@ import org.xidget.IXidget;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.config.util.Pair;
-import org.xidget.text.feature.IModelTextAdapter;
-import org.xidget.text.feature.ModelTextAdapter;
+import org.xidget.text.feature.IModelTextFeature;
+import org.xidget.text.feature.ModelTextFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 
@@ -26,7 +26,7 @@ public abstract class TextXidget extends AbstractXidget
   
   protected TextXidget()
   {
-    modelAdapter = new ModelTextAdapter( this);
+    modelAdapter = new ModelTextFeature( this);
   }
   
   /**
@@ -73,9 +73,9 @@ public abstract class TextXidget extends AbstractXidget
   @SuppressWarnings("unchecked")
   public <T> T getFeature( Class<T> clss)
   {
-    if ( clss == IModelTextAdapter.class) return (T)modelAdapter;
+    if ( clss == IModelTextFeature.class) return (T)modelAdapter;
     return null;
   }
 
-  private ModelTextAdapter modelAdapter;
+  private ModelTextFeature modelAdapter;
 }

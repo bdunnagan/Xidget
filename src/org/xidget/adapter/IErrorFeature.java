@@ -7,7 +7,7 @@ package org.xidget.adapter;
 /**
  * An adapter for reporting a xidget data error.
  */
-public interface IErrorAdapter
+public interface IErrorFeature
 {
   /**
    * Called when the xidget data contains a value error.
