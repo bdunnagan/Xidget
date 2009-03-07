@@ -4,13 +4,12 @@
  */
 package org.xidget;
 
-
 /**
  * An interface for all widgets used by IXidget implementations. Instances of this interface
  * and its sub-interfaces are the contract by which IXidget implementations manipulate their
  * associated widgets.
  */
-public interface IWidgetAdapter
+public interface IWidgetFeature
 {
   /**
    * Set whether the widget is enabled.

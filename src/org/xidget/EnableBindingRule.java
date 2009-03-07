@@ -19,12 +19,12 @@ public class EnableBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget)
   {
-    return new Listener( (IWidgetAdapter)xidget.getFeature( IWidgetAdapter.class));
+    return new Listener( (IWidgetFeature)xidget.getFeature( IWidgetFeature.class));
   }  
 
   private static final class Listener extends ExpressionListener
   {
-    Listener( IWidgetAdapter adapter)
+    Listener( IWidgetFeature adapter)
     {
       this.adapter = adapter;
     }
@@ -34,6 +34,6 @@ public class EnableBindingRule implements IBindingRule
       adapter.setEnabled( newValue);
     }
     
-    private IWidgetAdapter adapter;
+    private IWidgetFeature adapter;
   }
 }
