@@ -9,7 +9,7 @@ package org.xidget;
  * a specialized implementation of the adapter pattern, so I'm calling these
  * adapters <i>features</i> instead.
  */
-public interface IFeature
+public interface IFeatures
 {
   /**
    * Returns null or an instance of the specified feature.

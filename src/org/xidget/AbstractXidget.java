@@ -6,9 +6,17 @@ package org.xidget;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.xidget.config.XidgetMap;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
-import org.xidget.layout.LayoutTagHandler.Layout;
+import org.xidget.feature.IWidgetFeature;
+import org.xidget.layout.IComputeNode;
+import org.xidget.layout.WidgetBottomNode;
+import org.xidget.layout.WidgetHeightNode;
+import org.xidget.layout.WidgetLeftNode;
+import org.xidget.layout.WidgetRightNode;
+import org.xidget.layout.WidgetTopNode;
+import org.xidget.layout.WidgetWidthNode;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -19,6 +27,7 @@ public abstract class AbstractXidget implements IXidget
 {
   protected AbstractXidget()
   {
+    nodes = new IComputeNode[ 6];
   }
 
   /* (non-Javadoc)
@@ -74,6 +83,14 @@ public abstract class AbstractXidget implements IXidget
   }
 
   /* (non-Javadoc)
+   * @see org.xidget.IXidget#removeBinding(org.xidget.IXidgetBinding)
+   */
+  public void removeBinding( IXidgetBinding binding)
+  {
+    if ( bindings != null) bindings.remove( binding);
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.IXidget#bind()
    */
   public void bind()
@@ -107,6 +124,54 @@ public abstract class AbstractXidget implements IXidget
         child.unbind();
   }
 
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#getAnchor(java.lang.String)
+   */
+  public IComputeNode getAnchor( String type)
+  {
+    IWidgetFeature widget = getFeature( IWidgetFeature.class);
+    if ( widget == null) return null;
+    
+    char c0 = type.charAt( 0);
+    char c1 = type.charAt( 1);
+    if ( c0 == 'x')
+    {
+      if ( c1 == '0')
+      {
+        if ( nodes[ 0] == null) nodes[ 0] = new WidgetLeftNode( widget);
+        return nodes[ 0];
+      }
+      else
+      {
+        if ( nodes[ 2] == null) nodes[ 2] = new WidgetRightNode( widget);
+        return nodes[ 2];
+      }
+    }
+    else if ( c0 == 'y')
+    {
+      if ( c1 == '0')
+      {
+        if ( nodes[ 1] == null) nodes[ 1] = new WidgetTopNode( widget);
+        return nodes[ 1];
+      }
+      else
+      {
+        if ( nodes[ 3] == null) nodes[ 3] = new WidgetBottomNode( widget);
+        return nodes[ 3];
+      }
+    }
+    else if ( c0 == 'w')
+    {
+      if ( nodes[ 4] == null) nodes[ 4] = new WidgetWidthNode( widget);
+      return nodes[ 4];
+    }
+    else 
+    {
+      if ( nodes[ 5] == null) nodes[ 5] = new WidgetHeightNode( widget);
+      return nodes[ 5];
+    }    
+  }
+
   /**
    * Stubbed implementation for convenience.
    * @param processor The tag processor.
@@ -116,6 +181,9 @@ public abstract class AbstractXidget implements IXidget
    */
   public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
   {
+    XidgetMap map = processor.getFeature( XidgetMap.class);
+    if ( map == null) throw new TagException( "Tag processor must have a XidgetMap feature.");
+    map.add( this, element);
     return true;
   }
 
@@ -127,26 +195,10 @@ public abstract class AbstractXidget implements IXidget
   public void endConfig( TagProcessor processor, IModelObject element) throws TagException
   {
   }
- 
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#getLayout()
-   */
-  public Layout getLayout()
-  {
-    return layout;
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#setLayout(org.xidget.layout.LayoutTagHandler.Layout)
-   */
-  public void setLayout( Layout layout)
-  {
-    this.layout = layout;
-  }
 
   private IXidget parent;
   private List<IXidget> children;
   private StatefulContext context;
   private List<IXidgetBinding> bindings;
-  private Layout layout;
+  private IComputeNode[] nodes;
 }

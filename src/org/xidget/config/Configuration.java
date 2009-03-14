@@ -35,6 +35,8 @@ public class Configuration
   {
     // install xidget kit
     processor = new TagProcessor();
+    processor.addFeature( new XidgetMap());
+    
     addHandler( "form", kit.getFormHandler());
     addHandler( "button", kit.getButtonHandler());
     addHandler( "slider", kit.getSliderHandler());

@@ -5,8 +5,11 @@
 package org.xidget.config.processor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
+import org.xidget.IFeatures;
 import org.xmodel.IModelObject;
 import org.xmodel.util.HashMultiMap;
 import org.xmodel.util.MultiMap;
@@ -14,7 +17,7 @@ import org.xmodel.util.MultiMap;
 /**
  * A class which processes an xml fragment using a set of handlers registered by element name.
  */
-public class TagProcessor
+public class TagProcessor implements IFeatures
 {
   /**
    * Create a root tag processor.
@@ -218,6 +221,35 @@ public class TagProcessor
   }
 
   /**
+   * Add a feature.
+   * @param feature The feature.
+   */
+  public void addFeature( Object feature)
+  {
+    if ( features == null) features = new HashMap<Class<? extends Object>, Object>();
+    features.put( feature.getClass(), feature);
+  }
+  
+  /**
+   * Remove a feature.
+   * @param feature The feature.
+   */
+  public void removeFeature( Class<? extends Object> clss)
+  {
+    if ( features != null) features.remove( clss);
+  }
+  
+  /* (non-Javadoc)
+   * @see org.xidget.IFeatured#getFeature(java.lang.Class)
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T getFeature( Class<T> clss)
+  {
+    if ( features == null) return null;
+    return (T)features.get( clss);
+  }
+
+  /**
    * An entry in the tag processing fifo used to keep track of parentage.
    */
   private class Entry
@@ -240,4 +272,5 @@ public class TagProcessor
   private ClassLoader loader;
   private MultiMap<String, ITagHandler> map;
   private List<Object> roots;
+  private Map<Class<? extends Object>, Object> features;
 }

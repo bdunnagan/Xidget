@@ -11,6 +11,35 @@ package org.xidget.feature;
  */
 public interface IWidgetFeature
 {
+  public class Bounds
+  {
+    public int x;
+    public int y;
+    public int width;
+    public int height;
+  }
+
+  /**
+   * Returns true if the bounds of this widget have been computed.
+   * @return Returns true if the bounds of this widget have been computed.
+   */
+  public boolean hasBounds();
+  
+  /**
+   * Set the bounds of the widget.
+   * @param x The left-side x-coordinate.
+   * @param y The top-side y-coordinate.
+   * @param width The width of the widget.
+   * @param height The height of the widget.
+   */
+  public void setBounds( int x, int y, int width, int height);
+  
+  /**
+   * Returns the bounds of the widget.
+   * @param result The result.
+   */
+  public void getBounds( Bounds result);
+  
   /**
    * Set whether the widget is enabled.
    * @param enabled True if enabled.

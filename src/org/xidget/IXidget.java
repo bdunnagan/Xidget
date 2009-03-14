@@ -7,14 +7,14 @@ package org.xidget;
 import java.util.List;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
-import org.xidget.layout.LayoutTagHandler.Layout;
+import org.xidget.layout.IComputeNode;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An interface for widget adapters.
  */
-public interface IXidget extends IFeature
+public interface IXidget extends IFeatures
 {
   /**
    * Returns the parent of this xidget.
@@ -73,14 +73,23 @@ public interface IXidget extends IFeature
   public void addBinding( IXidgetBinding binding);
   
   /**
-   * Set the layout data for this xidget.
-   * @param layout The layout data.
+   * Remove a binding from the xidget.
+   * @param binding The binding.
    */
-  public void setLayout( Layout layout);
-  
+  public void removeBinding( IXidgetBinding binding);
+
   /**
-   * Returns the layout data for this xidget.
-   * @return Returns the layout data for this xidget.
+   * Returns the anchor of the specified type for this xidget as follows:
+   * <ul>
+   * <li><i>x0</i> - WidgetLeftNode 
+   * <li><i>y0</i> - WidgetTopNode
+   * <li><i>x1</i> - WidgetRightNode 
+   * <li><i>y1</i> - WidgetBottomNode
+   * <li><i>w</i> - WidgetWidthNode
+   * <li><i>h</i> - WidgetHeightNode
+   * </ul>
+   * @param type The type of anchor.
+   * @return Returns null or the widget anchor of the specified type.
    */
-  public Layout getLayout();
+  public IComputeNode getAnchor( String type);
 }
