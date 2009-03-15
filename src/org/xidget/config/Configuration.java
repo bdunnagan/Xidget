@@ -11,10 +11,8 @@ import org.xidget.EnableBindingRule;
 import org.xidget.IXidget;
 import org.xidget.TooltipBindingRule;
 import org.xidget.TriggerTagHandler;
-import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
-import org.xidget.layout.LayoutTagHandler;
 import org.xidget.text.EditableBindingRule;
 import org.xidget.text.TextBindingRule;
 import org.xidget.text.TextXidget;
@@ -37,21 +35,20 @@ public class Configuration
     processor = new TagProcessor();
     processor.addFeature( new XidgetMap());
     
-    addHandler( "form", kit.getFormHandler());
-    addHandler( "button", kit.getButtonHandler());
-    addHandler( "slider", kit.getSliderHandler());
-    addHandler( "text", kit.getTextHandler());
-    addHandler( "combo", kit.getComboHandler());
-    addHandler( "table", kit.getTableHandler());
-    addHandler( "tree", kit.getTreeHandler());
+    if ( kit.getFormHandler() != null) processor.addHandler( "form", kit.getFormHandler());
+    if ( kit.getButtonHandler() != null) processor.addHandler( "button", kit.getButtonHandler());
+    if ( kit.getSliderHandler() != null) processor.addHandler( "slider", kit.getSliderHandler());
+    if ( kit.getTextHandler() != null) processor.addHandler( "text", kit.getTextHandler());
+    if ( kit.getComboHandler() != null) processor.addHandler( "combo", kit.getComboHandler());
+    if ( kit.getTableHandler() != null) processor.addHandler( "table", kit.getTableHandler());
+    if ( kit.getTreeHandler() != null) processor.addHandler( "tree", kit.getTreeHandler());
 
     // install other handlers
-    addHandler( "layout", new LayoutTagHandler());
-    addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
-    addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
-    addHandler( "editable", new BindingTagHandler( new EditableBindingRule( TextXidget.allChannel)));
-    addHandler( "source", new BindingTagHandler( new TextBindingRule( TextXidget.allChannel)));
-    addHandler( "trigger", new TriggerTagHandler());
+    processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
+    processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
+    processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule( TextXidget.allChannel)));
+    processor.addHandler( "source", new BindingTagHandler( new TextBindingRule( TextXidget.allChannel)));
+    processor.addHandler( "trigger", new TriggerTagHandler());
   }
   
   /**
@@ -64,26 +61,6 @@ public class Configuration
     List<IXidget> xidgets = new ArrayList<IXidget>( objects.size());
     for( Object object: objects) xidgets.add( (IXidget)object);
     return xidgets;
-  }
-  
-  /**
-   * Add the specified handler to the tag processor.
-   * @param tag The tag.
-   * @param handler The handler.
-   */
-  public void addHandler( String tag, ITagHandler handler)
-  {
-    if ( handler != null) processor.addHandler( tag, handler);
-  }
- 
-  /**
-   * Remove the specified handler from the tag processor.
-   * @param tag The tag.
-   * @param handler The handler.
-   */
-  public void removeHandler( String tag, ITagHandler handler)
-  {
-    processor.removeHandler( tag, handler);
   }
   
   private TagProcessor processor;

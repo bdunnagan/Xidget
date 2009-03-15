@@ -110,7 +110,7 @@ public class TagProcessor implements IFeatures
       }
       
       // process tag
-      List<ITagHandler> handlers = map.get( entry.element.getType());
+      List<ITagHandler> handlers = getHandlers( entry.parent, entry.element);
       if ( handlers == null)
       {        
         // push children for unhandled tags
@@ -173,6 +173,25 @@ public class TagProcessor implements IFeatures
   }
   
   /**
+   * Returns the tag handlers for the specified element.
+   * @param parent The parent tag handler.
+   * @param element The element.
+   * @return Returns the tag handlers for the specified element.
+   */
+  private List<ITagHandler> getHandlers( ITagHandler parent, IModelObject element)
+  {
+    List<ITagHandler> globals = map.get( null);
+    List<ITagHandler> tagged = map.get( element.getType());
+    if ( globals == null) return tagged;
+    if ( tagged == null) return globals;
+    
+    List<ITagHandler> handlers = new ArrayList<ITagHandler>();
+    handlers.addAll( globals);
+    handlers.addAll( map.get( element.getType()));
+    return handlers;
+  }
+  
+  /**
    * Process tag with multiple handlers.
    * @param handlers A list containing more than one handler.
    * @param entry The entry to be processed.
@@ -193,6 +212,24 @@ public class TagProcessor implements IFeatures
       }
     }
     return list;
+  }
+  
+  /**
+   * Add a tag handler which will be tested against every node.
+   * @param handler The handler.
+   */
+  public void addHandler( ITagHandler handler)
+  {
+    addHandler( null, handler);
+  }
+  
+  /**
+   * Remove a tag handler which is tested against every node.
+   * @param handler The handler.
+   */
+  public void removeHandler( ITagHandler handler)
+  {
+    removeHandler( null, handler);
   }
   
   /**

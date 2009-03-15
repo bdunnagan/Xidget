@@ -52,8 +52,6 @@ public abstract class TextXidget extends AbstractXidget
   {
     super.startConfig( processor, parent, element);
     
-    setParent( parent);
-   
     // create widget
     Pair size = new Pair( Xlate.get( element, "size", Xlate.childGet( element, "size", "")), 0, 0);
     createWidget( size);

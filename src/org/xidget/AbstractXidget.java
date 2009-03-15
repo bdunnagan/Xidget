@@ -11,6 +11,7 @@ import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.layout.IComputeNode;
+import org.xidget.layout.ILayoutFeature;
 import org.xidget.layout.WidgetBottomNode;
 import org.xidget.layout.WidgetHeightNode;
 import org.xidget.layout.WidgetLeftNode;
@@ -18,6 +19,8 @@ import org.xidget.layout.WidgetRightNode;
 import org.xidget.layout.WidgetTopNode;
 import org.xidget.layout.WidgetWidthNode;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
+import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -30,10 +33,11 @@ public abstract class AbstractXidget implements IXidget
     nodes = new IComputeNode[ 6];
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#setParent(org.xidget.IXidget)
+  /**
+   * Set the parent xidget.
+   * @param parent The parent.
    */
-  public void setParent( IXidget parent)
+  private void setParent( IXidget parent)
   {
     if ( this.parent != null) this.parent.getChildren().remove( this);
     this.parent = parent;
@@ -181,9 +185,30 @@ public abstract class AbstractXidget implements IXidget
    */
   public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
   {
+    setParent( parent);
+    
+    // add xidget to config map
     XidgetMap map = processor.getFeature( XidgetMap.class);
     if ( map == null) throw new TagException( "Tag processor must have a XidgetMap feature.");
     map.add( this, element);
+    
+    // load xidget layout
+    IModelObject layout = element.getFirstChild( "layout");
+    IExpression layoutExpr = Xlate.childGet( element, "layout", Xlate.get( element, "layout", (IExpression)null));
+    
+    // if declared in-place
+    if ( layout != null && layoutExpr == null)
+      setLayout( processor, layout);
+    
+
+    // reference to layout
+    if ( layoutExpr != null)
+    {
+      IModelObject declaration = layoutExpr.queryFirst( (layout != null)? layout: element);
+      if ( declaration == null) throw new TagException( "Declaration not found for layout: "+element);
+      setLayout( processor, declaration);      
+    }
+    
     return true;
   }
 
@@ -196,6 +221,18 @@ public abstract class AbstractXidget implements IXidget
   {
   }
 
+  /**
+   * Set the layout on the xidget associated with the specified tag handler.
+   * @param processor The processor.
+   * @param declaration The layout declaration.
+   */
+  private void setLayout( TagProcessor processor, IModelObject declaration)
+  {
+    ILayoutFeature feature = getFeature( ILayoutFeature.class);
+    if ( feature == null) feature = getParent().getFeature( ILayoutFeature.class);
+    if ( feature != null) feature.configure( processor, declaration);      
+  }
+  
   private IXidget parent;
   private List<IXidget> children;
   private StatefulContext context;

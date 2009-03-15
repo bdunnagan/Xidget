@@ -73,8 +73,8 @@ public class AttachAction extends GuardedAction
     IWidgetFeature widget = xidget.getFeature( IWidgetFeature.class);
     
     IXidget parent = xidget.getParent();
-    IWidgetFeature container = parent.getFeature( IWidgetFeature.class);
-    ILayoutFeature layout = parent.getFeature( ILayoutFeature.class); 
+    IWidgetFeature container = (parent != null)? parent.getFeature( IWidgetFeature.class): null;
+    ILayoutFeature layout = (parent != null)? parent.getFeature( ILayoutFeature.class): xidget.getFeature( ILayoutFeature.class); 
 
     // create nodes
     if ( x0 != null) createNode( layout, context, "x0", x0, container, xidget, widget);
@@ -82,7 +82,7 @@ public class AttachAction extends GuardedAction
     if ( x1 != null) createNode( layout, context, "x1", x1, container, xidget, widget);
     if ( y1 != null) createNode( layout, context, "y1", y1, container, xidget, widget);
   }
-  
+      
   /**
    * Returns the enclosing xidget.
    * @param context The context.
