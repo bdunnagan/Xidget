@@ -8,6 +8,7 @@ import org.xidget.IXidget;
 import org.xidget.config.XidgetMap;
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.layout.IComputeNode;
+import org.xidget.layout.ILayoutFeature;
 import org.xidget.layout.OffsetNode;
 import org.xidget.layout.ProportionalNode;
 import org.xmodel.IModelObject;
@@ -50,7 +51,7 @@ public class AttachAction extends GuardedAction
   {
     if ( element == null) return null;
     Attachment attachment = new Attachment();
-    attachment.expr = Xlate.get( element, "expr", (IExpression)null);
+    attachment.expr = Xlate.get( element, "attach", (IExpression)null);
     attachment.side = Xlate.get( element, "side", "");
     attachment.percent = Xlate.get( element, "percent", -1f);
     attachment.pad = Xlate.get( element, "pad", -1);
@@ -67,16 +68,19 @@ public class AttachAction extends GuardedAction
     
     // get xidget for which attachments are being created
     IXidget xidget = map.getXidget( context.getObject());
+    if ( xidget == null) return;
+    
     IWidgetFeature widget = xidget.getFeature( IWidgetFeature.class);
     
     IXidget parent = xidget.getParent();
     IWidgetFeature container = parent.getFeature( IWidgetFeature.class);
+    ILayoutFeature layout = parent.getFeature( ILayoutFeature.class); 
 
     // create nodes
-    if ( x0 != null) createNode( context, "x0", x0, container, xidget, widget);
-    if ( y0 != null) createNode( context, "y0", y0, container, xidget, widget);
-    if ( x1 != null) createNode( context, "x1", x1, container, xidget, widget);
-    if ( y1 != null) createNode( context, "y1", y1, container, xidget, widget);
+    if ( x0 != null) createNode( layout, context, "x0", x0, container, xidget, widget);
+    if ( y0 != null) createNode( layout, context, "y0", y0, container, xidget, widget);
+    if ( x1 != null) createNode( layout, context, "x1", x1, container, xidget, widget);
+    if ( y1 != null) createNode( layout, context, "y1", y1, container, xidget, widget);
   }
   
   /**
@@ -109,32 +113,47 @@ public class AttachAction extends GuardedAction
    * @param widget The widget.
    * @param attachment The attachment.
    */
-  private void createNode( IContext context, String side, Attachment attachment, IWidgetFeature container, IXidget xidget, IWidgetFeature widget)
+  private void createNode( ILayoutFeature layout, IContext context, String side, Attachment attachment, IWidgetFeature container, IXidget xidget, IWidgetFeature widget)
   {
     IXidget peer = getPeer( context, attachment.expr);
     if ( peer == null) return;
+
+    // offset is reversed when attachment involves the right or bottom
+    int pad = (side.charAt( 1) == '1')? -attachment.pad: attachment.pad;
     
     IWidgetFeature peerWidget = peer.getFeature( IWidgetFeature.class);
     if ( peerWidget != container)
     {
-      if ( side.charAt( 1) == '1') attachment.pad = -attachment.pad;
       IComputeNode node1 = xidget.getAnchor( side);
       IComputeNode node2 = peer.getAnchor( attachment.side);
-      if ( attachment.pad != 0)
+      if ( pad != 0)
       {
-        node1.addDependency( new OffsetNode( node2, attachment.pad));
+        node1.addDependency( new OffsetNode( node2, pad));
       }
       else
       {
         node1.addDependency( node2);
       }
+      
+      // add node to layout
+      layout.addNode( node1);
     }
     else
     {
-      if ( attachment.percent >= 0) side = (side.charAt( 0) == 'x')? "w": "h";
       IComputeNode node1 = xidget.getAnchor( side);
       IComputeNode node2 = peer.getAnchor( attachment.side);
-      node1.addDependency( new ProportionalNode( node2, attachment.percent, attachment.pad));
+      if ( attachment.percent >= 0)
+      {
+        side = (side.charAt( 0) == 'x')? "w": "h";
+        node1.addDependency( new ProportionalNode( node2, attachment.percent, pad));
+      }
+      else
+      {
+        node1.addDependency( new OffsetNode( node2, pad));
+      }
+      
+      // add node to layout
+      layout.addNode( node1);
     }
   }
   

@@ -111,9 +111,16 @@ public class TagProcessor implements IFeatures
       
       // process tag
       List<ITagHandler> handlers = map.get( entry.element.getType());
-      if ( handlers == null) continue;
-      
-      if ( handlers.size() == 1)
+      if ( handlers == null)
+      {        
+        // push children for unhandled tags
+        List<IModelObject> children = entry.element.getChildren();
+        for( int i=children.size()-1; i>=0; i--)
+        {
+          stack.add( new Entry( entry.parent, null, children.get( i), false));
+        }        
+      }
+      else if ( handlers.size() == 1)
       {
         ITagHandler handler = handlers.get( 0);
         if ( handler.filter( this, entry.parent, entry.element))

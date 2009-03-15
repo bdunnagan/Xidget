@@ -4,7 +4,6 @@
  */
 package org.xidget.layout;
 
-import org.xidget.IXidget;
 import org.xidget.config.processor.TagProcessor;
 import org.xmodel.IModelObject;
 
@@ -22,10 +21,15 @@ public interface ILayoutFeature
   public void layout();
   
   /**
-   * Set the layout for the specified xidget.
+   * Configure the layout.
    * @param processor The tag processor.
-   * @param xidget The xidget.
    * @param element The layout element.
    */
-  public void setLayout( TagProcessor processor, IXidget xidget, IModelObject element);
+  public void configure( TagProcessor processor, IModelObject element);
+  
+  /**
+   * Add a node to the layout.
+   * @param node The computation node.
+   */
+  public void addNode( IComputeNode node);
 }

@@ -40,6 +40,14 @@ public class OffsetNode extends ComputeNode
     node.setValue( value - offset);
   }
   
+  /* (non-Javadoc)
+   * @see org.xidget.layout.ComputeNode#update()
+   */
+  @Override
+  public void update()
+  {
+  }
+
   private IComputeNode node;
   private int offset;
 }

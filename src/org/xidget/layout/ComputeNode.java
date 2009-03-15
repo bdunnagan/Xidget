@@ -39,11 +39,35 @@ public abstract class ComputeNode implements IComputeNode
     {
       if ( dependency.hasValue())
       {
-        setValue( dependency.getValue());
+        int value = dependency.getValue();
+//        System.out.printf( "%s: %d\n", toString(), value);
+        setValue( value);
         break;
       }
     }
   }
   
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString()
+  {
+    StringBuilder sb = new StringBuilder();
+    sb.append( getClass().getSimpleName());
+    sb.append( "#");
+    sb.append( hashCode());
+    
+    sb.append( " {");
+    for( IComputeNode dependency: getDependencies())
+    {
+      sb.append( ", ");
+      sb.append( dependency);
+    }
+    sb.append( "}");
+    
+    return sb.toString();
+  }
+
   private List<IComputeNode> dependencies;
 }

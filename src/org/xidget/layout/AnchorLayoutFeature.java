@@ -51,8 +51,9 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public class AnchorLayoutFeature implements ILayoutFeature
 {
-  public AnchorLayoutFeature()
+  public AnchorLayoutFeature( IXidget container)
   {
+    this.xidget = container;
     mapHolder = new ModelObject( "holder");
   }
   
@@ -61,34 +62,53 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void layout()
   {
-    if ( !sorted) 
-    {
-      nodes = sort( nodes);
-      sorted = true;
-    }
+    if ( !compiled) compile(); 
     
     for( IComputeNode anchor: nodes)
       anchor.update();
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.layout.ILayoutFeature#setLayout(org.xidget.config.processor.TagProcessor, org.xidget.IXidget, org.xmodel.IModelObject)
+   * @see org.xidget.layout.ILayoutFeature#setLayout(org.xidget.config.processor.TagProcessor, org.xmodel.IModelObject)
    */
-  public void setLayout( TagProcessor processor, IXidget xidget, IModelObject element)
+  public void configure( TagProcessor processor, IModelObject element)
   {
-    sorted = false;
-    
-    XActionDocument document = new XActionDocument( element);
+    compiled = false;
+    xidgetMap = processor.getFeature( XidgetMap.class);
+    config = element;
+  }
+   
+  /* (non-Javadoc)
+   * @see org.xidget.layout.ILayoutFeature#addNode(org.xidget.layout.IComputeNode)
+   */
+  public void addNode( IComputeNode node)
+  {
+    nodes.add( node);
+  }
+
+  /**
+   * Execute the layout script and sort the computation nodes.
+   */
+  private void compile()
+  {
+    compiled = true;
+    nodes = new ArrayList<IComputeNode>();
+
+    // run layout script
+    XActionDocument document = new XActionDocument( config);
     document.setClassLoader( getClass().getClassLoader());
     ScriptAction script = document.createScript();
     
-    XidgetMap map = processor.getFeature( XidgetMap.class);
-    StatefulContext context = new StatefulContext( map.getConfig( xidget));
-    mapHolder.setValue( map);
+    StatefulContext context = new StatefulContext( xidgetMap.getConfig( xidget));
+    mapHolder.setValue( xidgetMap);
     context.set( "map", mapHolder);
-    script.run( context);
-  }
     
+    script.run( context);
+
+    // sort nodes
+    nodes = sort( nodes);
+  }
+  
   /**
    * Dependency sort the specified anchors.
    * @param anchors The anchors.
@@ -103,6 +123,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
       if ( consumed.contains( anchor)) continue;
 
       Stack<IComputeNode> stack = new Stack<IComputeNode>();
+      stack.push( anchor);
       while( !stack.empty())
       {
         IComputeNode current = stack.peek();
@@ -125,8 +146,11 @@ public class AnchorLayoutFeature implements ILayoutFeature
     }
     return sorted;
   }
-  
+
+  private IXidget xidget;
+  private IModelObject config;
+  private XidgetMap xidgetMap;
   private List<IComputeNode> nodes;
   private IModelObject mapHolder;
-  private boolean sorted;
+  private boolean compiled;
 }

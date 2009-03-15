@@ -92,12 +92,8 @@ public class LayoutTagHandler implements ITagHandler
   private void setLayout( TagProcessor processor, ITagHandler parent, IModelObject declaration)
   {
     IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
-    IXidget container = xidget.getParent();
-    if ( container != null)
-    {
-      ILayoutFeature feature = container.getFeature( ILayoutFeature.class);
-      if ( feature != null) feature.setLayout( processor, xidget, declaration);
-    }
+    ILayoutFeature feature = xidget.getFeature( ILayoutFeature.class);
+    if ( feature != null) feature.configure( processor, declaration);      
   }
   
   private Map<String, IModelObject> declarations;

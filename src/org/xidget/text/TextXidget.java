@@ -50,6 +50,8 @@ public abstract class TextXidget extends AbstractXidget
    */
   public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
   {
+    super.startConfig( processor, parent, element);
+    
     setParent( parent);
    
     // create widget

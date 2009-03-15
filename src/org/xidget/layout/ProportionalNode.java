@@ -41,6 +41,14 @@ public class ProportionalNode extends ComputeNode
     node.setValue( (int)Math.round( (value - offset) / percent));
   }
   
+  /* (non-Javadoc)
+   * @see org.xidget.layout.ComputeNode#update()
+   */
+  @Override
+  public void update()
+  {
+  }
+
   private IComputeNode node;
   private float percent;
   private int offset;
