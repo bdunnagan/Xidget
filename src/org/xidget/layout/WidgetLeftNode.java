@@ -6,6 +6,7 @@ package org.xidget.layout;
 
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.feature.IWidgetFeature.Bounds;
+import org.xmodel.util.Radix;
 
 /**
  * An anchor which represents the left side of a widget.
@@ -23,14 +24,6 @@ public class WidgetLeftNode extends ComputeNode
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.layout.IComputeNode#hasValue()
-   */
-  public boolean hasValue()
-  {
-    return widget.hasBounds();
-  }
-
-  /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
   public int getValue()
@@ -46,6 +39,17 @@ public class WidgetLeftNode extends ComputeNode
   {
     widget.getBounds( bounds);
     widget.setBounds( value, bounds.y, bounds.width, bounds.height);
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString()
+  {
+    StringBuilder sb = new StringBuilder();
+    sb.append( "@"); sb.append( Radix.convert( widget.hashCode(), 36)); sb.append( ".x0");
+    return sb.toString();
   }
 
   private IWidgetFeature widget;

@@ -31,20 +31,36 @@ public abstract class ComputeNode implements IComputeNode
   }
 
   /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#hasValue()
+   */
+  public boolean hasValue()
+  {
+    return hasValue;
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#update()
    */
   public void update()
   {
+    hasValue = false;
+    System.out.print( toString());    
     for( IComputeNode dependency: getDependencies())
     {
       if ( dependency.hasValue())
       {
+        hasValue = true;
         int value = dependency.getValue();
-//        System.out.printf( "%s: %d\n", toString(), value);
+        System.out.printf( " <- %s (=%d)", dependency, value);
         setValue( value);
         break;
       }
+      else
+      {
+        System.out.printf( " <- %s (=?)", dependency);
+      }
     }
+    System.out.println( " "+hasValue());
   }
   
   /* (non-Javadoc)
@@ -53,21 +69,9 @@ public abstract class ComputeNode implements IComputeNode
   @Override
   public String toString()
   {
-    StringBuilder sb = new StringBuilder();
-    sb.append( getClass().getSimpleName());
-    sb.append( "#");
-    sb.append( hashCode());
-    
-    sb.append( " {");
-    for( IComputeNode dependency: getDependencies())
-    {
-      sb.append( ", ");
-      sb.append( dependency);
-    }
-    sb.append( "}");
-    
-    return sb.toString();
+    return getClass().getSimpleName();
   }
 
   private List<IComputeNode> dependencies;
+  private boolean hasValue;
 }

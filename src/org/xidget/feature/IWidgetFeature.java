@@ -20,12 +20,6 @@ public interface IWidgetFeature
   }
 
   /**
-   * Returns true if the bounds of this widget have been computed.
-   * @return Returns true if the bounds of this widget have been computed.
-   */
-  public boolean hasBounds();
-  
-  /**
    * Set the bounds of the widget.
    * @param x The left-side x-coordinate.
    * @param y The top-side y-coordinate.

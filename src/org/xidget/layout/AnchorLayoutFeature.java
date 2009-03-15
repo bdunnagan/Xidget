@@ -61,8 +61,9 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     if ( !compiled) compile(); 
     
-    for( IComputeNode anchor: nodes)
-      anchor.update();
+    System.out.println( "\nCompute Graph --------------\n");
+    for( IComputeNode anchor: nodes) anchor.update();
+    System.out.println( "\nDone -----------------------\n");
   }
   
   /* (non-Javadoc)
@@ -127,12 +128,12 @@ public class AnchorLayoutFeature implements ILayoutFeature
           {
             found = true;
             stack.push( depend);
+            consumed.add( depend);
           }
         
         if ( !found)
         {
           sorted.add( current);
-          consumed.add( current);
           stack.pop();
         }
       }

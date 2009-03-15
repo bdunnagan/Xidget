@@ -6,6 +6,7 @@ package org.xidget.layout;
 
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.feature.IWidgetFeature.Bounds;
+import org.xmodel.util.Radix;
 
 /**
  * An anchor which represents the bottom side of a widget.
@@ -23,11 +24,20 @@ public class WidgetBottomNode extends ComputeNode
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.layout.IComputeNode#hasValue()
+   * @see org.xidget.layout.ComputeNode#hasValue()
    */
+  @Override
   public boolean hasValue()
   {
-    return widget.hasBounds();
+    if ( super.hasValue()) return true;
+    
+    //
+    // The bottom edge of a widget is always defined if its height is greater than zero.
+    // The converse is not true, however.  The value may still be defined if the height
+    // is zero in the case that the layout process computed a zero value for the height.
+    //
+    widget.getBounds( bounds);
+    return ( bounds.height > 0);
   }
 
   /* (non-Javadoc)
@@ -46,6 +56,17 @@ public class WidgetBottomNode extends ComputeNode
   {
     widget.getBounds( bounds);
     widget.setBounds( bounds.x, bounds.y, bounds.width, value - bounds.y);
+  }
+  
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString()
+  {
+    StringBuilder sb = new StringBuilder();
+    sb.append( "@"); sb.append( Radix.convert( widget.hashCode(), 36)); sb.append( ".y1");
+    return sb.toString();
   }
 
   private IWidgetFeature widget;

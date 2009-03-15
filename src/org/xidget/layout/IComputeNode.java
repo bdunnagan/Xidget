@@ -22,7 +22,7 @@ public interface IComputeNode
    * @return Returns the nodes which must be computed before this node.
    */
   public List<IComputeNode> getDependencies();
-
+  
   /**
    * Called by the layout algorithm to tell this node to update its value
    * based on the already computed values of its dependencies.

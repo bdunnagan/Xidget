@@ -6,6 +6,7 @@ package org.xidget.layout;
 
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.feature.IWidgetFeature.Bounds;
+import org.xmodel.util.Radix;
 
 /**
  * An anchor which is valueed relative to the height of a container widget.
@@ -13,23 +14,19 @@ import org.xidget.feature.IWidgetFeature.Bounds;
 public class WidgetHeightNode extends ComputeNode
 {
   /**
-   * Create an anchor valueed relative to the height of a container widget.
+   * Create an anchor valued relative to the height of a container widget.
    * @param container The widget.
+   * @param y0 The y0 anchor.
+   * @param y1 The y1 anchor.
    */
-  public WidgetHeightNode( IWidgetFeature container)
+  public WidgetHeightNode( IWidgetFeature container, IComputeNode y0, IComputeNode y1)
   {
     this.container = container;
     this.bounds = new Bounds();
+    addDependency( y0);
+    addDependency( y1);
   }
   
-  /* (non-Javadoc)
-   * @see org.xidget.layout.IComputeNode#hasValue()
-   */
-  public boolean hasValue()
-  {
-    return container.hasBounds();
-  }
-
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
@@ -46,6 +43,17 @@ public class WidgetHeightNode extends ComputeNode
   {
     container.getBounds( bounds);
     container.setBounds( bounds.x, bounds.y, bounds.width, value);
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString()
+  {
+    StringBuilder sb = new StringBuilder();
+    sb.append( "@"); sb.append( Radix.convert( container.hashCode(), 36)); sb.append( ".h");
+    return sb.toString();
   }
 
   private IWidgetFeature container;

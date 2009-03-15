@@ -6,16 +6,23 @@ package org.xidget.layout;
 
 
 /**
- * An IComputeNode which is a fixed offset from another node.
+ * A constant-valued computation node.
  */
-public class OffsetNode extends ComputeNode
+public class ConstantNode extends ComputeNode
 {
-  public OffsetNode( IComputeNode node, int offset)
+  public ConstantNode( int value)
   {
-    this.offset = offset;
-    addDependency( node);
+    this.value = value;
   }
   
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#hasValue()
+   */
+  public boolean hasValue()
+  {
+    return true;
+  }
+
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
@@ -29,20 +36,18 @@ public class OffsetNode extends ComputeNode
    */
   public void setValue( int value)
   {
-    this.value = value + offset;
   }
-  
+
   /* (non-Javadoc)
-   * @see org.xidget.layout.ComputeNode#toString()
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    if ( offset >= 0) sb.append( "+"); sb.append( offset);
+    sb.append( "="); sb.append( value);
     return sb.toString();
   }
 
-  private int offset;
   private int value;
 }

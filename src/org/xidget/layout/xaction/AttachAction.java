@@ -14,6 +14,7 @@ import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
+import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
@@ -48,11 +49,18 @@ public class AttachAction extends GuardedAction
   private Attachment createAttachment( IModelObject element)
   {
     if ( element == null) return null;
+    
     Attachment attachment = new Attachment();
     attachment.expr = Xlate.get( element, "attach", (IExpression)null);
     attachment.side = Xlate.get( element, "side", "");
-    attachment.percent = Xlate.get( element, "percent", -1f);
-    attachment.pad = Xlate.get( element, "pad", -1);
+    attachment.pad = Xlate.get( element, "pad", 0);
+    
+    if ( element.getAttribute( "percent") != null)
+    {
+      attachment.proportional = true;
+      attachment.percent = Xlate.get( element, "percent", 0f);
+    }
+    
     return attachment;
   }
 
@@ -101,10 +109,10 @@ public class AttachAction extends GuardedAction
   private void createNode( ILayoutFeature layout, IContext context, String side, Attachment attachment, IWidgetFeature container, IXidget xidget, IWidgetFeature widget)
   {
     IXidget peer = getPeer( context, attachment.expr);
-    if ( peer == null) return;
+    if ( peer == null) throw new XActionException( "Peer xidget of attachment not found: "+attachment.expr);
 
-    // offset is reversed when attachment involves the right or bottom
-    int pad = (side.charAt( 1) == '1')? -attachment.pad: attachment.pad;
+    int pad = attachment.pad;
+    float percent = attachment.percent;
     
     IWidgetFeature peerWidget = peer.getFeature( IWidgetFeature.class);
     if ( peerWidget != container)
@@ -125,15 +133,25 @@ public class AttachAction extends GuardedAction
     }
     else
     {
-      IComputeNode node1 = xidget.getAnchor( side);
-      IComputeNode node2 = peer.getAnchor( attachment.side);
-      if ( attachment.percent >= 0)
+      // change meaning of offsets when dealing with container
+      if ( attachment.side.charAt( 1) == '1')
       {
-        side = (side.charAt( 0) == 'x')? "w": "h";
-        node1.addDependency( new ProportionalNode( node2, attachment.percent, pad));
+        pad = -attachment.pad;
+        percent = 1 - percent;
+      }
+      
+      IComputeNode node1 = xidget.getAnchor( side);
+      if ( attachment.proportional)
+      {
+        // both x0 and x1 create a WidgetWidthNode (similarly for y-coordinate)
+        // the percentage is measured from the appropriate side
+        String peerSide = (attachment.side.charAt( 0) == 'x')? "w": "h";
+        IComputeNode node2 = peer.getAnchor( peerSide);
+        node1.addDependency( new ProportionalNode( node2, percent, pad));
       }
       else
       {
+        IComputeNode node2 = peer.getAnchor( attachment.side);
         node1.addDependency( new OffsetNode( node2, pad));
       }
       
@@ -148,6 +166,7 @@ public class AttachAction extends GuardedAction
     String side;
     int pad;
     float percent;
+    boolean proportional;
   }
   
   private Attachment x0;

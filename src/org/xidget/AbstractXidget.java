@@ -19,6 +19,7 @@ import org.xidget.layout.WidgetTopNode;
 import org.xidget.layout.WidgetWidthNode;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
+import org.xmodel.util.Radix;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -136,9 +137,9 @@ public abstract class AbstractXidget implements IXidget
     if ( widget == null) return null;
     
     char c0 = type.charAt( 0);
-    char c1 = type.charAt( 1);
     if ( c0 == 'x')
     {
+      char c1 = type.charAt( 1);
       if ( c1 == '0')
       {
         if ( nodes[ 0] == null) nodes[ 0] = new WidgetLeftNode( widget);
@@ -152,6 +153,7 @@ public abstract class AbstractXidget implements IXidget
     }
     else if ( c0 == 'y')
     {
+      char c1 = type.charAt( 1);
       if ( c1 == '0')
       {
         if ( nodes[ 1] == null) nodes[ 1] = new WidgetTopNode( widget);
@@ -165,12 +167,12 @@ public abstract class AbstractXidget implements IXidget
     }
     else if ( c0 == 'w')
     {
-      if ( nodes[ 4] == null) nodes[ 4] = new WidgetWidthNode( widget);
+      if ( nodes[ 4] == null) nodes[ 4] = new WidgetWidthNode( widget, getAnchor( "x0"), getAnchor( "x1"));
       return nodes[ 4];
     }
     else 
     {
-      if ( nodes[ 5] == null) nodes[ 5] = new WidgetHeightNode( widget);
+      if ( nodes[ 5] == null) nodes[ 5] = new WidgetHeightNode( widget, getAnchor( "x0"), getAnchor( "x1"));
       return nodes[ 5];
     }    
   }
@@ -217,6 +219,8 @@ public abstract class AbstractXidget implements IXidget
    */
   public void endConfig( TagProcessor processor, IModelObject element) throws TagException
   {
+    // debug compute node
+    System.out.printf( "@%s IS %s\n", Radix.convert( getFeature( IWidgetFeature.class).hashCode(), 36), element);
   }
 
   /* (non-Javadoc)
