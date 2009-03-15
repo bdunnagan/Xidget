@@ -10,10 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import org.xidget.IXidget;
-import org.xidget.config.XidgetMap;
 import org.xidget.config.processor.TagProcessor;
 import org.xmodel.IModelObject;
-import org.xmodel.ModelObject;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -54,7 +52,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
   public AnchorLayoutFeature( IXidget container)
   {
     this.xidget = container;
-    mapHolder = new ModelObject( "holder");
   }
   
   /* (non-Javadoc)
@@ -74,7 +71,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
   public void configure( TagProcessor processor, IModelObject element)
   {
     compiled = false;
-    xidgetMap = processor.getFeature( XidgetMap.class);
     config = element;
   }
    
@@ -99,10 +95,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     document.setClassLoader( getClass().getClassLoader());
     ScriptAction script = document.createScript();
     
-    StatefulContext context = new StatefulContext( xidgetMap.getConfig( xidget));
-    mapHolder.setValue( xidgetMap);
-    context.set( "map", mapHolder);
-    
+    StatefulContext context = new StatefulContext( xidget.getConfig());
     script.run( context);
 
     // sort nodes
@@ -149,8 +142,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
 
   private IXidget xidget;
   private IModelObject config;
-  private XidgetMap xidgetMap;
   private List<IComputeNode> nodes;
-  private IModelObject mapHolder;
   private boolean compiled;
 }

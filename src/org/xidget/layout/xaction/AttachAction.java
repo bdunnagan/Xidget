@@ -5,7 +5,6 @@
 package org.xidget.layout.xaction;
 
 import org.xidget.IXidget;
-import org.xidget.config.XidgetMap;
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.layout.IComputeNode;
 import org.xidget.layout.ILayoutFeature;
@@ -15,7 +14,6 @@ import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
-import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
@@ -64,10 +62,8 @@ public class AttachAction extends GuardedAction
   @Override
   protected void doAction( IContext context)
   {
-    map = getXidgets( context);
-    
     // get xidget for which attachments are being created
-    IXidget xidget = map.getXidget( context.getObject());
+    IXidget xidget = (IXidget)context.getObject().getAttribute( "xidget");
     if ( xidget == null) return;
     
     IWidgetFeature widget = xidget.getFeature( IWidgetFeature.class);
@@ -84,17 +80,6 @@ public class AttachAction extends GuardedAction
   }
       
   /**
-   * Returns the enclosing xidget.
-   * @param context The context.
-   * @return Returns the enclosing xidget.
-   */
-  private static XidgetMap getXidgets( IContext context)
-  {
-    IModelObject holder = xidgetMapExpr.queryFirst( context);
-    return (XidgetMap)holder.getValue();
-  }
-  
-  /**
    * Get the peer of the attachment defined by the specified expression.
    * @param context The context.
    * @param peerExpr The peer expression.
@@ -103,7 +88,7 @@ public class AttachAction extends GuardedAction
   private IXidget getPeer( IContext context, IExpression peerExpr)
   {
     IModelObject element = peerExpr.queryFirst( context);
-    return map.getXidget( element);
+    return (element != null)? (IXidget)element.getAttribute( "xidget"): null;
   }
   
   /**
@@ -165,9 +150,6 @@ public class AttachAction extends GuardedAction
     float percent;
   }
   
-  private final static IExpression xidgetMapExpr = XPath.createExpression( "$map");
-  
-  private XidgetMap map;
   private Attachment x0;
   private Attachment y0;
   private Attachment x1;

@@ -6,7 +6,6 @@ package org.xidget;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.xidget.config.XidgetMap;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IWidgetFeature;
@@ -187,10 +186,9 @@ public abstract class AbstractXidget implements IXidget
   {
     setParent( parent);
     
-    // add xidget to config map
-    XidgetMap map = processor.getFeature( XidgetMap.class);
-    if ( map == null) throw new TagException( "Tag processor must have a XidgetMap feature.");
-    map.add( this, element);
+    // set xidget attribute and save config (bi-directional mapping)
+    element.setAttribute( "xidget", this);
+    config = element;
     
     // load xidget layout
     IModelObject layout = element.getFirstChild( "layout");
@@ -221,6 +219,14 @@ public abstract class AbstractXidget implements IXidget
   {
   }
 
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#getConfig()
+   */
+  public IModelObject getConfig()
+  {
+    return config;
+  }
+
   /**
    * Set the layout on the xidget associated with the specified tag handler.
    * @param processor The processor.
@@ -232,7 +238,8 @@ public abstract class AbstractXidget implements IXidget
     if ( feature == null) feature = getParent().getFeature( ILayoutFeature.class);
     if ( feature != null) feature.configure( processor, declaration);      
   }
-  
+
+  private IModelObject config;
   private IXidget parent;
   private List<IXidget> children;
   private StatefulContext context;

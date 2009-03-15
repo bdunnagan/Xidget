@@ -33,7 +33,6 @@ public class Configuration
   {
     // install xidget kit
     processor = new TagProcessor();
-    processor.addFeature( new XidgetMap());
     
     if ( kit.getFormHandler() != null) processor.addHandler( "form", kit.getFormHandler());
     if ( kit.getButtonHandler() != null) processor.addHandler( "button", kit.getButtonHandler());

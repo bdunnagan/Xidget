@@ -67,6 +67,12 @@ public interface IXidget extends IFeatures
   public void endConfig( TagProcessor processor, IModelObject element) throws TagException;
   
   /**
+   * Returns the configuration element that generated this xidget.
+   * @return Returns the configuration element that generated this xidget.
+   */
+  public IModelObject getConfig();
+  
+  /**
    * Add a binding to the xidget.
    * @param binding The binding.
    */
