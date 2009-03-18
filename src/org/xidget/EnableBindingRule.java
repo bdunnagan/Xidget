@@ -5,6 +5,7 @@
 package org.xidget;
 
 import org.xidget.feature.IWidgetFeature;
+import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -18,7 +19,7 @@ public class EnableBindingRule implements IBindingRule
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
-  public IExpressionListener getListener( IXidget xidget)
+  public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
     return new Listener( (IWidgetFeature)xidget.getFeature( IWidgetFeature.class));
   }  

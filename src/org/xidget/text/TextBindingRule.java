@@ -21,21 +21,12 @@ import org.xmodel.xpath.expression.IExpressionListener;
  */
 public class TextBindingRule implements IBindingRule
 {
-  /**
-   * Create a rule for the specified text channel.
-   * @param channel The text channel.
-   */
-  public TextBindingRule( String channel)
-  {
-    this.channel = channel;
-  }
-  
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
-  public IExpressionListener getListener( IXidget xidget)
+  public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    return new Listener( xidget, channel);
+    return new Listener( xidget, Xlate.get( element, "channel", TextXidget.allChannel));
   }
 
   private final static class Listener extends ExpressionListener
@@ -91,6 +82,4 @@ public class TextBindingRule implements IBindingRule
     private IModelTextFeature modelAdapter;
     private IWidgetTextFeature widgetAdapter;
   }
-
-  private String channel;
 }

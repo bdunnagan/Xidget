@@ -15,7 +15,6 @@ import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.text.EditableBindingRule;
 import org.xidget.text.TextBindingRule;
-import org.xidget.text.TextXidget;
 import org.xmodel.IModelObject;
 
 /**
@@ -45,8 +44,8 @@ public class Configuration
     // install other handlers
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
-    processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule( TextXidget.allChannel)));
-    processor.addHandler( "source", new BindingTagHandler( new TextBindingRule( TextXidget.allChannel)));
+    processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
+    processor.addHandler( "source", new BindingTagHandler( new TextBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
   }
   

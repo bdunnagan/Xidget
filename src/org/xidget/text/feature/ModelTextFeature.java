@@ -19,12 +19,14 @@ import org.xmodel.xpath.expression.IExpression;
  */
 public class ModelTextFeature implements IModelTextFeature
 {
+  public final static String selectedChannel = "selected";
+  
   public ModelTextFeature( IXidget xidget)
   {
     this.xidget = xidget;
     channels = new HashMap<String, Channel>();
     addChannel( TextXidget.allChannel);
-    addChannel( TextXidget.selectedChannel);
+    addChannel( selectedChannel);
   }
   
   /**

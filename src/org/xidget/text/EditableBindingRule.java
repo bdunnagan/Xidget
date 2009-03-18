@@ -7,6 +7,8 @@ package org.xidget.text;
 import org.xidget.IBindingRule;
 import org.xidget.IXidget;
 import org.xidget.text.feature.IWidgetTextFeature;
+import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -17,21 +19,12 @@ import org.xmodel.xpath.expression.IExpressionListener;
  */
 public class EditableBindingRule implements IBindingRule
 {
-  /**
-   * Create an rule for the specified text channel.
-   * @param channel The text channel.
-   */
-  public EditableBindingRule( String channel)
-  {
-    this.channel = channel;
-  }
-  
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
-  public IExpressionListener getListener( IXidget xidget)
+  public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    return new Listener( xidget, channel);
+    return new Listener( xidget, Xlate.get( element, "channel", TextXidget.allChannel));
   }
   
   private final static class Listener extends ExpressionListener
@@ -48,6 +41,4 @@ public class EditableBindingRule implements IBindingRule
 
     private IWidgetTextFeature adapter;
   }
-  
-  private String channel;
 }

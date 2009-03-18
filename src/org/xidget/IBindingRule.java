@@ -4,6 +4,7 @@
  */
 package org.xidget;
 
+import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
@@ -15,7 +16,8 @@ public interface IBindingRule
    * Returns the listener which will be bound to the specified xidget. 
    * The listener must be unique for the xidget.
    * @param xidget The xidget.
+   * @param element The configuration element that created the binding.
    * @return Returns the listener which will be bound to the specified xidget.
    */
-  public IExpressionListener getListener( IXidget xidget);
+  public IExpressionListener getListener( IXidget xidget, IModelObject element);
 }

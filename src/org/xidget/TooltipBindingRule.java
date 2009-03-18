@@ -21,7 +21,7 @@ public class TooltipBindingRule implements IBindingRule
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
-  public IExpressionListener getListener( IXidget xidget)
+  public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
     return new Listener( (IWidgetFeature)xidget.getFeature( IWidgetFeature.class));
   }  

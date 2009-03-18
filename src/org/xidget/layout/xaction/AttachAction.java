@@ -34,6 +34,8 @@ public class AttachAction extends GuardedAction
   {
     super.configure( document);
    
+    xidgetExpr = document.getExpression( "xidget", true);
+    
     IModelObject root = document.getRoot();
     x0 = createAttachment( root.getFirstChild( "x0"));
     y0 = createAttachment( root.getFirstChild( "y0"));
@@ -70,8 +72,11 @@ public class AttachAction extends GuardedAction
   @Override
   protected void doAction( IContext context)
   {
+    IModelObject element = context.getObject();
+    if ( xidgetExpr != null) element = xidgetExpr.queryFirst( context);
+    
     // get xidget for which attachments are being created
-    IXidget xidget = (IXidget)context.getObject().getAttribute( "xidget");
+    IXidget xidget = (IXidget)element.getAttribute( "xidget");
     if ( xidget == null) return;
     
     IWidgetFeature widget = xidget.getFeature( IWidgetFeature.class);
@@ -168,7 +173,8 @@ public class AttachAction extends GuardedAction
     float percent;
     boolean proportional;
   }
-  
+
+  private IExpression xidgetExpr;
   private Attachment x0;
   private Attachment y0;
   private Attachment x1;

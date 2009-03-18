@@ -46,7 +46,7 @@ public class BindingTagHandler implements ITagHandler
     
     // create binding
     IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
-    IExpressionListener listener = rule.getListener( xidget);
+    IExpressionListener listener = rule.getListener( xidget, element);
     XidgetBinding binding = new XidgetBinding( expression, listener);
     xidget.addBinding( binding);
     

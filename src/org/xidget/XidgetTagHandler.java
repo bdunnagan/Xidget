@@ -40,12 +40,14 @@ public class XidgetTagHandler implements ITagHandler
   {
     try
     {
+      // get parent xidget (before pushing this xidget on the stack)
+      IXidget xidgetParent = (parent instanceof XidgetTagHandler)? ((XidgetTagHandler)parent).getLastXidget(): null;
+      
       // instantiate xidget class and store on tag handler to support parenting
       IXidget xidget = xidgetClass.newInstance();
       xidgets.push( xidget);
       
       // configure new xidget
-      IXidget xidgetParent = (parent instanceof XidgetTagHandler)? ((XidgetTagHandler)parent).getLastXidget(): null;
       return xidget.startConfig( processor, xidgetParent, element);
     }
     catch( InstantiationException e)
