@@ -263,26 +263,16 @@ public class TagProcessor implements IFeatures
   {
     return map.get( tag);
   }
-
-  /**
-   * Add a feature.
-   * @param feature The feature.
+  
+  /* (non-Javadoc)
+   * @see org.xidget.IFeatures#setFeature(java.lang.Class, java.lang.Object)
    */
-  public void addFeature( Object feature)
+  public <T> void setFeature( Class<T> clss, T feature)
   {
     if ( features == null) features = new HashMap<Class<? extends Object>, Object>();
-    features.put( feature.getClass(), feature);
+    features.put( clss, feature);
   }
-  
-  /**
-   * Remove a feature.
-   * @param feature The feature.
-   */
-  public void removeFeature( Class<? extends Object> clss)
-  {
-    if ( features != null) features.remove( clss);
-  }
-  
+
   /* (non-Javadoc)
    * @see org.xidget.IFeatured#getFeature(java.lang.Class)
    */

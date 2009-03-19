@@ -231,6 +231,14 @@ public abstract class AbstractXidget implements IXidget
     return config;
   }
 
+  /* (non-Javadoc)
+   * @see org.xidget.IFeatures#setFeature(java.lang.Class, java.lang.Object)
+   */
+  public <T> void setFeature( Class<T> clss, T feature)
+  {
+    throw new StaticFeatureException( feature);
+  }
+
   /**
    * Set the layout on the xidget associated with the specified tag handler.
    * @param processor The processor.

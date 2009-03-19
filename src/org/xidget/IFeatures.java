@@ -12,6 +12,15 @@ package org.xidget;
 public interface IFeatures
 {
   /**
+   * Set a dynamic feature.
+   * @param <T> The interface type of the feature.
+   * @param clss The feature interface class.
+   * @param feature The feature implementation.
+   * @throws StaticFeatureException If the feature is not dynamic.
+   */
+  public <T> void setFeature( Class<T> clss, T feature); 
+  
+  /**
    * Returns null or an instance of the specified feature.
    * @param clss The interface class.
    * @return Returns null or an instance of the specified feature.

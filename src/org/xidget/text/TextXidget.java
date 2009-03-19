@@ -8,9 +8,13 @@ import org.xidget.AbstractXidget;
 import org.xidget.IXidget;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
+import org.xidget.feature.IErrorFeature;
+import org.xidget.feature.IWidgetFeature;
 import org.xidget.text.feature.IModelTextFeature;
+import org.xidget.text.feature.IWidgetTextFeature;
 import org.xidget.text.feature.ModelTextFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 
 /**
  * An implementation of IXidget for use with the text widgets and other widgets
@@ -32,17 +36,47 @@ public abstract class TextXidget extends AbstractXidget
   public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
   {
     super.startConfig( processor, parent, element);
-    build( parent, element);
+    
+    // build 
+    String label = Xlate.childGet( element, "label", (String)null);
+    build( parent, label, element);
+    
+    // get features
+    widgetFeature = getWidgetFeature();
+    textFeature = getWidgetTextFeature();
+    errorFeature = getErrorFeature();
+    
     return true;
   }  
 
   /**
-   * Build the widget structure for this xidget.
+   * Build the widget structure for this xidget. The label should be visually represented 
+   * in some widget-specific way.  The exact interpretation of the label is both widget
+   * toolkit and locale -specific.
    * @param parent The parent xidget.
+   * @param label The xidget label.
    * @param element The configuration element.
    */
-  protected abstract void build( IXidget parent, IModelObject element) throws TagException;
-    
+  protected abstract void build( IXidget parent, String label, IModelObject element) throws TagException;
+
+  /**
+   * Returns the required IWidgetFeature.
+   * @return Returns the required IWidgetFeature.
+   */
+  protected abstract IWidgetFeature getWidgetFeature();
+  
+  /**
+   * Returns the required IWidgetTextFeature.
+   * @return Returns the required IWidgetTextFeature.
+   */
+  protected abstract IWidgetTextFeature getWidgetTextFeature();
+  
+  /**
+   * Returns the required IErrorFeature.
+   * @return Returns the required IErrorFeature.
+   */
+  protected abstract IErrorFeature getErrorFeature();
+  
   /* (non-Javadoc)
    * @see org.xidget.IAdaptable#getAdapter(java.lang.Class)
    */
@@ -50,8 +84,14 @@ public abstract class TextXidget extends AbstractXidget
   public <T> T getFeature( Class<T> clss)
   {
     if ( clss == IModelTextFeature.class) return (T)modelAdapter;
+    if ( clss.equals( IWidgetTextFeature.class)) return (T)textFeature;
+    if ( clss.equals( IWidgetFeature.class)) return (T)widgetFeature;
+    if ( clss.equals( IErrorFeature.class)) return (T)errorFeature;    
     return null;
   }
 
   private IModelTextFeature modelAdapter;
+  private IWidgetTextFeature textFeature;
+  private IWidgetFeature widgetFeature;
+  private IErrorFeature errorFeature;
 }
