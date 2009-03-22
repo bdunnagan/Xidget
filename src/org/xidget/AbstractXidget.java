@@ -9,14 +9,9 @@ import java.util.List;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IWidgetFeature;
-import org.xidget.layout.IComputeNode;
+import org.xidget.layout.ComputeNodeFeature;
+import org.xidget.layout.IComputeNodeFeature;
 import org.xidget.layout.ILayoutFeature;
-import org.xidget.layout.WidgetBottomNode;
-import org.xidget.layout.WidgetHeightNode;
-import org.xidget.layout.WidgetLeftNode;
-import org.xidget.layout.WidgetRightNode;
-import org.xidget.layout.WidgetTopNode;
-import org.xidget.layout.WidgetWidthNode;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.util.Radix;
@@ -30,7 +25,6 @@ public abstract class AbstractXidget implements IXidget
 {
   protected AbstractXidget()
   {
-    nodes = new IComputeNode[ 6];
   }
 
   /**
@@ -128,55 +122,6 @@ public abstract class AbstractXidget implements IXidget
         child.unbind();
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#getAnchor(java.lang.String)
-   */
-  public IComputeNode getAnchor( String type)
-  {
-    IWidgetFeature widget = getFeature( IWidgetFeature.class);
-    if ( widget == null) return null;
-    
-    char c0 = type.charAt( 0);
-    if ( c0 == 'x')
-    {
-      char c1 = type.charAt( 1);
-      if ( c1 == '0')
-      {
-        if ( nodes[ 0] == null) nodes[ 0] = new WidgetLeftNode( widget);
-        return nodes[ 0];
-      }
-      else
-      {
-        if ( nodes[ 2] == null) nodes[ 2] = new WidgetRightNode( widget);
-        return nodes[ 2];
-      }
-    }
-    else if ( c0 == 'y')
-    {
-      char c1 = type.charAt( 1);
-      if ( c1 == '0')
-      {
-        if ( nodes[ 1] == null) nodes[ 1] = new WidgetTopNode( widget);
-        return nodes[ 1];
-      }
-      else
-      {
-        if ( nodes[ 3] == null) nodes[ 3] = new WidgetBottomNode( widget);
-        return nodes[ 3];
-      }
-    }
-    else if ( c0 == 'w')
-    {
-      if ( nodes[ 4] == null) nodes[ 4] = new WidgetWidthNode( widget, getAnchor( "x0"), getAnchor( "x1"));
-      return nodes[ 4];
-    }
-    else 
-    {
-      if ( nodes[ 5] == null) nodes[ 5] = new WidgetHeightNode( widget, getAnchor( "x0"), getAnchor( "x1"));
-      return nodes[ 5];
-    }    
-  }
-
   /**
    * Stubbed implementation for convenience.
    * @param processor The tag processor.
@@ -204,7 +149,8 @@ public abstract class AbstractXidget implements IXidget
     // reference to layout
     if ( layoutExpr != null)
     {
-      IModelObject declaration = layoutExpr.queryFirst( (layout != null)? layout: element);
+      StatefulContext context = new StatefulContext( processor.getContext(), (layout != null)? layout: element);
+      IModelObject declaration = layoutExpr.queryFirst( context);
       if ( declaration == null) throw new TagException( "Declaration not found for layout: "+element);
       setLayout( processor, declaration);      
     }
@@ -220,7 +166,8 @@ public abstract class AbstractXidget implements IXidget
   public void endConfig( TagProcessor processor, IModelObject element) throws TagException
   {
     // debug compute node
-    System.out.printf( "@%s IS %s\n", Radix.convert( getFeature( IWidgetFeature.class).hashCode(), 36), element);
+    IWidgetFeature feature = getFeature( IWidgetFeature.class);
+    if ( feature != null) System.out.printf( "@%s IS %s\n", Radix.convert( feature.hashCode(), 36), element);
   }
 
   /* (non-Javadoc)
@@ -237,6 +184,20 @@ public abstract class AbstractXidget implements IXidget
   public <T> void setFeature( Class<T> clss, T feature)
   {
     throw new StaticFeatureException( feature);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IFeatures#getFeature(java.lang.Class)
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T getFeature( Class<T> clss)
+  {
+    if ( clss == IComputeNodeFeature.class)
+    {
+      if ( computeNodeFeature == null) computeNodeFeature = new ComputeNodeFeature( this);
+      return (T)computeNodeFeature;
+    }
+    return null;
   }
 
   /**
@@ -256,5 +217,5 @@ public abstract class AbstractXidget implements IXidget
   private List<IXidget> children;
   private StatefulContext context;
   private List<IXidgetBinding> bindings;
-  private IComputeNode[] nodes;
+  private IComputeNodeFeature computeNodeFeature;
 }

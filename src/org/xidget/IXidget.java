@@ -7,7 +7,6 @@ package org.xidget;
 import java.util.List;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
-import org.xidget.layout.IComputeNode;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -83,19 +82,4 @@ public interface IXidget extends IFeatures
    * @param binding The binding.
    */
   public void removeBinding( IXidgetBinding binding);
-
-  /**
-   * Returns the anchor of the specified type for this xidget as follows:
-   * <ul>
-   * <li><i>x0</i> - WidgetLeftNode 
-   * <li><i>y0</i> - WidgetTopNode
-   * <li><i>x1</i> - WidgetRightNode 
-   * <li><i>y1</i> - WidgetBottomNode
-   * <li><i>w</i> - WidgetWidthNode
-   * <li><i>h</i> - WidgetHeightNode
-   * </ul>
-   * @param type The type of anchor.
-   * @return Returns null or the widget anchor of the specified type.
-   */
-  public IComputeNode getAnchor( String type);
 }

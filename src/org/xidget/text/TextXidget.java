@@ -87,7 +87,7 @@ public abstract class TextXidget extends AbstractXidget
     if ( clss.equals( IWidgetTextFeature.class)) return (T)textFeature;
     if ( clss.equals( IWidgetFeature.class)) return (T)widgetFeature;
     if ( clss.equals( IErrorFeature.class)) return (T)errorFeature;    
-    return null;
+    return super.getFeature( clss);
   }
 
   private IModelTextFeature modelAdapter;

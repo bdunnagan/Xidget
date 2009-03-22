@@ -14,6 +14,18 @@ import org.xidget.config.processor.ITagHandler;
 public interface IXidgetKit
 {
   /**
+   * Returns the handler for the <i>application</i> element.
+   * @return Returns the handler for the <i>application</i> element.
+   */
+  public ITagHandler getApplicationHandler();
+  
+  /**
+   * Returns the handler for the <i>dialog</i> element.
+   * @return Returns the handler for the <i>dialog</i> element.
+   */
+  public ITagHandler getDialogHandler();
+  
+  /**
    * Returns the handler for the <i>form</i> element.
    * @return Returns the handler for the <i>form</i> element.
    */

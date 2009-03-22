@@ -7,6 +7,7 @@ package org.xidget.layout.xaction;
 import org.xidget.IXidget;
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.layout.IComputeNode;
+import org.xidget.layout.IComputeNodeFeature;
 import org.xidget.layout.ILayoutFeature;
 import org.xidget.layout.OffsetNode;
 import org.xidget.layout.ProportionalNode;
@@ -122,8 +123,8 @@ public class AttachAction extends GuardedAction
     IWidgetFeature peerWidget = peer.getFeature( IWidgetFeature.class);
     if ( peerWidget != container)
     {
-      IComputeNode node1 = xidget.getAnchor( side);
-      IComputeNode node2 = peer.getAnchor( attachment.side);
+      IComputeNode node1 = xidget.getFeature( IComputeNodeFeature.class).getAnchor( side);
+      IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getAnchor( attachment.side);
       if ( pad != 0)
       {
         node1.addDependency( new OffsetNode( node2, pad));
@@ -145,18 +146,18 @@ public class AttachAction extends GuardedAction
         percent = 1 - percent;
       }
       
-      IComputeNode node1 = xidget.getAnchor( side);
+      IComputeNode node1 = xidget.getFeature( IComputeNodeFeature.class).getAnchor( side);
       if ( attachment.proportional)
       {
         // both x0 and x1 create a WidgetWidthNode (similarly for y-coordinate)
         // the percentage is measured from the appropriate side
         String peerSide = (attachment.side.charAt( 0) == 'x')? "w": "h";
-        IComputeNode node2 = peer.getAnchor( peerSide);
+        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getAnchor( peerSide);
         node1.addDependency( new ProportionalNode( node2, percent, pad));
       }
       else
       {
-        IComputeNode node2 = peer.getAnchor( attachment.side);
+        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getAnchor( attachment.side);
         node1.addDependency( new OffsetNode( node2, pad));
       }
       

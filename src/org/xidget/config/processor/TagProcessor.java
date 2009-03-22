@@ -13,6 +13,7 @@ import org.xidget.IFeatures;
 import org.xmodel.IModelObject;
 import org.xmodel.util.HashMultiMap;
 import org.xmodel.util.MultiMap;
+import org.xmodel.xpath.expression.IContext;
 
 /**
  * A class which processes an xml fragment using a set of handlers registered by element name.
@@ -75,28 +76,39 @@ public class TagProcessor implements IFeatures
   {
     roots.add( object);
   }
+
+  /**
+   * Returns the context with which the process method was invoked.
+   * @return Returns the context with which the process method was invoked.
+   */
+  public IContext getContext()
+  {
+    return context;
+  }
   
   /**
    * Process the specified fragment and return the objects emitted by the root tag handlers.
-   * @param root The root of the fragment to be processed.
+   * @param context The root of the fragment to be processed.
    * @return Returns the objects emitted by root tag handlers.
    */
-  public List<Object> process( IModelObject root) throws TagException
+  public List<Object> process( IContext context) throws TagException
   {
     roots.clear();
-    process( null, root);
+    process( null, context);
     return roots;
   }
   
   /**
    * Process the specified fragment specifying the initial parent handler.
    * @param parent The parent handler of the root.
-   * @param root The root of the fragment.
+   * @param context The root of the fragment.
    */
-  private void process( ITagHandler parent, IModelObject root) throws TagException
+  private void process( ITagHandler parent, IContext context) throws TagException
   {
+    this.context = context;
+    
     Stack<Entry> stack = new Stack<Entry>();
-    stack.push( new Entry( parent, null, root, false));
+    stack.push( new Entry( parent, null, context.getObject(), false));
     
     while( !stack.empty())
     {
@@ -302,6 +314,7 @@ public class TagProcessor implements IFeatures
     public boolean end;
   }
  
+  private IContext context;
   private ITagHandler parent;
   private ClassLoader loader;
   private MultiMap<String, ITagHandler> map;
