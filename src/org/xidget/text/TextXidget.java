@@ -14,7 +14,6 @@ import org.xidget.text.feature.IModelTextFeature;
 import org.xidget.text.feature.IWidgetTextFeature;
 import org.xidget.text.feature.ModelTextFeature;
 import org.xmodel.IModelObject;
-import org.xmodel.Xlate;
 
 /**
  * An implementation of IXidget for use with the text widgets and other widgets
@@ -37,10 +36,6 @@ public abstract class TextXidget extends AbstractXidget
   {
     super.startConfig( processor, parent, element);
     
-    // build 
-    String label = Xlate.childGet( element, "label", (String)null);
-    build( parent, label, element);
-    
     // get features
     widgetFeature = getWidgetFeature();
     textFeature = getWidgetTextFeature();
@@ -48,16 +43,6 @@ public abstract class TextXidget extends AbstractXidget
     
     return true;
   }  
-
-  /**
-   * Build the widget structure for this xidget. The label should be visually represented 
-   * in some widget-specific way.  The exact interpretation of the label is both widget
-   * toolkit and locale -specific.
-   * @param parent The parent xidget.
-   * @param label The xidget label.
-   * @param element The configuration element.
-   */
-  protected abstract void build( IXidget parent, String label, IModelObject element) throws TagException;
 
   /**
    * Returns the required IWidgetFeature.

@@ -9,6 +9,7 @@ import java.util.List;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IWidgetFeature;
+import org.xidget.feature.IWidgetHierarchyFeature;
 import org.xidget.layout.ComputeNodeFeature;
 import org.xidget.layout.IComputeNodeFeature;
 import org.xidget.layout.ILayoutFeature;
@@ -144,7 +145,6 @@ public abstract class AbstractXidget implements IXidget
     // if declared in-place
     if ( layout != null && layoutExpr == null)
       setLayout( processor, layout);
-    
 
     // reference to layout
     if ( layoutExpr != null)
@@ -154,6 +154,15 @@ public abstract class AbstractXidget implements IXidget
       if ( declaration == null) throw new TagException( "Declaration not found for layout: "+element);
       setLayout( processor, declaration);      
     }
+        
+    // build widget hierarchy 
+    String label = Xlate.childGet( element, "label", (String)null);
+    IWidgetHierarchyFeature hierarchyFeature = getFeature( IWidgetHierarchyFeature.class);
+    if ( hierarchyFeature == null)
+      throw new TagException( 
+        "IWidgetHierarchyFeature is required for all xidget implementations.");
+    
+    hierarchyFeature.createWidget( this, label, element);
     
     return true;
   }

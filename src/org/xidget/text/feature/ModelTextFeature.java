@@ -82,7 +82,7 @@ public class ModelTextFeature implements IModelTextFeature
       if ( errorAdapter != null && channel.validator != null)
       {
         String error = channel.validator.validate( text);
-        errorAdapter.valueError( error);
+        if ( error != null) errorAdapter.valueError( error);
       }
       
       // commit
