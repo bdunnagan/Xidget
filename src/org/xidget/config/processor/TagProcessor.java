@@ -277,12 +277,12 @@ public class TagProcessor implements IFeatures
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.IFeatures#setFeature(java.lang.Class, java.lang.Object)
+   * @see org.xidget.IFeatures#setFeature(java.lang.Object)
    */
-  public <T> void setFeature( Class<T> clss, T feature)
+  public void setFeature( Class<? extends Object> featureClass, Object feature)
   {
     if ( features == null) features = new HashMap<Class<? extends Object>, Object>();
-    features.put( clss, feature);
+    features.put( featureClass, feature);
   }
 
   /* (non-Javadoc)

@@ -13,12 +13,11 @@ public interface IFeatures
 {
   /**
    * Set a dynamic feature.
-   * @param <T> The interface type of the feature.
-   * @param clss The feature interface class.
+   * @param featureClass The interface under which the feature will be registered.
    * @param feature The feature implementation.
    * @throws StaticFeatureException If the feature is not dynamic.
    */
-  public <T> void setFeature( Class<T> clss, T feature); 
+  public void setFeature( Class<? extends Object> featureClass, Object feature); 
   
   /**
    * Returns null or an instance of the specified feature.

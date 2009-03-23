@@ -7,6 +7,7 @@ package org.xidget.config;
 import java.util.ArrayList;
 import java.util.List;
 import org.xidget.BindingTagHandler;
+import org.xidget.ChoicesTagHandler;
 import org.xidget.ContextBindingRule;
 import org.xidget.EnableBindingRule;
 import org.xidget.IXidget;
@@ -49,6 +50,7 @@ public class Configuration
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "source", new BindingTagHandler( new TextBindingRule()));
     processor.addHandler( "context", new BindingTagHandler( new ContextBindingRule()));
+    processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "trigger", new TriggerTagHandler());
   }
   

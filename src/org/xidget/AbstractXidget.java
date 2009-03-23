@@ -9,7 +9,7 @@ import java.util.List;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IWidgetFeature;
-import org.xidget.feature.IWidgetHierarchyFeature;
+import org.xidget.feature.IWidgetCreationFeature;
 import org.xidget.layout.ComputeNodeFeature;
 import org.xidget.layout.IComputeNodeFeature;
 import org.xidget.layout.ILayoutFeature;
@@ -157,12 +157,12 @@ public abstract class AbstractXidget implements IXidget
         
     // build widget hierarchy 
     String label = Xlate.childGet( element, "label", (String)null);
-    IWidgetHierarchyFeature hierarchyFeature = getFeature( IWidgetHierarchyFeature.class);
-    if ( hierarchyFeature == null)
+    IWidgetCreationFeature creationFeature = getFeature( IWidgetCreationFeature.class);
+    if ( creationFeature == null)
       throw new TagException( 
-        "IWidgetHierarchyFeature is required for all xidget implementations.");
+        "IWidgetCreationFeature is required for all xidget implementations.");
     
-    hierarchyFeature.createWidget( this, label, element);
+    creationFeature.createWidget( this, label, element);
     
     return true;
   }
@@ -188,9 +188,9 @@ public abstract class AbstractXidget implements IXidget
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.IFeatures#setFeature(java.lang.Class, java.lang.Object)
+   * @see org.xidget.IFeatures#setFeature(java.lang.Object)
    */
-  public <T> void setFeature( Class<T> clss, T feature)
+  public void setFeature( Class<? extends Object> featureClass, Object feature)
   {
     throw new StaticFeatureException( feature);
   }

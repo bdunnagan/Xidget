@@ -12,7 +12,7 @@ import org.xmodel.IModelObject;
  * application building by allowing the <code>createWidget</code> method to be
  * called more than once.
  */
-public interface IWidgetHierarchyFeature
+public interface IWidgetCreationFeature
 {
   /**
    * Create a widget with the specified label and configuration element.
