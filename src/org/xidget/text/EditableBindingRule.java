@@ -6,7 +6,7 @@ package org.xidget.text;
 
 import org.xidget.IBindingRule;
 import org.xidget.IXidget;
-import org.xidget.text.feature.IWidgetTextFeature;
+import org.xidget.text.feature.ITextWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -31,7 +31,7 @@ public class EditableBindingRule implements IBindingRule
   {
     Listener( IXidget xidget, String channel)
     {
-      adapter = xidget.getFeature( IWidgetTextFeature.class);
+      adapter = xidget.getFeature( ITextWidgetFeature.class);
     }
     
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
@@ -39,6 +39,6 @@ public class EditableBindingRule implements IBindingRule
       adapter.setEditable( newValue);
     }
 
-    private IWidgetTextFeature adapter;
+    private ITextWidgetFeature adapter;
   }
 }

@@ -17,11 +17,11 @@ import org.xmodel.xpath.expression.IExpression;
 /**
  * An implementation of IModelTextAdapter which supports a variable number of channels.
  */
-public class ModelTextFeature implements IModelTextFeature
+public class TextModelFeature implements ITextModelFeature
 {
   public final static String selectedChannel = "selected";
   
-  public ModelTextFeature( IXidget xidget)
+  public TextModelFeature( IXidget xidget)
   {
     this.xidget = xidget;
     channels = new HashMap<String, Channel>();
