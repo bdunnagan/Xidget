@@ -6,17 +6,17 @@ package org.xidget.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.xidget.BindingTagHandler;
 import org.xidget.ChoicesTagHandler;
-import org.xidget.ContextBindingRule;
-import org.xidget.EnableBindingRule;
 import org.xidget.IXidget;
-import org.xidget.TooltipBindingRule;
 import org.xidget.TriggerTagHandler;
+import org.xidget.binding.BindingTagHandler;
+import org.xidget.binding.ContextBindingRule;
+import org.xidget.binding.EnableBindingRule;
+import org.xidget.binding.TooltipBindingRule;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
-import org.xidget.text.EditableBindingRule;
-import org.xidget.text.TextBindingRule;
+import org.xidget.text.binding.EditableBindingRule;
+import org.xidget.text.binding.TextBindingRule;
 import org.xmodel.xpath.expression.IContext;
 
 /**

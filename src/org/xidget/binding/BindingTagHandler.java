@@ -2,8 +2,11 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget;
+package org.xidget.binding;
 
+import org.xidget.IXidget;
+import org.xidget.XidgetBinding;
+import org.xidget.XidgetTagHandler;
 import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;

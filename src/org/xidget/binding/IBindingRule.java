@@ -2,8 +2,9 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget;
+package org.xidget.binding;
 
+import org.xidget.IXidget;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.IExpressionListener;
 
