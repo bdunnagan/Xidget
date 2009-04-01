@@ -20,6 +20,14 @@ import org.xmodel.xpath.expression.StatefulContext;
 public class ContextBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
+   * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
+   */
+  public boolean applies( IXidget xidget, IModelObject element)
+  {
+    return true;
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget, org.xmodel.IModelObject)
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)

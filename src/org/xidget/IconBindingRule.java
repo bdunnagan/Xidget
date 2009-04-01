@@ -18,11 +18,19 @@ import org.xmodel.xpath.expression.IExpressionListener;
 public class IconBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
+   * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
+   */
+  public boolean applies( IXidget xidget, IModelObject element)
+  {
+    return xidget.getFeature( IIconFeature.class) != null;
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    return new Listener( (IIconFeature)xidget.getFeature( IIconFeature.class));
+    return new Listener( xidget.getFeature( IIconFeature.class));
   }  
 
   private static final class Listener extends ExpressionListener

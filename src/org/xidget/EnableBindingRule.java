@@ -17,11 +17,19 @@ import org.xmodel.xpath.expression.IExpressionListener;
 public class EnableBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
+   * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
+   */
+  public boolean applies( IXidget xidget, IModelObject element)
+  {
+    return xidget.getFeature( IWidgetFeature.class) != null;
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    return new Listener( (IWidgetFeature)xidget.getFeature( IWidgetFeature.class));
+    return new Listener( xidget.getFeature( IWidgetFeature.class));
   }  
 
   private static final class Listener extends ExpressionListener

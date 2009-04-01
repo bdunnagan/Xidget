@@ -22,6 +22,14 @@ import org.xmodel.xpath.expression.IExpressionListener;
 public class TextBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
+   * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
+   */
+  public boolean applies( IXidget xidget, IModelObject element)
+  {
+    return xidget.getFeature( ITextModelFeature.class) != null;
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)

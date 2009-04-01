@@ -36,6 +36,10 @@ public class BindingTagHandler implements ITagHandler
       throw new TagException(
         "BindingTagHandler must occur as child of XidgetTagHandler.");
 
+    // check if rule applies
+    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    if ( !rule.applies( xidget, element)) return false; 
+    
     // create expression
     String xpath = Xlate.get( element, "");
     if ( xpath.length() == 0)
@@ -45,7 +49,6 @@ public class BindingTagHandler implements ITagHandler
     IExpression expression = XPath.createExpression( xpath);
     
     // create binding
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
     IExpressionListener listener = rule.getListener( xidget, element);
     XidgetBinding binding = new XidgetBinding( expression, listener);
     xidget.addBinding( binding);

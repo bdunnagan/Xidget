@@ -13,6 +13,14 @@ import org.xmodel.xpath.expression.IExpressionListener;
 public interface IBindingRule
 {
   /**
+   * Returns true if this rule applies to the specified xidget and configuration element.
+   * @param xidget The xidget parent.
+   * @param element The rule configuration element.
+   * @return Returns true if this rule applies.
+   */
+  public boolean applies( IXidget xidget, IModelObject element);
+  
+  /**
    * Returns the listener which will be bound to the specified xidget. 
    * The listener must be unique for the xidget.
    * @param xidget The xidget.
