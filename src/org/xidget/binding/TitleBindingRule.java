@@ -8,6 +8,7 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.feature.ITitleFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -43,18 +44,24 @@ public class TitleBindingRule implements IBindingRule
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
+      node = nodes.get( 0);
+      feature.setTitle( Xlate.get( node, ""));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
+      node = expression.queryFirst( context);
+      feature.setTitle( Xlate.get( node, ""));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
+      feature.setTitle( Boolean.toString( newValue));
     }
 
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
+      feature.setTitle( Double.toString( newValue));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
@@ -64,6 +71,7 @@ public class TitleBindingRule implements IBindingRule
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
+      if ( object == node) feature.setTitle( Xlate.get( node, ""));
     }
     
     public boolean requiresValueNotification()
@@ -72,5 +80,6 @@ public class TitleBindingRule implements IBindingRule
     }
     
     private ITitleFeature feature;
+    private IModelObject node;
   }
 }

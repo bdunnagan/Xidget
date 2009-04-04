@@ -43,18 +43,19 @@ public class IconBindingRule implements IBindingRule
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      feature.setIcon( nodes.get( 0).getValue());
+      node = nodes.get( 0);
+      feature.setIcon( node.getValue());
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes.clear();
-      expression.query( context, nodes);
-      if ( nodes.size() > 0) feature.setIcon( nodes.get( 0).getValue()); 
+      node = expression.queryFirst( context);
+      feature.setIcon( (node == null)? null: node.getValue()); 
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
+      if ( object == node) feature.setIcon(  newValue);
     }
 
     public boolean requiresValueNotification()
@@ -63,5 +64,6 @@ public class IconBindingRule implements IBindingRule
     }
 
     private IIconFeature feature;
+    private IModelObject node;
   }
 }
