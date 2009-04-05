@@ -25,35 +25,30 @@ public interface ITableModelFeature
   public List<IModelObject> getRows();
   
   /**
+   * Set the source node for the specified cell.
+   * @param row The row index of the cell.
+   * @param column The column index of the cell.
+   * @param channel The text channel.
+   * @param node The source node.
+   */
+  public void setSource( int row, int column, String channel, IModelObject node);
+  
+  /**
    * Returns null or the node addressed by the specified row and column indices. Only
    * columns whose source expression returns a node-set will return a non-null value.
    * @param row The row index.
    * @param column The column index.
+   * @param channel The text channel.
    * @return Returns null or the node addressed by the specified row and column indices.
    */
-  public IModelObject getNode( int row, int column);
-  
-  /**
-   * Returns the text in the specified node.
-   * @param row The row index of the node.
-   * @param column The column index of the node.
-   * @return Returns the text in the specified node.
-   */
-  public String getText( int row, int column);
+  public IModelObject getSource( int row, int column, String channel);
   
   /**
    * Sets the text in the specified node.
    * @param row The row index of the node.
    * @param column The column index of the node.
+   * @param channel The text channel.
    * @param text The new text.
    */
-  public void setText( int row, int column, String text);
-
-  /**
-   * Returns the icon for the specified node.
-   * @param row The row index of the node.
-   * @param column The column index of the node.
-   * @return Returns the icon for the specified node.
-   */
-  public Object getIcon( int row, int column);
+  public void setText( int row, int column, String channel, String text);
 }

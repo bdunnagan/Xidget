@@ -5,7 +5,7 @@
 package org.xidget.text;
 
 import org.xidget.IXidget;
-import org.xidget.XidgetTagHandler;
+import org.xidget.binding.XidgetTagHandler;
 import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;

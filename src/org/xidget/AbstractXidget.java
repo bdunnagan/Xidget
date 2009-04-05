@@ -6,10 +6,14 @@ package org.xidget;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.xidget.binding.ChildrenBinding;
+import org.xidget.binding.IXidgetBinding;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
-import org.xidget.feature.IWidgetFeature;
+import org.xidget.feature.BindFeature;
+import org.xidget.feature.IBindFeature;
 import org.xidget.feature.IWidgetCreationFeature;
+import org.xidget.feature.IWidgetFeature;
 import org.xidget.layout.ComputeNodeFeature;
 import org.xidget.layout.IComputeNodeFeature;
 import org.xidget.layout.ILayoutFeature;
@@ -89,40 +93,6 @@ public abstract class AbstractXidget implements IXidget
     if ( bindings != null) bindings.remove( binding);
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#bind()
-   */
-  public void bind()
-  {
-    // children
-    if ( children != null)
-      for( IXidget child: children)
-      {
-        child.setContext( getContext());
-        child.bind();
-      }
-    
-    if ( bindings != null)
-      for( IXidgetBinding binding: bindings)
-        binding.bind( context);
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#unbind()
-   */
-  public void unbind()
-  {
-    // internal bindings
-    if ( bindings != null)
-      for( IXidgetBinding binding: bindings)
-        binding.unbind( context);
-
-    // children
-    if ( children != null)
-      for( IXidget child: children)
-        child.unbind();
-  }
-
   /**
    * Stubbed implementation for convenience.
    * @param processor The tag processor.
@@ -133,6 +103,10 @@ public abstract class AbstractXidget implements IXidget
   public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
   {
     setParent( parent);
+    
+    // create children binding
+    IBindFeature bindFeature = getFeature( IBindFeature.class);
+    bindFeature.add( new ChildrenBinding( this));
     
     // set xidget attribute and save config (bi-directional mapping)
     element.setAttribute( "xidget", this);
@@ -192,7 +166,8 @@ public abstract class AbstractXidget implements IXidget
    */
   public void setFeature( Class<? extends Object> featureClass, Object feature)
   {
-    throw new StaticFeatureException( feature);
+    if ( featureClass == IBindFeature.class) bindFeature = (IBindFeature)feature;
+    else throw new StaticFeatureException( feature);
   }
 
   /* (non-Javadoc)
@@ -201,11 +176,18 @@ public abstract class AbstractXidget implements IXidget
   @SuppressWarnings("unchecked")
   public <T> T getFeature( Class<T> clss)
   {
+    if ( clss == IBindFeature.class)
+    {
+      if ( bindFeature == null) bindFeature = new BindFeature();
+      return (T)bindFeature;
+    } 
+    
     if ( clss == IComputeNodeFeature.class)
     {
       if ( computeNodeFeature == null) computeNodeFeature = new ComputeNodeFeature( this);
       return (T)computeNodeFeature;
     }
+    
     return null;
   }
 
@@ -226,5 +208,6 @@ public abstract class AbstractXidget implements IXidget
   private List<IXidget> children;
   private StatefulContext context;
   private List<IXidgetBinding> bindings;
+  private IBindFeature bindFeature;
   private IComputeNodeFeature computeNodeFeature;
 }

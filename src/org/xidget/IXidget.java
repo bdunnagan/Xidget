@@ -8,7 +8,6 @@ import java.util.List;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xmodel.IModelObject;
-import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An interface for widget adapters.
@@ -26,28 +25,6 @@ public interface IXidget extends IFeatures
    * @return Returns the children of this xidget.
    */
   public List<IXidget> getChildren();
-  
-  /**
-   * Set the context.
-   * @param context The context.
-   */
-  public void setContext( StatefulContext context);
-  
-  /**
-   * Returns the context.
-   * @return Returns the context.
-   */
-  public StatefulContext getContext();
-  
-  /**
-   * Bind this xidget.
-   */
-  public void bind();
-  
-  /**
-   * Unbind this xidget.
-   */
-  public void unbind();
   
   /**
    * Called when the start tag of the configuration is encountered - before children.
@@ -70,16 +47,4 @@ public interface IXidget extends IFeatures
    * @return Returns the configuration element that generated this xidget.
    */
   public IModelObject getConfig();
-  
-  /**
-   * Add a binding to the xidget.
-   * @param binding The binding.
-   */
-  public void addBinding( IXidgetBinding binding);
-  
-  /**
-   * Remove a binding from the xidget.
-   * @param binding The binding.
-   */
-  public void removeBinding( IXidgetBinding binding);
 }

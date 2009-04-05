@@ -4,6 +4,7 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.config.Configuration;
 import org.xidget.config.processor.TagException;
+import org.xidget.feature.IBindFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
@@ -43,8 +44,8 @@ public class XidgetAction extends GuardedAction
       
       // bind xidget
       IXidget xidget = xidgets.get( 0);
-      xidget.setContext( (StatefulContext)context);
-      xidget.bind();
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      bindFeature.bind( (StatefulContext)context);
     }
     catch( TagException e)
     {

@@ -4,9 +4,9 @@
  */
 package org.xidget.table.features;
 
+import java.util.Collections;
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.text.TextXidget;
 import org.xidget.text.feature.ITextModelFeature;
 import org.xmodel.IModelObject;
 
@@ -22,59 +22,79 @@ public class TableModelFeature implements ITableModelFeature
   public TableModelFeature( IXidget xidget)
   {
     this.xidget = xidget;
+    this.rows = Collections.<IModelObject>emptyList();
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.table.features.ITableModelFeature#getIcon(int, int)
+   * @see org.xidget.table.features.ITableModelFeature#getRows()
    */
-  public Object getIcon( int row, int column)
+  public List<IModelObject> getRows()
   {
-    // TODO Auto-generated method stub
-    return null;
+    return rows;
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.table.features.ITableModelFeature#getRow(int)
+   * @see org.xidget.table.features.ITableModelFeature#setRows(java.util.List)
    */
-  public IModelObject getRow( int row)
+  public void setRows( List<IModelObject> rows)
   {
-    // TODO Auto-generated method stub
-    return null;
+    this.rows = rows;
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.table.features.ITableModelFeature#getNode(int, int)
+   * @see org.xidget.table.features.ITableModelFeature#setSource(int, int, java.lang.String, org.xmodel.IModelObject)
    */
-  public IModelObject getNode( int row, int column)
+  public void setSource( int row, int column, String channel, IModelObject node)
   {
-    // TODO Auto-generated method stub
-    return null;
+    IXidget xidget = getColumnXidget( column);
+    if ( xidget != null)
+    {
+      ITextModelFeature modelFeature = xidget.getFeature( ITextModelFeature.class);
+      modelFeature.setSource( channel, node);
+    }
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.table.features.ITableModelFeature#getText(int, int)
+   * @see org.xidget.table.features.ITableModelFeature#getSource(int, int, String)
    */
-  public String getText( int row, int column)
+  public IModelObject getSource( int row, int column, String channel)
   {
-    // TODO Auto-generated method stub
+    IXidget xidget = getColumnXidget( column);
+    if ( xidget != null)
+    {
+      ITextModelFeature modelFeature = xidget.getFeature( ITextModelFeature.class);
+      return modelFeature.getSource( channel);
+    }
     return null;
   }
 
   /* (non-Javadoc)
    * @see org.xidget.table.features.ITableModelFeature#setText(int, int, java.lang.String)
    */
-  public void setText( int row, int column, String text)
+  public void setText( int row, int column, String channel, String text)
   {
-    IModelObject node = getNode( row, column);
+    IModelObject node = getSource( row, column, channel);
     if ( node == null) return;
     
     // process the text
     ITextModelFeature modelFeature = getTextModelFeature( column);
-    modelFeature.setSource( TextXidget.allChannel, node);
-    modelFeature.setText( TextXidget.allChannel, text);
+    modelFeature.setSource( channel, node);
+    modelFeature.setText( channel, text);
     
     // clear the node which is no longer needed
-    modelFeature.setSource( TextXidget.allChannel, null);
+    modelFeature.setSource( channel, null);
+  }
+  
+  /**
+   * Returns the column xidget for the specified column.
+   * @param column The column index.
+   * @return Returns null or the column xidget for the specified column.
+   */
+  private IXidget getColumnXidget( int column)
+  {
+    List<IXidget> children = xidget.getChildren();
+    if ( children.size() > column) return children.get( column);
+    return null;
   }
   
   /**
@@ -89,4 +109,5 @@ public class TableModelFeature implements ITableModelFeature
   }
   
   private IXidget xidget;
+  private List<IModelObject> rows;
 }

@@ -2,13 +2,15 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget;
+package org.xidget.binding;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.xidget.IXidget;
 import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
+import org.xidget.feature.IBindFeature;
 import org.xidget.text.feature.IChoiceListFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -56,7 +58,8 @@ public class ChoicesTagHandler implements ITagHandler
       // create binding
       IExpressionListener listener = new Listener( xidget);
       XidgetBinding binding = new XidgetBinding( expression, listener);
-      xidget.addBinding( binding);
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      if ( bindFeature != null) bindFeature.add( binding);
     }
     return false;
   }

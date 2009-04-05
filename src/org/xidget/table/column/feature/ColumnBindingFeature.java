@@ -7,12 +7,8 @@ package org.xidget.table.column.feature;
 import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.binding.IconBindingRule;
-import org.xidget.text.binding.TextBindingRule;
+import org.xidget.feature.IBindFeature;
 import org.xmodel.IModelObject;
-import org.xmodel.Xlate;
-import org.xmodel.xpath.expression.IExpression;
-import org.xmodel.xpath.expression.IExpressionListener;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -20,9 +16,6 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public class ColumnBindingFeature implements IColumnBindingFeature
 {
-  private final static String iconElementName = "image";
-  private final static String textElementName = "source";
-  
   /**
    * Create this feature for the specified column xidget.
    * @param xidget The column xidget.
@@ -30,10 +23,6 @@ public class ColumnBindingFeature implements IColumnBindingFeature
   public ColumnBindingFeature( IXidget xidget)
   {
     this.xidget = xidget;
-    this.iconExpr = Xlate.childGet( xidget.getConfig(), iconElementName, (IExpression)null);
-    this.nodeExpr = Xlate.childGet( xidget.getConfig(), textElementName, (IExpression)null);
-    this.textBindingRule = new TextBindingRule();
-    this.iconBindingRule = new IconBindingRule();
   }
   
   /* (non-Javadoc)
@@ -41,20 +30,19 @@ public class ColumnBindingFeature implements IColumnBindingFeature
    */
   public void bind( int row, IModelObject object)
   {
-    grow( row);
+    // ensure capacity
+    if ( contexts == null) contexts = new ArrayList<StatefulContext>();
+    for( int i=contexts.size(); i<=row; i++) contexts.add( null);
 
-    // create row data
-    RowDatum rowDatum = new RowDatum();
-    rowData.add( row, rowDatum);
-    rowDatum.context = new StatefulContext( xidget.getContext(), object);
+    // get parent context
+    IBindFeature parentBindFeature = xidget.getParent().getFeature( IBindFeature.class);
+    StatefulContext parent = parentBindFeature.getBoundContexts().get( 0);
     
-    // bind column text
-    rowDatum.textListener = textBindingRule.getListener( xidget, xidget.getConfig().getFirstChild( textElementName));
-    nodeExpr.addNotifyListener( rowDatum.context, rowDatum.textListener);
-
-    // bind column icon
-    rowDatum.iconListener = iconBindingRule.getListener( xidget, xidget.getConfig().getFirstChild( iconElementName));
-    iconExpr.addNotifyListener( rowDatum.context, rowDatum.iconListener);
+    // bind
+    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+    StatefulContext context = new StatefulContext( parent, object);
+    contexts.add( row, context);
+    bindFeature.bind( context);
   }
 
   /* (non-Javadoc)
@@ -62,34 +50,15 @@ public class ColumnBindingFeature implements IColumnBindingFeature
    */
   public void unbind( int row, IModelObject object)
   {
-    RowDatum rowDatum = rowData.remove( row);
-
-    // unbind column text and icon
-    nodeExpr.removeListener( rowDatum.context, rowDatum.textListener);
-    iconExpr.removeListener( rowDatum.context, rowDatum.iconListener);
+    if ( contexts.size() <= row) return;
+    
+    StatefulContext context = contexts.get( row);
+    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+    bindFeature.unbind( context);
+    
+    contexts.remove( row);
   }
-  
-  /**
-   * Grow the row information list to accomodate the row with the specified index.
-   * @param row The row index.
-   */
-  private void grow( int row)
-  {
-    if ( rowData == null) rowData = new ArrayList<RowDatum>();
-    for( int i=rowData.size(); i<=row; i++) rowData.add( null);
-  }
-  
-  private class RowDatum
-  {
-    public StatefulContext context;
-    public IExpressionListener textListener;
-    public IExpressionListener iconListener;
-  }
-  
+    
   private IXidget xidget;
-  private IExpression iconExpr;
-  private IExpression nodeExpr;
-  private TextBindingRule textBindingRule;
-  private IconBindingRule iconBindingRule;
-  private List<RowDatum> rowData;
+  private List<StatefulContext> contexts;
 }

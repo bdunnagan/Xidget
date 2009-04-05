@@ -6,15 +6,19 @@ package org.xidget.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.xidget.ChoicesTagHandler;
 import org.xidget.IXidget;
-import org.xidget.TriggerTagHandler;
 import org.xidget.binding.BindingTagHandler;
-import org.xidget.binding.ContextBindingRule;
+import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.TooltipBindingRule;
+import org.xidget.binding.TriggerTagHandler;
+import org.xidget.binding.XidgetTagHandler;
+import org.xidget.binding.BindingTagHandler.BindAt;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
+import org.xidget.table.binding.RowSetBindingRule;
+import org.xidget.table.column.ColumnXidget;
+import org.xidget.table.column.HeaderXidget;
 import org.xidget.text.binding.EditableBindingRule;
 import org.xidget.text.binding.TextBindingRule;
 import org.xmodel.xpath.expression.IContext;
@@ -44,14 +48,20 @@ public class Configuration
     if ( kit.getTableHandler() != null) processor.addHandler( "table", kit.getTableHandler());
     if ( kit.getTreeHandler() != null) processor.addHandler( "tree", kit.getTreeHandler());
 
+    // install table handlers
+    processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule(), BindAt.end));
+    processor.addHandler( "header", new XidgetTagHandler( HeaderXidget.class));
+    processor.addHandler( "column", new XidgetTagHandler( ColumnXidget.class));
+
     // install other handlers
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "source", new BindingTagHandler( new TextBindingRule()));
-    processor.addHandler( "context", new BindingTagHandler( new ContextBindingRule()));
+//    processor.addHandler( "context", new BindingTagHandler( new ContextBindingRule()));
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "trigger", new TriggerTagHandler());
+    
   }
   
   /**
