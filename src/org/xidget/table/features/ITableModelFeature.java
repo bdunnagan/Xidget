@@ -4,28 +4,25 @@
  */
 package org.xidget.table.features;
 
+import java.util.List;
 import org.xmodel.IModelObject;
 
 /**
- * An interface for the data-model of a table xidget. Since a table xidget provides
- * a tabular transform of its source data, some of that data will be cached. This
- * interface provides access to this cached data. This interface also provides 
- * abstraction from the table xidget schema for the tabular data.  It does not
- * provide information about the column header title and image, however.
- * <p>
- * The <code>setText</code> method should use the ITextModelFeature associated
- * with the specified column to process the raw widget-supplied text before it is
- * set in the data-model. The ITextModelFeature is addressed by getting the ColumnXidget 
- * child corresponding to the column index.  
+ * An interface for the data-model of a table xidget.
  */
 public interface ITableModelFeature
 {
   /**
-   * Returns the row object for the specified row.
-   * @param row The row index.
-   * @return Returns the row object for the specified row.
+   * Set the row objects of the table.
+   * @param rows The complete set of row objects.
    */
-  public IModelObject getRow( int row);
+  public void setRows( List<IModelObject> rows);
+
+  /**
+   * Returns the rows of the table.
+   * @return Returns the rows of the table.
+   */
+  public List<IModelObject> getRows();
   
   /**
    * Returns null or the node addressed by the specified row and column indices. Only
