@@ -32,7 +32,7 @@ public abstract class TextXidget extends AbstractXidget
     super.startConfig( processor, parent, element);
     
     // get features
-    modelAdapter = getModelTextFeature();
+    modelFeature = getModelTextFeature();
     widgetFeature = getWidgetFeature();
     textFeature = getWidgetTextFeature();
     errorFeature = getErrorFeature();
@@ -74,14 +74,14 @@ public abstract class TextXidget extends AbstractXidget
   @SuppressWarnings("unchecked")
   public <T> T getFeature( Class<T> clss)
   {
-    if ( clss == ITextModelFeature.class) return (T)modelAdapter;
+    if ( clss == ITextModelFeature.class) return (T)modelFeature;
     if ( clss.equals( ITextWidgetFeature.class)) return (T)textFeature;
     if ( clss.equals( IWidgetFeature.class)) return (T)widgetFeature;
     if ( clss.equals( IErrorFeature.class)) return (T)errorFeature;    
     return super.getFeature( clss);
   }
 
-  private ITextModelFeature modelAdapter;
+  private ITextModelFeature modelFeature;
   private ITextWidgetFeature textFeature;
   private IWidgetFeature widgetFeature;
   private IErrorFeature errorFeature;

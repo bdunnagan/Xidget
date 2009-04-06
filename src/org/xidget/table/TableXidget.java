@@ -10,8 +10,10 @@ import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IErrorFeature;
 import org.xidget.feature.IWidgetFeature;
+import org.xidget.table.features.IRowSetFeature;
 import org.xidget.table.features.ITableModelFeature;
 import org.xidget.table.features.ITableWidgetFeature;
+import org.xidget.table.features.RowSetFeature;
 import org.xmodel.IModelObject;
 
 /**
@@ -35,6 +37,7 @@ public abstract class TableXidget extends AbstractXidget
     tableModelFeature = getTableModelFeature();
     tableWidgetFeature = getTableWidgetFeature();
     errorFeature = getErrorFeature();
+    rowSetFeature = new RowSetFeature( this);
     
     return true;
   }  
@@ -64,11 +67,22 @@ public abstract class TableXidget extends AbstractXidget
   protected abstract IErrorFeature getErrorFeature();
   
   /* (non-Javadoc)
+   * @see org.xidget.AbstractXidget#setFeature(java.lang.Class, java.lang.Object)
+   */
+  @Override
+  public void setFeature( Class<? extends Object> featureClass, Object feature)
+  {
+    if ( featureClass == IRowSetFeature.class) rowSetFeature = (IRowSetFeature)feature;
+    else super.setFeature( featureClass, feature);
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.IAdaptable#getAdapter(java.lang.Class)
    */
   @SuppressWarnings("unchecked")
   public <T> T getFeature( Class<T> clss)
   {
+    if ( clss == IRowSetFeature.class) return (T)rowSetFeature;
     if ( clss == ITableModelFeature.class) return (T)tableModelFeature;
     if ( clss.equals( ITableWidgetFeature.class)) return (T)tableWidgetFeature;
     if ( clss.equals( IWidgetFeature.class)) return (T)widgetFeature;
@@ -79,5 +93,6 @@ public abstract class TableXidget extends AbstractXidget
   private IWidgetFeature widgetFeature;
   private ITableModelFeature tableModelFeature;
   private ITableWidgetFeature tableWidgetFeature;
+  private IRowSetFeature rowSetFeature;
   private IErrorFeature errorFeature;
 }
