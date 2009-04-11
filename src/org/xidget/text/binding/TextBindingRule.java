@@ -42,43 +42,50 @@ public class TextBindingRule implements IBindingRule
   {
     Listener( IXidget xidget, String channel)
     {
+      this.xidget = xidget;
       this.channel = channel;
-      modelAdapter = xidget.getFeature( ITextModelFeature.class);
-      widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
+      ITextModelFeature modelAdapter = xidget.getFeature( ITextModelFeature.class);
       if ( nodes.contains( modelAdapter.getSource( channel))) return;
       
       IModelObject source = nodes.get( 0);
       modelAdapter.setSource( channel, source);
+      
+      ITextWidgetFeature widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
       widgetAdapter.setText( channel, Xlate.get( source, ""));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
+      ITextModelFeature modelAdapter = xidget.getFeature( ITextModelFeature.class);
       if ( !nodes.contains( modelAdapter.getSource( channel))) return;
       modelAdapter.setSource( channel, expression.queryFirst( context));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
+      ITextWidgetFeature widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
       widgetAdapter.setText( channel, Boolean.toString( newValue));
     }
 
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
+      ITextWidgetFeature widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
       widgetAdapter.setText( channel, Double.toString( newValue));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
+      ITextWidgetFeature widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
       widgetAdapter.setText( channel, newValue);
     }
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
+      ITextWidgetFeature widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
       widgetAdapter.setText( channel, Xlate.get( object, ""));
     }
     
@@ -88,7 +95,6 @@ public class TextBindingRule implements IBindingRule
     }
 
     private String channel;
-    private ITextModelFeature modelAdapter;
-    private ITextWidgetFeature widgetAdapter;
+    private IXidget xidget;
   }
 }

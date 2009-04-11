@@ -31,31 +31,37 @@ public class IconBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    return new Listener( xidget.getFeature( IIconFeature.class));
+    return new Listener( xidget);
   }  
 
   private static final class Listener extends ExpressionListener
   {
-    Listener( IIconFeature feature)
+    Listener( IXidget xidget)
     {
-      this.feature = feature;
+      this.xidget = xidget;
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = nodes.get( 0);
+      IIconFeature feature = xidget.getFeature( IIconFeature.class);
       feature.setIcon( node.getValue());
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
+      IIconFeature feature = xidget.getFeature( IIconFeature.class);
       feature.setIcon( (node == null)? null: node.getValue()); 
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
-      if ( object == node) feature.setIcon(  newValue);
+      if ( object == node) 
+      {
+        IIconFeature feature = xidget.getFeature( IIconFeature.class);
+        feature.setIcon(  newValue);
+      }
     }
 
     public boolean requiresValueNotification()
@@ -63,7 +69,7 @@ public class IconBindingRule implements IBindingRule
       return true;
     }
 
-    private IIconFeature feature;
+    private IXidget xidget;
     private IModelObject node;
   }
 }

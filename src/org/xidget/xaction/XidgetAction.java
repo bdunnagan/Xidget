@@ -42,7 +42,7 @@ public class XidgetAction extends GuardedAction
       Configuration configuration = new Configuration();
       List<IXidget> xidgets = configuration.parse( context2);
       
-      // bind xidget
+      // bind the xidget
       IXidget xidget = xidgets.get( 0);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       bindFeature.bind( (StatefulContext)context);

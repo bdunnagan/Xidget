@@ -35,6 +35,12 @@ public interface IWidgetFeature
   public void getBounds( Bounds result);
   
   /**
+   * Set whether the widget is visible.
+   * @param visible True if the widget is visible.
+   */
+  public void setVisible( boolean visible);
+  
+  /**
    * Set whether the widget is enabled.
    * @param enabled True if enabled.
    */

@@ -5,15 +5,11 @@
 package org.xidget.text;
 
 import org.xidget.AbstractXidget;
-import org.xidget.IXidget;
-import org.xidget.config.processor.TagException;
-import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IErrorFeature;
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.text.feature.ITextModelFeature;
 import org.xidget.text.feature.ITextWidgetFeature;
 import org.xidget.text.feature.TextModelFeature;
-import org.xmodel.IModelObject;
 
 /**
  * An implementation of IXidget for use with the text widgets and other widgets
@@ -25,27 +21,25 @@ public abstract class TextXidget extends AbstractXidget
   public final static String allChannel = "all";
   
   /* (non-Javadoc)
-   * @see org.xidget.IXidget#startConfig(org.xidget.config.TagProcessor, org.xidget.IXidget, org.xmodel.IModelObject)
+   * @see org.xidget.AbstractXidget#createFeatures()
    */
-  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
+  @Override
+  protected void createFeatures()
   {
-    super.startConfig( processor, parent, element);
+    super.createFeatures();
     
-    // get features
-    modelFeature = getModelTextFeature();
-    widgetFeature = getWidgetFeature();
-    textFeature = getWidgetTextFeature();
+    modelFeature = getTextModelFeature();
+    textFeature = getTextWidgetFeature();
     errorFeature = getErrorFeature();
-    
-    return true;
-  }  
+    widgetFeature = getWidgetFeature();
+  }
 
   /**
    * Returns an implementation of IModelTextFeature. This method returns an instance
-   * of ModelTextFeature. Subclasses can override to provide a different implementation.
+   * of TextModelFeature. Subclasses can override to provide a different implementation.
    * @return Returns an implementation of IModelTextFeature.
    */
-  protected ITextModelFeature getModelTextFeature()
+  protected ITextModelFeature getTextModelFeature()
   {
     return new TextModelFeature( this);
   }
@@ -60,7 +54,7 @@ public abstract class TextXidget extends AbstractXidget
    * Returns the required IWidgetTextFeature.
    * @return Returns the required IWidgetTextFeature.
    */
-  protected abstract ITextWidgetFeature getWidgetTextFeature();
+  protected abstract ITextWidgetFeature getTextWidgetFeature();
   
   /**
    * Returns the required IErrorFeature.
@@ -75,9 +69,10 @@ public abstract class TextXidget extends AbstractXidget
   public <T> T getFeature( Class<T> clss)
   {
     if ( clss == ITextModelFeature.class) return (T)modelFeature;
-    if ( clss.equals( ITextWidgetFeature.class)) return (T)textFeature;
-    if ( clss.equals( IWidgetFeature.class)) return (T)widgetFeature;
-    if ( clss.equals( IErrorFeature.class)) return (T)errorFeature;    
+    if ( clss == ITextWidgetFeature.class) return (T)textFeature;
+    if ( clss == IErrorFeature.class) return (T)errorFeature;
+    if ( clss == IWidgetFeature.class) return (T)widgetFeature;
+    
     return super.getFeature( clss);
   }
 

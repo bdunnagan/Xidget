@@ -32,36 +32,43 @@ public class TooltipBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    return new Listener( xidget.getFeature( IWidgetFeature.class));
+    return new Listener( xidget);
   }  
 
   private static final class Listener extends ExpressionListener
   {
-    Listener( IWidgetFeature adapter)
+    Listener( IXidget xidget)
     {
-      this.adapter = adapter;
+      this.xidget = xidget;
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      adapter.setTooltip( Xlate.get( nodes.get( 0), ""));
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setTooltip( Xlate.get( nodes.get( 0), ""));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       nodes.clear();
       expression.query( context, nodes);
-      if ( nodes.size() > 0) adapter.setTooltip( Xlate.get( nodes.get( 0), "")); 
+      if ( nodes.size() > 0) 
+      {
+        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+        feature.setTooltip( Xlate.get( nodes.get( 0), ""));
+      }
     }
 
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      adapter.setTooltip( newValue);
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setTooltip( newValue);
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
-      adapter.setTooltip( Xlate.get( object, ""));
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setTooltip( Xlate.get( object, ""));
     }
 
     public boolean requiresValueNotification()
@@ -69,6 +76,6 @@ public class TooltipBindingRule implements IBindingRule
       return true;
     }
 
-    private IWidgetFeature adapter;
+    private IXidget xidget;
   }
 }

@@ -14,6 +14,8 @@ import org.xmodel.IModelObject;
  */
 public interface IXidget extends IFeatures
 {
+  public static boolean debug = true;
+  
   /**
    * Returns the parent of this xidget.
    * @return Returns the parent of this xidget.

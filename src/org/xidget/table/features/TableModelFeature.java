@@ -4,10 +4,8 @@
  */
 package org.xidget.table.features;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import org.xidget.IXidget;
-import org.xidget.text.feature.ITextModelFeature;
 import org.xmodel.IModelObject;
 
 /**
@@ -15,30 +13,27 @@ import org.xmodel.IModelObject;
  */
 public class TableModelFeature implements ITableModelFeature
 {
-  /**
-   * Create a TableModelFeature for the specified xidget.
-   * @param xidget The xidget.
-   */
-  public TableModelFeature( IXidget xidget)
+  public TableModelFeature()
   {
-    this.xidget = xidget;
-    this.rows = Collections.<IModelObject>emptyList();
-  }
-  
-  /* (non-Javadoc)
-   * @see org.xidget.table.features.ITableModelFeature#getRows()
-   */
-  public List<IModelObject> getRows()
-  {
-    return rows;
+    this.rows = new ArrayList<List<IModelObject>>();
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.table.features.ITableModelFeature#setRows(java.util.List)
+   * @see org.xidget.table.features.ITableModelFeature#insertRows(int, int)
    */
-  public void setRows( List<IModelObject> rows)
+  public void insertRows( int start, int count)
   {
-    this.rows = rows;
+    for( int i=0; i<count; i++)
+      rows.add( start, null);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.table.features.ITableModelFeature#removeRows(int, int)
+   */
+  public void removeRows( int start, int count)
+  {
+    for( int i=0; i<count; i++)
+      rows.remove( start);
   }
 
   /* (non-Javadoc)
@@ -46,12 +41,20 @@ public class TableModelFeature implements ITableModelFeature
    */
   public void setSource( int row, int column, String channel, IModelObject node)
   {
-    IXidget xidget = getColumnXidget( column);
-    if ( xidget != null)
+    List<IModelObject> columns = rows.get( row);
+    if ( columns == null) 
     {
-      ITextModelFeature modelFeature = xidget.getFeature( ITextModelFeature.class);
-      modelFeature.setSource( channel, node);
+      columns = new ArrayList<IModelObject>( 1);
+      rows.set( row, columns);
     }
+    
+    if ( columns.size() <= column)
+    {
+      for( int i=columns.size(); i<=column; i++)
+        columns.add( null);
+    }
+    
+    columns.set( column, node);
   }
 
   /* (non-Javadoc)
@@ -59,13 +62,9 @@ public class TableModelFeature implements ITableModelFeature
    */
   public IModelObject getSource( int row, int column, String channel)
   {
-    IXidget xidget = getColumnXidget( column);
-    if ( xidget != null)
-    {
-      ITextModelFeature modelFeature = xidget.getFeature( ITextModelFeature.class);
-      return modelFeature.getSource( channel);
-    }
-    return null;
+    List<IModelObject> columns = rows.get( row);
+    if ( columns == null || column >= columns.size()) return null;
+    return columns.get( column);
   }
 
   /* (non-Javadoc)
@@ -74,40 +73,8 @@ public class TableModelFeature implements ITableModelFeature
   public void setText( int row, int column, String channel, String text)
   {
     IModelObject node = getSource( row, column, channel);
-    if ( node == null) return;
-    
-    // process the text
-    ITextModelFeature modelFeature = getTextModelFeature( column);
-    modelFeature.setSource( channel, node);
-    modelFeature.setText( channel, text);
-    
-    // clear the node which is no longer needed
-    modelFeature.setSource( channel, null);
+    if ( node != null) node.setValue( text);
   }
   
-  /**
-   * Returns the column xidget for the specified column.
-   * @param column The column index.
-   * @return Returns null or the column xidget for the specified column.
-   */
-  private IXidget getColumnXidget( int column)
-  {
-    List<IXidget> children = xidget.getChildren();
-    if ( children.size() > column) return children.get( column);
-    return null;
-  }
-  
-  /**
-   * Returns the ITextModelFeature for the specified column.
-   * @param column The column.
-   * @return Returns the ITextModelFeature for the specified column.
-   */
-  private ITextModelFeature getTextModelFeature( int column)
-  {
-    List<IXidget> children = xidget.getChildren();
-    return children.get( column).getFeature( ITextModelFeature.class);
-  }
-  
-  private IXidget xidget;
-  private List<IModelObject> rows;
+  private List<List<IModelObject>> rows;
 }

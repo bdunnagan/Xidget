@@ -5,16 +5,13 @@
 package org.xidget.table;
 
 import org.xidget.AbstractXidget;
-import org.xidget.IXidget;
-import org.xidget.config.processor.TagException;
-import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IErrorFeature;
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.table.features.IRowSetFeature;
 import org.xidget.table.features.ITableModelFeature;
 import org.xidget.table.features.ITableWidgetFeature;
 import org.xidget.table.features.RowSetFeature;
-import org.xmodel.IModelObject;
+import org.xidget.table.features.TableModelFeature;
 
 /**
  * An implementation of IXidget for use with any widget which can display
@@ -26,21 +23,19 @@ import org.xmodel.IModelObject;
 public abstract class TableXidget extends AbstractXidget
 {
   /* (non-Javadoc)
-   * @see org.xidget.IXidget#startConfig(org.xidget.config.TagProcessor, org.xidget.IXidget, org.xmodel.IModelObject)
+   * @see org.xidget.AbstractXidget#createFeatures()
    */
-  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
+  @Override
+  protected void createFeatures()
   {
-    super.startConfig( processor, parent, element);
+    super.createFeatures();
     
-    // get features
     widgetFeature = getWidgetFeature();
     tableModelFeature = getTableModelFeature();
     tableWidgetFeature = getTableWidgetFeature();
     errorFeature = getErrorFeature();
     rowSetFeature = new RowSetFeature( this);
-    
-    return true;
-  }  
+  }
 
   /**
    * Returns the required IWidgetFeature.
@@ -49,10 +44,13 @@ public abstract class TableXidget extends AbstractXidget
   protected abstract IWidgetFeature getWidgetFeature();
   
   /**
-   * Returns an implementation of ITableModelFeature.
+   * Returns an implementation of ITableModelFeature. By default, returns TableModelFeature.
    * @return Returns an implementation of ITableModelFeature.
    */
-  protected abstract ITableModelFeature getTableModelFeature();
+  protected ITableModelFeature getTableModelFeature()
+  {
+    return new TableModelFeature();
+  }
   
   /**
    * Returns the required IWidgetTextFeature.
@@ -67,16 +65,6 @@ public abstract class TableXidget extends AbstractXidget
   protected abstract IErrorFeature getErrorFeature();
   
   /* (non-Javadoc)
-   * @see org.xidget.AbstractXidget#setFeature(java.lang.Class, java.lang.Object)
-   */
-  @Override
-  public void setFeature( Class<? extends Object> featureClass, Object feature)
-  {
-    if ( featureClass == IRowSetFeature.class) rowSetFeature = (IRowSetFeature)feature;
-    else super.setFeature( featureClass, feature);
-  }
-
-  /* (non-Javadoc)
    * @see org.xidget.IAdaptable#getAdapter(java.lang.Class)
    */
   @SuppressWarnings("unchecked")
@@ -84,9 +72,10 @@ public abstract class TableXidget extends AbstractXidget
   {
     if ( clss == IRowSetFeature.class) return (T)rowSetFeature;
     if ( clss == ITableModelFeature.class) return (T)tableModelFeature;
-    if ( clss.equals( ITableWidgetFeature.class)) return (T)tableWidgetFeature;
-    if ( clss.equals( IWidgetFeature.class)) return (T)widgetFeature;
-    if ( clss.equals( IErrorFeature.class)) return (T)errorFeature;    
+    if ( clss == ITableWidgetFeature.class) return (T)tableWidgetFeature;
+    if ( clss == IWidgetFeature.class) return (T)widgetFeature;
+    if ( clss == IErrorFeature.class) return (T)errorFeature;    
+    
     return super.getFeature( clss);
   }
 

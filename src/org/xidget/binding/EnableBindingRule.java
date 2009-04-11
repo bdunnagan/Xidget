@@ -30,21 +30,22 @@ public class EnableBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    return new Listener( xidget.getFeature( IWidgetFeature.class));
+    return new Listener( xidget);
   }  
 
   private static final class Listener extends ExpressionListener
   {
-    Listener( IWidgetFeature adapter)
+    Listener( IXidget xidget)
     {
-      this.adapter = adapter;
+      this.xidget = xidget;
     }
     
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
-      adapter.setEnabled( newValue);
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setEnabled( newValue);
     }
-    
-    private IWidgetFeature adapter;
+
+    private IXidget xidget;
   }
 }

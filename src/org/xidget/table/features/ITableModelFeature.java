@@ -4,7 +4,6 @@
  */
 package org.xidget.table.features;
 
-import java.util.List;
 import org.xmodel.IModelObject;
 
 /**
@@ -13,16 +12,18 @@ import org.xmodel.IModelObject;
 public interface ITableModelFeature
 {
   /**
-   * Set the row objects of the table.
-   * @param rows The complete set of row objects.
+   * Add a row to the model.
+   * @param start The index of the first row to insert.
+   * @param count The number of rows to insert.
    */
-  public void setRows( List<IModelObject> rows);
-
+  public void insertRows( int start, int count);
+  
   /**
-   * Returns the rows of the table.
-   * @return Returns the rows of the table.
+   * Remove a row from the model.
+   * @param start The index of the first row to delete.
+   * @param count The number of rows to delete.
    */
-  public List<IModelObject> getRows();
+  public void removeRows( int start, int count); 
   
   /**
    * Set the source node for the specified cell.

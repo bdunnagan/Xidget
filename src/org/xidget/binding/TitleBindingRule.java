@@ -32,46 +32,55 @@ public class TitleBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    return new Listener( xidget.getFeature( ITitleFeature.class));
+    return new Listener( xidget);
   }  
 
   private static final class Listener extends ExpressionListener
   {
-    Listener( ITitleFeature adapter)
+    Listener( IXidget xidget)
     {
-      this.feature = adapter;
+      this.xidget = xidget;
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = nodes.get( 0);
+      ITitleFeature feature = xidget.getFeature( ITitleFeature.class);
       feature.setTitle( Xlate.get( node, ""));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
+      ITitleFeature feature = xidget.getFeature( ITitleFeature.class);
       feature.setTitle( Xlate.get( node, ""));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
+      ITitleFeature feature = xidget.getFeature( ITitleFeature.class);
       feature.setTitle( Boolean.toString( newValue));
     }
 
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
+      ITitleFeature feature = xidget.getFeature( ITitleFeature.class);
       feature.setTitle( Double.toString( newValue));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
+      ITitleFeature feature = xidget.getFeature( ITitleFeature.class);
       feature.setTitle( newValue);
     }
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
-      if ( object == node) feature.setTitle( Xlate.get( node, ""));
+      if ( object == node)
+      {
+        ITitleFeature feature = xidget.getFeature( ITitleFeature.class);
+        feature.setTitle( Xlate.get( node, ""));
+      }
     }
     
     public boolean requiresValueNotification()
@@ -79,7 +88,7 @@ public class TitleBindingRule implements IBindingRule
       return true;
     }
     
-    private ITitleFeature feature;
+    private IXidget xidget;
     private IModelObject node;
   }
 }

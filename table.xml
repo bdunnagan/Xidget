@@ -10,34 +10,22 @@
   <drag when="...">...</drag>
   <drag when="...">...</drag>
 
-  <heading>
-    <image></image>
-    <title></title>
-  </heading>  
-  
-  <heading>
-    <image></image>
-    <title></title>
-  </heading>  
-  
-  <heading>
-    <image></image>
-    <title></title>
-  </heading>  
-  
   <rows></rows>
   
   <column>
+    <title></title>
     <image></image>
     <source></source>
   </column>
   
   <column>
+    <title></title>
     <image></image>
     <source></source>
   </column>
   
   <column>
+    <title></title>
     <image></image>
     <source></source>
   </column>

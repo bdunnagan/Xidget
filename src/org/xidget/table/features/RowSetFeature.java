@@ -7,14 +7,15 @@ package org.xidget.table.features;
 import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.table.column.feature.IColumnBindingFeature;
+import org.xidget.feature.IBindFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.diff.AbstractListDiffer;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * A default implementation of IRowSetFeature which uses a shallow differ to perform
  * targeted updates to the table xidget to which it belongs. No other feature should
- * make changes to the ITableModelFeature, ITableWidgetFeature or IColumnBindingFeature.
+ * make changes to the ITableModelFeature, ITableWidgetFeature or IColumnBindFeature.
  */
 public class RowSetFeature implements IRowSetFeature
 {
@@ -23,56 +24,84 @@ public class RowSetFeature implements IRowSetFeature
     this.xidget = xidget;
     this.differ = new Differ();
     this.changes = new ArrayList<Change>();
+    this.rowContexts = new ArrayList<StatefulContext>();
+    this.rowObjects = new ArrayList<IModelObject>();
+    this.columnBindFeatures = new ArrayList<IBindFeature>();
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.table.features.IRowSetFeature#setRows(java.util.List)
+   * @see org.xidget.table.features.IRowSetFeature#addColumn(org.xidget.IXidget)
    */
-  public void setRows( List<IModelObject> newRows)
+  public void addColumn( IXidget xidget)
   {
-    ITableModelFeature modelFeature = xidget.getFeature( ITableModelFeature.class);
-    List<IColumnBindingFeature> columnBindingFeatures = getColumnBindingFeatures();
-    
+    columnBindFeatures.add( xidget.getFeature( IBindFeature.class));
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.table.features.IRowSetFeature#setRows(org.xmodel.xpath.expression.StatefulContext, java.util.List)
+   */
+  public void setRows( StatefulContext context, List<IModelObject> newRows)
+  {
     // find changes
     changes.clear();
-    List<IModelObject> oldRows = modelFeature.getRows();
-    differ.diff( oldRows, newRows);
+    differ.diff( rowObjects, newRows);
     
     // process changes
+    ITableModelFeature modelFeature = xidget.getFeature( ITableModelFeature.class);
+    ITableWidgetFeature widgetFeature = xidget.getFeature( ITableWidgetFeature.class);
     for( Change change: changes)
     {
       if ( change.rIndex >= 0)
       {
+        // insert rows
+        modelFeature.insertRows( change.lIndex, change.count);
+        widgetFeature.insertRows( change.lIndex, change.count);
+        
+        // update columns or row
         for( int i=0; i<change.count; i++)
-          for( IColumnBindingFeature columnBindingFeature: columnBindingFeatures)
-            columnBindingFeature.bind( change.lIndex+i, newRows.get( change.rIndex+i));
+        {
+          row = change.lIndex + i;
+          
+          // create row context
+          IModelObject rowObject = newRows.get( change.rIndex + i);
+          StatefulContext rowContext = new StatefulContext( context, rowObject);
+          rowContexts.add( row, rowContext);
+          
+          // bind and populate columns of row
+          for( IBindFeature columnBindFeature: columnBindFeatures)
+            columnBindFeature.bind( rowContext);
+        }
       }
       else
       {
+        // current row doesn't change while deleting
+        row = change.lIndex;
         for( int i=0; i<change.count; i++)
-          for( IColumnBindingFeature columnBindingFeature: columnBindingFeatures)
-            columnBindingFeature.unbind( change.lIndex, oldRows.get( change.lIndex));
+        {
+          // remove row context
+          StatefulContext rowContext = rowContexts.remove( change.lIndex);
+          
+          // unbind
+          for( IBindFeature columnBindFeature: columnBindFeatures)
+            columnBindFeature.unbind( rowContext);
+        }
+        
+        // remove rows
+        modelFeature.removeRows( change.lIndex, change.count);
+        widgetFeature.removeRows( change.lIndex, change.count);
       }
     }
     
-    // update model
-    modelFeature.setRows( newRows);
+    // update rows
+    rowObjects = newRows;
   }
 
-  /**
-   * Returns the IColumnBindingFeatures of the column xidgets.
-   * @return Returns the IColumnBindingFeatures of the column xidgets.
+  /* (non-Javadoc)
+   * @see org.xidget.table.features.IRowSetFeature#getCurrentRow()
    */
-  private List<IColumnBindingFeature> getColumnBindingFeatures()
+  public int getCurrentRow()
   {
-    if ( columnBindingFeatures != null) return columnBindingFeatures;
-    columnBindingFeatures = new ArrayList<IColumnBindingFeature>();
-    for( IXidget child: xidget.getChildren())
-    {
-      IColumnBindingFeature columnBindingFeature = child.getFeature( IColumnBindingFeature.class);
-      if ( columnBindingFeature != null) columnBindingFeatures.add( columnBindingFeature);
-    }
-    return columnBindingFeatures;
+    return row;
   }
   
   /**
@@ -115,8 +144,10 @@ public class RowSetFeature implements IRowSetFeature
   }
   
   private IXidget xidget;
-  private List<IColumnBindingFeature> columnBindingFeatures;
   private Differ differ;
   private List<Change> changes;
-  
+  private List<IModelObject> rowObjects;
+  private List<StatefulContext> rowContexts;
+  private List<IBindFeature> columnBindFeatures;
+  private int row;
 }

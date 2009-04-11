@@ -14,6 +14,7 @@ import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * A binding rule for the row-set of a table.
@@ -40,19 +41,21 @@ public class RowSetBindingRule implements IBindingRule
   {
     Listener( IXidget xidget)
     {
-      rowSetFeature = xidget.getFeature( IRowSetFeature.class);
+      this.xidget = xidget;
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       nodes.clear(); expression.query( context, nodes);
-      rowSetFeature.setRows( nodes);
+      IRowSetFeature feature = xidget.getFeature( IRowSetFeature.class);
+      feature.setRows( (StatefulContext)context, nodes);
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       nodes.clear(); expression.query( context, nodes);
-      rowSetFeature.setRows( nodes);
+      IRowSetFeature feature = xidget.getFeature( IRowSetFeature.class);
+      feature.setRows( (StatefulContext)context, nodes);
     }
 
     public boolean requiresValueNotification()
@@ -60,6 +63,6 @@ public class RowSetBindingRule implements IBindingRule
       return false;
     }
 
-    private IRowSetFeature rowSetFeature;
+    private IXidget xidget;
   }
 }

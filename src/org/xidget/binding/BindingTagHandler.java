@@ -98,7 +98,7 @@ public class BindingTagHandler implements ITagHandler
     IExpressionListener listener = rule.getListener( xidget, element);
     XidgetBinding binding = new XidgetBinding( expression, listener);
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    if ( bindFeature != null) bindFeature.add( binding);
+    bindFeature.add( binding);
   }
 
   private IBindingRule rule;

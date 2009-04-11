@@ -6,17 +6,19 @@ package org.xidget.feature;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.xidget.IXidget;
 import org.xidget.binding.IXidgetBinding;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
- * A default implementation of the IBindFeature.
+ * An implementation of IBindFeature which does not bind the xidgets children. This is useful
+ * if another feature needs to control when and how the children are bound.
  */
 public class BindFeature implements IBindFeature
 {
-  public BindFeature()
+  public BindFeature( IXidget xidget)
   {
-    contexts = new ArrayList<StatefulContext>();
+    this.xidget = xidget;
   }
   
   /* (non-Javadoc)
@@ -41,12 +43,20 @@ public class BindFeature implements IBindFeature
    */
   public void bind( StatefulContext context)
   {
-    if ( bindings == null) return;
+    // debug
+    if ( IXidget.debug) System.out.printf( "bind: %s with %s\n", xidget, context);
     
-    contexts.add( context);
+    // bind children first
+    for( IXidget child: xidget.getChildren())
+    {
+      IBindFeature bindFeature = child.getFeature( IBindFeature.class);
+      bindFeature.bind( context);
+    }
     
-    for( IXidgetBinding binding: bindings)
-      binding.bind( context);
+    // internal bindings
+    if ( bindings != null)
+      for( IXidgetBinding binding: bindings)
+        binding.bind( context);
   }
 
   /* (non-Javadoc)
@@ -54,27 +64,22 @@ public class BindFeature implements IBindFeature
    */
   public void unbind( StatefulContext context)
   {
-    if ( bindings == null) return;
+    // debug
+    if ( IXidget.debug) System.out.printf( "unbind: %s with %s\n", xidget, context);
     
-    try
+    // unbind children first
+    for( IXidget child: xidget.getChildren())
     {
+      IBindFeature bindFeature = child.getFeature( IBindFeature.class);
+      bindFeature.unbind( context);
+    }
+
+    // internal bindings
+    if ( bindings != null)
       for( IXidgetBinding binding: bindings)
         binding.unbind( context);
-    }
-    finally
-    {
-      contexts.remove( context);
-    }
   }
   
-  /* (non-Javadoc)
-   * @see org.xidget.feature.IBindFeature#getBoundContexts()
-   */
-  public List<StatefulContext> getBoundContexts()
-  {
-    return contexts;
-  }
-
+  private IXidget xidget;
   private List<IXidgetBinding> bindings;
-  private List<StatefulContext> contexts;
 }

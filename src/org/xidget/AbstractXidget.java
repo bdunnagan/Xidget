@@ -6,20 +6,16 @@ package org.xidget;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.xidget.binding.ChildrenBinding;
-import org.xidget.binding.IXidgetBinding;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.BindFeature;
 import org.xidget.feature.IBindFeature;
 import org.xidget.feature.IWidgetCreationFeature;
-import org.xidget.feature.IWidgetFeature;
 import org.xidget.layout.ComputeNodeFeature;
 import org.xidget.layout.IComputeNodeFeature;
 import org.xidget.layout.ILayoutFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
-import org.xmodel.util.Radix;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -60,39 +56,6 @@ public abstract class AbstractXidget implements IXidget
     return children;
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#setContext(org.xmodel.xpath.expression.StatefulContext)
-   */
-  public void setContext( StatefulContext context)
-  {
-    this.context = context;
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#getContext()
-   */
-  public StatefulContext getContext()
-  {
-    return context;
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#addBinding(org.xidget.IXidgetBinding)
-   */
-  public void addBinding( IXidgetBinding binding)
-  {
-    if ( bindings == null) bindings = new ArrayList<IXidgetBinding>( 3);
-    bindings.add( binding);
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#removeBinding(org.xidget.IXidgetBinding)
-   */
-  public void removeBinding( IXidgetBinding binding)
-  {
-    if ( bindings != null) bindings.remove( binding);
-  }
-
   /**
    * Stubbed implementation for convenience.
    * @param processor The tag processor.
@@ -104,14 +67,56 @@ public abstract class AbstractXidget implements IXidget
   {
     setParent( parent);
     
-    // create children binding
-    IBindFeature bindFeature = getFeature( IBindFeature.class);
-    bindFeature.add( new ChildrenBinding( this));
-    
     // set xidget attribute and save config (bi-directional mapping)
     element.setAttribute( "xidget", this);
     config = element;
     
+    // create these features early
+    bindFeature = new BindFeature( this);
+    computeNodeFeature = new ComputeNodeFeature( this);
+    
+    // configure layout
+    configureLayout( processor, element);
+    
+    // create widget hierarchy
+    widgetCreationFeature = getWidgetCreationFeature();
+    if ( widgetCreationFeature != null)
+    {
+      String label = Xlate.childGet( element, "label", (String)null);
+      widgetCreationFeature.createWidget( label, element);
+    }
+    
+    // create features
+    createFeatures();
+    
+    // configure features
+    configureFeatures();
+    
+    return true;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#endConfig(org.xidget.config.processor.TagProcessor, org.xmodel.IModelObject)
+   */
+  public void endConfig( TagProcessor processor, IModelObject element) throws TagException
+  {
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#getConfig()
+   */
+  public IModelObject getConfig()
+  {
+    return config;
+  }
+
+  /**
+   * Configure the ILayoutFeature.
+   * @param processor The tag processor.
+   * @param element The configuration element.
+   */
+  private void configureLayout( TagProcessor processor, IModelObject element) throws TagException
+  {
     // load xidget layout
     IModelObject layout = element.getFirstChild( "layout");
     IExpression layoutExpr = Xlate.childGet( element, "layout", Xlate.get( element, "layout", (IExpression)null));
@@ -127,40 +132,41 @@ public abstract class AbstractXidget implements IXidget
       IModelObject declaration = layoutExpr.queryFirst( context);
       if ( declaration == null) throw new TagException( "Declaration not found for layout: "+element);
       setLayout( processor, declaration);      
-    }
-        
-    // build widget hierarchy 
-    String label = Xlate.childGet( element, "label", (String)null);
-    IWidgetCreationFeature creationFeature = getFeature( IWidgetCreationFeature.class);
-    if ( creationFeature == null)
-      throw new TagException( 
-        "IWidgetCreationFeature is required for all xidget implementations.");
-    
-    creationFeature.createWidget( this, label, element);
-    
-    return true;
+    }        
   }
+  
+  /**
+   * Returns null or the required IWidgetCreationFeature.
+   * @return Returns null or the required IWidgetCreationFeature.
+   */
+  protected abstract IWidgetCreationFeature getWidgetCreationFeature();
 
   /**
-   * Stubbed implementation for convenience.
-   * @param processor The tag processor.
-   * @param element The element.
+   * Create the ILayoutFeature for this xidget if there is one. 
+   * This method is called before the widget hierarchy is created. 
    */
-  public void endConfig( TagProcessor processor, IModelObject element) throws TagException
+  protected void createLayoutFeature()
   {
-    // debug compute node
-    IWidgetFeature feature = getFeature( IWidgetFeature.class);
-    if ( feature != null) System.out.printf( "@%s IS %s\n", Radix.convert( feature.hashCode(), 36), element);
   }
-
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#getConfig()
+  
+  /**
+   * Create the features for this xidget. This method is called after the widget
+   * hierarchy has been created, so the widgets are guaranteed to exist. This means
+   * that features that depend on widgets can directly reference the widget.
    */
-  public IModelObject getConfig()
+  protected void createFeatures()
   {
-    return config;
   }
-
+  
+  /**
+   * Called after the widget hierarchy has been created and the <code>createFeatures</code>
+   * method has been called. This method should perform whatever configuration of the
+   * features specific to this xidget that is required.
+   */
+  protected void configureFeatures()
+  {
+  }
+  
   /* (non-Javadoc)
    * @see org.xidget.IFeatures#setFeature(java.lang.Object)
    */
@@ -176,17 +182,12 @@ public abstract class AbstractXidget implements IXidget
   @SuppressWarnings("unchecked")
   public <T> T getFeature( Class<T> clss)
   {
-    if ( clss == IBindFeature.class)
-    {
-      if ( bindFeature == null) bindFeature = new BindFeature();
-      return (T)bindFeature;
-    } 
+    if ( clss == IBindFeature.class) return (T)bindFeature;
+    if ( clss == IComputeNodeFeature.class) return (T)computeNodeFeature;
+    if ( clss == IWidgetCreationFeature.class) return (T)widgetCreationFeature;
     
-    if ( clss == IComputeNodeFeature.class)
-    {
-      if ( computeNodeFeature == null) computeNodeFeature = new ComputeNodeFeature( this);
-      return (T)computeNodeFeature;
-    }
+    // debug
+    if ( IXidget.debug) System.err.printf( "Feature %s not found on xidget %s.", clss.getSimpleName(), getConfig());
     
     return null;
   }
@@ -202,12 +203,20 @@ public abstract class AbstractXidget implements IXidget
     if ( feature == null) feature = getParent().getFeature( ILayoutFeature.class);
     if ( feature != null) feature.configure( processor, declaration);      
   }
+  
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  public String toString()
+  {
+    if ( config == null) return "unconfigured";
+    return config.getType();
+  }
 
   private IModelObject config;
   private IXidget parent;
   private List<IXidget> children;
-  private StatefulContext context;
-  private List<IXidgetBinding> bindings;
   private IBindFeature bindFeature;
   private IComputeNodeFeature computeNodeFeature;
+  private IWidgetCreationFeature widgetCreationFeature;
 }

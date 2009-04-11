@@ -18,7 +18,6 @@ import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.table.binding.RowSetBindingRule;
 import org.xidget.table.column.ColumnXidget;
-import org.xidget.table.column.HeaderXidget;
 import org.xidget.text.binding.EditableBindingRule;
 import org.xidget.text.binding.TextBindingRule;
 import org.xmodel.xpath.expression.IContext;
@@ -50,7 +49,6 @@ public class Configuration
 
     // install table handlers
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule(), BindAt.end));
-    processor.addHandler( "header", new XidgetTagHandler( HeaderXidget.class));
     processor.addHandler( "column", new XidgetTagHandler( ColumnXidget.class));
 
     // install other handlers

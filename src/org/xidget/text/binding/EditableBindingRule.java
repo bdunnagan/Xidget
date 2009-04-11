@@ -40,14 +40,15 @@ public class EditableBindingRule implements IBindingRule
   {
     Listener( IXidget xidget, String channel)
     {
-      adapter = xidget.getFeature( ITextWidgetFeature.class);
+      this.xidget = xidget;
     }
     
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
-      adapter.setEditable( newValue);
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
+      feature.setEditable( newValue);
     }
 
-    private ITextWidgetFeature adapter;
+    private IXidget xidget;
   }
 }
