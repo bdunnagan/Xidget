@@ -48,8 +48,7 @@ public class Configuration
     if ( kit.getTreeHandler() != null) processor.addHandler( "tree", kit.getTreeHandler());
 
     // install table handlers
-    processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule(), BindAt.end));
-    processor.addHandler( "column", new XidgetTagHandler( ColumnXidget.class));
+    processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
 
     // install other handlers
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));

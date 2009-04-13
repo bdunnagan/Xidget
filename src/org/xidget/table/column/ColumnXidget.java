@@ -10,7 +10,6 @@ import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IIconFeature;
 import org.xidget.feature.ITitleFeature;
-import org.xidget.feature.IWidgetCreationFeature;
 import org.xidget.table.features.CellTextModelFeature;
 import org.xidget.table.features.IRowSetFeature;
 import org.xidget.text.feature.ITextModelFeature;
@@ -37,15 +36,6 @@ public abstract class ColumnXidget extends AbstractXidget
   }  
 
   /* (non-Javadoc)
-   * @see org.xidget.AbstractXidget#getWidgetCreationFeature()
-   */
-  @Override
-  protected IWidgetCreationFeature getWidgetCreationFeature()
-  {
-    return null;
-  }
-
-  /* (non-Javadoc)
    * @see org.xidget.AbstractXidget#createFeatures()
    */
   @Override
@@ -55,8 +45,8 @@ public abstract class ColumnXidget extends AbstractXidget
     
     titleFeature = getTitleFeature();
     iconFeature = getIconFeature();
-    modelFeature = getTextModelFeature();
-    widgetFeature = getTextWidgetFeature();
+    textModelFeature = getTextModelFeature();
+    textWidgetFeature = getTextWidgetFeature();
   }
 
   /**
@@ -75,23 +65,20 @@ public abstract class ColumnXidget extends AbstractXidget
   protected abstract IIconFeature getIconFeature();
   
   /**
-   * Returns an implementation of IModelTextFeature. This method returns an instance
-   * of TextModelFeature. Subclasses can override to provide a different implementation.
-   * @return Returns an implementation of IModelTextFeature.
+   * Returns the required ITextWidgetFeature for table cells in this column.
+   * @return Returns the required ITextWidgetFeature for table cells in this column.
+   */
+  protected abstract ITextWidgetFeature getTextWidgetFeature();
+  
+  /**
+   * Returns the required ITextModelFeature for table cells in this column.
+   * @return Returns the required ITextModelFeature for table cells in this column.
    */
   protected ITextModelFeature getTextModelFeature()
   {
     return new CellTextModelFeature( this);
   }
   
-  /**
-   * Returns the required ITextWidgetFeature. The implementation can get the column index
-   * from the configuration element of the column xidget, and the row index from the
-   * IRowSetFeature of the table xidget.
-   * @return Returns the required ITextWidgetFeature.
-   */
-  protected abstract ITextWidgetFeature getTextWidgetFeature();
-
   /* (non-Javadoc)
    * @see org.xidget.AbstractXidget#getFeature(java.lang.Class)
    */
@@ -101,14 +88,14 @@ public abstract class ColumnXidget extends AbstractXidget
   {
     if ( clss == ITitleFeature.class) return (T)titleFeature;
     if ( clss == IIconFeature.class) return (T)iconFeature;
-    if ( clss == ITextModelFeature.class) return (T)modelFeature;
-    if ( clss == ITextWidgetFeature.class) return (T)widgetFeature;
+    if ( clss == ITextModelFeature.class) return (T)textModelFeature;
+    if ( clss == ITextWidgetFeature.class) return (T)textWidgetFeature;
     
     return super.getFeature( clss);
   }
 
   private ITitleFeature titleFeature;
   private IIconFeature iconFeature;
-  private ITextModelFeature modelFeature;
-  private ITextWidgetFeature widgetFeature;
+  private ITextModelFeature textModelFeature;
+  private ITextWidgetFeature textWidgetFeature;
 }
