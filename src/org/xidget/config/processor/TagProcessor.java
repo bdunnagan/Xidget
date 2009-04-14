@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import org.xidget.IFeatures;
+import org.xidget.IFeatured;
 import org.xmodel.IModelObject;
 import org.xmodel.util.HashMultiMap;
 import org.xmodel.util.MultiMap;
@@ -18,7 +18,7 @@ import org.xmodel.xpath.expression.IContext;
 /**
  * A class which processes an xml fragment using a set of handlers registered by element name.
  */
-public class TagProcessor implements IFeatures
+public class TagProcessor implements IFeatured
 {
   /**
    * Create a root tag processor.

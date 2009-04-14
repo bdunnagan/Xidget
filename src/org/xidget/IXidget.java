@@ -12,7 +12,7 @@ import org.xmodel.IModelObject;
 /**
  * An interface for widget adapters.
  */
-public interface IXidget extends IFeatures
+public interface IXidget extends IFeatured
 {
   public static boolean debug = true;
   

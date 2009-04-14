@@ -9,7 +9,7 @@ package org.xidget;
  * a specialized implementation of the adapter pattern, so I'm calling these
  * adapters <i>features</i> instead.
  */
-public interface IFeatures
+public interface IFeatured
 {
   /**
    * Set a dynamic feature.
