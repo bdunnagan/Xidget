@@ -80,6 +80,6 @@ public class BindFeature implements IBindFeature
         binding.unbind( context);
   }
   
-  private IXidget xidget;
-  private List<IXidgetBinding> bindings;
+  protected IXidget xidget;
+  protected List<IXidgetBinding> bindings;
 }

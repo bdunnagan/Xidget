@@ -5,13 +5,20 @@
 package org.xidget.table;
 
 import org.xidget.AbstractXidget;
+import org.xidget.IXidget;
+import org.xidget.binding.XidgetTagHandler;
+import org.xidget.config.processor.TagException;
+import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IErrorFeature;
 import org.xidget.feature.IWidgetFeature;
+import org.xidget.table.column.CellXidget;
+import org.xidget.table.column.ColumnXidget;
 import org.xidget.table.features.IRowSetFeature;
 import org.xidget.table.features.ITableModelFeature;
 import org.xidget.table.features.ITableWidgetFeature;
 import org.xidget.table.features.RowSetFeature;
 import org.xidget.table.features.TableModelFeature;
+import org.xmodel.IModelObject;
 
 /**
  * An implementation of IXidget for use with any widget which can display
@@ -22,6 +29,36 @@ import org.xidget.table.features.TableModelFeature;
  */
 public abstract class TableXidget extends AbstractXidget
 {
+  /* (non-Javadoc)
+   * @see org.xidget.AbstractXidget#startConfig(org.xidget.config.processor.TagProcessor, org.xidget.IXidget, org.xmodel.IModelObject)
+   */
+  @Override
+  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
+  {
+    // both the header and the cell xidgets are configured from the column element
+    columnTagHandler = new XidgetTagHandler( ColumnXidget.class);
+    cellTagHandler = new XidgetTagHandler( CellXidget.class);
+    
+    processor.addHandler( "column", columnTagHandler);
+    processor.addHandler( "column", cellTagHandler);
+    
+    // configure
+    return super.startConfig( processor, parent, element);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.AbstractXidget#endConfig(org.xidget.config.processor.TagProcessor, org.xmodel.IModelObject)
+   */
+  @Override
+  public void endConfig( TagProcessor processor, IModelObject element) throws TagException
+  {
+    super.endConfig( processor, element);
+    
+    // both the header and the cell xidgets are configured from the column element
+    processor.removeHandler( "column", columnTagHandler);
+    processor.removeHandler( "column", cellTagHandler);
+  }
+
   /* (non-Javadoc)
    * @see org.xidget.AbstractXidget#createFeatures()
    */
@@ -84,4 +121,6 @@ public abstract class TableXidget extends AbstractXidget
   private ITableWidgetFeature tableWidgetFeature;
   private IRowSetFeature rowSetFeature;
   private IErrorFeature errorFeature;
+  private XidgetTagHandler columnTagHandler;
+  private XidgetTagHandler cellTagHandler;
 }

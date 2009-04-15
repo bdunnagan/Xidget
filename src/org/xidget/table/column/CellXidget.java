@@ -5,36 +5,17 @@
 package org.xidget.table.column;
 
 import org.xidget.AbstractXidget;
-import org.xidget.IXidget;
-import org.xidget.config.processor.TagException;
-import org.xidget.config.processor.TagProcessor;
+import org.xidget.feature.IBindFeature;
 import org.xidget.feature.IIconFeature;
-import org.xidget.feature.ITitleFeature;
 import org.xidget.table.features.CellTextModelFeature;
-import org.xidget.table.features.IRowSetFeature;
 import org.xidget.text.feature.ITextModelFeature;
 import org.xidget.text.feature.ITextWidgetFeature;
-import org.xmodel.IModelObject;
 
 /**
  * An implementation of IXidget which represents a table column.
  */
-public abstract class ColumnXidget extends AbstractXidget
+public class CellXidget extends AbstractXidget
 {
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#startConfig(org.xidget.config.TagProcessor, org.xidget.IXidget, org.xmodel.IModelObject)
-   */
-  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
-  {
-    super.startConfig( processor, parent, element);
-    
-    // add to row-set
-    IRowSetFeature rowSetFeature = parent.getFeature( IRowSetFeature.class);
-    rowSetFeature.addColumn( this);
-    
-    return true;
-  }  
-
   /* (non-Javadoc)
    * @see org.xidget.AbstractXidget#createFeatures()
    */
@@ -43,17 +24,21 @@ public abstract class ColumnXidget extends AbstractXidget
   {
     super.createFeatures();
     
-    titleFeature = getTitleFeature();
     iconFeature = getIconFeature();
+    textModelFeature = getTextModelFeature();
+    textWidgetFeature = getTextWidgetFeature();
   }
 
-  /**
-   * Returns the required ITitleFeature. The implementation can get the column index
-   * from the configuration element of the column xidget.
-   * @return Returns the required ITitleFeature.
+  /* (non-Javadoc)
+   * @see org.xidget.AbstractXidget#getBindFeature()
    */
-  protected abstract ITitleFeature getTitleFeature();
-  
+  @Override
+  protected IBindFeature getBindFeature()
+  {
+    // bind feature is set later
+    return null;
+  }
+
   /**
    * Returns the required IIconFeature. The implementation can get the column index
    * from the configuration element of the column xidget, and the row index from the
@@ -84,12 +69,14 @@ public abstract class ColumnXidget extends AbstractXidget
   @Override
   public <T> T getFeature( Class<T> clss)
   {
-    if ( clss == ITitleFeature.class) return (T)titleFeature;
     if ( clss == IIconFeature.class) return (T)iconFeature;
+    if ( clss == ITextModelFeature.class) return (T)textModelFeature;
+    if ( clss == ITextWidgetFeature.class) return (T)textWidgetFeature;
     
     return super.getFeature( clss);
   }
 
-  private ITitleFeature titleFeature;
   private IIconFeature iconFeature;
+  private ITextModelFeature textModelFeature;
+  private ITextWidgetFeature textWidgetFeature;
 }

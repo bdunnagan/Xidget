@@ -24,10 +24,6 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public abstract class AbstractXidget implements IXidget
 {
-  protected AbstractXidget()
-  {
-  }
-
   /**
    * Set the parent xidget.
    * @param parent The parent.
@@ -71,9 +67,9 @@ public abstract class AbstractXidget implements IXidget
     element.setAttribute( "xidget", this);
     config = element;
     
-    // create these features early
-    bindFeature = new BindFeature( this);
-    computeNodeFeature = new ComputeNodeFeature( this);
+    // early features
+    bindFeature = getBindFeature();
+    computeNodeFeature = new ComputeNodeFeature( this);    
     
     // configure layout
     configureLayout( processor, element);
@@ -141,6 +137,15 @@ public abstract class AbstractXidget implements IXidget
    */
   protected abstract IWidgetCreationFeature getWidgetCreationFeature();
 
+  /**
+   * Returns null or the required IBindFeature. This method returns an instance of BindFeature.
+   * @return Returns null or the required IBindFeature.
+   */
+  protected IBindFeature getBindFeature()
+  {
+    return new BindFeature( this);
+  }
+  
   /**
    * Create the ILayoutFeature for this xidget if there is one. 
    * This method is called before the widget hierarchy is created. 
