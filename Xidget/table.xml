@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<table>
+  <title></title>
+  <selection>
+  </selection>
+  
+  <!-- says what can be dragged and where -->
+  <drag when="...">...</drag>
+  <drag when="...">...</drag>
+  <drag when="...">...</drag>
+
+  <rows></rows>
+  
+  <column>
+    <title></title>
+    <image></image>
+    <source></source>
+  </column>
+  
+  <column>
+    <title></title>
+    <image></image>
+    <source></source>
+  </column>
+  
+  <column>
+    <title></title>
+    <image></image>
+    <source></source>
+  </column>
+</table>
