@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.table.ifeatures;
+package org.xidget.table.features;
 
 import java.util.ArrayList;
 import java.util.List;

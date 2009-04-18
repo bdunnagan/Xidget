@@ -11,7 +11,7 @@ import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.text.feature.IChoiceListFeature;
+import org.xidget.text.ifeature.IChoiceListFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.diff.AbstractListDiffer;

@@ -12,8 +12,8 @@ import org.xidget.ifeature.IIconFeature;
 import org.xidget.ifeature.ITitleFeature;
 import org.xidget.table.features.CellTextModelFeature;
 import org.xidget.table.ifeatures.IRowSetFeature;
-import org.xidget.text.feature.ITextModelFeature;
-import org.xidget.text.feature.ITextWidgetFeature;
+import org.xidget.text.ifeature.ITextModelFeature;
+import org.xidget.text.ifeature.ITextWidgetFeature;
 import org.xmodel.IModelObject;
 
 /**

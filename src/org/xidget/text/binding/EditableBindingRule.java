@@ -6,8 +6,8 @@ package org.xidget.text.binding;
 
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
-import org.xidget.text.feature.ITextWidgetFeature;
-import org.xidget.text.feature.TextModelFeature;
+import org.xidget.text.ifeature.ITextWidgetFeature;
+import org.xidget.text.ifeature.TextModelFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;

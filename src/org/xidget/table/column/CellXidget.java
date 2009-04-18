@@ -8,8 +8,8 @@ import org.xidget.Xidget;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IIconFeature;
 import org.xidget.table.features.CellTextModelFeature;
-import org.xidget.text.feature.ITextModelFeature;
-import org.xidget.text.feature.ITextWidgetFeature;
+import org.xidget.text.ifeature.ITextModelFeature;
+import org.xidget.text.ifeature.ITextWidgetFeature;
 
 /**
  * An implementation of IXidget which represents a table column.
