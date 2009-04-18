@@ -4,7 +4,7 @@
  */
 package org.xidget.table.column;
 
-import org.xidget.AbstractXidget;
+import org.xidget.Xidget;
 import org.xidget.feature.IBindFeature;
 import org.xidget.feature.IIconFeature;
 import org.xidget.table.features.CellTextModelFeature;
@@ -14,7 +14,7 @@ import org.xidget.text.feature.ITextWidgetFeature;
 /**
  * An implementation of IXidget which represents a table column.
  */
-public class CellXidget extends AbstractXidget
+public class CellXidget extends Xidget
 {
   /* (non-Javadoc)
    * @see org.xidget.AbstractXidget#createFeatures()

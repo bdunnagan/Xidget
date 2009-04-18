@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.config.processor;
+package org.xidget.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public class TagProcessor implements IFeatured
   {
     this.loader = getClass().getClassLoader();
     this.parent = parent;
-    this.map = new HashMultiMap<String, ITagHandler>();
+    this.elementHandlers = new HashMultiMap<String, ITagHandler>();
     this.roots = new ArrayList<Object>();
   }
   
@@ -117,57 +117,66 @@ public class TagProcessor implements IFeatured
       // check for exit entry
       if ( entry.end)
       {
-        entry.handler.exit( this, entry.parent, entry.element);
+        entry.handler.exit( this, entry.parent, entry.node);
         continue;
       }
       
       // process tag
-      List<ITagHandler> handlers = getHandlers( entry.parent, entry.element);
-      if ( handlers == null)
-      {        
-        // push children for unhandled tags
-        List<IModelObject> children = entry.element.getChildren();
-        for( int i=children.size()-1; i>=0; i--)
-        {
-          stack.add( new Entry( entry.parent, null, children.get( i), false));
-        }        
-      }
-      else if ( handlers.size() == 1)
+      if ( entry.attribute) processAttributeHandlers( stack, entry);
+      else processElementHandlers( stack, entry);
+    }
+  }
+
+  /**
+   * Process the attribute tag handlers for the specified entry.
+   * @param stack The stack.
+   * @param entry The attribute entry.
+   */
+  private void processAttributeHandlers( Stack<Entry> stack, Entry entry) throws TagException
+  {
+    List<ITagHandler> handlers = attributeHandlers.get( entry.node.getType());
+    if ( handlers != null)
+    {
+      for( ITagHandler handler: handlers)
       {
-        ITagHandler handler = handlers.get( 0);
-        if ( handler.filter( this, entry.parent, entry.element))
+        if ( handler.filter( this, entry.parent, entry.node))
         {
-          if ( handler.enter( this, entry.parent, entry.element))
-          {
-            List<IModelObject> children = entry.element.getChildren();
-            if ( children.size() > 0)
-            {
-              // push special exit entry
-              stack.push( new Entry( entry.parent, handler, entry.element, true));
-              
-              // push children
-              for( int i=children.size()-1; i>=0; i--)
-              {
-                stack.add( new Entry( handler, null, children.get( i), false));
-              }
-            }
-            else
-            {
-              handler.exit( this, entry.parent, entry.element);
-            }
-          }
+          handler.enter( this, entry.parent, entry.node);
+          handler.exit( this, entry.parent, entry.node);
         }
       }
-      else if ( handlers.size() > 1)
+    }
+  }
+  
+  /**
+   * Process the element tag handlers for the specified entry.
+   * @param stack The stack.
+   * @param entry The element entry.
+   */
+  private void processElementHandlers( Stack<Entry> stack, Entry entry) throws TagException
+  {
+    List<ITagHandler> handlers = getHandlers( entry.node);
+    if ( handlers == null)
+    {        
+      // push children for unhandled tags
+      List<IModelObject> children = entry.node.getChildren();
+      for( int i=children.size()-1; i>=0; i--)
       {
-        List<ITagHandler> list = process( handlers, entry);
-        List<IModelObject> children = entry.element.getChildren();
-        for( ITagHandler handler: list)
+        stack.add( new Entry( entry.parent, null, children.get( i), false));
+      }        
+    }
+    else if ( handlers.size() == 1)
+    {
+      ITagHandler handler = handlers.get( 0);
+      if ( handler.filter( this, entry.parent, entry.node))
+      {
+        if ( handler.enter( this, entry.parent, entry.node))
         {
+          List<IModelObject> children = entry.node.getChildren();
           if ( children.size() > 0)
           {
             // push special exit entry
-            stack.push( new Entry( parent, handler, entry.element, true));
+            stack.push( new Entry( entry.parent, handler, entry.node, true));
             
             // push children
             for( int i=children.size()-1; i>=0; i--)
@@ -177,8 +186,31 @@ public class TagProcessor implements IFeatured
           }
           else
           {
-            handler.exit( this, entry.parent, entry.element);
+            handler.exit( this, entry.parent, entry.node);
           }
+        }
+      }
+    }
+    else if ( handlers.size() > 1)
+    {
+      List<ITagHandler> list = process( handlers, entry);
+      List<IModelObject> children = entry.node.getChildren();
+      for( ITagHandler handler: list)
+      {
+        if ( children.size() > 0)
+        {
+          // push special exit entry
+          stack.push( new Entry( parent, handler, entry.node, true));
+          
+          // push children
+          for( int i=children.size()-1; i>=0; i--)
+          {
+            stack.add( new Entry( handler, null, children.get( i), false));
+          }
+        }
+        else
+        {
+          handler.exit( this, entry.parent, entry.node);
         }
       }
     }
@@ -186,20 +218,19 @@ public class TagProcessor implements IFeatured
   
   /**
    * Returns the tag handlers for the specified element.
-   * @param parent The parent tag handler.
    * @param element The element.
    * @return Returns the tag handlers for the specified element.
    */
-  private List<ITagHandler> getHandlers( ITagHandler parent, IModelObject element)
+  private List<ITagHandler> getHandlers( IModelObject element)
   {
-    List<ITagHandler> globals = map.get( null);
-    List<ITagHandler> tagged = map.get( element.getType());
+    List<ITagHandler> globals = elementHandlers.get( null);
+    List<ITagHandler> tagged = elementHandlers.get( element.getType());
     if ( globals == null) return tagged;
     if ( tagged == null) return globals;
     
     List<ITagHandler> handlers = new ArrayList<ITagHandler>();
     handlers.addAll( globals);
-    handlers.addAll( map.get( element.getType()));
+    handlers.addAll( elementHandlers.get( element.getType()));
     return handlers;
   }
   
@@ -215,9 +246,9 @@ public class TagProcessor implements IFeatured
     for( int i=handlers.size()-1; i>=0; i--)
     {
       ITagHandler handler = handlers.get( i);
-      if ( handler.filter( this, entry.parent, entry.element))
+      if ( handler.filter( this, entry.parent, entry.node))
       {
-        if ( handler.enter( this, entry.parent, entry.element))
+        if ( handler.enter( this, entry.parent, entry.node))
         {
           list.add( handler);
         }
@@ -253,7 +284,7 @@ public class TagProcessor implements IFeatured
    */
   public void addHandler( String tag, ITagHandler handler)
   {
-    map.put( tag, handler);
+    elementHandlers.put( tag, handler);
   }
   
   /**
@@ -263,7 +294,7 @@ public class TagProcessor implements IFeatured
    */
   public void removeHandler( String tag, ITagHandler handler)
   {
-    map.remove( tag, handler);
+    elementHandlers.remove( tag, handler);
   }
   
   /**
@@ -273,9 +304,41 @@ public class TagProcessor implements IFeatured
    */
   public List<ITagHandler> getHandlers( String tag)
   {
-    return map.get( tag);
+    return elementHandlers.get( tag);
   }
   
+  /**
+   * Add a tag handler. More than one handler can be registered for a particular
+   * element name. In this case the handler <code>filter</code> method will be
+   * called to disambiguate.
+   * @param tag The tag.
+   * @param handler The handler.
+   */
+  public void addAttributeHandler( String tag, ITagHandler handler)
+  {
+    attributeHandlers.put( tag, handler);
+  }
+  
+  /**
+   * Remove a tag handler.
+   * @param tag The tag.
+   * @param handler The handler.
+   */
+  public void removeAttibuteHandler( String tag, ITagHandler handler)
+  {
+    attributeHandlers.remove( tag, handler);
+  }
+  
+  /**
+   * Returns the handlers for the specified tag.
+   * @param tag The tag.
+   * @return Returns the handlers for the specified tag.
+   */
+  public List<ITagHandler> getAttibuteHandlers( String tag)
+  {
+    return attributeHandlers.get( tag);
+  }
+    
   /* (non-Javadoc)
    * @see org.xidget.IFeatures#setFeature(java.lang.Object)
    */
@@ -304,20 +367,32 @@ public class TagProcessor implements IFeatured
     {
       this.parent = parent;
       this.handler = handler;
-      this.element = element;
+      this.node = element;
+      this.attribute = false;
+      this.end = end;
+    }
+    
+    public Entry( ITagHandler parent, ITagHandler handler, IModelObject element, String attribute, boolean end)
+    {
+      this.parent = parent;
+      this.handler = handler;
+      this.node = element.getAttributeNode( attribute);
+      this.attribute = true;
       this.end = end;
     }
     
     public ITagHandler parent;
     public ITagHandler handler;
-    public IModelObject element;
+    public IModelObject node;
+    public boolean attribute;
     public boolean end;
   }
  
   private IContext context;
   private ITagHandler parent;
   private ClassLoader loader;
-  private MultiMap<String, ITagHandler> map;
+  private MultiMap<String, ITagHandler> elementHandlers;
+  private MultiMap<String, ITagHandler> attributeHandlers;
   private List<Object> roots;
   private Map<Class<? extends Object>, Object> features;
 }

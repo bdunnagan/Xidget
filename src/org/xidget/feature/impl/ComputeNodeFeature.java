@@ -2,10 +2,18 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.layout;
+package org.xidget.feature.impl;
 
 import org.xidget.IXidget;
+import org.xidget.feature.IComputeNodeFeature;
 import org.xidget.feature.IWidgetFeature;
+import org.xidget.layout.IComputeNode;
+import org.xidget.layout.WidgetBottomNode;
+import org.xidget.layout.WidgetHeightNode;
+import org.xidget.layout.WidgetLeftNode;
+import org.xidget.layout.WidgetRightNode;
+import org.xidget.layout.WidgetTopNode;
+import org.xidget.layout.WidgetWidthNode;
 
 /**
  * An implementation of IComputeNodeFeature.

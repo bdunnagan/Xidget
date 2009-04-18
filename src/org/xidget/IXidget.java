@@ -5,8 +5,8 @@
 package org.xidget;
 
 import java.util.List;
-import org.xidget.config.processor.TagException;
-import org.xidget.config.processor.TagProcessor;
+import org.xidget.config.TagException;
+import org.xidget.config.TagProcessor;
 import org.xmodel.IModelObject;
 
 /**
@@ -17,11 +17,11 @@ public interface IXidget extends IFeatured
   public static boolean debug = true;
   
   /**
-   * Returns the parent of this xidget.
-   * @return Returns the parent of this xidget.
+   * Returns null or the parent of this xidget.
+   * @return Returns null or the parent of this xidget.
    */
   public IXidget getParent();
-
+  
   /**
    * Returns the children of this xidget.
    * @return Returns the children of this xidget.

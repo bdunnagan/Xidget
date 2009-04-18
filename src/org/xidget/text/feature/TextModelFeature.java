@@ -10,7 +10,6 @@ import org.xidget.IXidget;
 import org.xidget.config.util.TextTransform;
 import org.xidget.feature.IErrorFeature;
 import org.xidget.text.ITextValidator;
-import org.xidget.text.TextXidget;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.IExpression;
 
@@ -18,14 +17,15 @@ import org.xmodel.xpath.expression.IExpression;
  * An implementation of IModelTextAdapter which supports a variable number of channels.
  */
 public class TextModelFeature implements ITextModelFeature
-{
+{  
+  public final static String allChannel = "all";
   public final static String selectedChannel = "selected";
   
   public TextModelFeature( IXidget xidget)
   {
     this.xidget = xidget;
     channels = new HashMap<String, Channel>();
-    addChannel( TextXidget.allChannel);
+    addChannel( allChannel);
     addChannel( selectedChannel);
   }
   

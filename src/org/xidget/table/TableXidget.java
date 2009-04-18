@@ -4,11 +4,11 @@
  */
 package org.xidget.table;
 
-import org.xidget.AbstractXidget;
+import org.xidget.Xidget;
 import org.xidget.IXidget;
 import org.xidget.binding.XidgetTagHandler;
-import org.xidget.config.processor.TagException;
-import org.xidget.config.processor.TagProcessor;
+import org.xidget.config.TagException;
+import org.xidget.config.TagProcessor;
 import org.xidget.feature.IErrorFeature;
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.table.column.CellXidget;
@@ -27,7 +27,7 @@ import org.xmodel.IModelObject;
  * <p>
  * The children of a TableXidget are instances of ColumnXidget.
  */
-public abstract class TableXidget extends AbstractXidget
+public abstract class TableXidget extends Xidget
 {
   /* (non-Javadoc)
    * @see org.xidget.AbstractXidget#startConfig(org.xidget.config.processor.TagProcessor, org.xidget.IXidget, org.xmodel.IModelObject)

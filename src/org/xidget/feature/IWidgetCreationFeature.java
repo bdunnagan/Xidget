@@ -4,24 +4,21 @@
  */
 package org.xidget.feature;
 
-import org.xmodel.IModelObject;
-
 /**
- * An interface for managing the widget hierarchy. This method supports dynamic
- * application building by allowing the <code>createWidget</code> method to be
- * called more than once.
+ * An interface for creating and deleting the widget (or widgets) associated with a xidget.
+ * It is usually convenient to implement this interface with another feature interface that
+ * provides access to the widget that was created.
  */
 public interface IWidgetCreationFeature
 {
   /**
-   * Create a widget with the specified label and configuration element.
-   * @param label The optional label.
-   * @param element The configuration element.
+   * Create the widget or widgets for the associated xidget. This method
+   * does not create widgets for the children of the xidget.
    */
-  public void createWidget( String label, IModelObject element);
+  public void createWidget();
   
   /**
-   * Destroy the widget(s).
+   * Destroy the widget or widgets.
    */
   public void destroyWidget();
 }

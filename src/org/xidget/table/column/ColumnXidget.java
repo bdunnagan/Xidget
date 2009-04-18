@@ -4,10 +4,10 @@
  */
 package org.xidget.table.column;
 
-import org.xidget.AbstractXidget;
+import org.xidget.Xidget;
 import org.xidget.IXidget;
-import org.xidget.config.processor.TagException;
-import org.xidget.config.processor.TagProcessor;
+import org.xidget.config.TagException;
+import org.xidget.config.TagProcessor;
 import org.xidget.feature.IIconFeature;
 import org.xidget.feature.ITitleFeature;
 import org.xidget.table.features.CellTextModelFeature;
@@ -19,7 +19,7 @@ import org.xmodel.IModelObject;
 /**
  * An implementation of IXidget which represents a table column.
  */
-public abstract class ColumnXidget extends AbstractXidget
+public abstract class ColumnXidget extends Xidget
 {
   /* (non-Javadoc)
    * @see org.xidget.IXidget#startConfig(org.xidget.config.TagProcessor, org.xidget.IXidget, org.xmodel.IModelObject)

@@ -1,9 +1,9 @@
 package org.xidget.xaction;
 
 import java.util.List;
+import org.xidget.Creator;
 import org.xidget.IXidget;
-import org.xidget.config.Configuration;
-import org.xidget.config.processor.TagException;
+import org.xidget.config.TagException;
 import org.xidget.feature.IBindFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
@@ -38,13 +38,18 @@ public class XidgetAction extends GuardedAction
     
     try
     {
-      StatefulContext context2 = new StatefulContext( context, root);
-      Configuration configuration = new Configuration();
-      List<IXidget> xidgets = configuration.parse( context2);
+      StatefulContext inner = new StatefulContext( context, root);
+      Creator creator = new Creator();
+      
+      // parse and build
+      List<IXidget> xidgets = creator.parse( inner);
+      if ( xidgets.size() == 0) return;
+      
+      // create widget hierarchy
+      creator.build( xidgets.get( 0));
       
       // bind the xidget
-      IXidget xidget = xidgets.get( 0);
-      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      IBindFeature bindFeature = xidgets.get( 0).getFeature( IBindFeature.class);
       bindFeature.bind( (StatefulContext)context);
     }
     catch( TagException e)

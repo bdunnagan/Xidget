@@ -5,10 +5,10 @@
 package org.xidget.layout.xaction;
 
 import org.xidget.IXidget;
+import org.xidget.feature.IComputeNodeFeature;
+import org.xidget.feature.ILayoutFeature;
 import org.xidget.feature.IWidgetFeature;
 import org.xidget.layout.IComputeNode;
-import org.xidget.layout.IComputeNodeFeature;
-import org.xidget.layout.ILayoutFeature;
 import org.xidget.layout.OffsetNode;
 import org.xidget.layout.ProportionalNode;
 import org.xmodel.IModelObject;

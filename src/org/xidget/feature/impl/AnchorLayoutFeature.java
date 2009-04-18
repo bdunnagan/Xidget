@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.layout;
+package org.xidget.feature.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import org.xidget.IXidget;
-import org.xidget.config.processor.TagProcessor;
+import org.xidget.config.TagProcessor;
+import org.xidget.feature.ILayoutFeature;
+import org.xidget.layout.IComputeNode;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xaction.XActionDocument;
