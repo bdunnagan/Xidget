@@ -14,7 +14,7 @@ import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
-import org.xidget.feature.IWidgetCreationFeature;
+import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xidget.table.binding.RowSetBindingRule;
 import org.xidget.text.binding.EditableBindingRule;
 import org.xidget.text.binding.TextBindingRule;

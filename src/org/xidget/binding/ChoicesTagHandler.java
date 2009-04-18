@@ -10,7 +10,7 @@ import org.xidget.IXidget;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
-import org.xidget.feature.IBindFeature;
+import org.xidget.ifeature.IBindFeature;
 import org.xidget.text.feature.IChoiceListFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;

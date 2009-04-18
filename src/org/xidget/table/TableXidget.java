@@ -9,15 +9,15 @@ import org.xidget.IXidget;
 import org.xidget.binding.XidgetTagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
-import org.xidget.feature.IErrorFeature;
-import org.xidget.feature.IWidgetFeature;
+import org.xidget.ifeature.IErrorFeature;
+import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.table.column.CellXidget;
 import org.xidget.table.column.ColumnXidget;
-import org.xidget.table.features.IRowSetFeature;
-import org.xidget.table.features.ITableModelFeature;
-import org.xidget.table.features.ITableWidgetFeature;
 import org.xidget.table.features.RowSetFeature;
 import org.xidget.table.features.TableModelFeature;
+import org.xidget.table.ifeatures.IRowSetFeature;
+import org.xidget.table.ifeatures.ITableModelFeature;
+import org.xidget.table.ifeatures.ITableWidgetFeature;
 import org.xmodel.IModelObject;
 
 /**

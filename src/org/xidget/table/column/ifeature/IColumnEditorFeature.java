@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.table.column.feature;
+package org.xidget.table.column.ifeature;
 
 import org.xidget.IXidget;
 import org.xmodel.xpath.expression.StatefulContext;

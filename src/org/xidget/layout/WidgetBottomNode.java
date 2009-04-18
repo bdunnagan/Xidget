@@ -4,8 +4,8 @@
  */
 package org.xidget.layout;
 
-import org.xidget.feature.IWidgetFeature;
-import org.xidget.feature.IWidgetFeature.Bounds;
+import org.xidget.ifeature.IWidgetFeature;
+import org.xidget.ifeature.IWidgetFeature.Bounds;
 import org.xmodel.util.Radix;
 
 /**

@@ -5,8 +5,8 @@
 package org.xidget.table.column;
 
 import org.xidget.Xidget;
-import org.xidget.feature.IBindFeature;
-import org.xidget.feature.IIconFeature;
+import org.xidget.ifeature.IBindFeature;
+import org.xidget.ifeature.IIconFeature;
 import org.xidget.table.features.CellTextModelFeature;
 import org.xidget.text.feature.ITextModelFeature;
 import org.xidget.text.feature.ITextWidgetFeature;

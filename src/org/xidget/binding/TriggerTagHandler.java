@@ -8,7 +8,7 @@ import org.xidget.IXidget;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
-import org.xidget.feature.IBindFeature;
+import org.xidget.ifeature.IBindFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xaction.trigger.EntityTrigger;

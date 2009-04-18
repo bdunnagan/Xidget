@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.xidget.IXidget;
 import org.xidget.config.util.TextTransform;
-import org.xidget.feature.IErrorFeature;
+import org.xidget.ifeature.IErrorFeature;
 import org.xidget.text.ITextValidator;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.IExpression;

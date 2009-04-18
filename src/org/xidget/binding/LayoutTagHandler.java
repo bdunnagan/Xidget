@@ -8,7 +8,7 @@ import org.xidget.IXidget;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
-import org.xidget.feature.ILayoutFeature;
+import org.xidget.ifeature.ILayoutFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.XPath;

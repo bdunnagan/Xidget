@@ -5,7 +5,7 @@
 package org.xidget.binding;
 
 import org.xidget.IXidget;
-import org.xidget.feature.IWidgetFeature;
+import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;

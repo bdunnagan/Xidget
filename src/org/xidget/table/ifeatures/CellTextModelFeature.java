@@ -2,11 +2,13 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.table.features;
+package org.xidget.table.ifeatures;
 
 import org.xidget.IXidget;
 import org.xidget.config.util.TextTransform;
-import org.xidget.feature.IErrorFeature;
+import org.xidget.ifeature.IErrorFeature;
+import org.xidget.table.ifeatures.IRowSetFeature;
+import org.xidget.table.ifeatures.ITableModelFeature;
 import org.xidget.text.ITextValidator;
 import org.xidget.text.TextXidget;
 import org.xidget.text.feature.ITextModelFeature;

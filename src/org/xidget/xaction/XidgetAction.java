@@ -4,7 +4,7 @@ import java.util.List;
 import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.config.TagException;
-import org.xidget.feature.IBindFeature;
+import org.xidget.ifeature.IBindFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;

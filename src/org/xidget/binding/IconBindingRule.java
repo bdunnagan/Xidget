@@ -6,7 +6,7 @@ package org.xidget.binding;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.feature.IIconFeature;
+import org.xidget.ifeature.IIconFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
