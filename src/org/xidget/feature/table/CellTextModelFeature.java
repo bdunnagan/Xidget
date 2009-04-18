@@ -2,16 +2,16 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.table.features;
+package org.xidget.feature.table;
 
 import org.xidget.IXidget;
 import org.xidget.config.util.TextTransform;
+import org.xidget.feature.text.TextModelFeature;
 import org.xidget.ifeature.IErrorFeature;
-import org.xidget.table.ifeatures.IRowSetFeature;
-import org.xidget.table.ifeatures.ITableModelFeature;
+import org.xidget.ifeature.table.IRowSetFeature;
+import org.xidget.ifeature.table.ITableModelFeature;
+import org.xidget.ifeature.text.ITextModelFeature;
 import org.xidget.text.ITextValidator;
-import org.xidget.text.TextXidget;
-import org.xidget.text.ifeature.ITextModelFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.IExpression;
 
@@ -37,7 +37,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public IModelObject getSource( String channel)
   {
-    if ( channel.equals( TextXidget.allChannel))
+    if ( channel.equals( TextModelFeature.allChannel))
       return modelFeature.getSource( rowSetFeature.getCurrentRow(), column, channel);
     return null;
   }
@@ -47,7 +47,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public void setSource( String channel, IModelObject node)
   {
-    if ( channel.equals( TextXidget.allChannel))
+    if ( channel.equals( TextModelFeature.allChannel))
       modelFeature.setSource( rowSetFeature.getCurrentRow(), column, channel, node);
   }
 
@@ -56,7 +56,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public void setText( String channel, String text)
   {
-    if ( channel.equals( TextXidget.allChannel) && !updating)
+    if ( channel.equals( TextModelFeature.allChannel) && !updating)
     {
       // transform
       if ( transform != null) 
@@ -88,7 +88,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public void setTransform( String channel, IExpression expression)
   {
-    if ( channel.equals( TextXidget.allChannel))
+    if ( channel.equals( TextModelFeature.allChannel))
       transform = new TextTransform( expression);
   }
 
@@ -97,7 +97,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public void setValidator( String channel, ITextValidator validator)
   {
-    if ( channel.equals( TextXidget.allChannel))
+    if ( channel.equals( TextModelFeature.allChannel))
       this.validator = validator;
   }
   

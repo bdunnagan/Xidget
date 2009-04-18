@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.text;
+package org.xidget.binding.text;
 
 import org.xidget.IXidget;
 import org.xidget.binding.XidgetTagHandler;
@@ -11,7 +11,7 @@ import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
-import org.xidget.text.ifeature.ITextModelFeature;
+import org.xidget.ifeature.text.ITextModelFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IExpression;

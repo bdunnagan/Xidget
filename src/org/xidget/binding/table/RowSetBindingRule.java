@@ -2,13 +2,13 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.table.binding;
+package org.xidget.binding.table;
 
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
-import org.xidget.table.ifeatures.IRowSetFeature;
-import org.xidget.table.ifeatures.ITableModelFeature;
+import org.xidget.ifeature.table.IRowSetFeature;
+import org.xidget.ifeature.table.ITableModelFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;

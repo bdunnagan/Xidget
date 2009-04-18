@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.text.ifeature;
+package org.xidget.ifeature.text;
 
 import org.xidget.text.ITextValidator;
 import org.xmodel.IModelObject;

@@ -13,12 +13,12 @@ import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.LayoutTagHandler;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
+import org.xidget.binding.table.RowSetBindingRule;
+import org.xidget.binding.text.EditableBindingRule;
+import org.xidget.binding.text.TextBindingRule;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IWidgetCreationFeature;
-import org.xidget.table.binding.RowSetBindingRule;
-import org.xidget.text.binding.EditableBindingRule;
-import org.xidget.text.binding.TextBindingRule;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**

@@ -13,7 +13,7 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.text.ifeature.IChoiceListFeature;
+import org.xidget.ifeature.combo.IChoiceListFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.diff.AbstractListDiffer;

@@ -40,4 +40,21 @@ combo
   
 table
 
+  IRowSetFeature
+  ITableModelFeature
+  ITableWidgetFeature
+  IWidgetFeature
+  IErrorFeature
+  
+table column
+
+  ITitleFeature
+  IIconFeature
+
+table cell
+
+  IconFeature
+  ITextModelFeature
+  ITextWidgetFeature
+
 tree

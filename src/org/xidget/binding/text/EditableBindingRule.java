@@ -2,12 +2,12 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.text.binding;
+package org.xidget.binding.text;
 
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
-import org.xidget.text.feature.TextModelFeature;
-import org.xidget.text.ifeature.ITextWidgetFeature;
+import org.xidget.feature.text.TextModelFeature;
+import org.xidget.ifeature.text.ITextWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
