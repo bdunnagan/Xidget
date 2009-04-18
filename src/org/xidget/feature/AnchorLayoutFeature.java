@@ -90,6 +90,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void compile()
   {
+    if ( config == null) throw new RuntimeException( "Layout not defined for xidget: "+xidget);
+    
     compiled = true;
     nodes = new ArrayList<IComputeNode>();
 

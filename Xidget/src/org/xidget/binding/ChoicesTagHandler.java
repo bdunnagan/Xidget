@@ -11,6 +11,7 @@ import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IBindFeature;
+import org.xidget.ifeature.IXidgetFeature;
 import org.xidget.text.feature.IChoiceListFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -34,11 +35,10 @@ public class ChoicesTagHandler implements ITagHandler
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( !(parent instanceof XidgetTagHandler))
-      throw new TagException(
-        "BindingTagHandler must occur as child of XidgetTagHandler.");
+    IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
+    if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    IXidget xidget = xidgetFeature.getXidget();
     if ( element.getNumberOfChildren() > 0)
     {
       IChoiceListFeature feature = xidget.getFeature( IChoiceListFeature.class);

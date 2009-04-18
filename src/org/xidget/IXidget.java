@@ -8,6 +8,7 @@ import java.util.List;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xmodel.IModelObject;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An interface for widget adapters.
@@ -49,4 +50,26 @@ public interface IXidget extends IFeatured
    * @return Returns the configuration element that generated this xidget.
    */
   public IModelObject getConfig();
+  
+  /**
+   * Create the widget(s) associated with this xidget.
+   */
+  public void createWidget();
+  
+  /**
+   * Destroy the widget(s) associated with this xidget.
+   */
+  public void destroyWidget();
+  
+  /**
+   * Bind the xidget to the specified context.
+   * @param context The context.
+   */
+  public void bind( StatefulContext context);
+  
+  /**
+   * Unbind the xidget from the specified context.
+   * @param context The context.
+   */
+  public void unbind( StatefulContext context);
 }

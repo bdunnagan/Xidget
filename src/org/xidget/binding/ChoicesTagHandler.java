@@ -7,9 +7,11 @@ package org.xidget.binding;
 import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
+import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
+import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.text.ifeature.IChoiceListFeature;
 import org.xmodel.IModelObject;
@@ -26,7 +28,7 @@ import org.xmodel.xpath.expression.IExpressionListener;
  * can specify choices in one of two ways: using an expression, or by the elements
  * children.
  */
-public class ChoicesTagHandler implements ITagHandler
+public class ChoicesTagHandler extends AbstractTagHandler
 {
   /* (non-Javadoc)
    * @see org.xidget.config.processor.ITagHandler#enter(org.xidget.config.processor.TagProcessor, 
@@ -34,11 +36,10 @@ public class ChoicesTagHandler implements ITagHandler
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( !(parent instanceof XidgetTagHandler))
-      throw new TagException(
-        "BindingTagHandler must occur as child of XidgetTagHandler.");
+    IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
+    if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    IXidget xidget = xidgetFeature.getXidget();
     if ( element.getNumberOfChildren() > 0)
     {
       IChoiceListFeature feature = xidget.getFeature( IChoiceListFeature.class);
@@ -64,23 +65,6 @@ public class ChoicesTagHandler implements ITagHandler
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.config.processor.ITagHandler#exit(org.xidget.config.processor.TagProcessor, 
-   * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
-   */
-  public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
-  {
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.config.processor.ITagHandler#filter(org.xidget.config.processor.TagProcessor, 
-   * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
-   */
-  public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
-  {
-    return true;
-  }
-  
   private static final class Listener extends ExpressionListener
   {
     Listener( IXidget xidget)

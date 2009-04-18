@@ -5,9 +5,11 @@
 package org.xidget.binding;
 
 import org.xidget.IXidget;
+import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
+import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -18,7 +20,7 @@ import org.xmodel.xpath.expression.IExpressionListener;
 /**
  * A tag handler which creates a new XidgetBinding on its parent xidget.
  */
-public class BindingTagHandler implements ITagHandler
+public class BindingTagHandler extends AbstractTagHandler
 {
   public static enum BindAt { start, end};
   
@@ -46,14 +48,6 @@ public class BindingTagHandler implements ITagHandler
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.config.ITagHandler#filter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
-   */
-  public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
-  {
-    return true;
-  }
-    
-  /* (non-Javadoc)
    * @see org.xidget.config.ITagHandler#enter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
@@ -78,12 +72,11 @@ public class BindingTagHandler implements ITagHandler
    */
   private void bind( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( !(parent instanceof XidgetTagHandler))
-      throw new TagException(
-        "BindingTagHandler must occur as child of XidgetTagHandler.");
+    IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
+    if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
     // check if rule applies
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    IXidget xidget = xidgetFeature.getXidget();
     if ( !rule.applies( xidget, element)) return; 
     
     // create expression

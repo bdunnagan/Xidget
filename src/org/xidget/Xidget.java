@@ -8,21 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
+import org.xidget.ifeature.IBindFeature;
+import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
- * A universal implementation of IXidget. Since xidgets are configured by specifying 
- * their features, it is rarely necessary to have customized subclasses.  Refer to 
- * the feature sets for xidgets for information about how to configure each type of
- * xidget.
+ * A convenience base implementation of IXidget.
  */
-public final class Xidget implements IXidget
+public abstract class Xidget implements IXidget
 {
   /**
    * Set the parent xidget.
    * @param parent The parent.
    */
-  private void setParent( IXidget parent)
+  private final void setParent( IXidget parent)
   {
     if ( this.parent != null) this.parent.getChildren().remove( this);
     this.parent = parent;
@@ -32,7 +32,7 @@ public final class Xidget implements IXidget
   /* (non-Javadoc)
    * @see org.xidget.IXidget#getParent()
    */
-  public IXidget getParent()
+  public final IXidget getParent()
   {
     return parent;
   }
@@ -40,7 +40,7 @@ public final class Xidget implements IXidget
   /* (non-Javadoc)
    * @see org.xidget.IXidget#getChildren()
    */
-  public List<IXidget> getChildren()
+  public final List<IXidget> getChildren()
   {
     if ( children == null) children = new ArrayList<IXidget>();
     return children;
@@ -53,7 +53,7 @@ public final class Xidget implements IXidget
    * @param element The configuration element.
    * @return Returns true.
    */
-  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
+  public final boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
   {
     setParent( parent);
     
@@ -67,16 +67,52 @@ public final class Xidget implements IXidget
   /* (non-Javadoc)
    * @see org.xidget.IXidget#endConfig(org.xidget.config.processor.TagProcessor, org.xmodel.IModelObject)
    */
-  public void endConfig( TagProcessor processor, IModelObject element) throws TagException
+  public final void endConfig( TagProcessor processor, IModelObject element) throws TagException
   {
   }
 
   /* (non-Javadoc)
    * @see org.xidget.IXidget#getConfig()
    */
-  public IModelObject getConfig()
+  public final IModelObject getConfig()
   {
     return config;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#createWidget()
+   */
+  public final void createWidget()
+  {
+    IWidgetCreationFeature feature = getFeature( IWidgetCreationFeature.class);
+    if ( feature != null) feature.createWidget();
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#destroyWidget()
+   */
+  public final void destroyWidget()
+  {
+    IWidgetCreationFeature feature = getFeature( IWidgetCreationFeature.class);
+    if ( feature != null) feature.destroyWidget();
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#bind(org.xmodel.xpath.expression.StatefulContext)
+   */
+  public final void bind( StatefulContext context)
+  {
+    IBindFeature bindFeature = getFeature( IBindFeature.class);
+    if ( bindFeature != null) bindFeature.bind( context);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#unbind(org.xmodel.xpath.expression.StatefulContext)
+   */
+  public final void unbind( StatefulContext context)
+  {
+    IBindFeature bindFeature = getFeature( IBindFeature.class);
+    if ( bindFeature != null) bindFeature.unbind( context);
   }
 
   /* (non-Javadoc)
@@ -85,7 +121,7 @@ public final class Xidget implements IXidget
   public <T> T getFeature( Class<T> clss)
   {
     // debug
-    if ( IXidget.debug) System.err.printf( "Feature %s not found on xidget %s.", clss.getSimpleName(), getConfig());
+    if ( IXidget.debug) System.err.printf( "Feature '%s' not found on xidget %s.", clss.getSimpleName(), getConfig());
     return null;
   }
 

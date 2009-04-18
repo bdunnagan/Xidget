@@ -5,9 +5,11 @@
 package org.xidget.binding;
 
 import org.xidget.IXidget;
+import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
+import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -19,24 +21,18 @@ import org.xmodel.xpath.expression.StatefulContext;
  * An implementation of ITagHandler for configuring the layout of a xidget. This handler
  * can be used as both an attribute and element handler.
  */
-public class LayoutTagHandler implements ITagHandler
+public class LayoutTagHandler extends AbstractTagHandler
 {
-  /* (non-Javadoc)
-   * @see org.xidget.config.processor.ITagHandler#filter(org.xidget.config.processor.TagProcessor, 
-   * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
-   */
-  public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
-  {
-    return true;
-  }
-
   /* (non-Javadoc)
    * @see org.xidget.config.processor.ITagHandler#enter(org.xidget.config.processor.TagProcessor, 
    * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
+    if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
+    
+    IXidget xidget = xidgetFeature.getXidget();
     if ( xidget == null) throw new TagException( "Parent tag handler is not a xidget: "+element);
 
     // quietly return if there is not layout feature
@@ -65,13 +61,5 @@ public class LayoutTagHandler implements ITagHandler
     }
     
     return false;
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.config.processor.ITagHandler#exit(org.xidget.config.processor.TagProcessor, 
-   * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
-   */
-  public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
-  {
   }
 }

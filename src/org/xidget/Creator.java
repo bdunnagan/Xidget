@@ -10,6 +10,7 @@ import java.util.Stack;
 import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
+import org.xidget.binding.LayoutTagHandler;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
 import org.xidget.config.TagException;
@@ -26,9 +27,9 @@ import org.xmodel.xpath.expression.StatefulContext;
  * an instance of TagProcessor which has already been configured with platform
  * specific tag handlers.
  */
-public class Creator
+public final class Creator
 {
-  public Creator()
+  protected Creator()
   {
     this.processor = new TagProcessor();
 
@@ -40,16 +41,24 @@ public class Creator
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
 
+    processor.addHandler( "layout", new LayoutTagHandler());
+    processor.addAttributeHandler( "layout", new LayoutTagHandler());
+    
     // processor.addHandler( "context", new BindingTagHandler( new ContextBindingRule()));
+    
+    // toolkit configuration
+    if ( toolkit == null) throw new RuntimeException( "Platform toolkit not defined on Creator.");
+    toolkit.configure( processor);
   }
 
   /**
-   * Returns the tag processor.
-   * @return Returns the tag processor.
+   * Set the toolkit used by the creator singleton. This method may not work
+   * if the toolkit is specified from a thread other than the UI thread.
+   * @param toolkit The toolkit.
    */
-  public TagProcessor getProcessor()
+  public static void setToolkit( IToolkit toolkit)
   {
-    return processor;
+    Creator.toolkit = toolkit;
   }
   
   /**
@@ -97,5 +106,6 @@ public class Creator
   }
   
   private static Creator instance;
+  private static IToolkit toolkit;
   private TagProcessor processor;
 }

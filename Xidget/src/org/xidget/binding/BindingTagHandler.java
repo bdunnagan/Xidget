@@ -9,6 +9,7 @@ import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IBindFeature;
+import org.xidget.ifeature.IXidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.XPath;
@@ -78,12 +79,11 @@ public class BindingTagHandler implements ITagHandler
    */
   private void bind( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( !(parent instanceof XidgetTagHandler))
-      throw new TagException(
-        "BindingTagHandler must occur as child of XidgetTagHandler.");
+    IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
+    if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
     // check if rule applies
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    IXidget xidget = xidgetFeature.getXidget();
     if ( !rule.applies( xidget, element)) return; 
     
     // create expression

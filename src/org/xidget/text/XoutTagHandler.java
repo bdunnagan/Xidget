@@ -6,9 +6,11 @@ package org.xidget.text;
 
 import org.xidget.IXidget;
 import org.xidget.binding.XidgetTagHandler;
+import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
+import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.text.ifeature.ITextModelFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -17,7 +19,7 @@ import org.xmodel.xpath.expression.IExpression;
 /**
  * A tag handler for the <i>xin</i> element.
  */
-public class XoutTagHandler implements ITagHandler
+public class XoutTagHandler extends AbstractTagHandler
 {
   /**
    * Create a tag handler associated with the specified text channel.
@@ -34,36 +36,18 @@ public class XoutTagHandler implements ITagHandler
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( !(parent instanceof XidgetTagHandler))
-      throw new TagException(
-        "XoutTagHandler must occur as child of XidgetTagHandler.");
+    IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
+    if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
     // get transform
     IExpression xoutExpr = Xlate.get( element, (IExpression)null);
     
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    IXidget xidget = xidgetFeature.getXidget();
     ITextModelFeature adapter = xidget.getFeature( ITextModelFeature.class);
     adapter.setTransform( channel, xoutExpr);
     
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.config.processor.ITagHandler#exit(org.xidget.config.processor.TagProcessor, 
-   * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
-   */
-  public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
-  {
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.config.processor.ITagHandler#filter(org.xidget.config.processor.TagProcessor, 
-   * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
-   */
-  public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
-  {
-    return true;
-  }
-  
   private String channel;
 }

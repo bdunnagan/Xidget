@@ -5,9 +5,11 @@
 package org.xidget.binding;
 
 import org.xidget.IXidget;
+import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
+import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.XActionDocument;
@@ -20,7 +22,7 @@ import org.xmodel.xpath.expression.StatefulContext;
 /**
  * An implementation of ITagHandler for triggers.
  */
-public class TriggerTagHandler implements ITagHandler
+public class TriggerTagHandler extends AbstractTagHandler
 {
   /* (non-Javadoc)
    * @see org.xidget.config.processor.ITagHandler#enter(org.xidget.config.processor.TagProcessor, 
@@ -28,9 +30,8 @@ public class TriggerTagHandler implements ITagHandler
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( !(parent instanceof XidgetTagHandler))
-      throw new TagException(
-        "TriggerTagHandler must occur as child of XidgetTagHandler.");
+    IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
+    if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
     
     // create trigger
     ITrigger trigger = null;
@@ -47,30 +48,13 @@ public class TriggerTagHandler implements ITagHandler
     trigger.configure( document);
     
     TriggerBinding binding = new TriggerBinding( trigger);
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    IXidget xidget = xidgetFeature.getXidget();
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
     if ( bindFeature != null) bindFeature.add( binding);
     
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.config.processor.ITagHandler#exit(org.xidget.config.processor.TagProcessor, 
-   * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
-   */
-  public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
-  {
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.config.processor.ITagHandler#filter(org.xidget.config.processor.TagProcessor, 
-   * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
-   */
-  public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
-  {
-    return true;
-  }
-  
   private final static class TriggerBinding implements IXidgetBinding
   {
     TriggerBinding( ITrigger trigger)

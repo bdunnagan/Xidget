@@ -9,6 +9,7 @@ import org.xidget.binding.XidgetTagHandler;
 import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
+import org.xidget.ifeature.IXidgetFeature;
 import org.xidget.text.feature.ITextModelFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -34,14 +35,13 @@ public class XoutTagHandler implements ITagHandler
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( !(parent instanceof XidgetTagHandler))
-      throw new TagException(
-        "XoutTagHandler must occur as child of XidgetTagHandler.");
+    IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
+    if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
     // get transform
     IExpression xoutExpr = Xlate.get( element, (IExpression)null);
     
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    IXidget xidget = xidgetFeature.getXidget();
     ITextModelFeature adapter = xidget.getFeature( ITextModelFeature.class);
     adapter.setTransform( channel, xoutExpr);
     

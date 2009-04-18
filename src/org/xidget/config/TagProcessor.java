@@ -37,6 +37,7 @@ public class TagProcessor implements IFeatured
     this.loader = getClass().getClassLoader();
     this.parent = parent;
     this.elementHandlers = new HashMultiMap<String, ITagHandler>();
+    this.attributeHandlers = new HashMultiMap<String, ITagHandler>();
     this.roots = new ArrayList<Object>();
   }
   
@@ -158,6 +159,13 @@ public class TagProcessor implements IFeatured
     List<ITagHandler> handlers = getHandlers( entry.node);
     if ( handlers == null)
     {        
+      // push attributes for unhandled tags
+      List<IModelObject> attributes = getAttributes( entry.node);
+      for( int i=attributes.size()-1; i>=0; i--)
+      {
+        stack.add( new Entry( entry.parent, null, attributes.get( i), true, false));
+      }        
+      
       // push children for unhandled tags
       List<IModelObject> children = entry.node.getChildren();
       for( int i=children.size()-1; i>=0; i--)
@@ -177,6 +185,13 @@ public class TagProcessor implements IFeatured
           {
             // push special exit entry
             stack.push( new Entry( entry.parent, handler, entry.node, true));
+            
+            // push attributes for unhandled tags
+            List<IModelObject> attributes = getAttributes( entry.node);
+            for( int i=attributes.size()-1; i>=0; i--)
+            {
+              stack.add( new Entry( handler, null, attributes.get( i), true, false));
+            }        
             
             // push children
             for( int i=children.size()-1; i>=0; i--)
@@ -201,6 +216,13 @@ public class TagProcessor implements IFeatured
         {
           // push special exit entry
           stack.push( new Entry( parent, handler, entry.node, true));
+          
+          // push attributes for unhandled tags
+          List<IModelObject> attributes = getAttributes( entry.node);
+          for( int i=attributes.size()-1; i>=0; i--)
+          {
+            stack.add( new Entry( handler, null, attributes.get( i), true, false));
+          }        
           
           // push children
           for( int i=children.size()-1; i>=0; i--)
@@ -255,6 +277,19 @@ public class TagProcessor implements IFeatured
       }
     }
     return list;
+  }
+  
+  /**
+   * Returns the attributes of the specified element.
+   * @param element The element. 
+   * @return Returns the attributes of the specified element.
+   */
+  private List<IModelObject> getAttributes( IModelObject element)
+  {
+    List<IModelObject> nodes = new ArrayList<IModelObject>();
+    for( String attribute: element.getAttributeNames())
+      nodes.add( element.getAttributeNode( attribute));
+    return nodes;
   }
   
   /**
@@ -372,12 +407,12 @@ public class TagProcessor implements IFeatured
       this.end = end;
     }
     
-    public Entry( ITagHandler parent, ITagHandler handler, IModelObject element, String attribute, boolean end)
+    public Entry( ITagHandler parent, ITagHandler handler, IModelObject node, boolean attribute, boolean end)
     {
       this.parent = parent;
       this.handler = handler;
-      this.node = element.getAttributeNode( attribute);
-      this.attribute = true;
+      this.node = node;
+      this.attribute = attribute;
       this.end = end;
     }
     

@@ -1,0 +1,43 @@
+all
+  
+  IWidgetCreationFeature
+  ILayoutFeature
+  IBindFeature
+
+application
+
+  ISwingContainerFeature
+  ISwingFrameFeature
+
+dialog
+
+form
+
+  ISwingContainerFeature
+  IErrorFeature
+  ISwingWidgetFeature
+  IWidgetFeature
+  ILayoutFeature
+
+button
+
+slider
+
+text
+
+  ITextModelFeature
+  ITextWidgetFeature
+  IErrorFeature
+  IWidgetFeature
+
+combo
+
+  IChoiceListFeature
+  ITextModelFeature
+  ITextWidgetFeature
+  IErrorFeature
+  IWidgetFeature
+  
+table
+
+tree

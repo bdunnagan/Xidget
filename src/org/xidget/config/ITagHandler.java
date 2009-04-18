@@ -4,12 +4,13 @@
  */
 package org.xidget.config;
 
+import org.xidget.IFeatured;
 import org.xmodel.IModelObject;
 
 /**
  * An interface for processing an element from an xml configuration.
  */
-public interface ITagHandler
+public interface ITagHandler extends IFeatured
 {
   /**
    * Returns true if this tag handler processes the specified element. This method is

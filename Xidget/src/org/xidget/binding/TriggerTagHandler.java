@@ -9,6 +9,7 @@ import org.xidget.config.processor.ITagHandler;
 import org.xidget.config.processor.TagException;
 import org.xidget.config.processor.TagProcessor;
 import org.xidget.feature.IBindFeature;
+import org.xidget.ifeature.IXidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xaction.trigger.EntityTrigger;
@@ -28,9 +29,8 @@ public class TriggerTagHandler implements ITagHandler
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( !(parent instanceof XidgetTagHandler))
-      throw new TagException(
-        "TriggerTagHandler must occur as child of XidgetTagHandler.");
+    IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
+    if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
     
     // create trigger
     ITrigger trigger = null;
@@ -47,7 +47,7 @@ public class TriggerTagHandler implements ITagHandler
     trigger.configure( document);
     
     TriggerBinding binding = new TriggerBinding( trigger);
-    IXidget xidget = ((XidgetTagHandler)parent).getLastXidget();
+    IXidget xidget = xidgetFeature.getXidget();
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
     if ( bindFeature != null) bindFeature.add( binding);
     

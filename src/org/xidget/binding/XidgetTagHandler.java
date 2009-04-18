@@ -6,15 +6,17 @@ package org.xidget.binding;
 
 import java.util.Stack;
 import org.xidget.IXidget;
+import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
+import org.xidget.config.ifeature.IXidgetFeature;
 import org.xmodel.IModelObject;
 
 /**
  * A base implementation of ITagHandler for xidgets that handles xidget parenting.
  */
-public class XidgetTagHandler implements ITagHandler
+public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeature
 {
   /**
    * Create a xidget tag handler which instantiates xidgets of the specified class.
@@ -27,14 +29,6 @@ public class XidgetTagHandler implements ITagHandler
   }
     
   /* (non-Javadoc)
-   * @see org.xidget.config.ITagHandler#filter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
-   */
-  public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
-  {
-    return true;
-  }
-
-  /* (non-Javadoc)
    * @see org.xidget.config.ITagHandler#enter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
@@ -42,7 +36,8 @@ public class XidgetTagHandler implements ITagHandler
     try
     {
       // get parent xidget (before pushing this xidget on the stack)
-      IXidget xidgetParent = (parent instanceof XidgetTagHandler)? ((XidgetTagHandler)parent).getLastXidget(): null;
+      IXidgetFeature xidgetFeature = (parent != null)? parent.getFeature( IXidgetFeature.class): null;
+      IXidget xidgetParent = (xidgetFeature != null)? xidgetFeature.getXidget(): null;
       
       // instantiate xidget class and store on tag handler to support parenting
       IXidget xidget = xidgetClass.newInstance();
@@ -73,15 +68,25 @@ public class XidgetTagHandler implements ITagHandler
     if ( parent == null) processor.addRoot( xidget);
   }
 
-  /**
-   * Returns the last xidget created by this handler. 
-   * @return Returns the last xidget created by this handler.
+  /* (non-Javadoc)
+   * @see org.xidget.config.AbstractTagHandler#getFeature(java.lang.Class)
    */
-  public IXidget getLastXidget()
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T getFeature( Class<T> clss)
+  {
+    if ( clss == IXidgetFeature.class) return (T)this;
+    return super.getFeature( clss);
+  }
+  
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.IXidgetFeature#getXidget()
+   */
+  public IXidget getXidget()
   {
     return xidgets.peek();
   }
-  
+
   private Class<? extends IXidget> xidgetClass;
   private Stack<IXidget> xidgets;
 }

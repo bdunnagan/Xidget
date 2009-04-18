@@ -39,7 +39,7 @@ public class XidgetAction extends GuardedAction
     try
     {
       StatefulContext inner = new StatefulContext( context, root);
-      Creator creator = new Creator();
+      Creator creator = Creator.getInstance();
       
       // parse and build
       List<IXidget> xidgets = creator.parse( inner);
