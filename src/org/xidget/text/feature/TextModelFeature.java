@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.text.ifeature;
+package org.xidget.text.feature;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +10,7 @@ import org.xidget.IXidget;
 import org.xidget.config.util.TextTransform;
 import org.xidget.ifeature.IErrorFeature;
 import org.xidget.text.ITextValidator;
+import org.xidget.text.ifeature.ITextModelFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.IExpression;
 
