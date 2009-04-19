@@ -35,7 +35,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public IModelObject getSource( String channel)
   {
-    if ( channel.equals( TextXidget.allChannel))
+    if ( channel.equals( TextModelFeature.allChannel))
       return modelFeature.getSource( rowSetFeature.getCurrentRow(), column, channel);
     return null;
   }
@@ -45,7 +45,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public void setSource( String channel, IModelObject node)
   {
-    if ( channel.equals( TextXidget.allChannel))
+    if ( channel.equals( TextModelFeature.allChannel))
       modelFeature.setSource( rowSetFeature.getCurrentRow(), column, channel, node);
   }
 
@@ -54,7 +54,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public void setText( String channel, String text)
   {
-    if ( channel.equals( TextXidget.allChannel) && !updating)
+    if ( channel.equals( TextModelFeature.allChannel) && !updating)
     {
       // transform
       if ( transform != null) 
@@ -86,7 +86,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public void setTransform( String channel, IExpression expression)
   {
-    if ( channel.equals( TextXidget.allChannel))
+    if ( channel.equals( TextModelFeature.allChannel))
       transform = new TextTransform( expression);
   }
 
@@ -95,7 +95,7 @@ public class CellTextModelFeature implements ITextModelFeature
    */
   public void setValidator( String channel, ITextValidator validator)
   {
-    if ( channel.equals( TextXidget.allChannel))
+    if ( channel.equals( TextModelFeature.allChannel))
       this.validator = validator;
   }
   

@@ -7,7 +7,6 @@ package org.xidget.feature.table;
 import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.table.IRowSetFeature;
 import org.xidget.ifeature.table.ITableModelFeature;
 import org.xidget.ifeature.table.ITableWidgetFeature;
@@ -27,19 +26,9 @@ public class RowSetFeature implements IRowSetFeature
     this.xidget = xidget;
     this.differ = new Differ();
     this.changes = new ArrayList<Change>();
-    this.rowContexts = new ArrayList<StatefulContext>();
     this.rowObjects = new ArrayList<IModelObject>();
-    this.columnBindFeatures = new ArrayList<IBindFeature>();
   }
   
-  /* (non-Javadoc)
-   * @see org.xidget.table.features.IRowSetFeature#addColumn(org.xidget.IXidget)
-   */
-  public void addColumn( IXidget xidget)
-  {
-    columnBindFeatures.add( xidget.getFeature( IBindFeature.class));
-  }
-
   /* (non-Javadoc)
    * @see org.xidget.table.features.IRowSetFeature#setRows(org.xmodel.xpath.expression.StatefulContext, java.util.List)
    */
@@ -57,40 +46,27 @@ public class RowSetFeature implements IRowSetFeature
       if ( change.rIndex >= 0)
       {
         // insert rows
-        modelFeature.insertRows( change.lIndex, change.count);
         widgetFeature.insertRows( change.lIndex, change.count);
         
         // update columns or row
         for( int i=0; i<change.count; i++)
         {
-          row = change.lIndex + i;
+          int index = change.lIndex + i;
           
           // create row context
           IModelObject rowObject = newRows.get( change.rIndex + i);
-          StatefulContext rowContext = new StatefulContext( context, rowObject);
-          rowContexts.add( row, rowContext);
           
-          // bind and populate columns of row
-          for( IBindFeature columnBindFeature: columnBindFeatures)
-            columnBindFeature.bind( rowContext);
+          // update model
+          modelFeature.insertRow( index, new StatefulContext( context, rowObject));
         }
       }
       else
       {
         // current row doesn't change while deleting
-        row = change.lIndex;
         for( int i=0; i<change.count; i++)
-        {
-          // remove row context
-          StatefulContext rowContext = rowContexts.remove( change.lIndex);
-          
-          // unbind
-          for( IBindFeature columnBindFeature: columnBindFeatures)
-            columnBindFeature.unbind( rowContext);
-        }
+          modelFeature.removeRow( change.lIndex);
         
         // remove rows
-        modelFeature.removeRows( change.lIndex, change.count);
         widgetFeature.removeRows( change.lIndex, change.count);
       }
     }
@@ -99,14 +75,6 @@ public class RowSetFeature implements IRowSetFeature
     rowObjects = newRows;
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.table.features.IRowSetFeature#getCurrentRow()
-   */
-  public int getCurrentRow()
-  {
-    return row;
-  }
-  
   /**
    * An implementation of AbstractListDiffer which calls the createInsertChange
    * and createDeleteChange methods.
@@ -150,7 +118,4 @@ public class RowSetFeature implements IRowSetFeature
   private Differ differ;
   private List<Change> changes;
   private List<IModelObject> rowObjects;
-  private List<StatefulContext> rowContexts;
-  private List<IBindFeature> columnBindFeatures;
-  private int row;
 }

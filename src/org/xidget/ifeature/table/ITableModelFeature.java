@@ -4,7 +4,11 @@
  */
 package org.xidget.ifeature.table;
 
+import java.util.List;
+import org.xidget.table.Column;
+import org.xidget.table.Row;
 import org.xmodel.IModelObject;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An interface for the data-model of a table xidget.
@@ -12,44 +16,45 @@ import org.xmodel.IModelObject;
 public interface ITableModelFeature
 {
   /**
-   * Add a row to the model.
-   * @param start The index of the first row to insert.
-   * @param count The number of rows to insert.
+   * Insert the specified row into the table.
+   * @param index The index of the row.
+   * @param context The row context.
+   * @return Returns the new row.
    */
-  public void insertRows( int start, int count);
+  public Row insertRow( int index, StatefulContext context);
   
   /**
-   * Remove a row from the model.
-   * @param start The index of the first row to delete.
-   * @param count The number of rows to delete.
+   * Remove the specified row from the table.
+   * @param index The index of the row.
    */
-  public void removeRows( int start, int count); 
+  public void removeRow( int index);
   
   /**
-   * Set the source node for the specified cell.
-   * @param row The row index of the cell.
-   * @param column The column index of the cell.
-   * @param channel The text channel.
-   * @param node The source node.
+   * Returns the table rows.
+   * @return Returns the table rows.
    */
-  public void setSource( int row, int column, String channel, IModelObject node);
+  public List<Row> getRows();
   
   /**
-   * Returns null or the node addressed by the specified row and column indices. Only
-   * columns whose source expression returns a node-set will return a non-null value.
-   * @param row The row index.
+   * Returns the table columns.
+   * @return Returns the table columns.
+   */
+  public List<Column> getColumns();
+  
+  /**
+   * Returns null or the node addressed by the specified row and column. Only columns 
+   * whose source expression returns a node-set will return a non-null value.
+   * @param row The object representing the row.
    * @param column The column index.
-   * @param channel The text channel.
    * @return Returns null or the node addressed by the specified row and column indices.
    */
-  public IModelObject getSource( int row, int column, String channel);
+  public IModelObject getSource( Row row, int column);
   
   /**
    * Sets the text in the specified node.
-   * @param row The row index of the node.
+   * @param row The object representing the row.
    * @param column The column index of the node.
-   * @param channel The text channel.
    * @param text The new text.
    */
-  public void setText( int row, int column, String channel, String text);
+  public void setText( Row row, int column, String text);
 }

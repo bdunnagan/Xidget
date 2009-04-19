@@ -33,7 +33,7 @@ public class EditableBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    return new Listener( xidget, Xlate.get( element, "channel", TextXidget.allChannel));
+    return new Listener( xidget, Xlate.get( element, "channel", TextModelFeature.allChannel));
   }
   
   private final static class Listener extends ExpressionListener

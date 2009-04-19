@@ -5,7 +5,6 @@
 package org.xidget.ifeature.table;
 
 import java.util.List;
-import org.xidget.IXidget;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -17,21 +16,9 @@ import org.xmodel.xpath.expression.StatefulContext;
 public interface IRowSetFeature
 {
   /**
-   * Add a column xidget.
-   * @param xidget The xidget.
-   */
-  public void addColumn( IXidget xidget);
-  
-  /**
-   * Set the new row-set of the table.
+   * Set the rows of the table.
    * @param context The parent context.
    * @param rows The row objects.
    */
   public void setRows( StatefulContext context, List<IModelObject> rows);
-  
-  /**
-   * Returns the index of the current row being bound.
-   * @return Returns the index of the current row being bound.
-   */
-  public int getCurrentRow();
 }

@@ -19,6 +19,11 @@ import org.xmodel.xpath.expression.StatefulContext;
 public abstract class Xidget implements IXidget
 {
   /**
+   * Create the features for this xidget.
+   */
+  protected abstract void createFeatures();
+  
+  /**
    * Set the parent xidget.
    * @param parent The parent.
    */
@@ -60,6 +65,9 @@ public abstract class Xidget implements IXidget
     // set xidget attribute and save config (bi-directional mapping)
     element.setAttribute( "xidget", this);
     config = element;
+    
+    // create features
+    createFeatures();
     
     return true;
   }

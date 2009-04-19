@@ -4,6 +4,8 @@
  */
 package org.xidget.ifeature.table;
 
+import org.xidget.table.Row;
+
 /**
  * An interface for operating on the widget of a table xidget.
  */
@@ -11,51 +13,46 @@ public interface ITableWidgetFeature
 {
   /**
    * Set whether the specified cell is editable.
-   * @param row The row index of the cell.
-   * @param column The column index of the cell.
+   * @param rowIndex The row index of the cell.
+   * @param columnIndex The column index of the cell.
    * @param editable True if the cell is editable.
    */
-  public void setEditable( int row, int column, boolean editable);
+  public void setEditable( int rowIndex, int columnIndex, boolean editable);
   
-  /**
-   * Insert a row into the table.
-   * @param row The index at which the row will be inserted.
-   */
-  public void insertRow( int row);
-
   /**
    * Insert rows into the table.
-   * @param row The index of the first row to be inserted.
+   * @param rowIndex The index of the first row to be inserted.
    * @param count The number of rows to insert.
    */
-  public void insertRows( int row, int count);
-  
-  /**
-   * Remove a row from the table.
-   * @param row The row to be removed.
-   */
-  public void removeRow( int row);
+  public void insertRows( int rowIndex, int count);
   
   /**
    * Remove rows from the table.
-   * @param row The index of the first row to be removed.
+   * @param rowIndex The index of the first row to be removed.
    * @param count The number of rows to remove.
    */
-  public void removeRows( int row, int count);
+  public void removeRows( int rowIndex, int count);
+  
+  /**
+   * Set the title of the specified column.
+   * @param columnIndex The column index.
+   * @param title The title.
+   */
+  public void setTitle( int columnIndex, String title);
   
   /**
    * Set the text of the specified cell.
-   * @param row The row index of the cell.
-   * @param column The column index of the cell.
+   * @param row The object representing the row.
+   * @param columnIndex The column index of the cell.
    * @param text The text.
    */
-  public void setText( int row, int column, String text);
+  public void setText( Row row, int columnIndex, String text);
     
   /**
    * Set the icon of the specified cell.
-   * @param row The row index of the cell.
-   * @param column The column index of the cell.
+   * @param row The object representing the row.
+   * @param columnIndex The column index of the cell.
    * @param icon The platform icon object.
    */
-  public void setIcon( int row, int column, Object icon);
+  public void setIcon( Row row, int columnIndex, Object icon);
 }

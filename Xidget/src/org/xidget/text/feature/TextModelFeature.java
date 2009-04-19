@@ -25,7 +25,7 @@ public class TextModelFeature implements ITextModelFeature
   {
     this.xidget = xidget;
     channels = new HashMap<String, Channel>();
-    addChannel( TextXidget.allChannel);
+    addChannel( TextModelFeature.allChannel);
     addChannel( selectedChannel);
   }
   
