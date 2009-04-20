@@ -129,7 +129,7 @@ public abstract class Xidget implements IXidget
   public <T> T getFeature( Class<T> clss)
   {
     // debug
-    if ( IXidget.debug) System.err.printf( "Feature '%s' not found on xidget %s.", clss.getSimpleName(), getConfig());
+    Log.printf( "xidget", "Feature '%s' not found on xidget %s.", clss.getSimpleName(), getConfig());
     return null;
   }
 

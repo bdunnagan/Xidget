@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import org.xidget.IXidget;
+import org.xidget.Log;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.layout.IComputeNode;
@@ -63,9 +64,9 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     if ( !compiled) compile(); 
     
-    System.out.println( "\nCompute Graph --------------\n");
+    Log.printf( "layout", "\nCompute Graph --------------\n");
     for( IComputeNode anchor: nodes) anchor.update();
-    System.out.println( "\nDone -----------------------\n");
+    Log.printf( "layout", "\nDone -----------------------\n");
   }
   
   /* (non-Javadoc)

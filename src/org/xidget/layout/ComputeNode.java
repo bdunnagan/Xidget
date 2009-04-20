@@ -7,6 +7,7 @@ package org.xidget.layout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.xidget.Log;
 
 /**
  * An abstract base class for anchors.
@@ -44,23 +45,23 @@ public abstract class ComputeNode implements IComputeNode
   public void update()
   {
     hasValue = false;
-    System.out.print( toString());    
+    Log.println( "layout", toString());    
     for( IComputeNode dependency: getDependencies())
     {
       if ( dependency.hasValue())
       {
         hasValue = true;
         int value = dependency.getValue();
-        System.out.printf( " <- %s (=%d)", dependency, value);
+        Log.printf( "layout", " <- %s (=%d)", dependency, value);
         setValue( value);
         break;
       }
       else
       {
-        System.out.printf( " <- %s (=?)", dependency);
+        Log.printf( "layout", " <- %s (=?)", dependency);
       }
     }
-    System.out.println( " "+hasValue());
+    Log.println( "layout", " "+hasValue());
   }
   
   /* (non-Javadoc)

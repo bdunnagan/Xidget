@@ -46,14 +46,14 @@ public class RowSetBindingRule implements IBindingRule
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes.clear(); expression.query( context, nodes);
+      nodes = expression.query( context, null);
       IRowSetFeature feature = xidget.getFeature( IRowSetFeature.class);
       feature.setRows( (StatefulContext)context, nodes);
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes.clear(); expression.query( context, nodes);
+      nodes = expression.query( context, null);
       IRowSetFeature feature = xidget.getFeature( IRowSetFeature.class);
       feature.setRows( (StatefulContext)context, nodes);
     }

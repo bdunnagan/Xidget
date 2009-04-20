@@ -15,8 +15,6 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public interface IXidget extends IFeatured
 {
-  public static boolean debug = true;
-  
   /**
    * Returns null or the parent of this xidget.
    * @return Returns null or the parent of this xidget.

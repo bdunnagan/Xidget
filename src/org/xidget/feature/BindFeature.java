@@ -7,6 +7,7 @@ package org.xidget.feature;
 import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
+import org.xidget.Log;
 import org.xidget.binding.IXidgetBinding;
 import org.xidget.ifeature.IBindFeature;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -44,8 +45,7 @@ public class BindFeature implements IBindFeature
    */
   public void bind( StatefulContext context)
   {
-    // debug
-    if ( IXidget.debug) System.out.printf( "bind: %s with %s\n", xidget, context);
+    Log.printf( "xidget", "bind: %s with %s\n", xidget, context);
     
     // bind children first
     for( IXidget child: xidget.getChildren())
@@ -65,8 +65,7 @@ public class BindFeature implements IBindFeature
    */
   public void unbind( StatefulContext context)
   {
-    // debug
-    if ( IXidget.debug) System.out.printf( "unbind: %s with %s\n", xidget, context);
+    Log.printf( "xidget", "unbind: %s with %s\n", xidget, context);
     
     // unbind children first
     for( IXidget child: xidget.getChildren())
