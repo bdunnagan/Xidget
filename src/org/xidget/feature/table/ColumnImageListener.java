@@ -6,6 +6,7 @@ package org.xidget.feature.table;
 
 import java.util.List;
 import org.xidget.IXidget;
+import org.xidget.ifeature.table.IRowSetFeature;
 import org.xidget.ifeature.table.ITableWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
@@ -18,11 +19,11 @@ import org.xmodel.xpath.expression.IExpression;
  */
 public class ColumnImageListener extends ExpressionListener
 {
-  public ColumnImageListener( IXidget xidget, Row row, int column)
+  public ColumnImageListener( IXidget xidget, Row row, int columnIndex)
   {
     this.xidget = xidget;
     this.row = row;
-    this.column = column;
+    this.columnIndex = columnIndex;
   }
   
   /* (non-Javadoc)
@@ -35,10 +36,10 @@ public class ColumnImageListener extends ExpressionListener
     nodes.clear(); expression.query( context, nodes);
     
     Object value = nodes.get( 0).getValue();
-    row.cells.get( column).icon = value;
-    
+    row.cells.get( columnIndex).icon = value;
+        
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
-    feature.setIcon( row, column, value);
+    feature.setIcon( getRowIndex(), columnIndex, value);
   }
   
   /* (non-Javadoc)
@@ -51,10 +52,10 @@ public class ColumnImageListener extends ExpressionListener
     nodes.clear(); expression.query( context, nodes);
     
     Object value = (nodes.size() > 0)? nodes.get( 0).getValue(): null;
-    row.cells.get( column).icon = value;
+    row.cells.get( columnIndex).icon = value;
     
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
-    feature.setIcon( row, column, value);
+    feature.setIcon( getRowIndex(), columnIndex, value);
   }
   
   /* (non-Javadoc)
@@ -64,10 +65,20 @@ public class ColumnImageListener extends ExpressionListener
   @Override
   public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
   {
-    row.cells.get( column).icon = newValue;
+    row.cells.get( columnIndex).icon = newValue;
     
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
-    feature.setIcon( row, column, newValue);
+    feature.setIcon( getRowIndex(), columnIndex, newValue);
+  }
+  
+  /**
+   * Returns the row index.
+   * @return Returns the row index.
+   */
+  private int getRowIndex()
+  {
+    IRowSetFeature feature = xidget.getFeature( IRowSetFeature.class);
+    return feature.getRowIndex( row);
   }
   
   /* (non-Javadoc)
@@ -81,5 +92,5 @@ public class ColumnImageListener extends ExpressionListener
 
   private IXidget xidget;
   private Row row;
-  private int column;
+  private int columnIndex;
 }

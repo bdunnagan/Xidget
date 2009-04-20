@@ -7,9 +7,12 @@ package org.xidget.feature.table;
 import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
+import org.xidget.ifeature.table.IColumnSetFeature;
+import org.xidget.ifeature.table.IGroupOffsetFeature;
 import org.xidget.ifeature.table.IRowSetFeature;
-import org.xidget.ifeature.table.ITableModelFeature;
 import org.xidget.ifeature.table.ITableWidgetFeature;
+import org.xidget.table.Cell;
+import org.xidget.table.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.diff.AbstractListDiffer;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -27,6 +30,7 @@ public class RowSetFeature implements IRowSetFeature
     this.differ = new Differ();
     this.changes = new ArrayList<Change>();
     this.rowObjects = new ArrayList<IModelObject>();
+    this.rows = new ArrayList<Row>();
   }
   
   /* (non-Javadoc)
@@ -38,41 +42,85 @@ public class RowSetFeature implements IRowSetFeature
     changes.clear();
     differ.diff( rowObjects, newRows);
     
+    // find group offset
+    int offset = 0;
+    IGroupOffsetFeature offsetFeature = xidget.getFeature( IGroupOffsetFeature.class);
+    if ( offsetFeature != null) offset = offsetFeature.getOffset();
+    
     // process changes
-    ITableModelFeature modelFeature = xidget.getFeature( ITableModelFeature.class);
+    IColumnSetFeature columnSetFeature = xidget.getFeature( IColumnSetFeature.class);
     ITableWidgetFeature widgetFeature = xidget.getFeature( ITableWidgetFeature.class);
     for( Change change: changes)
     {
       if ( change.rIndex >= 0)
       {
-        // insert rows
-        widgetFeature.insertRows( change.lIndex, change.count);
-        
-        // update columns or row
+        // create rows
         for( int i=0; i<change.count; i++)
         {
-          int index = change.lIndex + i;
-          
           // create row context
           IModelObject rowObject = newRows.get( change.rIndex + i);
           
-          // update model
-          modelFeature.insertRow( index, new StatefulContext( context, rowObject));
+          // create row
+          Row row = new Row();
+          row.context = new StatefulContext( context, rowObject);
+          row.cells = new ArrayList<Cell>( 5);
+          rows.add( change.lIndex + i, row);
+        }        
+        
+        // insert rows
+        widgetFeature.insertRows( change.lIndex + offset, change.count);
+        
+        // update columns of each inserted row
+        for( int i=0; i<change.count; i++)
+        {
+          // bind column set
+          Row row = rows.get( change.lIndex + i);
+          columnSetFeature.bind( row, row.context);
         }
       }
       else
       {
         // current row doesn't change while deleting
         for( int i=0; i<change.count; i++)
-          modelFeature.removeRow( change.lIndex);
+        {
+          // unbind column set
+          columnSetFeature.unbind( rows.get( change.lIndex));
+          
+          // remove row
+          rows.remove( change.lIndex);
+        }
         
         // remove rows
-        widgetFeature.removeRows( change.lIndex, change.count);
+        widgetFeature.removeRows( change.lIndex + offset, change.count);
       }
     }
     
     // update rows
     rowObjects = newRows;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.table.IRowSetFeature#getRow(int)
+   */
+  public Row getRow( int index)
+  {
+    return rows.get( index);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.table.IRowSetFeature#getRowCount()
+   */
+  public int getRowCount()
+  {
+    return rows.size();
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.table.IRowSetFeature#getRowIndex(org.xidget.table.Row)
+   */
+  public int getRowIndex( Row row)
+  {
+    return rows.indexOf( row);
   }
 
   /**
@@ -118,4 +166,5 @@ public class RowSetFeature implements IRowSetFeature
   private Differ differ;
   private List<Change> changes;
   private List<IModelObject> rowObjects;
+  private List<Row> rows;
 }

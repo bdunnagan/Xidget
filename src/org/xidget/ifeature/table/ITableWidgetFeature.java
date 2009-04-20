@@ -4,8 +4,6 @@
  */
 package org.xidget.ifeature.table;
 
-import org.xidget.table.Row;
-
 /**
  * An interface for operating on the widget of a table xidget.
  */
@@ -21,14 +19,14 @@ public interface ITableWidgetFeature
   
   /**
    * Insert rows into the table.
-   * @param rowIndex The index of the first row to be inserted.
+   * @param rowIndex The index of the first row.
    * @param count The number of rows to insert.
    */
   public void insertRows( int rowIndex, int count);
   
   /**
    * Remove rows from the table.
-   * @param rowIndex The index of the first row to be removed.
+   * @param rowIndex The index of the first row.
    * @param count The number of rows to remove.
    */
   public void removeRows( int rowIndex, int count);
@@ -42,17 +40,17 @@ public interface ITableWidgetFeature
   
   /**
    * Set the text of the specified cell.
-   * @param row The object representing the row.
+   * @param rowIndex The index of the first row to be removed.
    * @param columnIndex The column index of the cell.
    * @param text The text.
    */
-  public void setText( Row row, int columnIndex, String text);
+  public void setText( int rowIndex, int columnIndex, String text);
     
   /**
    * Set the icon of the specified cell.
-   * @param row The object representing the row.
+   * @param rowIndex The index of the first row to be removed.
    * @param columnIndex The column index of the cell.
    * @param icon The platform icon object.
    */
-  public void setIcon( Row row, int columnIndex, Object icon);
+  public void setIcon( int rowIndex, int columnIndex, Object icon);
 }

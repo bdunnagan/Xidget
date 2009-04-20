@@ -5,6 +5,7 @@
 package org.xidget.ifeature.table;
 
 import java.util.List;
+import org.xidget.table.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -21,4 +22,24 @@ public interface IRowSetFeature
    * @param rows The row objects.
    */
   public void setRows( StatefulContext context, List<IModelObject> rows);
+  
+  /**
+   * Returns the number of rows in this row-set.
+   * @return Returns the number of rows in this row-set.
+   */
+  public int getRowCount();
+  
+  /**
+   * Returns the row at the specified index.
+   * @param index The index.
+   * @return Returns the row at the specified index.
+   */
+  public Row getRow( int index);
+  
+  /**
+   * Returns the index of the specified row.
+   * @param row The row.
+   * @return Returns -1 or the index of the specified row.
+   */
+  public int getRowIndex( Row row);
 }

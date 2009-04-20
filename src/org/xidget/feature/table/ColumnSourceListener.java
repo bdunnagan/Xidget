@@ -6,6 +6,7 @@ package org.xidget.feature.table;
 
 import java.util.List;
 import org.xidget.IXidget;
+import org.xidget.ifeature.table.IRowSetFeature;
 import org.xidget.ifeature.table.ITableWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
@@ -19,11 +20,11 @@ import org.xmodel.xpath.expression.IExpression;
  */
 public class ColumnSourceListener extends ExpressionListener
 {
-  public ColumnSourceListener( IXidget xidget, Row row, int column)
+  public ColumnSourceListener( IXidget xidget, Row row, int columnIndex)
   {
     this.xidget = xidget;
     this.row = row;
-    this.column = column;
+    this.columnIndex = columnIndex;
   }
 
   /**
@@ -32,9 +33,9 @@ public class ColumnSourceListener extends ExpressionListener
    */
   private void setText( String text)
   {
-    row.cells.get( column).text = text;
+    row.cells.get( columnIndex).text = text;
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
-    feature.setText( row, column, text);
+    feature.setText( getRowIndex(), columnIndex, text);
   }
   
   /**
@@ -43,7 +44,7 @@ public class ColumnSourceListener extends ExpressionListener
    */
   private void setSource( IModelObject source)
   {
-    row.cells.get( column).source = source;
+    row.cells.get( columnIndex).source = source;
   }
   
   /* (non-Javadoc)
@@ -122,7 +123,17 @@ public class ColumnSourceListener extends ExpressionListener
     return true;
   }
 
+  /**
+   * Returns the row index.
+   * @return Returns the row index.
+   */
+  private int getRowIndex()
+  {
+    IRowSetFeature feature = xidget.getFeature( IRowSetFeature.class);
+    return feature.getRowIndex( row);
+  }
+  
   private IXidget xidget;
   private Row row;
-  private int column;
+  private int columnIndex;
 }

@@ -9,7 +9,7 @@ import org.xidget.feature.table.ColumnSourceListener;
 import org.xmodel.IModelObject;
 
 /**
- * A data-structure for holding information about a column in a specific row.
+ * A data-structure for holding information about a table cell.
  */
 public class Cell
 {
