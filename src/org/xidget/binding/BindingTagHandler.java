@@ -22,29 +22,13 @@ import org.xmodel.xpath.expression.IExpressionListener;
  */
 public class BindingTagHandler extends AbstractTagHandler
 {
-  public static enum BindAt { start, end};
-  
   /**
    * Create the tag handler with the specified rule and bind on the start-tag.
    * @param rule The rule.
    */
   public BindingTagHandler( IBindingRule rule)
   {
-    this( rule, BindAt.start);
-  }
-  
-  /**
-   * Create the tag handler with the specified rule and optionally bind on end-tag,
-   * meaning that the bind operation happens when the end-tag is visited. Binding
-   * on the end-tag is useful when it is necessary that all xidget children be 
-   * bound first.
-   * @param rule The rule.
-   * @param bindAt Indicate whether to bind on start-tag or end-tag.
-   */
-  public BindingTagHandler( IBindingRule rule, BindAt bindAt)
-  {
     this.rule = rule;
-    this.bindAt = bindAt;
   }
   
   /* (non-Javadoc)
@@ -52,7 +36,7 @@ public class BindingTagHandler extends AbstractTagHandler
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( bindAt == BindAt.start) bind( processor, parent, element);      
+    bind( processor, parent, element);      
     return false;
   }
 
@@ -61,7 +45,6 @@ public class BindingTagHandler extends AbstractTagHandler
    */
   public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    if ( bindAt == BindAt.end) bind( processor, parent, element);
   }
   
   /**
@@ -95,5 +78,4 @@ public class BindingTagHandler extends AbstractTagHandler
   }
 
   private IBindingRule rule;
-  private BindAt bindAt;
 }

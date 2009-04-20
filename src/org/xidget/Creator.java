@@ -13,6 +13,7 @@ import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.LayoutTagHandler;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
+import org.xidget.binding.table.ColumnTitleBindingRule;
 import org.xidget.binding.table.RowSetBindingRule;
 import org.xidget.binding.text.EditableBindingRule;
 import org.xidget.binding.text.TextBindingRule;
@@ -34,6 +35,7 @@ public final class Creator
     this.processor = new TagProcessor();
 
     processor.addHandler( "choices", new ChoicesTagHandler());
+    processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule()));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
