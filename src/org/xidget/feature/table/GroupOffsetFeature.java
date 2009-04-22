@@ -22,6 +22,7 @@ public class GroupOffsetFeature implements IGroupOffsetFeature
     String type = xidget.getConfig().getType();
     for( IXidget child: xidget.getParent().getChildren())
     {
+      if ( child.getConfig() == xidget.getConfig()) break;
       if ( child.getConfig().isType( type))
       {
         IRowSetFeature feature = child.getFeature( IRowSetFeature.class);
