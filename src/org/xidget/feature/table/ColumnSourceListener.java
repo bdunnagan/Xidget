@@ -6,7 +6,6 @@ package org.xidget.feature.table;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.table.IRowSetFeature;
 import org.xidget.ifeature.table.ITableWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
@@ -35,7 +34,7 @@ public class ColumnSourceListener extends ExpressionListener
   {
     row.cells.get( columnIndex).text = text;
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
-    feature.setText( getRowIndex(), columnIndex, text);
+    feature.updateCell( row, columnIndex);
   }
   
   /**
@@ -121,16 +120,6 @@ public class ColumnSourceListener extends ExpressionListener
   public boolean requiresValueNotification()
   {
     return true;
-  }
-
-  /**
-   * Returns the row index.
-   * @return Returns the row index.
-   */
-  private int getRowIndex()
-  {
-    IRowSetFeature feature = xidget.getFeature( IRowSetFeature.class);
-    return feature.getRowIndex( row);
   }
   
   private IXidget xidget;

@@ -4,8 +4,13 @@
  */
 package org.xidget.ifeature.table;
 
+import java.util.List;
+import org.xidget.table.Row;
+
 /**
- * An interface for operating on the widget of a table xidget.
+ * An interface for operating on the widget of a table xidget. This interface requires
+ * that the widget table implementation keep track of data-structures created by the
+ * xidget framework.
  */
 public interface ITableWidgetFeature
 {
@@ -20,9 +25,9 @@ public interface ITableWidgetFeature
   /**
    * Insert rows into the table.
    * @param rowIndex The index of the first row.
-   * @param count The number of rows to insert.
+   * @param rows The rows to be inserted.
    */
-  public void insertRows( int rowIndex, int count);
+  public void insertRows( int rowIndex, Row[] rows);
   
   /**
    * Remove rows from the table.
@@ -32,25 +37,22 @@ public interface ITableWidgetFeature
   public void removeRows( int rowIndex, int count);
   
   /**
+   * Returns the rows of the table.
+   * @return Returns the rows of the table.
+   */
+  public List<Row> getRows();
+  
+  /**
    * Set the title of the specified column.
    * @param columnIndex The column index.
    * @param title The title.
    */
   public void setTitle( int columnIndex, String title);
-  
+
   /**
-   * Set the text of the specified cell.
-   * @param rowIndex The index of the first row to be removed.
-   * @param columnIndex The column index of the cell.
-   * @param text The text.
+   * Update the specified cell.
+   * @param row The row.
+   * @param columnIndex The column index.
    */
-  public void setText( int rowIndex, int columnIndex, String text);
-    
-  /**
-   * Set the icon of the specified cell.
-   * @param rowIndex The index of the first row to be removed.
-   * @param columnIndex The column index of the cell.
-   * @param icon The platform icon object.
-   */
-  public void setIcon( int rowIndex, int columnIndex, Object icon);
+  public void updateCell( Row row, int columnIndex);
 }

@@ -6,7 +6,6 @@ package org.xidget.feature.table;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.table.IRowSetFeature;
 import org.xidget.ifeature.table.ITableWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
@@ -39,7 +38,7 @@ public class ColumnImageListener extends ExpressionListener
     row.cells.get( columnIndex).icon = value;
         
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
-    feature.setIcon( getRowIndex(), columnIndex, value);
+    feature.updateCell( row, columnIndex);
   }
   
   /* (non-Javadoc)
@@ -55,7 +54,7 @@ public class ColumnImageListener extends ExpressionListener
     row.cells.get( columnIndex).icon = value;
     
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
-    feature.setIcon( getRowIndex(), columnIndex, value);
+    feature.updateCell( row, columnIndex);
   }
   
   /* (non-Javadoc)
@@ -68,17 +67,7 @@ public class ColumnImageListener extends ExpressionListener
     row.cells.get( columnIndex).icon = newValue;
     
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
-    feature.setIcon( getRowIndex(), columnIndex, newValue);
-  }
-  
-  /**
-   * Returns the row index.
-   * @return Returns the row index.
-   */
-  private int getRowIndex()
-  {
-    IRowSetFeature feature = xidget.getFeature( IRowSetFeature.class);
-    return feature.getRowIndex( row);
+    feature.updateCell( row, columnIndex);
   }
   
   /* (non-Javadoc)
