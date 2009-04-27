@@ -11,7 +11,6 @@ import org.xidget.ifeature.table.IColumnSetFeature;
 import org.xidget.ifeature.table.IGroupOffsetFeature;
 import org.xidget.ifeature.table.IRowSetFeature;
 import org.xidget.ifeature.table.ITableWidgetFeature;
-import org.xidget.table.Cell;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.diff.AbstractListDiffer;
@@ -54,7 +53,7 @@ public class RowSetFeature implements IRowSetFeature
       if ( change.rIndex >= 0)
       {
         // create rows
-        Row[] newRows = new Row[ change.count];
+        Row[] inserted = new Row[ change.count];
         for( int i=0; i<change.count; i++)
         {
           // create row context
@@ -62,35 +61,35 @@ public class RowSetFeature implements IRowSetFeature
           
           // create row
           Row row = new Row();
-          row.context = new StatefulContext( context, rowObject);
-          row.cells = new ArrayList<Cell>( 5);
-          newRows[ i] = row;
+          row.setContext( new StatefulContext( context, rowObject));
+          inserted[ i] = row;
         }        
         
         // insert rows
-        widgetFeature.insertRows( change.lIndex + offset, newRows);
+        widgetFeature.insertRows( context, change.lIndex + offset, inserted);
         
         // update columns of each inserted row
         for( int i=0; i<change.count; i++)
         {
           // bind column set
-          Row row = newRows[ i]; 
-          columnSetFeature.bind( row, row.context);
+          Row row = inserted[ i]; 
+          columnSetFeature.bind( row, row.getContext());
         }
       }
       else
       {
         // current row doesn't change while deleting
-        List<Row> rows = widgetFeature.getRows();
+        Row[] deleted = new Row[ change.count];
+        List<Row> rows = widgetFeature.getRows( context);
         for( int i=0; i<change.count; i++)
         {
           // unbind column set
-          Row row = rows.get( change.lIndex + offset);
-          columnSetFeature.unbind( row);
+          deleted[ i] = rows.get( change.lIndex + offset);
+          columnSetFeature.unbind( deleted[ i]);
         }
         
         // remove rows
-        widgetFeature.removeRows( change.lIndex + offset, change.count);
+        widgetFeature.removeRows( context, change.lIndex + offset, deleted);
       }
     }
     

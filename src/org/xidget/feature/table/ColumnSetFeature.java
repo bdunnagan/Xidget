@@ -60,13 +60,12 @@ public class ColumnSetFeature implements IColumnSetFeature
     {
       Column column = columns.get( i);
       
-      Cell cell = new Cell();
+      Cell cell = row.getCell( i);
       cell.imageListener = new ColumnImageListener( xidget, row, i);
       cell.sourceListener = new ColumnSourceListener( xidget, row, i);
-      row.cells.add( cell);
       
-      if ( column.imageExpr != null) column.imageExpr.addNotifyListener( row.context, cell.imageListener);
-      if ( column.sourceExpr != null) column.sourceExpr.addNotifyListener( row.context, cell.sourceListener);
+      if ( column.imageExpr != null) column.imageExpr.addNotifyListener( row.getContext(), cell.imageListener);
+      if ( column.sourceExpr != null) column.sourceExpr.addNotifyListener( row.getContext(), cell.sourceListener);
     }
   }
 
@@ -78,10 +77,10 @@ public class ColumnSetFeature implements IColumnSetFeature
     for( int i=0; i<columns.size(); i++)
     {
       Column column = columns.get( i);
-      Cell cell = row.cells.get( i);
+      Cell cell = row.getCell( i);
       
-      if ( column.imageExpr != null) column.imageExpr.removeListener( row.context, cell.imageListener);
-      if ( column.sourceExpr != null) column.sourceExpr.removeListener( row.context, cell.sourceListener);
+      if ( column.imageExpr != null) column.imageExpr.removeListener( row.getContext(), cell.imageListener);
+      if ( column.sourceExpr != null) column.sourceExpr.removeListener( row.getContext(), cell.sourceListener);
     }
   }
 

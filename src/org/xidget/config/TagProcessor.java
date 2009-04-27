@@ -215,7 +215,7 @@ public class TagProcessor implements IFeatured
         if ( children.size() > 0)
         {
           // push special exit entry
-          stack.push( new Entry( parent, handler, entry.node, true));
+          stack.push( new Entry( entry.parent, handler, entry.node, true));
           
           // push attributes for unhandled tags
           List<IModelObject> attributes = getAttributes( entry.node);

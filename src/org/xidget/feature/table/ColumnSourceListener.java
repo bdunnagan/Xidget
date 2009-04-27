@@ -32,7 +32,7 @@ public class ColumnSourceListener extends ExpressionListener
    */
   private void setText( String text)
   {
-    row.cells.get( columnIndex).text = text;
+    row.getCell( columnIndex).text = text;
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
     feature.updateCell( row, columnIndex);
   }
@@ -43,7 +43,7 @@ public class ColumnSourceListener extends ExpressionListener
    */
   private void setSource( IModelObject source)
   {
-    row.cells.get( columnIndex).source = source;
+    row.getCell( columnIndex).source = source;
   }
   
   /* (non-Javadoc)

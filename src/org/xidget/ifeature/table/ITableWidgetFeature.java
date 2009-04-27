@@ -6,6 +6,7 @@ package org.xidget.ifeature.table;
 
 import java.util.List;
 import org.xidget.table.Row;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An interface for operating on the widget of a table xidget. This interface requires
@@ -24,23 +25,28 @@ public interface ITableWidgetFeature
   
   /**
    * Insert rows into the table.
+   * @param parent The parent context.
    * @param rowIndex The index of the first row.
    * @param rows The rows to be inserted.
    */
-  public void insertRows( int rowIndex, Row[] rows);
+  public void insertRows( StatefulContext parent, int rowIndex, Row[] rows);
   
   /**
    * Remove rows from the table.
+   * @param parent The parent context.
    * @param rowIndex The index of the first row.
-   * @param count The number of rows to remove.
+   * @param rows The rows that were removed.
    */
-  public void removeRows( int rowIndex, int count);
+  public void removeRows( StatefulContext parent, int rowIndex, Row[] rows);
   
   /**
-   * Returns the rows of the table.
+   * Returns the rows of the table. The parent context is only needed for tree
+   * implementations since this feature is bound to a different context for
+   * each parent row whose children it supplies.
+   * @param parent The parent context.
    * @return Returns the rows of the table.
    */
-  public List<Row> getRows();
+  public List<Row> getRows( StatefulContext parent);
   
   /**
    * Set the title of the specified column.

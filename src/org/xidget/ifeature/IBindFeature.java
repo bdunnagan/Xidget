@@ -13,10 +13,16 @@ import org.xmodel.xpath.expression.StatefulContext;
 public interface IBindFeature
 {
   /**
-   * Add a binding.
+   * Add a binding which will be performed before children are bound.
    * @param binding The binding.
    */
-  public void add( IXidgetBinding binding);
+  public void addBindingBeforeChildren( IXidgetBinding binding);
+  
+  /**
+   * Add a binding which will be performed after children are bound.
+   * @param binding The binding.
+   */
+  public void addBindingAfterChildren( IXidgetBinding binding);
   
   /**
    * Remove a binding.

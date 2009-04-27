@@ -5,6 +5,7 @@
 package org.xidget.feature;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.Log;
@@ -23,13 +24,33 @@ public class BindFeature implements IBindFeature
     this.xidget = xidget;
   }
   
-  /* (non-Javadoc)
-   * @see org.xidget.feature.IBindFeature#add(org.xidget.IXidgetBinding)
+  /**
+   * Create a bind feature and specify children that should not be bound.
+   * @param xidget The xidget to which the feature belongs.
+   * @param ignore The element names of the children to be ignored.
    */
-  public void add( IXidgetBinding binding)
+  public BindFeature( IXidget xidget, String[] ignore)
   {
-    if ( bindings == null) bindings = new ArrayList<IXidgetBinding>();
-    bindings.add( binding);
+    this( xidget);
+    this.ignore = Arrays.asList( ignore);
+  }
+  
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.IBindFeature#addBindingBeforeChildren(org.xidget.binding.IXidgetBinding)
+   */
+  public void addBindingBeforeChildren( IXidgetBinding binding)
+  {
+    if ( bindBeforeChildren == null) bindBeforeChildren = new ArrayList<IXidgetBinding>();
+    bindBeforeChildren.add( binding);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.IBindFeature#addBindingAfterChildren(org.xidget.binding.IXidgetBinding)
+   */
+  public void addBindingAfterChildren( IXidgetBinding binding)
+  {
+    if ( bindAfterChildren == null) bindAfterChildren = new ArrayList<IXidgetBinding>();
+    bindAfterChildren.add( binding);
   }
 
   /* (non-Javadoc)
@@ -37,7 +58,7 @@ public class BindFeature implements IBindFeature
    */
   public void remove( IXidgetBinding binding)
   {
-    if ( bindings != null) bindings.remove( binding);
+    if ( bindAfterChildren != null) bindAfterChildren.remove( binding);
   }
 
   /* (non-Javadoc)
@@ -47,16 +68,24 @@ public class BindFeature implements IBindFeature
   {
     Log.printf( "xidget", "bind: %s with %s\n", xidget, context);
     
-    // bind children first
+    // internal bindings
+    if ( bindBeforeChildren != null)
+      for( IXidgetBinding binding: bindBeforeChildren)
+        binding.bind( context);
+    
+    // bind children
     for( IXidget child: xidget.getChildren())
     {
-      IBindFeature bindFeature = child.getFeature( IBindFeature.class);
-      bindFeature.bind( context);
+      if ( ignore == null || !ignore.contains( child.getConfig().getType()))
+      {
+        IBindFeature bindFeature = child.getFeature( IBindFeature.class);
+        bindFeature.bind( context);
+      }
     }
     
     // internal bindings
-    if ( bindings != null)
-      for( IXidgetBinding binding: bindings)
+    if ( bindAfterChildren != null)
+      for( IXidgetBinding binding: bindAfterChildren)
         binding.bind( context);
   }
 
@@ -67,7 +96,12 @@ public class BindFeature implements IBindFeature
   {
     Log.printf( "xidget", "unbind: %s with %s\n", xidget, context);
     
-    // unbind children first
+    // internal bindings
+    if ( bindBeforeChildren != null)
+      for( IXidgetBinding binding: bindBeforeChildren)
+        binding.unbind( context);
+    
+    // unbind children
     for( IXidget child: xidget.getChildren())
     {
       IBindFeature bindFeature = child.getFeature( IBindFeature.class);
@@ -75,11 +109,13 @@ public class BindFeature implements IBindFeature
     }
 
     // internal bindings
-    if ( bindings != null)
-      for( IXidgetBinding binding: bindings)
+    if ( bindAfterChildren != null)
+      for( IXidgetBinding binding: bindAfterChildren)
         binding.unbind( context);
   }
   
   protected IXidget xidget;
-  protected List<IXidgetBinding> bindings;
+  protected List<IXidgetBinding> bindBeforeChildren;
+  protected List<IXidgetBinding> bindAfterChildren;
+  private List<String> ignore;
 }

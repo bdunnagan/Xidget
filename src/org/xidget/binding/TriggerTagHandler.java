@@ -50,7 +50,7 @@ public class TriggerTagHandler extends AbstractTagHandler
     TriggerBinding binding = new TriggerBinding( trigger);
     IXidget xidget = xidgetFeature.getXidget();
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    if ( bindFeature != null) bindFeature.add( binding);
+    if ( bindFeature != null) bindFeature.addBindingAfterChildren( binding);
     
     return false;
   }

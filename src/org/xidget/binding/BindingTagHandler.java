@@ -23,12 +23,25 @@ import org.xmodel.xpath.expression.IExpressionListener;
 public class BindingTagHandler extends AbstractTagHandler
 {
   /**
-   * Create the tag handler with the specified rule and bind on the start-tag.
+   * Create the tag handler with the specified rule and bind on the start-tag. 
+   * The binding will be performed after all child xidgets are bound.
    * @param rule The rule.
    */
   public BindingTagHandler( IBindingRule rule)
   {
+    this( rule, false);
+  }
+  
+  /**
+   * Create the tag handler with the specified rule and bind on the start-tag.
+   * The binding is performed before or after all child xidgets are bound.
+   * @param rule The rule.
+   * @param beforeChildren True if rule should be bound before xidget children are bound.
+   */
+  public BindingTagHandler( IBindingRule rule, boolean beforeChildren)
+  {
     this.rule = rule;
+    this.beforeChildren = beforeChildren;
   }
   
   /* (non-Javadoc)
@@ -74,8 +87,10 @@ public class BindingTagHandler extends AbstractTagHandler
     IExpressionListener listener = rule.getListener( xidget, element);
     XidgetBinding binding = new XidgetBinding( expression, listener);
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    bindFeature.add( binding);
+    if ( beforeChildren) bindFeature.addBindingBeforeChildren( binding); 
+    else bindFeature.addBindingAfterChildren( binding);
   }
 
   private IBindingRule rule;
+  private boolean beforeChildren;
 }

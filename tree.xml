@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- 
+
+  Matching a tree definition:
+
+ -->
+
 <tree>
   <table/>
   <table/>
@@ -22,7 +28,7 @@
   
   <!-- subtree for table[ 1] and all children -->
   <!-- the recurse attribute contains an expression defining the tables over which it will recurse -->
-  <tree parent="table[ 1]" recurse="table">
+  <tree parent="table[ 1]" recurse="table"/>
   
   <!-- subtree for table[ 1] matching rows -->
   <tree parent="table[ 1]" when="..."/>
@@ -30,6 +36,6 @@
   <!-- subtree for table[ 1] matching rows at any depth -->
   <tree parent="table[ 1]" when="..." recurse="table"/>
   
-  <!-- subtree for table[ 1] matchin rows of the first table at any depth -->
+  <!-- subtree for table[ 1] matching rows of the first table at any depth -->
   <tree parent="table[ 1]" when="..." recurse="table[ 1]"/>
 </tree>

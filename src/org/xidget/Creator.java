@@ -11,17 +11,18 @@ import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.LayoutTagHandler;
+import org.xidget.binding.SelectionBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
-import org.xidget.binding.XidgetTagHandler;
 import org.xidget.binding.table.ColumnTitleBindingRule;
 import org.xidget.binding.table.RowSetBindingRule;
+import org.xidget.binding.table.SubTableTagHandler;
 import org.xidget.binding.text.EditableBindingRule;
 import org.xidget.binding.text.TextBindingRule;
+import org.xidget.binding.tree.SubTreeTagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IWidgetCreationFeature;
-import org.xidget.table.TableGroupXidget;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -36,19 +37,22 @@ public final class Creator
   {
     this.processor = new TagProcessor();
 
-    processor.addHandler( "group", new XidgetTagHandler( TableGroupXidget.class));
-    
     processor.addHandler( "choices", new ChoicesTagHandler());
-    processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule()));
+    processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
+    processor.addHandler( "selection", new BindingTagHandler( new SelectionBindingRule()));
     processor.addHandler( "source", new BindingTagHandler( new TextBindingRule()));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
 
     processor.addHandler( "layout", new LayoutTagHandler());
     processor.addAttributeHandler( "layout", new LayoutTagHandler());
+    
+    // sub-tables and sub-trees
+    processor.addHandler( "tree", new SubTreeTagHandler());
+    processor.addHandler( "table", new SubTableTagHandler());
     
     // processor.addHandler( "context", new BindingTagHandler( new ContextBindingRule()));
     

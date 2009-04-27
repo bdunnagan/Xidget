@@ -18,7 +18,7 @@ import org.xidget.ifeature.table.ITableWidgetFeature;
 /**
  * A xidget representing a contiguous set of rows in the table.
  */
-public class TableGroupXidget extends Xidget
+public class SubTableXidget extends Xidget
 {
   public void createFeatures()
   {

@@ -35,7 +35,7 @@ public class ColumnImageListener extends ExpressionListener
     nodes.clear(); expression.query( context, nodes);
     
     Object value = nodes.get( 0).getValue();
-    row.cells.get( columnIndex).icon = value;
+    row.getCell( columnIndex).icon = value;
         
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
     feature.updateCell( row, columnIndex);
@@ -51,7 +51,7 @@ public class ColumnImageListener extends ExpressionListener
     nodes.clear(); expression.query( context, nodes);
     
     Object value = (nodes.size() > 0)? nodes.get( 0).getValue(): null;
-    row.cells.get( columnIndex).icon = value;
+    row.getCell( columnIndex).icon = value;
     
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
     feature.updateCell( row, columnIndex);
@@ -64,7 +64,7 @@ public class ColumnImageListener extends ExpressionListener
   @Override
   public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
   {
-    row.cells.get( columnIndex).icon = newValue;
+    row.getCell( columnIndex).icon = newValue;
     
     ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
     feature.updateCell( row, columnIndex);

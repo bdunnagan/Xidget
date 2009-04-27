@@ -26,7 +26,7 @@ public class RowSetBindingRule implements IBindingRule
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( ITableWidgetFeature.class) != null;
+    return element.getParent().isType( "table") && xidget.getFeature( ITableWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
