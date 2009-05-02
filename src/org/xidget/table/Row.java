@@ -17,13 +17,16 @@ import org.xmodel.xpath.expression.StatefulContext;
 public class Row
 {
   /**
-   * Create a row belonging to the specified table xidget.
-   * @param xidget The table xidget.
+   * Create a row belonging to the specified table. Note that this table information
+   * is redundant with respect to the tableIndex argument provided to the add and remove
+   * methods.
+   * @param table The table xidget.
    */
-  public Row( IXidget xidget)
+  public Row( IXidget table)
   {
-    this.table = xidget;
     this.cells = new ArrayList<Cell>( 1);
+    this.tables = new ArrayList<List<Row>>( 1);
+    this.table = table;
   }
   
   /**
@@ -55,36 +58,83 @@ public class Row
   
   /**
    * Add the specified child at the specified index.
-   * @param index The index where the child will be inserted.
+   * @param tableIndex The index of the sub-table.
+   * @param rowIndex The index within the sub-table where the child will be inserted.
    * @param child The child.
    */
-  public void addChild( int index, Row child)
+  public void addChild( int tableIndex, int rowIndex, Row child)
   {
-    if ( children == null) children = new ArrayList<Row>();
-    children.add( index, child);
+    if ( tableIndex >= tables.size())
+      while( tableIndex >= tables.size()) 
+        tables.add( null);
+    
+    List<Row> children = tables.get( tableIndex);
+    if ( children == null) 
+    {
+      children = new ArrayList<Row>();
+      tables.set( tableIndex, children);
+    }
+    
+    children.add( rowIndex, child);
     child.parent = this;
   }
 
   /**
    * Remove the child at the specified index.
-   * @param index The index.
+   * @param tableIndex The index of the sub-table.
+   * @param rowIndex The index within the sub-table of the child to be removed.
    * @return Returns the child that was removed.
    */
-  public Row removeChild( int index)
+  public Row removeChild( int tableIndex, int rowIndex)
   {
-    Row child = children.remove( index);
+    if ( tableIndex <= tables.size()) return null;
+    
+    List<Row> children = tables.get( tableIndex);
+    Row child = children.remove( rowIndex);
     child.parent = null;
+    
     return child;
+  }
+
+  /**
+   * Returns the offset of the first element in the specified table.
+   * @param tableIndex The index of the table.
+   * @return Returns the offset of the first element in the specified table.
+   */
+  public int getOffset( int tableIndex)
+  {
+    int offset = 0;
+    for( int i=0; i<tableIndex; i++)
+      offset += getChildren( tableIndex).size();
+    return offset;
   }
   
   /**
-   * Returns the children.
-   * @return Returns the children.
+   * Returns the children of the specified table.
+   * @param tableIndex The index of the table.
+   * @return Returns the children of the specified table.
+   */
+  public List<Row> getChildren( int tableIndex)
+  {
+    if ( tableIndex < tables.size())
+    {
+      List<Row> rows = tables.get( tableIndex);
+      if ( rows != null) return rows;
+    }
+    return Collections.emptyList();
+  }
+  
+  /**
+   * Returns the children of all tables.
+   * @return Returns the children of all tables.
    */
   public List<Row> getChildren()
   {
-    if ( children == null) return Collections.emptyList();
-    return children;
+    List<Row> result = new ArrayList<Row>();
+    for( List<Row> children: tables) 
+      if ( children != null)
+        result.addAll( children);
+    return result;
   }
 
   /**
@@ -146,7 +196,7 @@ public class Row
   
   private IXidget table;
   private Row parent;
-  private List<Row> children;
+  private List<List<Row>> tables;
   private StatefulContext context;
   private List<Cell> cells;
   private XidgetSwitch treeSwitch;

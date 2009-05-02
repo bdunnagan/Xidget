@@ -16,16 +16,16 @@ import org.xmodel.xpath.expression.StatefulContext;
 public interface IRowSetFeature
 {
   /**
-   * Set the rows of the table.
+   * Set the rows of the row-set.
    * @param context The parent context.
    * @param rows The row objects.
    */
   public void setRows( StatefulContext context, List<IModelObject> rows);
-
+  
   /**
-   * Returns the rows of the table.
+   * Returns the rows of the row-set.
    * @param context The parent context.
-   * @return Returns the rows of the table.
+   * @return Returns the rows of the row-set.
    */
   public List<IModelObject> getRows( StatefulContext context);
 }

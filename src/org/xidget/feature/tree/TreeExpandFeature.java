@@ -14,8 +14,10 @@ import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelListener;
+import org.xmodel.ModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * A default implementation of ITreeExpandFeature. This class is responsible for binding
@@ -30,6 +32,19 @@ public class TreeExpandFeature implements ITreeExpandFeature
   {
     this.xidget = xidget;
   }
+
+  /**
+   * Returns a new temporary row. A temporary row is a row which is added to a parent
+   * row which has not yet been expanded so that the parent row can be expanded.
+   * @return Returns a new temporary row.
+   */
+  private Row createTemporaryRow()
+  {
+    Row temp = new Row( null);
+    temp.setContext( new StatefulContext( new ModelObject( "temporary")));
+    temp.getCell( 0).text = "temporary";
+    return temp;
+  }
   
   /* (non-Javadoc)
    * @see org.xidget.ifeature.tree.ITreeExpandFeature#rowAdded(org.xidget.table.Row)
@@ -38,11 +53,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
   {
     // add temporary child if row is dirty
     if ( row.getContext().getObject().isDirty())
-    {
-      Row temp = new Row( null);
-      temp.getCell( 0).text = "temporary";
-      row.addChild( 0, temp);
-    }
+      row.addChild( 0, 0, createTemporaryRow());
     
     // add dirty listener
     DirtyListener listener = new DirtyListener( row);
@@ -54,6 +65,8 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void rowRemoved( Row row)
   {
+    if ( row.isExpanded()) collapse( row);
+    
     // remove dirty listeners
     DirtyListener listener = new DirtyListener( row);
     row.getContext().getObject().removeModelListener( listener);
@@ -203,7 +216,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     {
       if ( dirty && !row.isExpanded())
       {
-        row.addChild( 0, new Row( null));
+        row.addChild( 0, 0, createTemporaryRow());
       }
       else
       {

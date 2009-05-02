@@ -34,12 +34,6 @@ public interface ITreeWidgetFeature
   public void removeRows( Row parent, int rowIndex, Row[] rows);
   
   /**
-   * Returns the rows of the root table.
-   * @return Returns the rows of the root table.
-   */
-  public List<Row> getRoots();
-  
-  /**
    * Returns the children of the specified row.
    * @param parent The row.
    * @return Returns the children of the specified row.

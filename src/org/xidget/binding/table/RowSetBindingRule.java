@@ -8,7 +8,7 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
 import org.xidget.ifeature.table.IRowSetFeature;
-import org.xidget.ifeature.table.ITableWidgetFeature;
+import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
@@ -26,7 +26,7 @@ public class RowSetBindingRule implements IBindingRule
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return element.getParent().isType( "table") && xidget.getFeature( ITableWidgetFeature.class) != null;
+    return element.getParent().isType( "table") && xidget.getFeature( ITreeWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)

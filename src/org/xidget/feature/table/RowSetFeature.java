@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.table.IColumnSetFeature;
-import org.xidget.ifeature.table.IGroupOffsetFeature;
 import org.xidget.ifeature.table.IRowSetFeature;
-import org.xidget.ifeature.table.ITableWidgetFeature;
+import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.diff.AbstractListDiffer;
@@ -23,11 +22,32 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public class RowSetFeature implements IRowSetFeature
 {
-  protected RowSetFeature( IXidget xidget)
+  public RowSetFeature( IXidget xidget)
   {
     this.xidget = xidget;
     this.differ = new Differ();
     this.changes = new ArrayList<Change>();
+    this.tableIndex = findTableIndex( xidget);
+  }
+  
+  /**
+   * Returns the table index of the specified table xidget.
+   * @param xidget The table xidget.
+   * @return Returns the table index of the specified table xidget.
+   */
+  private int findTableIndex( IXidget xidget)
+  {
+    int index = 0;
+    IXidget parent = xidget.getParent();
+    for( IXidget child: parent.getChildren())
+    {
+      if ( child.getConfig().isType( xidget.getConfig().getType()))
+      {
+        if ( child == xidget) return index;
+        index++;
+      }
+    }
+    return -1;
   }
   
   /* (non-Javadoc)
@@ -35,18 +55,20 @@ public class RowSetFeature implements IRowSetFeature
    */
   public void setRows( StatefulContext context, List<IModelObject> nodes)
   {
+    // find parent row
+    ITreeWidgetFeature widgetFeature = xidget.getFeature( ITreeWidgetFeature.class);
+    Row parent = widgetFeature.findRow( context); 
+    
+    // get the children of the table to which this row-set belongs
+    List<Row> children = parent.getChildren( tableIndex);
+    int offset = parent.getOffset( tableIndex);
+    
     // find changes
     changes.clear();
-    differ.diff( getRows( context), nodes);
-    
-    // find group offset
-    int offset = 0;
-    IGroupOffsetFeature offsetFeature = xidget.getFeature( IGroupOffsetFeature.class);
-    if ( offsetFeature != null) offset = offsetFeature.getOffset( context);
+    differ.diff( toElements( children), nodes);
     
     // process changes
     IColumnSetFeature columnSetFeature = xidget.getFeature( IColumnSetFeature.class);
-    ITableWidgetFeature widgetFeature = xidget.getFeature( ITableWidgetFeature.class);
     for( Change change: changes)
     {
       if ( change.rIndex >= 0)
@@ -61,11 +83,12 @@ public class RowSetFeature implements IRowSetFeature
           // create row
           Row row = new Row( xidget);
           row.setContext( new StatefulContext( context, rowObject));
+          parent.addChild( tableIndex, change.lIndex + i, row);
           inserted[ i] = row;
         }        
         
         // insert rows
-        widgetFeature.insertRows( context, change.lIndex + offset, inserted);
+        widgetFeature.insertRows( parent, change.lIndex + offset, inserted);
         
         // update columns of each inserted row
         for( int i=0; i<change.count; i++)
@@ -79,16 +102,16 @@ public class RowSetFeature implements IRowSetFeature
       {
         // current row doesn't change while deleting
         Row[] deleted = new Row[ change.count];
-        List<Row> rows = widgetFeature.getRows( context);
         for( int i=0; i<change.count; i++)
         {
           // unbind column set
-          deleted[ i] = rows.get( change.lIndex + offset);
+          deleted[ i] = children.get( change.lIndex);
           columnSetFeature.unbind( deleted[ i]);
+          parent.removeChild( tableIndex, change.lIndex);
         }
         
         // remove rows
-        widgetFeature.removeRows( context, change.lIndex + offset, deleted);
+        widgetFeature.removeRows( parent, change.lIndex + offset, deleted);
       }
     }
   }
@@ -98,9 +121,23 @@ public class RowSetFeature implements IRowSetFeature
    */
   public List<IModelObject> getRows( StatefulContext context)
   {
-    return null;
+    ITreeWidgetFeature widgetFeature = xidget.getFeature( ITreeWidgetFeature.class);
+    Row parent = widgetFeature.findRow( context); 
+    return toElements( parent.getChildren());
   }
 
+  /**
+   * Create a list of elements from the context objects of the specified rows.
+   * @param rows The rows.
+   * @return Returns a list of elements.
+   */
+  private List<IModelObject> toElements( List<Row> rows)
+  {
+    List<IModelObject> elements = new ArrayList<IModelObject>( rows.size());
+    for( Row row: rows) elements.add( row.getContext().getObject());
+    return elements;
+  }
+  
   /**
    * An implementation of AbstractListDiffer which calls the createInsertChange
    * and createDeleteChange methods.
@@ -133,7 +170,7 @@ public class RowSetFeature implements IRowSetFeature
     }
   }
   
-  private class Change
+  private static class Change
   {
     public int lIndex;
     public int rIndex;
@@ -141,7 +178,7 @@ public class RowSetFeature implements IRowSetFeature
   }
   
   protected IXidget xidget;
+  private int tableIndex;
   private Differ differ;
   private List<Change> changes;
-  private List<IModelObject> rowObjects;
 }

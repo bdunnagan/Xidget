@@ -6,7 +6,7 @@ package org.xidget.feature.table;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.table.ITableWidgetFeature;
+import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -33,7 +33,7 @@ public class ColumnSourceListener extends ExpressionListener
   private void setText( String text)
   {
     row.getCell( columnIndex).text = text;
-    ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
+    ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     feature.updateCell( row, columnIndex);
   }
   

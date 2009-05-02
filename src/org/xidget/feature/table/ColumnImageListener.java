@@ -6,7 +6,7 @@ package org.xidget.feature.table;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.table.ITableWidgetFeature;
+import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -37,7 +37,7 @@ public class ColumnImageListener extends ExpressionListener
     Object value = nodes.get( 0).getValue();
     row.getCell( columnIndex).icon = value;
         
-    ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
+    ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     feature.updateCell( row, columnIndex);
   }
   
@@ -53,7 +53,7 @@ public class ColumnImageListener extends ExpressionListener
     Object value = (nodes.size() > 0)? nodes.get( 0).getValue(): null;
     row.getCell( columnIndex).icon = value;
     
-    ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
+    ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     feature.updateCell( row, columnIndex);
   }
   
@@ -66,7 +66,7 @@ public class ColumnImageListener extends ExpressionListener
   {
     row.getCell( columnIndex).icon = newValue;
     
-    ITableWidgetFeature feature = xidget.getFeature( ITableWidgetFeature.class);
+    ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     feature.updateCell( row, columnIndex);
   }
   
