@@ -105,7 +105,7 @@ public class Row
   {
     int offset = 0;
     for( int i=0; i<tableIndex; i++)
-      offset += getChildren( tableIndex).size();
+      offset += getChildren( i).size();
     return offset;
   }
   
@@ -136,7 +136,7 @@ public class Row
         result.addAll( children);
     return result;
   }
-
+  
   /**
    * Returns the cell with the specified column index. If the cell doesn't exist it is created.
    * @param index The column index.
@@ -192,6 +192,29 @@ public class Row
   public boolean isExpanded()
   {
     return expanded;
+  }
+  
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  public String toString()
+  {
+    StringBuilder sb = new StringBuilder();
+    if ( context != null)
+    {
+      sb.append( context.getObject().toString());
+      sb.append( " [");
+      if ( cells != null)
+      {
+        for( Cell cell: cells)
+        {
+          sb.append( cell.text);
+          sb.append( "|");
+        }
+      }
+      sb.append( "]");
+    }
+    return sb.toString();
   }
   
   private IXidget table;

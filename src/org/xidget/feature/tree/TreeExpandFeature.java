@@ -13,11 +13,8 @@ import org.xidget.ifeature.tree.ITreeExpandFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
-import org.xmodel.ModelListener;
-import org.xmodel.ModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IExpression;
-import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * A default implementation of ITreeExpandFeature. This class is responsible for binding
@@ -33,31 +30,11 @@ public class TreeExpandFeature implements ITreeExpandFeature
     this.xidget = xidget;
   }
 
-  /**
-   * Returns a new temporary row. A temporary row is a row which is added to a parent
-   * row which has not yet been expanded so that the parent row can be expanded.
-   * @return Returns a new temporary row.
-   */
-  private Row createTemporaryRow()
-  {
-    Row temp = new Row( null);
-    temp.setContext( new StatefulContext( new ModelObject( "temporary")));
-    temp.getCell( 0).text = "temporary";
-    return temp;
-  }
-  
   /* (non-Javadoc)
    * @see org.xidget.ifeature.tree.ITreeExpandFeature#rowAdded(org.xidget.table.Row)
    */
   public void rowAdded( Row row)
   {
-    // add temporary child if row is dirty
-    if ( row.getContext().getObject().isDirty())
-      row.addChild( 0, 0, createTemporaryRow());
-    
-    // add dirty listener
-    DirtyListener listener = new DirtyListener( row);
-    row.getContext().getObject().addModelListener( listener);
   }
 
   /* (non-Javadoc)
@@ -66,10 +43,6 @@ public class TreeExpandFeature implements ITreeExpandFeature
   public void rowRemoved( Row row)
   {
     if ( row.isExpanded()) collapse( row);
-    
-    // remove dirty listeners
-    DirtyListener listener = new DirtyListener( row);
-    row.getContext().getObject().removeModelListener( listener);
   }
 
   /* (non-Javadoc)
@@ -195,59 +168,6 @@ public class TreeExpandFeature implements ITreeExpandFeature
     }
     
     return row.getSwitch();
-  }
-
-  private class DirtyListener extends ModelListener
-  {
-    /**
-     * Create a dirty listener for the specified row.
-     * @param row The row.
-     */
-    public DirtyListener( Row row)
-    {
-      this.row = row;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.xmodel.ModelListener#notifyDirty(org.xmodel.IModelObject, boolean)
-     */
-    @Override
-    public void notifyDirty( IModelObject object, boolean dirty)
-    {
-      if ( dirty && !row.isExpanded())
-      {
-        row.addChild( 0, 0, createTemporaryRow());
-      }
-      else
-      {
-        // remove temporary child here
-        // (this happens before new rows are added due to binding)
-//        List<Row> children = row.getChildren();
-//        if ( children.size() == 1 && children.get( 0).getTable() == null)
-//          row.removeChild( 0);
-      }
-    }
-    
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals( Object object)
-    {
-      if ( object instanceof DirtyListener) return ((DirtyListener)object).row == row;
-      return false;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode()
-    {
-      return row.hashCode();
-    }
-
-    private Row row;
   }
   
   protected IXidget xidget;

@@ -5,6 +5,7 @@
 package org.xidget.feature.table;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.table.IColumnSetFeature;
@@ -25,8 +26,6 @@ public class RowSetFeature implements IRowSetFeature
   public RowSetFeature( IXidget xidget)
   {
     this.xidget = xidget;
-    this.differ = new Differ();
-    this.changes = new ArrayList<Change>();
     this.tableIndex = findTableIndex( xidget);
   }
   
@@ -64,8 +63,9 @@ public class RowSetFeature implements IRowSetFeature
     int offset = parent.getOffset( tableIndex);
     
     // find changes
-    changes.clear();
+    Differ differ = new Differ();
     differ.diff( toElements( children), nodes);
+    List<Change> changes = differ.getChanges();
     
     // process changes
     IColumnSetFeature columnSetFeature = xidget.getFeature( IColumnSetFeature.class);
@@ -143,7 +143,7 @@ public class RowSetFeature implements IRowSetFeature
    * and createDeleteChange methods.
    */
   @SuppressWarnings("unchecked")
-  private class Differ extends AbstractListDiffer
+  private static class Differ extends AbstractListDiffer
   {
     /* (non-Javadoc)
      * @see org.xmodel.diff.IListDiffer#notifyInsert(java.util.List, int, int, java.util.List, int, int)
@@ -154,6 +154,8 @@ public class RowSetFeature implements IRowSetFeature
       change.lIndex = lIndex + lAdjust;
       change.rIndex = rIndex;
       change.count = count;
+      
+      if ( changes == null) changes = new ArrayList<Change>();
       changes.add( change);
     }
 
@@ -166,8 +168,22 @@ public class RowSetFeature implements IRowSetFeature
       change.lIndex = lIndex + lAdjust;
       change.rIndex = -1;
       change.count = count;
+      
+      if ( changes == null) changes = new ArrayList<Change>();
       changes.add( change);
     }
+    
+    /**
+     * Returns the changes.
+     * @return Returns the changes.
+     */
+    public List<Change> getChanges()
+    {
+      if ( changes == null) return Collections.emptyList();
+      return changes;
+    }
+    
+    private List<Change> changes;
   }
   
   private static class Change
@@ -179,6 +195,4 @@ public class RowSetFeature implements IRowSetFeature
   
   protected IXidget xidget;
   private int tableIndex;
-  private Differ differ;
-  private List<Change> changes;
 }
