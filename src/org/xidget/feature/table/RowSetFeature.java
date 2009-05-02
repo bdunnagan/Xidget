@@ -23,12 +23,11 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public class RowSetFeature implements IRowSetFeature
 {
-  public RowSetFeature( IXidget xidget)
+  protected RowSetFeature( IXidget xidget)
   {
     this.xidget = xidget;
     this.differ = new Differ();
     this.changes = new ArrayList<Change>();
-    this.rowObjects = new ArrayList<IModelObject>();
   }
   
   /* (non-Javadoc)
@@ -38,12 +37,12 @@ public class RowSetFeature implements IRowSetFeature
   {
     // find changes
     changes.clear();
-    differ.diff( rowObjects, nodes);
+    differ.diff( getRows( context), nodes);
     
     // find group offset
     int offset = 0;
     IGroupOffsetFeature offsetFeature = xidget.getFeature( IGroupOffsetFeature.class);
-    if ( offsetFeature != null) offset = offsetFeature.getOffset();
+    if ( offsetFeature != null) offset = offsetFeature.getOffset( context);
     
     // process changes
     IColumnSetFeature columnSetFeature = xidget.getFeature( IColumnSetFeature.class);
@@ -60,7 +59,7 @@ public class RowSetFeature implements IRowSetFeature
           IModelObject rowObject = nodes.get( change.rIndex + i);
           
           // create row
-          Row row = new Row();
+          Row row = new Row( xidget);
           row.setContext( new StatefulContext( context, rowObject));
           inserted[ i] = row;
         }        
@@ -92,18 +91,14 @@ public class RowSetFeature implements IRowSetFeature
         widgetFeature.removeRows( context, change.lIndex + offset, deleted);
       }
     }
-    
-    // update rows
-    rowObjects = nodes;
-    rowCount = rowObjects.size();
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.ifeature.table.IRowSetFeature#getRowCount()
+   * @see org.xidget.ifeature.table.IRowSetFeature#getRows(org.xmodel.xpath.expression.StatefulContext)
    */
-  public int getRowCount()
+  public List<IModelObject> getRows( StatefulContext context)
   {
-    return rowCount;
+    return null;
   }
 
   /**
@@ -145,9 +140,8 @@ public class RowSetFeature implements IRowSetFeature
     public int count;
   }
   
-  private IXidget xidget;
+  protected IXidget xidget;
   private Differ differ;
   private List<Change> changes;
   private List<IModelObject> rowObjects;
-  private int rowCount;
 }

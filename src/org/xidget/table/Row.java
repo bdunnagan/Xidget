@@ -7,6 +7,8 @@ package org.xidget.table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.xidget.IXidget;
+import org.xidget.XidgetSwitch;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -14,9 +16,14 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public class Row
 {
-  public Row()
+  /**
+   * Create a row belonging to the specified table xidget.
+   * @param xidget The table xidget.
+   */
+  public Row( IXidget xidget)
   {
-    cells = new ArrayList<Cell>( 1);
+    this.table = xidget;
+    this.cells = new ArrayList<Cell>( 1);
   }
   
   /**
@@ -92,8 +99,56 @@ public class Row
     return cells.get( index);
   }
   
+  /**
+   * Returns the table to which this row belongs.
+   * @return Returns the table to which this row belongs.
+   */
+  public IXidget getTable()
+  {
+    return table;
+  }
+  
+  /**
+   * Set the tree switch for this row.
+   * @param treeSwitch The tree switch.
+   */
+  public void setSwitch( XidgetSwitch treeSwitch)
+  {
+    this.treeSwitch = treeSwitch;
+  }
+  
+  /**
+   * Returns the tree switch for this row.
+   * @return Returns null or the tree switch for this row.
+   */
+  public XidgetSwitch getSwitch()
+  {
+    return treeSwitch;
+  }
+  
+  /**
+   * Set whether the row is expanded.
+   * @param expanded True if expanded.
+   */
+  public void setExpanded( boolean expanded)
+  {
+    this.expanded = expanded;
+  }
+  
+  /**
+   * Returns true if this row is expanded.
+   * @return Returns true if this row is expanded.
+   */
+  public boolean isExpanded()
+  {
+    return expanded;
+  }
+  
+  private IXidget table;
   private Row parent;
   private List<Row> children;
   private StatefulContext context;
   private List<Cell> cells;
+  private XidgetSwitch treeSwitch;
+  private boolean expanded;
 }

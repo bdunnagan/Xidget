@@ -6,6 +6,7 @@ package org.xidget.feature.table;
 
 import java.util.List;
 import org.xidget.IXidget;
+import org.xidget.XidgetSwitch;
 import org.xidget.ifeature.table.ITableWidgetFeature;
 import org.xidget.ifeature.tree.ITreeExpandFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
@@ -16,7 +17,7 @@ import org.xmodel.xpath.expression.StatefulContext;
  * An implementation of ITableWidgetFeature for use with a sub-tree xidget which 
  * binds its sub-table xidgets to each row of its parent tree.
  */
-public class TreeTableWidgetFeature implements ITableWidgetFeature, ITreeExpandFeature
+public class TreeTableWidgetFeature implements ITableWidgetFeature
 {
   public TreeTableWidgetFeature( IXidget xidget)
   {
@@ -28,8 +29,9 @@ public class TreeTableWidgetFeature implements ITableWidgetFeature, ITreeExpandF
    */
   public void insertRows( StatefulContext parent, int rowIndex, Row[] rows)
   {
-    // update model
     ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
+    
+    // here is where the xpath callback context is translated into the row object
     Row row = feature.findRow( parent);
     if ( row != null)
     {
@@ -39,6 +41,11 @@ public class TreeTableWidgetFeature implements ITableWidgetFeature, ITreeExpandF
     
     // update tree widget
     feature.insertRows( row, rowIndex, rows);
+    
+    // apply tree expansion policy
+    ITreeExpandFeature expandFeature = xidget.getFeature( ITreeExpandFeature.class);
+    for( int i=0; i<rows.length; i++)
+      expandFeature.rowAdded( rows[ i]);
   }
 
   /* (non-Javadoc)
@@ -46,17 +53,33 @@ public class TreeTableWidgetFeature implements ITableWidgetFeature, ITreeExpandF
    */
   public void removeRows( StatefulContext parent, int rowIndex, Row[] rows)
   {
-    // update model
-    ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
-    Row row = rows[ 0].getParent();
-    if ( row != null)
+    try
     {
-      for( int i=0; i<rows.length; i++) 
-        row.removeChild( rowIndex);
+      // unbind tree switches where present
+      for( int i=0; i<rows.length; i++)
+      {
+        XidgetSwitch treeSwitch = rows[ i].getSwitch();
+        if ( treeSwitch != null) treeSwitch.unbind( rows[ i].getContext());
+      }
+      
+      // update model
+      ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
+      Row row = rows[ 0].getParent();
+      if ( row != null)
+      {
+        for( int i=0; i<rows.length; i++) 
+          row.removeChild( rowIndex);
+      }
+      
+      // update tree widget
+      feature.removeRows( row, rowIndex, rows);
     }
-    
-    // update tree widget
-    feature.removeRows( row, rowIndex, rows);
+    finally
+    {
+      ITreeExpandFeature expandFeature = xidget.getFeature( ITreeExpandFeature.class);
+      for( int i=0; i<rows.length; i++)
+        expandFeature.rowRemoved( rows[ i]);
+    }
   }
 
   /* (non-Javadoc)
@@ -94,22 +117,6 @@ public class TreeTableWidgetFeature implements ITableWidgetFeature, ITreeExpandF
     ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     feature.updateCell( row, columnIndex);
   }
-
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.tree.ITreeExpandFeature#expand(org.xidget.table.Row)
-   */
-  public void expand( Row row)
-  {
-    // bind appropriate tree xidget
-  }
   
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.tree.ITreeExpandFeature#collapse(org.xidget.table.Row)
-   */
-  public void collapse( Row row)
-  {
-    // unbind appropriate tree xidget
-  }
-
   private IXidget xidget;
 }

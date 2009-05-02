@@ -8,7 +8,7 @@ import org.xidget.Xidget;
 import org.xidget.feature.BindFeature;
 import org.xidget.feature.table.ColumnSetFeature;
 import org.xidget.feature.table.GroupOffsetFeature;
-import org.xidget.feature.table.RowSetFeature;
+import org.xidget.feature.table.TableRowSetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.table.IColumnSetFeature;
 import org.xidget.ifeature.table.IGroupOffsetFeature;
@@ -22,7 +22,7 @@ public class SubTableXidget extends Xidget
 {
   public void createFeatures()
   {
-    rowSetFeature = new RowSetFeature( this);
+    rowSetFeature = new TableRowSetFeature( this);
     columnSetFeature = new ColumnSetFeature( this);
     bindFeature = new BindFeature( this);
     groupFeature = new GroupOffsetFeature( this);

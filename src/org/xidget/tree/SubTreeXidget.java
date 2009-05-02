@@ -7,6 +7,7 @@ package org.xidget.tree;
 import org.xidget.Xidget;
 import org.xidget.feature.BindFeature;
 import org.xidget.feature.table.TreeTableWidgetFeature;
+import org.xidget.feature.tree.TreeExpandFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IErrorFeature;
 import org.xidget.ifeature.IWidgetFeature;
@@ -27,6 +28,7 @@ public class SubTreeXidget extends Xidget
   protected void createFeatures()
   {
     bindFeature = new BindFeature( this, new String[] { "tree"});
+    expandFeature = new TreeExpandFeature( this);
     tableWidgetFeature = new TreeTableWidgetFeature( this);
   }
 
@@ -38,9 +40,8 @@ public class SubTreeXidget extends Xidget
   public <T> T getFeature( Class<T> clss)
   {
     if ( clss == IBindFeature.class) return (T)bindFeature;
-    if ( clss == ITreeExpandFeature.class) return (T)tableWidgetFeature;
+    if ( clss == ITreeExpandFeature.class) return (T)expandFeature;
     if ( clss == ITableWidgetFeature.class) return (T)tableWidgetFeature;
-    if ( clss == ITreeWidgetFeature.class) return (T)getParent().getFeature( clss);
     if ( clss == ITreeWidgetFeature.class) return (T)getParent().getFeature( clss);
     if ( clss == IWidgetFeature.class) return (T)getParent().getFeature( clss);
     if ( clss == IErrorFeature.class) return (T)getParent().getFeature( clss);
@@ -49,5 +50,6 @@ public class SubTreeXidget extends Xidget
   }
 
   private IBindFeature bindFeature;
+  private ITreeExpandFeature expandFeature;
   private TreeTableWidgetFeature tableWidgetFeature;
 }

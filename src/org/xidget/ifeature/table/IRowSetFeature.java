@@ -21,10 +21,11 @@ public interface IRowSetFeature
    * @param rows The row objects.
    */
   public void setRows( StatefulContext context, List<IModelObject> rows);
-  
+
   /**
-   * Returns the number of rows in the row-set.
-   * @return Returns the number of rows in the row-set.
+   * Returns the rows of the table.
+   * @param context The parent context.
+   * @return Returns the rows of the table.
    */
-  public int getRowCount();
+  public List<IModelObject> getRows( StatefulContext context);
 }

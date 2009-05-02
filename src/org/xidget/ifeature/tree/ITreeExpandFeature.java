@@ -16,6 +16,18 @@ import org.xidget.table.Row;
 public interface ITreeExpandFeature
 {
   /**
+   * Apply the row expansion policy to the specified newly inserted row.
+   * @param row The row being added.
+   */
+  public void rowAdded( Row row);
+  
+  /**
+   * Cleanup listeners from the row that implement the expansion policy.
+   * @param row The row being removed.
+   */
+  public void rowRemoved( Row row);
+  
+  /**
    * Expand the children of the specified row.
    * @param row The row to be expanded.
    */
