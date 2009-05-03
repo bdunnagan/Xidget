@@ -8,13 +8,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.xidget.IXidget;
+import org.xidget.Log;
 import org.xidget.XidgetSwitch;
 import org.xidget.ifeature.tree.ITreeExpandFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xidget.table.Row;
 import org.xmodel.IModelObject;
+import org.xmodel.ModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * A default implementation of ITreeExpandFeature. This class is responsible for binding
@@ -28,6 +31,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
   public TreeExpandFeature( IXidget xidget)
   {
     this.xidget = xidget;
+    this.dummy = new StatefulContext( new ModelObject( "dummy"));
   }
 
   /* (non-Javadoc)
@@ -35,10 +39,6 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void rowAdded( Row row)
   {
-    if ( row.getParent().isExpanded() && !row.getContext().getObject().isDirty())
-    {
-      expand( row);
-    }
   }
 
   /* (non-Javadoc)
@@ -46,11 +46,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void rowRemoved( Row row)
   {
-    if ( row.isExpanded())
-    {
-      XidgetSwitch treeSwitch = getSwitch( row);
-      treeSwitch.unbind( row.getContext());
-    }
+    if ( row.isExpanded()) realCollapse( row);
   }
 
   /* (non-Javadoc)
@@ -58,28 +54,20 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void expand( Row row)
   {
-    row.setExpanded( true);
-    try
-    {
-      // bind tree switch
-      XidgetSwitch treeSwitch = getSwitch( row);
-      treeSwitch.bind( row.getContext());
-    }
-    finally
-    {
-      // remove temporary child
-      ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
-      List<Row> children = row.getChildren();
-      for( int i=0; i<children.size(); i++)
-      {
-        Row child = children.get( i);
-        if ( child.getTable() == null)
-        {
-          feature.removeRows( row, i, new Row[] { child});
-          break;
-        }
-      }
-    }
+    Log.printf( "xidget.tree", "expand: %s\n", row);
+    
+    // remove fake content
+    fakeCollapse( row);
+    
+    // expand real content for row
+    realExpand( row);
+    
+    // fake expand children
+    for( Row child: row.getChildren())
+      fakeExpand( child);
+    
+    ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
+    feature.commit( row);
   }
 
   /* (non-Javadoc)
@@ -87,12 +75,121 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void collapse( Row row)
   {
+    Log.printf( "xidget.tree", "collapse: %s\n", row);
+    
+    // fake collapse children
+    for( Row child: row.getChildren())
+      fakeCollapse( child);
+    
+    // remove real content for row
+    realCollapse( row);
+    
+    // fake expand row
+    Row parent = row.getParent();
+    if ( parent != null && parent.isExpanded())
+      fakeExpand( row);
+  }
+  
+  /**
+   * Expand the specified row with its real content.
+   * @param row The row.
+   */
+  private void realExpand( Row row)
+  {
+    if ( row.isExpanded()) return;
+    row.setExpanded( true);
+
+    Log.printf( "xidget.tree", "real expand: %s\n", row);
+    
+    // bind subtree to get real content
+    XidgetSwitch treeSwitch = getSwitch( row);
+    treeSwitch.bind( row.getContext());
+  }
+  
+  /**
+   * Collapse the specified row removing its real content. 
+   * @param row The row.
+   */
+  private void realCollapse( Row row)
+  {
+    if ( !row.isExpanded()) return;
     row.setExpanded( false);
-    if ( Xlate.get( xidget.getConfig(), "optimize", "speed").equals( "space"))
+   
+    Log.printf( "xidget.tree", "real collapse: %s\n", row);
+    
+    // unbind subtree to remove real content
+    XidgetSwitch treeSwitch = getSwitch( row);
+    treeSwitch.unbind( row.getContext());
+  }
+  
+  /**
+   * Expand the specified row with a temporary child if the contents are not yet known.
+   * @param row The row.
+   */
+  private void fakeExpand( Row row)
+  {
+    Log.printf( "xidget.tree", "fake expand: %s\n", row);
+    
+    if ( needsTemporaryChild( row))
     {
-      XidgetSwitch treeSwitch = getSwitch( row);
-      treeSwitch.unbind( row.getContext());
+      ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
+      
+      Row temp = new Row( null);
+      temp.setContext( dummy);
+      temp.getCell( 0).text = "Oops!";
+      row.addChild( 0, 0, temp);
+      
+      feature.insertRows( row, 0, new Row[] { temp});
     }
+  }
+  
+  /**
+   * Collapse the specified row and remove its temporary child if present.
+   * @param row The row.
+   */
+  private void fakeCollapse( Row row)
+  {
+    Log.printf( "xidget.tree", "fake collapse: %s\n", row);
+    
+    // remove temporary node from table zero
+    ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
+    List<Row> children = row.getChildren( 0);
+    for( int i=0; i<children.size(); i++)
+    {
+      Row child = children.get( i);
+      if ( child.getContext() == dummy)
+      {
+        row.removeChild( 0, i);
+        feature.removeRows( row, i, new Row[] { child}); 
+        break;
+      }
+    }
+  }
+  
+  /**
+   * Returns true if the specified row needs a temporary child.
+   * @param row The row.
+   * @return Returns true if the specified row needs a temporary child.
+   */
+  private boolean needsTemporaryChild( Row row)
+  {
+    // 1. parent must be expanded
+    Row parent = row.getParent();
+    if ( parent != null && !parent.isExpanded()) return false;
+    
+    // 2. at least one case in xidget switch
+    XidgetSwitch treeSwitch = getSwitch( row);
+    if ( treeSwitch.getCaseCount() == 0) return false;
+    
+    // 3. row object is dirty
+    //StatefulContext context = row.getContext();
+    //if ( context == null || !context.getObject().isDirty()) return false;
+    
+    // 4. row is not expanded
+    if ( row.isExpanded()) return false;
+    
+    // 5. row has no children
+    return row.getChildCount() == 0; 
   }
   
   /**
@@ -141,15 +238,29 @@ public class TreeExpandFeature implements ITreeExpandFeature
     
     List<IXidget> candidates = new ArrayList<IXidget>();
     
-    IXidget ancestor = table.getParent();
-    while( ancestor != null && ancestor.getFeature( ITreeWidgetFeature.class) != null)
+    // all children of parent are candidates
+    IXidget parent = table.getParent();
+    for( IXidget child: parent.getChildren())
     {
-      for( IXidget child: ancestor.getChildren())
+      IModelObject element = child.getConfig();
+      if ( element.isType( parent.getConfig().getType()))
+        candidates.add( child);
+    }
+    
+    // all children of ancestors marked as recursive are candidates
+    if ( parent != null)
+    {
+      IXidget ancestor = parent.getParent();
+      while( ancestor != null && ancestor.getFeature( ITreeWidgetFeature.class) != null)
       {
-        if ( child.getConfig().isType( ancestor.getConfig().getType()))
-          candidates.add( child);
+        for( IXidget child: ancestor.getChildren())
+        {
+          IModelObject element = child.getConfig();
+          if ( Xlate.get( element, "recursive", false) && element.isType( ancestor.getConfig().getType()))
+            candidates.add( child);
+        }
+        ancestor = ancestor.getParent();
       }
-      ancestor = ancestor.getParent();
     }
     
     return candidates;
@@ -178,4 +289,5 @@ public class TreeExpandFeature implements ITreeExpandFeature
   }
   
   protected IXidget xidget;
+  private StatefulContext dummy;
 }

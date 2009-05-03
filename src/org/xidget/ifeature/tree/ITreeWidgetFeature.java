@@ -18,20 +18,34 @@ import org.xmodel.xpath.expression.StatefulContext;
 public interface ITreeWidgetFeature
 {
   /**
-   * Insert rows into the table.
-   * @param parent The parent row (contains the parent context).
+   * Insert rows into the table. This method should not fire an update event. The
+   * <code>commit</code> method will be called after all the updates have been
+   * made and it should fire update events.  Only a single parent row will be 
+   * modified before a call to <code>commit</code>.
+   * @param parent The parent row.
    * @param rowIndex The index of the first row.
    * @param rows The rows to be inserted.
    */
   public void insertRows( Row parent, int rowIndex, Row[] rows);
   
   /**
-   * Remove rows from the table.
-   * @param parent The parent row (contains the parent context).
+   * Remove rows from the table. This method should not fire an update event. The
+   * <code>commit</code> method will be called after all the updates have been
+   * made and it should fire update events.  Only a single parent row will be 
+   * modified before a call to <code>commit</code>.
+   * @param parent The parent row.
    * @param rowIndex The index of the first row.
    * @param rows The rows that were removed.
    */
   public void removeRows( Row parent, int rowIndex, Row[] rows);
+  
+  /**
+   * Fire update events. This method is called after all changes to the table rows
+   * have been made through the <code>insertRows</code> and <code>removeRows</code>
+   * methods.
+   * @param parent The parent row.
+   */
+  public void commit( Row parent);
   
   /**
    * Returns the children of the specified row.
@@ -46,6 +60,13 @@ public interface ITreeWidgetFeature
    * @return Returns the row with the specified context instance.
    */
   public Row findRow( StatefulContext context);
+  
+  /**
+   * Returns true if the specified row is visible in the tree.
+   * @param row The row.
+   * @return Returns true if the specified row is visible in the tree.
+   */
+  public boolean isVisible( Row row);
   
   /**
    * Set the title of the specified column.

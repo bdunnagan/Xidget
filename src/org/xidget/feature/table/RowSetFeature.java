@@ -114,6 +114,9 @@ public class RowSetFeature implements IRowSetFeature
         widgetFeature.removeRows( parent, change.lIndex + offset, deleted);
       }
     }
+    
+    // commit changes
+    widgetFeature.commit( parent);
   }
 
   /* (non-Javadoc)

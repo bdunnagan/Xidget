@@ -138,6 +138,19 @@ public class Row
   }
   
   /**
+   * Returns the number of children in all tables.
+   * @return Returns the number of children in all tables.
+   */
+  public int getChildCount()
+  {
+    int count = 0;
+    for( List<Row> children: tables) 
+      if ( children != null)
+        count += children.size();
+    return count;
+  }
+  
+  /**
    * Returns the cell with the specified column index. If the cell doesn't exist it is created.
    * @param index The column index.
    * @return Returns the cell with the specified column index.

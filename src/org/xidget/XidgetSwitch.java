@@ -63,6 +63,15 @@ public class XidgetSwitch extends ExpressionListener
   }
 
   /**
+   * Returns the number of cases.
+   * @return Returns the number of cases.
+   */
+  public int getCaseCount()
+  {
+    return cases.size();
+  }
+  
+  /**
    * Returns the xidgets associated with all cases.
    * @return Returns the xidgets associated with all cases.
    */
