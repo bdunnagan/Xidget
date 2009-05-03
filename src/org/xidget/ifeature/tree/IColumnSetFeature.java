@@ -2,11 +2,11 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.ifeature.table;
+package org.xidget.ifeature.tree;
 
 import java.util.List;
-import org.xidget.table.Column;
-import org.xidget.table.Row;
+import org.xidget.tree.Column;
+import org.xidget.tree.Row;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**

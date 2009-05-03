@@ -6,11 +6,11 @@ package org.xidget.table;
 
 import org.xidget.Xidget;
 import org.xidget.feature.BindFeature;
-import org.xidget.feature.table.ColumnSetFeature;
-import org.xidget.feature.table.RowSetFeature;
+import org.xidget.feature.tree.ColumnSetFeature;
+import org.xidget.feature.tree.RowSetFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.table.IColumnSetFeature;
-import org.xidget.ifeature.table.IRowSetFeature;
+import org.xidget.ifeature.tree.IColumnSetFeature;
+import org.xidget.ifeature.tree.IRowSetFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 
 /**

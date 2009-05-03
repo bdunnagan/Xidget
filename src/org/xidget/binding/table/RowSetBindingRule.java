@@ -7,7 +7,7 @@ package org.xidget.binding.table;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
-import org.xidget.ifeature.table.IRowSetFeature;
+import org.xidget.ifeature.tree.IRowSetFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;

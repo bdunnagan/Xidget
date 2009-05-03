@@ -5,7 +5,7 @@
 package org.xidget.ifeature.tree;
 
 import java.util.List;
-import org.xidget.table.Row;
+import org.xidget.tree.Row;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**

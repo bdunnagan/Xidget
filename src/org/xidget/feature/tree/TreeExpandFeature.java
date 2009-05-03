@@ -12,7 +12,7 @@ import org.xidget.Log;
 import org.xidget.XidgetSwitch;
 import org.xidget.ifeature.tree.ITreeExpandFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
-import org.xidget.table.Row;
+import org.xidget.tree.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelObject;
 import org.xmodel.Xlate;

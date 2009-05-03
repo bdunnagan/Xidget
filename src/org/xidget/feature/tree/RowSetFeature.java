@@ -2,16 +2,16 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.feature.table;
+package org.xidget.feature.tree;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.table.IColumnSetFeature;
-import org.xidget.ifeature.table.IRowSetFeature;
+import org.xidget.ifeature.tree.IColumnSetFeature;
+import org.xidget.ifeature.tree.IRowSetFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
-import org.xidget.table.Row;
+import org.xidget.tree.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.diff.AbstractListDiffer;
 import org.xmodel.xpath.expression.StatefulContext;

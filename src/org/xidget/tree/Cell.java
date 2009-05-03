@@ -2,10 +2,10 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.table;
+package org.xidget.tree;
 
-import org.xidget.feature.table.ColumnImageListener;
-import org.xidget.feature.table.ColumnSourceListener;
+import org.xidget.feature.tree.ColumnImageListener;
+import org.xidget.feature.tree.ColumnSourceListener;
 import org.xmodel.IModelObject;
 
 /**

@@ -4,7 +4,7 @@
  */
 package org.xidget.ifeature.tree;
 
-import org.xidget.table.Row;
+import org.xidget.tree.Row;
 
 /**
  * An interface for expanding and collapsing the data-model of a tree xidget.
