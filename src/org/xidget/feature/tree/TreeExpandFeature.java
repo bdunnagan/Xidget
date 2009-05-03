@@ -35,6 +35,10 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void rowAdded( Row row)
   {
+    if ( row.getParent().isExpanded() && !row.getContext().getObject().isDirty())
+    {
+      expand( row);
+    }
   }
 
   /* (non-Javadoc)
@@ -42,7 +46,11 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void rowRemoved( Row row)
   {
-    if ( row.isExpanded()) collapse( row);
+    if ( row.isExpanded())
+    {
+      XidgetSwitch treeSwitch = getSwitch( row);
+      treeSwitch.unbind( row.getContext());
+    }
   }
 
   /* (non-Javadoc)
@@ -51,7 +59,6 @@ public class TreeExpandFeature implements ITreeExpandFeature
   public void expand( Row row)
   {
     row.setExpanded( true);
-    
     try
     {
       // bind tree switch

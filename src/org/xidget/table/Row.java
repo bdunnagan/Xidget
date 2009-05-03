@@ -87,7 +87,7 @@ public class Row
    */
   public Row removeChild( int tableIndex, int rowIndex)
   {
-    if ( tableIndex <= tables.size()) return null;
+    if ( tableIndex >= tables.size()) return null;
     
     List<Row> children = tables.get( tableIndex);
     Row child = children.remove( rowIndex);

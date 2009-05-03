@@ -86,10 +86,10 @@ public class RowSetFeature implements IRowSetFeature
           parent.addChild( tableIndex, change.lIndex + i, row);
           inserted[ i] = row;
         }        
-        
+
         // insert rows
         widgetFeature.insertRows( parent, change.lIndex + offset, inserted);
-        
+
         // update columns of each inserted row
         for( int i=0; i<change.count; i++)
         {
