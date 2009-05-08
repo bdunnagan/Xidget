@@ -20,9 +20,10 @@ public interface IAsyncFeature
    * Each time this method is called for a given key, the timer instance delay is reset.
    * @param key The key.
    * @param delay The delay in milliseconds.
+   * @param repeat True for periodic execution.
    * @param runnable The runnable.
    */
-  public void schedule( Object key, int delay, Runnable runnable);
+  public void schedule( Object key, int delay, boolean repeat, Runnable runnable);
   
   /**
    * Cancel the specified timer instance.

@@ -8,6 +8,7 @@ import org.xidget.Xidget;
 import org.xidget.feature.BindFeature;
 import org.xidget.feature.tree.ColumnSetFeature;
 import org.xidget.feature.tree.RowSetFeature;
+import org.xidget.ifeature.IAsyncFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.tree.IColumnSetFeature;
 import org.xidget.ifeature.tree.IRowSetFeature;
@@ -35,9 +36,8 @@ public class SubTableXidget extends Xidget
     if ( clss == IColumnSetFeature.class) return (T)columnSetFeature;
     if ( clss == IRowSetFeature.class) return (T)rowSetFeature;
     if ( clss == IBindFeature.class) return (T)bindFeature;
-
-    // get features from parent
     if ( clss == ITreeWidgetFeature.class) return (T)getParent().getFeature( clss);
+    if ( clss == IAsyncFeature.class) return (T)getParent().getFeature( clss);
     
     return super.getFeature( clss);
   }

@@ -17,6 +17,7 @@ import org.xidget.binding.TriggerTagHandler;
 import org.xidget.binding.table.ColumnTitleBindingRule;
 import org.xidget.binding.table.RowSetBindingRule;
 import org.xidget.binding.table.SubTableTagHandler;
+import org.xidget.binding.text.ButtonBindingRule;
 import org.xidget.binding.text.EditableBindingRule;
 import org.xidget.binding.text.TextBindingRule;
 import org.xidget.binding.tree.SubTreeTagHandler;
@@ -44,6 +45,7 @@ public final class Creator
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new BindingTagHandler( new SelectionBindingRule()));
     processor.addHandler( "source", new BindingTagHandler( new TextBindingRule()));
+    processor.addHandler( "source", new BindingTagHandler( new ButtonBindingRule()));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
 

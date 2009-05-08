@@ -49,9 +49,9 @@ public class TextBindingRule implements IBindingRule
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       ITextModelFeature modelAdapter = xidget.getFeature( ITextModelFeature.class);
-      if ( nodes.contains( modelAdapter.getSource( channel))) return;
+      IModelObject source = expression.queryFirst( context);
+      if ( source == modelAdapter.getSource( channel)) return;      
       
-      IModelObject source = nodes.get( 0);
       modelAdapter.setSource( channel, source);
       
       ITextWidgetFeature widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
@@ -61,8 +61,13 @@ public class TextBindingRule implements IBindingRule
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       ITextModelFeature modelAdapter = xidget.getFeature( ITextModelFeature.class);
-      if ( !nodes.contains( modelAdapter.getSource( channel))) return;
-      modelAdapter.setSource( channel, expression.queryFirst( context));
+      IModelObject source = expression.queryFirst( context);
+      if ( source == modelAdapter.getSource( channel)) return;
+        
+      modelAdapter.setSource( channel, source);
+      
+      ITextWidgetFeature widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
+      widgetAdapter.setText( channel, Xlate.get( source, ""));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
