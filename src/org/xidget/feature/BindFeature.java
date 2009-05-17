@@ -11,6 +11,8 @@ import org.xidget.IXidget;
 import org.xidget.Log;
 import org.xidget.binding.IXidgetBinding;
 import org.xidget.ifeature.IBindFeature;
+import org.xidget.ifeature.IWidgetContextFeature;
+import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -68,6 +70,19 @@ public class BindFeature implements IBindFeature
   {
     Log.printf( "xidget", "bind: %s with %s\n", xidget, context);
     
+    // create widget-context association
+    IWidgetContextFeature widgetContextFeature = xidget.getFeature( IWidgetContextFeature.class);
+    IWidgetCreationFeature widgetCreationFeature = xidget.getFeature( IWidgetCreationFeature.class);
+    if ( widgetContextFeature != null && widgetCreationFeature != null) 
+    {
+      Object[] widgets = widgetCreationFeature.getLastWidgets();
+      if ( widgets != null)
+      {
+        for( Object widget: widgets)
+          widgetContextFeature.createAssociation( widget, context);
+      }
+    }
+    
     // internal bindings
     if ( bindBeforeChildren != null)
       for( IXidgetBinding binding: bindBeforeChildren)
@@ -112,6 +127,19 @@ public class BindFeature implements IBindFeature
     if ( bindAfterChildren != null)
       for( IXidgetBinding binding: bindAfterChildren)
         binding.unbind( context);
+    
+    // remove widget-context association
+    IWidgetContextFeature widgetContextFeature = xidget.getFeature( IWidgetContextFeature.class);
+    IWidgetCreationFeature widgetCreationFeature = xidget.getFeature( IWidgetCreationFeature.class);
+    if ( widgetContextFeature != null && widgetCreationFeature != null) 
+    {
+      Object[] widgets = widgetCreationFeature.getLastWidgets();
+      if ( widgets != null)
+      {
+        for( Object widget: widgets)
+          widgetContextFeature.removeAssociation( widget);
+      }
+    }    
   }
   
   protected IXidget xidget;

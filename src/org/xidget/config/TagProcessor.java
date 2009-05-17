@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.xidget.IFeatured;
+import org.xidget.Log;
 import org.xmodel.IModelObject;
 import org.xmodel.util.HashMultiMap;
 import org.xmodel.util.MultiMap;
@@ -106,6 +107,8 @@ public class TagProcessor implements IFeatured
    */
   private void process( ITagHandler parent, IContext context) throws TagException
   {
+    long t0 = System.nanoTime();
+    
     this.context = context;
     
     Stack<Entry> stack = new Stack<Entry>();
@@ -126,6 +129,9 @@ public class TagProcessor implements IFeatured
       if ( entry.attribute) processAttributeHandlers( stack, entry);
       else processElementHandlers( stack, entry);
     }
+    
+    long t1 = System.nanoTime();
+    Log.printf( "perf", "TagProcessor.process: time=%3.3fms\n", ((t1-t0)/1000000f));
   }
 
   /**

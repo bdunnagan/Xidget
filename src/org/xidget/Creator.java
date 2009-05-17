@@ -11,6 +11,7 @@ import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.LayoutTagHandler;
+import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
@@ -38,6 +39,7 @@ public final class Creator
   {
     this.processor = new TagProcessor();
 
+    // general
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
@@ -49,6 +51,10 @@ public final class Creator
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
 
+    // scripts
+    processor.addHandler( "buttonPressed", new ScriptTagHandler());
+
+    // layout
     processor.addHandler( "layout", new LayoutTagHandler());
     processor.addAttributeHandler( "layout", new LayoutTagHandler());
     
@@ -100,10 +106,12 @@ public final class Creator
       IXidget xidget = stack.pop();
       
       IWidgetCreationFeature feature = xidget.getFeature( IWidgetCreationFeature.class);
-      if ( feature != null) feature.createWidget();
+      if ( feature != null) feature.createWidgets();
       
-      for( IXidget child: xidget.getChildren())
-        stack.push( child);
+      // push children in reverse order
+      List<IXidget> children = xidget.getChildren();
+      for( int i = children.size() - 1; i >= 0; i--)
+        stack.push( children.get( i));
     }
   }
 

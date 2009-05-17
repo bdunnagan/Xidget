@@ -93,7 +93,7 @@ public abstract class Xidget implements IXidget
   public final void createWidget()
   {
     IWidgetCreationFeature feature = getFeature( IWidgetCreationFeature.class);
-    if ( feature != null) feature.createWidget();
+    if ( feature != null) feature.createWidgets();
   }
 
   /* (non-Javadoc)
@@ -102,7 +102,7 @@ public abstract class Xidget implements IXidget
   public final void destroyWidget()
   {
     IWidgetCreationFeature feature = getFeature( IWidgetCreationFeature.class);
-    if ( feature != null) feature.destroyWidget();
+    if ( feature != null) feature.destroyWidgets();
   }
 
   /* (non-Javadoc)

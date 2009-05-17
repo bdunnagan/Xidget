@@ -15,10 +15,16 @@ public interface IWidgetCreationFeature
    * Create the widget or widgets for the associated xidget. This method
    * does not create widgets for the children of the xidget.
    */
-  public void createWidget();
+  public void createWidgets();
   
   /**
    * Destroy the widget or widgets.
    */
-  public void destroyWidget();
+  public void destroyWidgets();
+  
+  /**
+   * Returns the widgets which created by the last call to the <code>createWidgets</code> method.
+   * @return Returns the widgets which created by the last call to the <code>createWidgets</code> method.
+   */
+  public Object[] getLastWidgets();
 }
