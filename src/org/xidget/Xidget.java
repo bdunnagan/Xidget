@@ -141,7 +141,16 @@ public abstract class Xidget implements IXidget
   public String toString()
   {
     if ( config == null) return "unconfigured";
-    return config.getType();
+    
+    StringBuilder sb = new StringBuilder();
+    sb.append( config.getType());
+    if ( config.getID().length() > 0) 
+    {
+      sb.append( "#");
+      sb.append( config.getID());
+    }
+    
+    return sb.toString();
   }
 
   private IXidget parent;

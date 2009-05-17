@@ -6,7 +6,6 @@ package org.xidget.layout;
 
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.IWidgetFeature.Bounds;
-import org.xmodel.util.Radix;
 
 /**
  * An anchor which represents the bottom side of a widget.
@@ -65,7 +64,7 @@ public class WidgetBottomNode extends ComputeNode
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append( "@"); sb.append( Radix.convert( widget.hashCode(), 36)); sb.append( ".y1");
+    sb.append( widget); sb.append( ":BOTTOM");
     return sb.toString();
   }
 

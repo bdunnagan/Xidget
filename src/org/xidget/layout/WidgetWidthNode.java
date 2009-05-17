@@ -6,7 +6,6 @@ package org.xidget.layout;
 
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.IWidgetFeature.Bounds;
-import org.xmodel.util.Radix;
 
 /**
  * An anchor which represents the width of a container.
@@ -52,7 +51,7 @@ public class WidgetWidthNode extends ComputeNode
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append( "@"); sb.append( Radix.convert( container.hashCode(), 36)); sb.append( ".w");
+    sb.append( container); sb.append( ":WIDTH");
     return sb.toString();
   }
 

@@ -24,6 +24,8 @@ public interface IWidgetCreationFeature
   
   /**
    * Returns the widgets which created by the last call to the <code>createWidgets</code> method.
+   * The widgets must be configured into a hierarchy with a single top-level widget.  The top-level
+   * widget must be the first widget in the array.
    * @return Returns the widgets which created by the last call to the <code>createWidgets</code> method.
    */
   public Object[] getLastWidgets();

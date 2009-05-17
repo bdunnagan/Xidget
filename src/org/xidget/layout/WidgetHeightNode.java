@@ -6,7 +6,6 @@ package org.xidget.layout;
 
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.IWidgetFeature.Bounds;
-import org.xmodel.util.Radix;
 
 /**
  * An anchor which is valueed relative to the height of a container widget.
@@ -52,7 +51,7 @@ public class WidgetHeightNode extends ComputeNode
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append( "@"); sb.append( Radix.convert( container.hashCode(), 36)); sb.append( ".h");
+    sb.append( container); sb.append( ":HEIGHT");
     return sb.toString();
   }
 

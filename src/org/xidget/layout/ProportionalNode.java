@@ -40,8 +40,9 @@ public class ProportionalNode extends ComputeNode
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append( "%"); sb.append( percent);
-    if ( offset >= 0) sb.append( "+"); sb.append( offset);
+    sb.append( "proportional( ");
+    sb.append( "%"); sb.append( percent); sb.append( ", ");
+    sb.append( offset); sb.append( ")");
     return sb.toString();
   }
 

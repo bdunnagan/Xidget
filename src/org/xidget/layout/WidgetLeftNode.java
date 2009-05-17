@@ -6,7 +6,6 @@ package org.xidget.layout;
 
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.IWidgetFeature.Bounds;
-import org.xmodel.util.Radix;
 
 /**
  * An anchor which represents the left side of a widget.
@@ -48,7 +47,7 @@ public class WidgetLeftNode extends ComputeNode
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append( "@"); sb.append( Radix.convert( widget.hashCode(), 36)); sb.append( ".x0");
+    sb.append( widget); sb.append( ":LEFT");
     return sb.toString();
   }
 

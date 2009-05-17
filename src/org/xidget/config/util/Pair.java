@@ -23,8 +23,8 @@ public class Pair
   /**
    * Parse the pair and use the specified defaults if the string is null or empty.
    * @param string The string.
-   * @param defaultX The default x-coordinate to use when the string is null or empty.
-   * @param defaultY The default y-coordinate to use when the string is null or empty. 
+   * @param defaultX The default value for x.
+   * @param defaultY The default value for y. 
    */
   public Pair( String string, int defaultX, int defaultY)
   {

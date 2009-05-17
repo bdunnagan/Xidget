@@ -18,7 +18,7 @@ public interface IWidgetFeature
     public int width;
     public int height;
   }
-
+  
   /**
    * Set the bounds of the widget.
    * @param x The left-side x-coordinate.

@@ -120,6 +120,7 @@ public class AttachAction extends GuardedAction
     int pad = attachment.pad;
     float percent = attachment.percent;
     
+    // attaching to parent container is different from attaching to peer
     IWidgetFeature peerWidget = peer.getFeature( IWidgetFeature.class);
     if ( peerWidget != container)
     {
@@ -150,7 +151,6 @@ public class AttachAction extends GuardedAction
       if ( attachment.proportional)
       {
         // both x0 and x1 create a WidgetWidthNode (similarly for y-coordinate)
-        // the percentage is measured from the appropriate side
         String peerSide = (attachment.side.charAt( 0) == 'x')? "w": "h";
         IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getAnchor( peerSide);
         node1.addDependency( new ProportionalNode( node2, percent, pad));

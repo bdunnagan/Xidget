@@ -32,6 +32,13 @@ import org.xmodel.xpath.expression.StatefulContext;
  * creating the widget hierarchy and binding xidgets.  This class is built with
  * an instance of TagProcessor which has already been configured with platform
  * specific tag handlers.
+ * <p>
+ * Xidget processing has three primary stages: xidget creation, widget creation
+ * and binding.  Xidgets are created when a configuration fragment is parsed 
+ * with an appropriately configured TagProcessor.  The complete xidget hierarchy
+ * represented in the fragment is created.  The corresponding widget hierarchy
+ * is created next using the <code>build</code> method.  Finally, the xidget
+ * hierarchy is bound by visiting each IBindFeature.
  */
 public final class Creator
 {
