@@ -15,10 +15,10 @@ import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
+import org.xidget.binding.button.ButtonBindingRule;
 import org.xidget.binding.table.ColumnTitleBindingRule;
 import org.xidget.binding.table.RowSetBindingRule;
 import org.xidget.binding.table.SubTableTagHandler;
-import org.xidget.binding.text.ButtonBindingRule;
 import org.xidget.binding.text.EditableBindingRule;
 import org.xidget.binding.text.TextBindingRule;
 import org.xidget.binding.tree.SubTreeTagHandler;
@@ -52,7 +52,7 @@ public final class Creator
     processor.addHandler( "trigger", new TriggerTagHandler());
 
     // scripts
-    processor.addHandler( "buttonPressed", new ScriptTagHandler());
+    processor.addHandler( "onPress", new ScriptTagHandler());
 
     // layout
     processor.addHandler( "layout", new LayoutTagHandler());

@@ -8,6 +8,7 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
 import org.xidget.feature.text.TextModelFeature;
+import org.xidget.ifeature.ISourceFeature;
 import org.xidget.ifeature.text.ITextModelFeature;
 import org.xidget.ifeature.text.ITextWidgetFeature;
 import org.xmodel.IModelObject;
@@ -48,11 +49,11 @@ public class TextBindingRule implements IBindingRule
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      ITextModelFeature modelAdapter = xidget.getFeature( ITextModelFeature.class);
+      ISourceFeature sourceFeature = xidget.getFeature( ISourceFeature.class);
       IModelObject source = expression.queryFirst( context);
-      if ( source == modelAdapter.getSource( channel)) return;      
+      if ( source == sourceFeature.getSource( channel)) return;      
       
-      modelAdapter.setSource( channel, source);
+      sourceFeature.setSource( channel, source);
       
       ITextWidgetFeature widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
       widgetAdapter.setText( channel, Xlate.get( source, ""));
@@ -60,11 +61,11 @@ public class TextBindingRule implements IBindingRule
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      ITextModelFeature modelAdapter = xidget.getFeature( ITextModelFeature.class);
+      ISourceFeature sourceFeature = xidget.getFeature( ISourceFeature.class);
       IModelObject source = expression.queryFirst( context);
-      if ( source == modelAdapter.getSource( channel)) return;
-        
-      modelAdapter.setSource( channel, source);
+      if ( source == sourceFeature.getSource( channel)) return;      
+      
+      sourceFeature.setSource( channel, source);
       
       ITextWidgetFeature widgetAdapter = xidget.getFeature( ITextWidgetFeature.class);
       widgetAdapter.setText( channel, Xlate.get( source, ""));

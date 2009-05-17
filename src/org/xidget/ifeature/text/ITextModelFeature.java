@@ -4,8 +4,8 @@
  */
 package org.xidget.ifeature.text;
 
+import org.xidget.ifeature.ISourceFeature;
 import org.xidget.text.ITextValidator;
-import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.IExpression;
 
 /**
@@ -17,25 +17,10 @@ import org.xmodel.xpath.expression.IExpression;
  * <li><i>selected</i> - The selected text channel.
  * </ul>
  */
-public interface ITextModelFeature
+public interface ITextModelFeature extends ISourceFeature
 {
   /**
-   * Set the source node which stores the text. 
-   * This method does not need to call <code>setText</code>.
-   * @param channel The channel.
-   * @param node The source node.
-   */
-  public void setSource( String channel, IModelObject node);
-  
-  /**
-   * Returns the source node which stores the text.
-   * @param channel The channel.
-   * @return Returns the source node which stores the text.
-   */
-  public IModelObject getSource( String channel);
-  
-  /**
-   * Set the text of the widget associated with the specified channel.
+   * Set the text of the source node associated with the specified channel.
    * @param channel The channel.
    * @param text The text.
    */

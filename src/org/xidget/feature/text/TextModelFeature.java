@@ -67,6 +67,22 @@ public class TextModelFeature implements ITextModelFeature
   }
 
   /* (non-Javadoc)
+   * @see org.xidget.ifeature.ISourceFeature#getSource()
+   */
+  public IModelObject getSource()
+  {
+    return getSource( allChannel);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ISourceFeature#setSource(org.xmodel.IModelObject)
+   */
+  public void setSource( IModelObject node)
+  {
+    setSource( allChannel, node);
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.text.adapter.IModelTextAdapter#setText(java.lang.String, java.lang.String)
    */
   public void setText( String channelName, String text)
@@ -79,11 +95,11 @@ public class TextModelFeature implements ITextModelFeature
         text = channel.transform.transform( text);
       
       // validate
-      IErrorFeature errorAdapter = xidget.getFeature( IErrorFeature.class);
-      if ( errorAdapter != null && channel.validator != null)
+      IErrorFeature errorFeature = xidget.getFeature( IErrorFeature.class);
+      if ( errorFeature != null && channel.validator != null)
       {
         String error = channel.validator.validate( text);
-        if ( error != null) errorAdapter.valueError( error);
+        if ( error != null) errorFeature.valueError( error);
       }
       
       // commit

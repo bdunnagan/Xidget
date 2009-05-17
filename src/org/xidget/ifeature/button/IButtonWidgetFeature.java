@@ -16,12 +16,6 @@ public interface IButtonWidgetFeature
   public void setImage( Object image);
   
   /**
-   * Set the button text.
-   * @param text The text.
-   */
-  public void setText( String text);
-  
-  /**
    * Set the button state (only applies to toggle and checkbox buttons).
    * @param state The state.
    */

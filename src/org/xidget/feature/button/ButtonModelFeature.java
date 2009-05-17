@@ -14,7 +14,7 @@ import org.xmodel.Xlate;
 public class ButtonModelFeature implements IButtonModelFeature
 {
   /* (non-Javadoc)
-   * @see org.xidget.ifeature.button.IButtonModelFeature#setSource(org.xmodel.IModelObject)
+   * @see org.xidget.ifeature.ISourceFeature#setSource(org.xmodel.IModelObject)
    */
   public void setSource( IModelObject node)
   {
@@ -22,11 +22,27 @@ public class ButtonModelFeature implements IButtonModelFeature
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.ifeature.button.IButtonModelFeature#getSource()
+   * @see org.xidget.ifeature.ISourceFeature#getSource()
    */
   public IModelObject getSource()
   {
     return node;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ISourceFeature#setSource(java.lang.String, org.xmodel.IModelObject)
+   */
+  public void setSource( String channel, IModelObject node)
+  {
+    throw new UnsupportedOperationException( "Buttons do not support channels.");
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ISourceFeature#getSource(java.lang.String)
+   */
+  public IModelObject getSource( String channel)
+  {
+    throw new UnsupportedOperationException( "Buttons do not support channels.");
   }
 
   /* (non-Javadoc)

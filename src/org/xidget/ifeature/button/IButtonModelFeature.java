@@ -4,26 +4,13 @@
  */
 package org.xidget.ifeature.button;
 
-import org.xmodel.IModelObject;
+import org.xidget.ifeature.ISourceFeature;
 
 /**
  * An interface for operating on the button model.
  */
-public interface IButtonModelFeature
+public interface IButtonModelFeature extends ISourceFeature
 {
-  /**
-   * Set the button source node. The value of the source node is updated
-   * with the state of a toggle or checkbox button.
-   * @param node The source node.
-   */
-  public void setSource( IModelObject node);
-  
-  /**
-   * Returns the button state source node.
-   * @return Returns null or the button state source node.
-   */
-  public IModelObject getSource();
-  
   /**
    * Set the button state.
    * @param state The state.

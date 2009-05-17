@@ -2,11 +2,12 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.binding.text;
+package org.xidget.binding.button;
 
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
+import org.xidget.ifeature.ISourceFeature;
 import org.xidget.ifeature.button.IButtonModelFeature;
 import org.xidget.ifeature.button.IButtonWidgetFeature;
 import org.xmodel.IModelObject;
@@ -46,11 +47,11 @@ public class ButtonBindingRule implements IBindingRule
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      IButtonModelFeature modelAdapter = xidget.getFeature( IButtonModelFeature.class);
+      ISourceFeature sourceFeature = xidget.getFeature( ISourceFeature.class);
       IModelObject source = expression.queryFirst( context);
-      if ( source == modelAdapter.getSource()) return;      
+      if ( source == sourceFeature.getSource()) return;      
       
-      modelAdapter.setSource( source);
+      sourceFeature.setSource( source);
       
       IButtonWidgetFeature widgetAdapter = xidget.getFeature( IButtonWidgetFeature.class);
       widgetAdapter.setState( Xlate.get( source, false));
@@ -58,11 +59,11 @@ public class ButtonBindingRule implements IBindingRule
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      IButtonModelFeature modelAdapter = xidget.getFeature( IButtonModelFeature.class);
+      ISourceFeature sourceFeature = xidget.getFeature( ISourceFeature.class);
       IModelObject source = expression.queryFirst( context);
-      if ( source == modelAdapter.getSource()) return;
+      if ( source == sourceFeature.getSource()) return;      
       
-      modelAdapter.setSource( source);
+      sourceFeature.setSource( source);
       
       IButtonWidgetFeature widgetAdapter = xidget.getFeature( IButtonWidgetFeature.class);
       widgetAdapter.setState( Xlate.get( source, false));
