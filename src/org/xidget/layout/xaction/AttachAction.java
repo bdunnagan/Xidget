@@ -56,12 +56,12 @@ public class AttachAction extends GuardedAction
     Attachment attachment = new Attachment();
     attachment.expr = Xlate.get( element, "attach", (IExpression)null);
     attachment.side = Xlate.get( element, "side", "");
-    attachment.pad = Xlate.get( element, "pad", 0);
+    attachment.padExpr = Xlate.get( element, "pad", (IExpression)null);
     
     if ( element.getAttribute( "percent") != null)
     {
       attachment.proportional = true;
-      attachment.percent = Xlate.get( element, "percent", 0f);
+      attachment.percentExpr = Xlate.get( element, "percent", (IExpression)null);
     }
     
     return attachment;
@@ -117,8 +117,8 @@ public class AttachAction extends GuardedAction
     IXidget peer = getPeer( context, attachment.expr);
     if ( peer == null) throw new XActionException( "Peer xidget of attachment not found: "+attachment.expr);
 
-    int pad = attachment.pad;
-    float percent = attachment.percent;
+    int pad = (attachment.padExpr != null)? (int)attachment.padExpr.evaluateNumber( context): 0;
+    float percent = (attachment.percentExpr != null)? (float)attachment.percentExpr.evaluateNumber( context): 0f;
     
     // attaching to parent container is different from attaching to peer
     IWidgetFeature peerWidget = peer.getFeature( IWidgetFeature.class);
@@ -143,7 +143,7 @@ public class AttachAction extends GuardedAction
       // change meaning of offsets when dealing with container
       if ( attachment.side.charAt( 1) == '1')
       {
-        pad = -attachment.pad;
+        pad = -pad;
         percent = 1 - percent;
       }
       
@@ -152,12 +152,12 @@ public class AttachAction extends GuardedAction
       {
         // both x0 and x1 create a WidgetWidthNode (similarly for y-coordinate)
         String peerSide = (attachment.side.charAt( 0) == 'x')? "w": "h";
-        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getAnchor( peerSide);
+        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getParentAnchor( peerSide);
         node1.addDependency( new ProportionalNode( node2, percent, pad));
       }
       else
       {
-        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getAnchor( attachment.side);
+        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getParentAnchor( attachment.side);
         node1.addDependency( new OffsetNode( node2, pad));
       }
       
@@ -170,8 +170,8 @@ public class AttachAction extends GuardedAction
   {
     IExpression expr;
     String side;
-    int pad;
-    float percent;
+    IExpression padExpr;
+    IExpression percentExpr;
     boolean proportional;
   }
 

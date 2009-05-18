@@ -207,6 +207,14 @@ public class TagProcessor implements IFeatured
           }
           else
           {
+            // push attributes for unhandled tags
+            List<IModelObject> attributes = getAttributes( entry.node);
+            for( int i=attributes.size()-1; i>=0; i--)
+            {
+              stack.add( new Entry( handler, null, attributes.get( i), true, false));
+            }        
+            
+            // end
             handler.exit( this, entry.parent, entry.node);
           }
         }
@@ -238,6 +246,14 @@ public class TagProcessor implements IFeatured
         }
         else
         {
+          // push attributes for unhandled tags
+          List<IModelObject> attributes = getAttributes( entry.node);
+          for( int i=attributes.size()-1; i>=0; i--)
+          {
+            stack.add( new Entry( handler, null, attributes.get( i), true, false));
+          }        
+          
+          // end
           handler.exit( this, entry.parent, entry.node);
         }
       }

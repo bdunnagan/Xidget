@@ -8,27 +8,36 @@ import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.IWidgetFeature.Bounds;
 
 /**
- * An anchor which represents the left side of a widget.
+ * An anchor which is valueed relative to the height of a container widget.
  */
-public class WidgetLeftNode extends ComputeNode
+public class ContainerHeightNode extends ComputeNode
 {
   /**
-   * Create the anchor.
-   * @param widget The widget.
+   * Create an anchor valued relative to the height of a container widget.
+   * @param container The widget.
    */
-  public WidgetLeftNode( IWidgetFeature widget)
+  public ContainerHeightNode( IWidgetFeature container)
   {
-    this.widget = widget;
+    this.container = container;
     this.bounds = new Bounds();
   }
   
+  /* (non-Javadoc)
+   * @see org.xidget.layout.ComputeNode#hasValue()
+   */
+  @Override
+  public boolean hasValue()
+  {
+    return true;
+  }
+
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
   public int getValue()
   {
-    widget.getBounds( bounds);
-    return bounds.x;
+    container.getBounds( bounds);
+    return bounds.height;
   }
 
   /* (non-Javadoc)
@@ -36,8 +45,8 @@ public class WidgetLeftNode extends ComputeNode
    */
   public void setValue( int value)
   {
-    widget.getBounds( bounds);
-    widget.setBounds( value, bounds.y, bounds.width, bounds.height);
+    container.getBounds( bounds);
+    container.setBounds( bounds.x, bounds.y, bounds.width, value);
   }
 
   /* (non-Javadoc)
@@ -47,7 +56,7 @@ public class WidgetLeftNode extends ComputeNode
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append( widget); sb.append( ":LEFT");
+    sb.append( container); sb.append( ":CONTAINER_HEIGHT");
     for( IComputeNode dependency: getDependencies())
     {
       sb.append( ", ");
@@ -56,6 +65,6 @@ public class WidgetLeftNode extends ComputeNode
     return sb.toString();
   }
 
-  private IWidgetFeature widget;
+  private IWidgetFeature container;
   private Bounds bounds;
 }

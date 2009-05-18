@@ -48,6 +48,11 @@ public class WidgetTopNode extends ComputeNode
   {
     StringBuilder sb = new StringBuilder();
     sb.append( widget); sb.append( ":TOP");
+    for( IComputeNode dependency: getDependencies())
+    {
+      sb.append( ", ");
+      sb.append( dependency);
+    }
     return sb.toString();
   }
 

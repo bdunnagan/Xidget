@@ -65,6 +65,11 @@ public class WidgetBottomNode extends ComputeNode
   {
     StringBuilder sb = new StringBuilder();
     sb.append( widget); sb.append( ":BOTTOM");
+    for( IComputeNode dependency: getDependencies())
+    {
+      sb.append( ", ");
+      sb.append( dependency);
+    }
     return sb.toString();
   }
 

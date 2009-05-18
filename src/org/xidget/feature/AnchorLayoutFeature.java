@@ -83,6 +83,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void addNode( IComputeNode node)
   {
+    Log.printf( "layout", "Added: %s\n", node);
     nodes.add( node);
   }
 

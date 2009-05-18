@@ -9,14 +9,16 @@ import org.xidget.config.util.Quad;
 import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.layout.ConstantNode;
+import org.xidget.layout.ContainerHeightNode;
+import org.xidget.layout.ContainerWidthNode;
 import org.xidget.layout.IComputeNode;
+import org.xidget.layout.OffsetNode;
 import org.xidget.layout.WidgetBottomNode;
 import org.xidget.layout.WidgetHeightNode;
 import org.xidget.layout.WidgetLeftNode;
 import org.xidget.layout.WidgetRightNode;
 import org.xidget.layout.WidgetTopNode;
 import org.xidget.layout.WidgetWidthNode;
-import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 
 /**
@@ -27,7 +29,7 @@ public class ComputeNodeFeature implements IComputeNodeFeature
   public ComputeNodeFeature( IXidget xidget)
   {
     this.xidget = xidget;
-    this.nodes = new IComputeNode[ 6];
+    this.nodes = new IComputeNode[ 10];
   }
   
   /* (non-Javadoc)
@@ -74,7 +76,7 @@ public class ComputeNodeFeature implements IComputeNodeFeature
     }
     else 
     {
-      if ( nodes[ 5] == null) nodes[ 5] = new WidgetHeightNode( widget, getAnchor( "x0"), getAnchor( "x1"));
+      if ( nodes[ 5] == null) nodes[ 5] = new WidgetHeightNode( widget, getAnchor( "y0"), getAnchor( "y1"));
       return nodes[ 5];
     }    
   }
@@ -105,6 +107,7 @@ public class ComputeNodeFeature implements IComputeNodeFeature
         if ( nodes[ 7] == null) 
         {
           Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
+          nodes[ 7] = new OffsetNode( new ContainerWidthNode( widget), quad.c);
         }
         return nodes[ 7];
       }
@@ -126,24 +129,28 @@ public class ComputeNodeFeature implements IComputeNodeFeature
         if ( nodes[ 9] == null) 
         {
           Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
-          nodes[ 9] = new ConstantNode( quad.c);
+          nodes[ 9] = new OffsetNode( new ContainerHeightNode( widget), quad.d);
         }
         return nodes[ 9];
       }
     }
     else if ( c0 == 'w')
     {
-      if ( nodes[ 8] == null) 
+      if ( nodes[ 7] == null) 
       {
         Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
-        nodes[ 8] = new ConstantNode( quad.b);
+        nodes[ 7] = new OffsetNode( new ContainerWidthNode( widget), quad.a + quad.c);
       }
-      return nodes[ 8];
+      return nodes[ 7];
     }
     else 
     {
-      if ( nodes[ 5] == null) nodes[ 5] = new WidgetHeightNode( widget, getAnchor( "x0"), getAnchor( "x1"));
-      return nodes[ 5];
+      if ( nodes[ 9] == null) 
+      {
+        Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
+        nodes[ 9] = new OffsetNode( new ContainerHeightNode( widget), quad.b + quad.d);
+      }
+      return nodes[ 9];
     }    
   }
 

@@ -65,6 +65,11 @@ public class WidgetRightNode extends ComputeNode
   {
     StringBuilder sb = new StringBuilder();
     sb.append( widget); sb.append( ":RIGHT");
+    for( IComputeNode dependency: getDependencies())
+    {
+      sb.append( ", ");
+      sb.append( dependency);
+    }
     return sb.toString();
   }
 
