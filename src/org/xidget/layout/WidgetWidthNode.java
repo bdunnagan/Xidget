@@ -52,6 +52,7 @@ public class WidgetWidthNode extends ComputeNode
   {
     StringBuilder sb = new StringBuilder();
     sb.append( container); sb.append( ":WIDTH");
+    sb.append( printDependencies());
     return sb.toString();
   }
 

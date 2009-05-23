@@ -52,6 +52,7 @@ public class WidgetHeightNode extends ComputeNode
   {
     StringBuilder sb = new StringBuilder();
     sb.append( container); sb.append( ":HEIGHT");
+    sb.append( printDependencies());
     return sb.toString();
   }
 

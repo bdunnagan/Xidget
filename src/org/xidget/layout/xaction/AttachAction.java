@@ -42,6 +42,8 @@ public class AttachAction extends GuardedAction
     y0 = createAttachment( root.getFirstChild( "y0"));
     x1 = createAttachment( root.getFirstChild( "x1"));
     y1 = createAttachment( root.getFirstChild( "y1"));
+    xc = createAttachment( root.getFirstChild( "xc"));
+    yc = createAttachment( root.getFirstChild( "yc"));
   }
   
   /**
@@ -91,6 +93,8 @@ public class AttachAction extends GuardedAction
     if ( y0 != null) createNode( layout, context, "y0", y0, container, xidget, widget);
     if ( x1 != null) createNode( layout, context, "x1", x1, container, xidget, widget);
     if ( y1 != null) createNode( layout, context, "y1", y1, container, xidget, widget);
+    if ( xc != null) createNode( layout, context, "xc", xc, container, xidget, widget);
+    if ( yc != null) createNode( layout, context, "yc", yc, container, xidget, widget);
   }
       
   /**
@@ -180,4 +184,6 @@ public class AttachAction extends GuardedAction
   private Attachment y0;
   private Attachment x1;
   private Attachment y1;
+  private Attachment xc;
+  private Attachment yc;
 }

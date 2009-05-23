@@ -8,15 +8,15 @@ import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.IWidgetFeature.Bounds;
 
 /**
- * An anchor which represents the top of a widget.
+ * An anchor which represents the vertical center of a widget.
  */
-public class WidgetTopNode extends ComputeNode
+public class WidgetHorizontalCenterNode extends ComputeNode
 {
   /**
    * Create the anchor.
    * @param widget The widget.
    */
-  public WidgetTopNode( IWidgetFeature widget)
+  public WidgetHorizontalCenterNode( IWidgetFeature widget)
   {
     this.widget = widget;
     this.bounds = new Bounds();
@@ -28,7 +28,7 @@ public class WidgetTopNode extends ComputeNode
   public int getValue()
   {
     widget.getBounds( bounds);
-    return bounds.y;
+    return bounds.x + bounds.width / 2;
   }
 
   /* (non-Javadoc)
@@ -37,7 +37,7 @@ public class WidgetTopNode extends ComputeNode
   public void setValue( int value)
   {
     widget.getBounds( bounds);
-    widget.setBounds( bounds.x, value, bounds.width, bounds.height);
+    widget.setBounds( value - (bounds.width / 2), bounds.y, bounds.width, bounds.height);
   }
 
   /* (non-Javadoc)
@@ -47,7 +47,7 @@ public class WidgetTopNode extends ComputeNode
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append( widget); sb.append( ":TOP");
+    sb.append( widget); sb.append( ":HORIZ_CENTER");
     sb.append( printDependencies());
     return sb.toString();
   }

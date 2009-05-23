@@ -42,7 +42,13 @@ public class ProportionalNode extends ComputeNode
     StringBuilder sb = new StringBuilder();
     sb.append( "proportional( ");
     sb.append( "%"); sb.append( percent); sb.append( ", ");
-    sb.append( offset); sb.append( ")");
+    sb.append( offset);
+    for( IComputeNode dependency: getDependencies())
+    {
+      sb.append( ", ");
+      sb.append( dependency);
+    }
+    sb.append( ")");
     return sb.toString();
   }
 

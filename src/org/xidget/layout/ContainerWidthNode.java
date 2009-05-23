@@ -57,11 +57,7 @@ public class ContainerWidthNode extends ComputeNode
   {
     StringBuilder sb = new StringBuilder();
     sb.append( container); sb.append( ":CONTAINER_WIDTH");
-    for( IComputeNode dependency: getDependencies())
-    {
-      sb.append( ", ");
-      sb.append( dependency);
-    }
+    sb.append( printDependencies());
     return sb.toString();
   }
 

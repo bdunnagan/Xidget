@@ -4,6 +4,8 @@
  */
 package org.xidget.feature;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.xidget.IXidget;
 import org.xidget.config.util.Quad;
 import org.xidget.ifeature.IComputeNodeFeature;
@@ -15,9 +17,11 @@ import org.xidget.layout.IComputeNode;
 import org.xidget.layout.OffsetNode;
 import org.xidget.layout.WidgetBottomNode;
 import org.xidget.layout.WidgetHeightNode;
+import org.xidget.layout.WidgetHorizontalCenterNode;
 import org.xidget.layout.WidgetLeftNode;
 import org.xidget.layout.WidgetRightNode;
 import org.xidget.layout.WidgetTopNode;
+import org.xidget.layout.WidgetVerticalCenterNode;
 import org.xidget.layout.WidgetWidthNode;
 import org.xmodel.Xlate;
 
@@ -29,7 +33,7 @@ public class ComputeNodeFeature implements IComputeNodeFeature
   public ComputeNodeFeature( IXidget xidget)
   {
     this.xidget = xidget;
-    this.nodes = new IComputeNode[ 10];
+    this.nodes = new HashMap<String, IComputeNode>();
   }
   
   /* (non-Javadoc)
@@ -40,45 +44,20 @@ public class ComputeNodeFeature implements IComputeNodeFeature
     IWidgetFeature widget = xidget.getFeature( IWidgetFeature.class);
     if ( widget == null) return null;
     
-    char c0 = type.charAt( 0);
-    if ( c0 == 'x')
-    {
-      char c1 = type.charAt( 1);
-      if ( c1 == '0')
-      {
-        if ( nodes[ 0] == null) nodes[ 0] = new WidgetLeftNode( widget);
-        return nodes[ 0];
-      }
-      else
-      {
-        if ( nodes[ 2] == null) nodes[ 2] = new WidgetRightNode( widget);
-        return nodes[ 2];
-      }
-    }
-    else if ( c0 == 'y')
-    {
-      char c1 = type.charAt( 1);
-      if ( c1 == '0')
-      {
-        if ( nodes[ 1] == null) nodes[ 1] = new WidgetTopNode( widget);
-        return nodes[ 1];
-      }
-      else
-      {
-        if ( nodes[ 3] == null) nodes[ 3] = new WidgetBottomNode( widget);
-        return nodes[ 3];
-      }
-    }
-    else if ( c0 == 'w')
-    {
-      if ( nodes[ 4] == null) nodes[ 4] = new WidgetWidthNode( widget, getAnchor( "x0"), getAnchor( "x1"));
-      return nodes[ 4];
-    }
-    else 
-    {
-      if ( nodes[ 5] == null) nodes[ 5] = new WidgetHeightNode( widget, getAnchor( "y0"), getAnchor( "y1"));
-      return nodes[ 5];
-    }    
+    IComputeNode node = nodes.get( type);
+    if ( node != null) return node;
+    
+    if ( type.equals( "x0")) node = new WidgetLeftNode( widget);
+    else if ( type.equals( "x1")) node = new WidgetRightNode( widget);
+    else if ( type.equals( "y0")) node = new WidgetTopNode( widget);
+    else if ( type.equals( "y1")) node = new WidgetBottomNode( widget);
+    else if ( type.equals( "xc")) node = new WidgetHorizontalCenterNode( widget);
+    else if ( type.equals( "yc")) node = new WidgetVerticalCenterNode( widget);
+    else if ( type.equals( "w")) node = new WidgetWidthNode( widget, getAnchor( "x0"), getAnchor( "x1"));
+    else if ( type.equals( "h")) node = new WidgetHeightNode( widget, getAnchor( "y0"), getAnchor( "y1"));
+    
+    nodes.put( type, node);
+    return node;
   }
 
   /* (non-Javadoc)
@@ -89,71 +68,21 @@ public class ComputeNodeFeature implements IComputeNodeFeature
     IWidgetFeature widget = xidget.getFeature( IWidgetFeature.class);
     if ( widget == null) return null;
     
-    char c0 = type.charAt( 0);
-    if ( c0 == 'x')
-    {
-      char c1 = type.charAt( 1);
-      if ( c1 == '0')
-      {
-        if ( nodes[ 6] == null) 
-        {
-          Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
-          nodes[ 6] = new ConstantNode( quad.a);
-        }
-        return nodes[ 6];
-      }
-      else
-      {
-        if ( nodes[ 7] == null) 
-        {
-          Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
-          nodes[ 7] = new OffsetNode( new ContainerWidthNode( widget), quad.c);
-        }
-        return nodes[ 7];
-      }
-    }
-    else if ( c0 == 'y')
-    {
-      char c1 = type.charAt( 1);
-      if ( c1 == '0')
-      {
-        if ( nodes[ 8] == null) 
-        {
-          Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
-          nodes[ 8] = new ConstantNode( quad.b);
-        }
-        return nodes[ 8];
-      }
-      else
-      {
-        if ( nodes[ 9] == null) 
-        {
-          Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
-          nodes[ 9] = new OffsetNode( new ContainerHeightNode( widget), quad.d);
-        }
-        return nodes[ 9];
-      }
-    }
-    else if ( c0 == 'w')
-    {
-      if ( nodes[ 7] == null) 
-      {
-        Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
-        nodes[ 7] = new OffsetNode( new ContainerWidthNode( widget), quad.a + quad.c);
-      }
-      return nodes[ 7];
-    }
-    else 
-    {
-      if ( nodes[ 9] == null) 
-      {
-        Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);
-        nodes[ 9] = new OffsetNode( new ContainerHeightNode( widget), quad.b + quad.d);
-      }
-      return nodes[ 9];
-    }    
+    IComputeNode node = nodes.get( "p"+type);
+    if ( node != null) return node;
+    
+    Quad quad = new Quad( Xlate.get( xidget.getConfig(), "margins", (String)null), 0, 0, 0, 0);    
+    if ( type.equals( "x0")) node = new ConstantNode( quad.a);
+    else if ( type.equals( "x1")) node = new OffsetNode( new ContainerWidthNode( widget), quad.c);
+    else if ( type.equals( "y0")) node = new ConstantNode( quad.b);
+    else if ( type.equals( "y1")) node = new OffsetNode( new ContainerHeightNode( widget), quad.d);
+    else if ( type.equals( "w")) node = new OffsetNode( new ContainerWidthNode( widget), quad.a + quad.c);
+    else if ( type.equals( "h")) node = new OffsetNode( new ContainerHeightNode( widget), quad.b + quad.d);
+    
+    nodes.put( "p"+type, node);
+    return node;    
   }
 
   private IXidget xidget;
-  private IComputeNode[] nodes;
+  private Map<String, IComputeNode> nodes;
 }

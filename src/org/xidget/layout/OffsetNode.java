@@ -39,7 +39,7 @@ public class OffsetNode extends ComputeNode
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append( " offset( "); sb.append( offset);
+    sb.append( "offset( "); sb.append( offset);
     for( IComputeNode dependency: getDependencies())
     {
       sb.append( ", ");

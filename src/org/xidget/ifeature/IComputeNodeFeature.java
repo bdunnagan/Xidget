@@ -18,6 +18,8 @@ public interface IComputeNodeFeature
    * <li><i>y0</i> - WidgetTopNode
    * <li><i>x1</i> - WidgetRightNode 
    * <li><i>y1</i> - WidgetBottomNode
+   * <li><i>xc</i> - WidgetHorizontalCenterNode
+   * <li><i>yc</i> - WidgetVerticalCenterNode
    * <li><i>w</i> - WidgetWidthNode
    * <li><i>h</i> - WidgetHeightNode
    * </ul>
