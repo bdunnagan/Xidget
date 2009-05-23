@@ -13,6 +13,7 @@ import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.LayoutTagHandler;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionBindingRule;
+import org.xidget.binding.TitleBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
 import org.xidget.binding.button.ButtonBindingRule;
@@ -55,6 +56,8 @@ public final class Creator
     processor.addHandler( "selection", new BindingTagHandler( new SelectionBindingRule()));
     processor.addHandler( "source", new BindingTagHandler( new TextBindingRule()));
     processor.addHandler( "source", new BindingTagHandler( new ButtonBindingRule()));
+    processor.addHandler( "title", new BindingTagHandler( new TitleBindingRule()));
+    processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
 

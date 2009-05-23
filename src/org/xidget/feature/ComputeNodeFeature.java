@@ -83,6 +83,6 @@ public class ComputeNodeFeature implements IComputeNodeFeature
     return node;    
   }
 
-  private IXidget xidget;
-  private Map<String, IComputeNode> nodes;
+  protected IXidget xidget;
+  protected Map<String, IComputeNode> nodes;
 }

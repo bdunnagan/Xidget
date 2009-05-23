@@ -16,6 +16,7 @@ import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xaction.XActionException;
+import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
@@ -56,7 +57,7 @@ public class AttachAction extends GuardedAction
     if ( element == null) return null;
     
     Attachment attachment = new Attachment();
-    attachment.expr = Xlate.get( element, "attach", (IExpression)null);
+    attachment.expr = Xlate.get( element, "attach", thisExpr);
     attachment.side = Xlate.get( element, "side", "");
     attachment.padExpr = Xlate.get( element, "pad", (IExpression)null);
     
@@ -145,7 +146,7 @@ public class AttachAction extends GuardedAction
     else
     {
       // change meaning of offsets when dealing with container
-      if ( attachment.side.charAt( 1) == '1')
+      if ( attachment.side.length() > 1 && attachment.side.charAt( 1) == '1')
       {
         pad = -pad;
         percent = 1 - percent;
@@ -179,6 +180,8 @@ public class AttachAction extends GuardedAction
     boolean proportional;
   }
 
+  private final static IExpression thisExpr = XPath.createExpression( ".");
+  
   private IExpression xidgetExpr;
   private Attachment x0;
   private Attachment y0;

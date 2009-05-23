@@ -36,6 +36,7 @@ public class Log
   {
     if ( debugs.contains( system))
     {
+      System.out.printf( "[%s] ", system.toUpperCase());
       System.out.printf( format, objects);
     }
   }
@@ -49,6 +50,7 @@ public class Log
   {
     if ( debugs.contains( system))
     {
+      System.out.printf( "[%s] ", system.toUpperCase());
       System.out.println( message);
     }
   }
