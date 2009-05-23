@@ -13,10 +13,10 @@ public interface IWidgetFeature
 {
   public class Bounds
   {
-    public int x;
-    public int y;
-    public int width;
-    public int height;
+    public float x;
+    public float y;
+    public float width;
+    public float height;
   }
   
   /**
@@ -26,7 +26,7 @@ public interface IWidgetFeature
    * @param width The width of the widget.
    * @param height The height of the widget.
    */
-  public void setBounds( int x, int y, int width, int height);
+  public void setBounds( float x, float y, float width, float height);
   
   /**
    * Returns the bounds of the widget.

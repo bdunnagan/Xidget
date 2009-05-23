@@ -20,7 +20,7 @@ public class ProportionalNode extends ComputeNode
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
-  public int getValue()
+  public float getValue()
   {
     return value;
   }
@@ -28,7 +28,7 @@ public class ProportionalNode extends ComputeNode
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#setValue(int)
    */
-  public void setValue( int value)
+  public void setValue( float value)
   {
     this.value = (int)Math.round( value * percent) + offset;
   }

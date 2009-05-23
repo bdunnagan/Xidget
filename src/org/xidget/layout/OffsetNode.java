@@ -19,7 +19,7 @@ public class OffsetNode extends ComputeNode
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
-  public int getValue()
+  public float getValue()
   {
     return value;
   }
@@ -27,7 +27,7 @@ public class OffsetNode extends ComputeNode
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#setValue(int)
    */
-  public void setValue( int value)
+  public void setValue( float value)
   {
     this.value = value + offset;
   }
@@ -50,5 +50,5 @@ public class OffsetNode extends ComputeNode
   }
 
   private int offset;
-  private int value;
+  private float value;
 }

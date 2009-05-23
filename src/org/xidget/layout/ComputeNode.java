@@ -50,13 +50,12 @@ public abstract class ComputeNode implements IComputeNode
       if ( dependency.hasValue())
       {
         hasValue = true;
-        int value = dependency.getValue();
-        setValue( value);
+        setValue( dependency.getValue());
         break;
       }
     }
     
-    if ( hasValue()) Log.printf( "layout", "update: (%d) %s\n", getValue(), toString()); 
+    if ( hasValue()) Log.printf( "layout", "update: (%.1f) %s\n", getValue(), toString()); 
     else Log.printf( "layout", "update: (?) %s\n", toString());
   }
   

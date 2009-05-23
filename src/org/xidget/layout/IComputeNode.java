@@ -39,11 +39,11 @@ public interface IComputeNode
    * Returns the value of this node.
    * @return Returns the value of this node.
    */
-  public int getValue();
+  public float getValue();
   
   /**
    * Sets the value of this node.
    * @param value The value.
    */
-  public void setValue( int value);
+  public void setValue( float value);
 }

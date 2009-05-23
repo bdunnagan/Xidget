@@ -25,7 +25,7 @@ public class WidgetLeftNode extends ComputeNode
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
-  public int getValue()
+  public float getValue()
   {
     widget.getBounds( bounds);
     return bounds.x;
@@ -34,7 +34,7 @@ public class WidgetLeftNode extends ComputeNode
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#setValue(int)
    */
-  public void setValue( int value)
+  public void setValue( float value)
   {
     widget.getBounds( bounds);
     widget.setBounds( value, bounds.y, bounds.width, bounds.height);
