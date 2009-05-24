@@ -4,8 +4,13 @@
  */
 package org.xidget.binding;
 
+import java.util.List;
 import org.xidget.IXidget;
+import org.xidget.ifeature.ISelectionWidgetFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.xpath.expression.ExpressionListener;
+import org.xmodel.xpath.expression.IContext;
+import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
@@ -18,8 +23,7 @@ public class SelectionBindingRule implements IBindingRule
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    // TODO Auto-generated method stub
-    return false;
+    return xidget.getFeature( ISelectionWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -27,7 +31,42 @@ public class SelectionBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
-    // TODO Auto-generated method stub
-    return null;
+    return new Listener( xidget);
+  }
+  
+  private static final class Listener extends ExpressionListener
+  {
+    Listener( IXidget xidget)
+    {
+      this.xidget = xidget;
+    }
+    
+    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      nodes.clear(); expression.query( context, nodes);
+      ISelectionWidgetFeature feature = xidget.getFeature( ISelectionWidgetFeature.class);
+      feature.setSelection( nodes);
+    }
+
+    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      nodes.clear(); expression.query( context, nodes);
+      ISelectionWidgetFeature feature = xidget.getFeature( ISelectionWidgetFeature.class);
+      feature.setSelection( nodes);
+    }
+
+    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
+    {
+      List<IModelObject> nodes = expression.query( contexts[ 0], null); 
+      ISelectionWidgetFeature feature = xidget.getFeature( ISelectionWidgetFeature.class);
+      feature.setSelection( nodes);
+    }
+
+    public boolean requiresValueNotification()
+    {
+      return true;
+    }
+
+    private IXidget xidget;
   }
 }
