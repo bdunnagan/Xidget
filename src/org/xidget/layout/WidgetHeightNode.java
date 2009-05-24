@@ -8,7 +8,7 @@ import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.IWidgetFeature.Bounds;
 
 /**
- * An anchor which is valueed relative to the height of a container widget.
+ * An anchor which is valued relative to the height of a container widget.
  */
 public class WidgetHeightNode extends ComputeNode
 {
