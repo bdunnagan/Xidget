@@ -5,9 +5,10 @@
 package org.xidget;
 
 import org.xidget.config.TagProcessor;
+import org.xmodel.external.ICachingPolicy;
 
 /**
- * An interface for configuring a TagProcessor for a specific platform.
+ * An interface for platform-specific behavior.
  */
 public interface IToolkit
 {
@@ -18,4 +19,10 @@ public interface IToolkit
    * @param processor The tag processor.
    */
   public void configure( TagProcessor processor);
+  
+  /**
+   * Returns an implementation of ICachingPolicy for caching images.
+   * @return Returns an implementation of ICachingPolicy for caching images.
+   */
+  public ICachingPolicy getImageCachingPolicy();
 }
