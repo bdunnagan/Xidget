@@ -24,6 +24,13 @@ public abstract class AbstractSelectionDiffer extends AbstractListDiffer
    */
   public abstract IModelObject createReference( IModelObject node);
   
+  /**
+   * Returns a unique identity for the specified node.
+   * @param node The node.
+   * @return Returns a unique identity for the specified node.
+   */
+  public abstract Object getIdentity( IModelObject node);
+  
   /* (non-Javadoc)
    * @see org.xmodel.diff.IListDiffer#notifyInsert(java.util.List, int, int, java.util.List, int, int)
    */

@@ -18,8 +18,16 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public abstract class Xidget implements IXidget
 {
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#createFeatures(org.xmodel.xpath.expression.StatefulContext)
+   */
+  public IFeatured createFeatures( StatefulContext context)
+  {
+    return null;
+  }
+
   /**
-   * Create the features for this xidget.
+   * Create the features that are not context-specific.
    */
   protected abstract void createFeatures();
   
@@ -128,8 +136,6 @@ public abstract class Xidget implements IXidget
    */
   public <T> T getFeature( Class<T> clss)
   {
-    
-    
     // debug
     Log.printf( "xidget", "Feature '%s' not found on xidget %s.\n", clss.getSimpleName(), getConfig());
     return null;

@@ -33,6 +33,15 @@ public class ReferenceListDiffer extends AbstractSelectionDiffer
   }
 
   /* (non-Javadoc)
+   * @see org.xidget.selection.AbstractSelectionDiffer#getIdentity(org.xmodel.IModelObject)
+   */
+  @Override
+  public Object getIdentity( IModelObject node)
+  {
+    return node;
+  }
+
+  /* (non-Javadoc)
    * @see org.xmodel.diff.AbstractListDiffer#isMatch(java.lang.Object, java.lang.Object)
    */
   @Override

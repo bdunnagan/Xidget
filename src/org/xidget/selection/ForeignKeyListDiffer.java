@@ -6,6 +6,7 @@ package org.xidget.selection;
 
 import org.xmodel.IModelObject;
 import org.xmodel.ModelObject;
+import org.xmodel.Xlate;
 
 /**
  * A shallow list differ for use with foreign key references. The class can be customized
@@ -42,6 +43,16 @@ public class ForeignKeyListDiffer extends AbstractSelectionDiffer
     if ( toAttribute == null) result.setValue( id);
     else result.setAttribute( toAttribute, id);
     return result;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.selection.AbstractSelectionDiffer#getIdentity(org.xmodel.IModelObject)
+   */
+  @Override
+  public Object getIdentity( IModelObject node)
+  {
+    if ( fromAttribute != null) return Xlate.get( node, fromAttribute, (String)null);
+    return Xlate.get( node, (String)null);
   }
 
   /* (non-Javadoc)
