@@ -16,13 +16,6 @@ import org.xmodel.xpath.expression.StatefulContext;
 public interface IXidget extends IFeatured
 {
   /**
-   * Create context-specific features for the specified context.
-   * @param context The context.
-   * @return Returns the context-specific feature set.
-   */
-  public IFeatured createFeatures( StatefulContext context);
-  
-  /**
    * Returns null or the parent of this xidget.
    * @return Returns null or the parent of this xidget.
    */
@@ -76,5 +69,5 @@ public interface IXidget extends IFeatured
    * Unbind the xidget from the specified context.
    * @param context The context.
    */
-  public void unbind( StatefulContext context);
+  public void unbind( StatefulContext context);  
 }

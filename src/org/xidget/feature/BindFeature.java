@@ -11,7 +11,6 @@ import org.xidget.IXidget;
 import org.xidget.Log;
 import org.xidget.binding.IXidgetBinding;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.IContextAssociationFeature;
 import org.xidget.ifeature.IScriptFeature;
 import org.xidget.ifeature.IWidgetContextFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
@@ -85,9 +84,9 @@ public class BindFeature implements IBindFeature
       }
     }
     
-    // create context-specific featuers
-    IContextAssociationFeature contextAssociationFeature = xidget.getFeature( IContextAssociationFeature.class);
-    if ( contextAssociationFeature != null) contextAssociationFeature.createFeatures( context);
+    // call onOpen script
+    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
+    if ( scriptFeature != null) scriptFeature.runScript( "onOpen", context);
     
     // internal bindings
     if ( bindBeforeChildren != null)
@@ -108,10 +107,6 @@ public class BindFeature implements IBindFeature
     if ( bindAfterChildren != null)
       for( IXidgetBinding binding: bindAfterChildren)
         binding.bind( context);
-    
-    // call onOpen script
-    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
-    if ( scriptFeature != null) scriptFeature.runScript( "onOpen", context);
   }
 
   /* (non-Javadoc)
@@ -141,10 +136,6 @@ public class BindFeature implements IBindFeature
     if ( bindAfterChildren != null)
       for( IXidgetBinding binding: bindAfterChildren)
         binding.unbind( context);
-    
-    // delete context-specific featuers
-    IContextAssociationFeature contextAssociationFeature = xidget.getFeature( IContextAssociationFeature.class);
-    if ( contextAssociationFeature != null) contextAssociationFeature.deleteFeatures( context);
     
     // remove widget-context association
     IWidgetContextFeature widgetContextFeature = xidget.getFeature( IWidgetContextFeature.class);

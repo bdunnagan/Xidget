@@ -18,14 +18,6 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public abstract class Xidget implements IXidget
 {
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#createFeatures(org.xmodel.xpath.expression.StatefulContext)
-   */
-  public IFeatured createFeatures( StatefulContext context)
-  {
-    return null;
-  }
-
   /**
    * Create the features that are not context-specific.
    */

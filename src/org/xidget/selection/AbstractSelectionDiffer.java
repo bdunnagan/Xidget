@@ -32,6 +32,16 @@ public abstract class AbstractSelectionDiffer extends AbstractListDiffer
   public abstract Object getIdentity( IModelObject node);
   
   /* (non-Javadoc)
+   * @see org.xmodel.diff.AbstractListDiffer#diff(java.util.List, java.util.List)
+   */
+  @Override
+  public void diff( List lhs, List rhs)
+  {
+    changes = null;
+    super.diff( lhs, rhs);
+  }
+
+  /* (non-Javadoc)
    * @see org.xmodel.diff.IListDiffer#notifyInsert(java.util.List, int, int, java.util.List, int, int)
    */
   public void notifyInsert( List lhs, int lIndex, int lAdjust, List rhs, int rIndex, int count)

@@ -6,28 +6,49 @@ package org.xidget.ifeature;
 
 import java.util.List;
 import org.xmodel.IModelObject;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
- * (context-specific)
- * An interface for managing the selection model. The selection is defined by a subset
- * of the children of a single parent element.  The subset is defined by a filter 
- * expression.
+ * An interface for managing the selection model.
  */
 public interface ISelectionModelFeature
 {
   /**
-   * Set the selection corresponding to the specified nodes.
-   * @param nodes The selected nodes.
+   * Set the parent of the selection.
+   * @param context The parent context.
+   * @param element The selection parent element.
    */
-  public void setSelection( List<IModelObject> nodes);
+  public void setParent( StatefulContext context, IModelObject element);
   
   /**
-   * Returns the currently selected nodes. Note that the platform-specific widget
-   * is required so that the filter expression can be evaluated with the correct
-   * parent context.
+   * Insert the selected element into the selection model.
+   * @param context The parent context.
+   * @param index The index of the insertion.
+   * @param element The element.
+   */
+  public void insertSelected( StatefulContext context, int index, IModelObject element);
+  
+  /**
+   * Remove the selected element from the selection model.
+   * @param context The parent context.
+   * @param index The index of the removals.
+   * @param element The element.
+   */
+  public void removeSelected( StatefulContext context, int index, IModelObject element);
+  
+  /**
+   * Set the selection corresponding to the specified nodes.
+   * @param context The parent context.
+   * @param nodes The selected nodes.
+   */
+  public void setSelection( StatefulContext context, List<IModelObject> nodes);
+  
+  /**
+   * Returns the currently selected nodes.
+   * @param context The parent context.
    * @return Returns the currently selected nodes.
    */
-  public List<IModelObject> getSelection();
+  public List<IModelObject> getSelection( StatefulContext context);
   
   /**
    * Returns a unique identity for the node. 

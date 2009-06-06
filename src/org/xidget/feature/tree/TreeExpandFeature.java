@@ -39,6 +39,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void rowAdded( Row row)
   {
+    if ( !row.isExpanded()) fakeExpand( row);
   }
 
   /* (non-Javadoc)
@@ -54,7 +55,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void expand( Row row)
   {
-    Log.printf( "xidget.tree", "expand: %s\n", row);
+    Log.printf( "xidget.tree", "%s: expand: %s\n", hashCode(), row);
     
     // remove fake content
     fakeCollapse( row);
@@ -75,7 +76,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   public void collapse( Row row)
   {
-    Log.printf( "xidget.tree", "collapse: %s\n", row);
+    Log.printf( "xidget.tree", "%s: collapse: %s\n", hashCode(), row);
     
     // fake collapse children
     for( Row child: row.getChildren())
@@ -99,7 +100,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     if ( row.isExpanded()) return;
     row.setExpanded( true);
 
-    Log.printf( "xidget.tree", "real expand: %s\n", row);
+    Log.printf( "xidget.tree", "%s: real expand: %s\n", hashCode(), row);
     
     // bind subtree to get real content
     XidgetSwitch treeSwitch = getSwitch( row);
@@ -115,7 +116,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     if ( !row.isExpanded()) return;
     row.setExpanded( false);
    
-    Log.printf( "xidget.tree", "real collapse: %s\n", row);
+    Log.printf( "xidget.tree", "%s: real collapse: %s\n", hashCode(), row);
     
     // unbind subtree to remove real content
     XidgetSwitch treeSwitch = getSwitch( row);
@@ -128,7 +129,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   private void fakeExpand( Row row)
   {
-    Log.printf( "xidget.tree", "fake expand: %s\n", row);
+    Log.printf( "xidget.tree", "%s: fake expand: %s\n", hashCode(), row);
     
     if ( needsTemporaryChild( row))
     {
@@ -149,7 +150,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
    */
   private void fakeCollapse( Row row)
   {
-    Log.printf( "xidget.tree", "fake collapse: %s\n", row);
+    Log.printf( "xidget.tree", "%s: fake collapse: %s\n", hashCode(), row);
     
     // remove temporary node from table zero
     ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);

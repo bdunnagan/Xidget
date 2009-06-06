@@ -13,11 +13,25 @@ import org.xmodel.IModelObject;
 public interface ISelectionWidgetFeature
 {
   /**
+   * Insert the selected element at the specified index in the selection.
+   * @param index The index.
+   * @param element The element.
+   */
+  public void insertSelected( int index, IModelObject element);
+  
+  /**
+   * Remove the selected element from the selection.
+   * @param index The index of the element to remove.
+   * @param element The element to be removed.
+   */
+  public void removeSelected( int index, IModelObject element);
+  
+  /**
    * Set the selection corresponding to the specified nodes.
    * @param nodes The selected nodes.
    */
   public void setSelection( List<IModelObject> nodes);
-  
+
   /**
    * Returns the currently selected nodes.
    * @return Returns the currently selected nodes.
