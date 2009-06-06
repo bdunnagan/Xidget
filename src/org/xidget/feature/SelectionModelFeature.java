@@ -130,9 +130,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
         // add
         if ( change.rIndex >= 0)
           for( int i=0; i<change.count; i++)
-          {
             parent.addChild( differ.createReference( nodes.get( change.rIndex + i)), change.lIndex + i);
-          }
         
         // remove
         else
@@ -197,12 +195,13 @@ public class SelectionModelFeature implements ISelectionModelFeature
   /**
    * Returns the index of the specified child in the filtered list.
    * @param context The context.
+   * @param children The complete list of children of the selection parent.
    * @param child The child.
    * @return Returns -1 or the index of the specified child in the filtered list.
    */
-  private int findFilterIndex( StatefulContext context, IModelObject child)
+  private int findFilterIndex( StatefulContext context, List<IModelObject> children, IModelObject child)
   {
-    List<IModelObject> elements = applyFilter( context, parent.getChildren());
+    List<IModelObject> elements = applyFilter( context, children);
     return elements.indexOf( child);
   }
 
@@ -222,11 +221,19 @@ public class SelectionModelFeature implements ISelectionModelFeature
      */
     public void notifyAddChild( IModelObject parent, IModelObject child, int index)
     {
-      ISelectionWidgetFeature feature = selectionModelFeature.xidget.getFeature( ISelectionWidgetFeature.class);
-      if ( feature == null) return;
-        
-      int filterIndex = selectionModelFeature.findFilterIndex( context, child);
-      if ( filterIndex >= 0) feature.insertSelected( filterIndex, child);
+      selectionModelFeature.updating = true;
+      try
+      {
+        ISelectionWidgetFeature feature = selectionModelFeature.xidget.getFeature( ISelectionWidgetFeature.class);
+        if ( feature == null) return;
+          
+        int filterIndex = selectionModelFeature.findFilterIndex( context, parent.getChildren(), child);
+        if ( filterIndex >= 0) feature.insertSelected( filterIndex, child);
+      }
+      finally
+      {
+        selectionModelFeature.updating = false;
+      }
     }
     
     /* (non-Javadoc)
@@ -234,11 +241,22 @@ public class SelectionModelFeature implements ISelectionModelFeature
      */
     public void notifyRemoveChild( IModelObject parent, IModelObject child, int index)
     {
-      ISelectionWidgetFeature feature = selectionModelFeature.xidget.getFeature( ISelectionWidgetFeature.class);
-      if ( feature == null) return;
-      
-      int filterIndex = selectionModelFeature.findFilterIndex( context, child);
-      if ( filterIndex >= 0) feature.removeSelected( filterIndex, child);
+      selectionModelFeature.updating = true;
+      try
+      {
+        ISelectionWidgetFeature feature = selectionModelFeature.xidget.getFeature( ISelectionWidgetFeature.class);
+        if ( feature == null) return;
+        
+        List<IModelObject> children = new ArrayList<IModelObject>( parent.getChildren());
+        children.add( index, child);
+        
+        int filterIndex = selectionModelFeature.findFilterIndex( context, children, child);
+        if ( filterIndex >= 0) feature.removeSelected( filterIndex, child);
+      }
+      finally
+      {
+        selectionModelFeature.updating = false;
+      }
     }
     
     /* (non-Javadoc)
