@@ -16,6 +16,7 @@ import org.xidget.tree.Row;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelObject;
 import org.xmodel.Xlate;
+import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -216,7 +217,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     for( IXidget child: candidates)
     {
       IModelObject element = child.getConfig();
-      IExpression parentExpr = Xlate.get( element, "parent", (IExpression)null);
+      IExpression parentExpr = Xlate.get( element, "parent", XPath.createExpression( "*"));
       List<IModelObject> result = parentExpr.query( treeElement, null);
       if ( result.contains( tableElement)) trees.add( child); 
     }
@@ -280,7 +281,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
       List<IXidget> xidgets = findTree( row);
       for( IXidget xidget: xidgets)
       {
-        IExpression condition = Xlate.get( xidget.getConfig(), "when", (IExpression)null);
+        IExpression condition = Xlate.get( xidget.getConfig(), "when", XPath.createExpression( "true()"));
         if ( condition != null) treeSwitch.addCase( condition, xidget);
       }
       row.setSwitch( treeSwitch);
@@ -288,7 +289,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     
     return row.getSwitch();
   }
-  
+
   protected IXidget xidget;
   private StatefulContext dummy;
 }
