@@ -34,6 +34,7 @@ public class RowSetBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( IXidget xidget, IModelObject element)
   {
+    System.out.println( "bind rows: "+element);
     return new Listener( xidget);
   }
 

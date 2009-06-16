@@ -8,6 +8,7 @@ import org.xidget.IXidget;
 import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetFeature;
+import org.xidget.ifeature.IComputeNodeFeature.Type;
 import org.xidget.layout.IComputeNode;
 import org.xidget.layout.OffsetNode;
 import org.xidget.layout.ProportionalNode;
@@ -39,12 +40,12 @@ public class AttachAction extends GuardedAction
     xidgetExpr = document.getExpression( "xidget", true);
     
     IModelObject root = document.getRoot();
-    x0 = createAttachment( root.getFirstChild( "x0"));
-    y0 = createAttachment( root.getFirstChild( "y0"));
-    x1 = createAttachment( root.getFirstChild( "x1"));
-    y1 = createAttachment( root.getFirstChild( "y1"));
-    xc = createAttachment( root.getFirstChild( "xc"));
-    yc = createAttachment( root.getFirstChild( "yc"));
+    x0 = createAttachment( root.getFirstChild( "left"));
+    y0 = createAttachment( root.getFirstChild( "top"));
+    x1 = createAttachment( root.getFirstChild( "right"));
+    y1 = createAttachment( root.getFirstChild( "bottom"));
+    xc = createAttachment( root.getFirstChild( "hcenter"));
+    yc = createAttachment( root.getFirstChild( "vcenter"));
   }
   
   /**
@@ -58,7 +59,7 @@ public class AttachAction extends GuardedAction
     
     Attachment attachment = new Attachment();
     attachment.expr = Xlate.get( element, "attach", thisExpr);
-    attachment.side = Xlate.get( element, "side", "");
+    attachment.type = Type.valueOf( Xlate.get( element, "side", (String)null));
     attachment.padExpr = Xlate.get( element, "pad", (IExpression)null);
     
     if ( element.getAttribute( "percent") != null)
@@ -78,6 +79,7 @@ public class AttachAction extends GuardedAction
   {
     IModelObject element = context.getObject();
     if ( xidgetExpr != null) element = xidgetExpr.queryFirst( context);
+    if ( element == null) return;
     
     // get xidget for which attachments are being created
     IXidget xidget = (IXidget)element.getAttribute( "xidget");
@@ -90,12 +92,12 @@ public class AttachAction extends GuardedAction
     ILayoutFeature layout = (parent != null)? parent.getFeature( ILayoutFeature.class): xidget.getFeature( ILayoutFeature.class); 
 
     // create nodes
-    if ( x0 != null) createNode( layout, context, "x0", x0, container, xidget, widget);
-    if ( y0 != null) createNode( layout, context, "y0", y0, container, xidget, widget);
-    if ( x1 != null) createNode( layout, context, "x1", x1, container, xidget, widget);
-    if ( y1 != null) createNode( layout, context, "y1", y1, container, xidget, widget);
-    if ( xc != null) createNode( layout, context, "xc", xc, container, xidget, widget);
-    if ( yc != null) createNode( layout, context, "yc", yc, container, xidget, widget);
+    if ( x0 != null) createNode( layout, context, Type.left, x0, container, xidget, widget);
+    if ( y0 != null) createNode( layout, context, Type.top, y0, container, xidget, widget);
+    if ( x1 != null) createNode( layout, context, Type.right, x1, container, xidget, widget);
+    if ( y1 != null) createNode( layout, context, Type.bottom, y1, container, xidget, widget);
+    if ( xc != null) createNode( layout, context, Type.horizontal_center, xc, container, xidget, widget);
+    if ( yc != null) createNode( layout, context, Type.vertical_center, yc, container, xidget, widget);
   }
       
   /**
@@ -117,7 +119,7 @@ public class AttachAction extends GuardedAction
    * @param widget The widget.
    * @param attachment The attachment.
    */
-  private void createNode( ILayoutFeature layout, IContext context, String side, Attachment attachment, IWidgetFeature container, IXidget xidget, IWidgetFeature widget)
+  private void createNode( ILayoutFeature layout, IContext context, Type type, Attachment attachment, IWidgetFeature container, IXidget xidget, IWidgetFeature widget)
   {
     IXidget peer = getPeer( context, attachment.expr);
     if ( peer == null) throw new XActionException( "Peer xidget of attachment not found: "+attachment.expr);
@@ -125,12 +127,15 @@ public class AttachAction extends GuardedAction
     int pad = (attachment.padExpr != null)? (int)attachment.padExpr.evaluateNumber( context): 0;
     float percent = (attachment.percentExpr != null)? (float)attachment.percentExpr.evaluateNumber( context): 0f;
     
+    if ( xidget.getFeature( IComputeNodeFeature.class) == null) return;
+    if ( peer.getFeature( IComputeNodeFeature.class) == null) return;
+    
     // attaching to parent container is different from attaching to peer
     IWidgetFeature peerWidget = peer.getFeature( IWidgetFeature.class);
     if ( peerWidget != container)
     {
-      IComputeNode node1 = xidget.getFeature( IComputeNodeFeature.class).getAnchor( side);
-      IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getAnchor( attachment.side);
+      IComputeNode node1 = xidget.getFeature( IComputeNodeFeature.class).getAnchor( type);
+      IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getAnchor( attachment.type);
       if ( pad != 0)
       {
         node1.addDependency( new OffsetNode( node2, pad));
@@ -146,23 +151,22 @@ public class AttachAction extends GuardedAction
     else
     {
       // change meaning of offsets when dealing with container
-      if ( attachment.side.length() > 1 && attachment.side.charAt( 1) == '1')
+      if ( attachment.type == Type.right || attachment.type == Type.bottom)
       {
         pad = -pad;
         percent = 1 - percent;
       }
       
-      IComputeNode node1 = xidget.getFeature( IComputeNodeFeature.class).getAnchor( side);
+      IComputeNode node1 = xidget.getFeature( IComputeNodeFeature.class).getAnchor( type);
       if ( attachment.proportional)
       {
         // both x0 and x1 create a WidgetWidthNode (similarly for y-coordinate)
-        String peerSide = (attachment.side.charAt( 0) == 'x')? "w": "h";
-        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getParentAnchor( peerSide);
+        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getParentAnchor( attachment.type);
         node1.addDependency( new ProportionalNode( node2, percent, pad));
       }
       else
       {
-        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getParentAnchor( attachment.side);
+        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getParentAnchor( attachment.type);
         node1.addDependency( new OffsetNode( node2, pad));
       }
       
@@ -173,8 +177,8 @@ public class AttachAction extends GuardedAction
   
   final class Attachment
   {
+    Type type;
     IExpression expr;
-    String side;
     IExpression padExpr;
     IExpression percentExpr;
     boolean proportional;

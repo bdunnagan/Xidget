@@ -12,9 +12,12 @@ import java.util.Stack;
 import org.xidget.IFeatured;
 import org.xidget.Log;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 import org.xmodel.util.HashMultiMap;
 import org.xmodel.util.MultiMap;
 import org.xmodel.xpath.expression.IContext;
+import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * A class which processes an xml fragment using a set of handlers registered by element name.
@@ -162,6 +165,10 @@ public class TagProcessor implements IFeatured
    */
   private void processElementHandlers( Stack<Entry> stack, Entry entry) throws TagException
   {
+    // replace insert elements
+    replaceInserts( entry.node);
+    
+    // process handlers
     List<ITagHandler> handlers = getHandlers( entry.node);
     if ( handlers == null)
     {        
@@ -187,47 +194,7 @@ public class TagProcessor implements IFeatured
         if ( handler.enter( this, entry.parent, entry.node))
         {
           List<IModelObject> children = entry.node.getChildren();
-          if ( children.size() > 0)
-          {
-            // push special exit entry
-            stack.push( new Entry( entry.parent, handler, entry.node, true));
-            
-            // push attributes for unhandled tags
-            List<IModelObject> attributes = getAttributes( entry.node);
-            for( int i=attributes.size()-1; i>=0; i--)
-            {
-              stack.add( new Entry( handler, null, attributes.get( i), true, false));
-            }        
-            
-            // push children
-            for( int i=children.size()-1; i>=0; i--)
-            {
-              stack.add( new Entry( handler, null, children.get( i), false));
-            }
-          }
-          else
-          {
-            // push attributes for unhandled tags
-            List<IModelObject> attributes = getAttributes( entry.node);
-            for( int i=attributes.size()-1; i>=0; i--)
-            {
-              stack.add( new Entry( handler, null, attributes.get( i), true, false));
-            }        
-            
-            // end
-            handler.exit( this, entry.parent, entry.node);
-          }
-        }
-      }
-    }
-    else if ( handlers.size() > 1)
-    {
-      List<ITagHandler> list = process( handlers, entry);
-      List<IModelObject> children = entry.node.getChildren();
-      for( ITagHandler handler: list)
-      {
-        if ( children.size() > 0)
-        {
+          
           // push special exit entry
           stack.push( new Entry( entry.parent, handler, entry.node, true));
           
@@ -244,17 +211,64 @@ public class TagProcessor implements IFeatured
             stack.add( new Entry( handler, null, children.get( i), false));
           }
         }
-        else
+      }
+    }
+    else if ( handlers.size() > 1)
+    {
+      List<ITagHandler> list = process( handlers, entry);
+      List<IModelObject> children = entry.node.getChildren();
+      for( ITagHandler handler: list)
+      {
+        // push special exit entry
+        stack.push( new Entry( entry.parent, handler, entry.node, true));
+        
+        // push attributes for unhandled tags
+        List<IModelObject> attributes = getAttributes( entry.node);
+        for( int i=attributes.size()-1; i>=0; i--)
         {
-          // push attributes for unhandled tags
-          List<IModelObject> attributes = getAttributes( entry.node);
-          for( int i=attributes.size()-1; i>=0; i--)
-          {
-            stack.add( new Entry( handler, null, attributes.get( i), true, false));
-          }        
+          stack.add( new Entry( handler, null, attributes.get( i), true, false));
+        }        
+        
+        // push children
+        for( int i=children.size()-1; i>=0; i--)
+        {
+          stack.add( new Entry( handler, null, children.get( i), false));
+        }
+      }
+    }
+  }
+
+  /**
+   * Recursively replace insert elements among the children of the specified parent.
+   * @param parent The parent.
+   */
+  private void replaceInserts( IModelObject parent) throws TagException
+  {
+    List<IModelObject> children = new ArrayList<IModelObject>( parent.getChildren());
+    int insert=1;
+    for( int i=0; i<children.size(); i++, insert++)
+    {
+      IModelObject child = children.get( i);
+      if ( child.isType( "insert"))
+      {
+        IExpression targetExpr = Xlate.get( child, (IExpression)null);
+        if ( targetExpr == null) throw new TagException( "Error in insert expression: "+child.getValue());
+        
+        // get targets
+        List<IModelObject> targets = targetExpr.query( new StatefulContext( context, child), null);
+        
+        // remove insert element
+        child.removeFromParent();
+        insert--;
+        
+        // insert targets at index
+        for( IModelObject target: targets)
+        {
+          // recursion
+          replaceInserts( target);
           
-          // end
-          handler.exit( this, entry.parent, entry.node);
+          // insert
+          parent.addChild( target.cloneTree(), insert++);
         }
       }
     }

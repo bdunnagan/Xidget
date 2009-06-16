@@ -1,0 +1,24 @@
+TODO List
+
+Xidgets
+
+1. key-bindings
+
+2. schema validation
+
+3. image caching policy
+
+4. global/local widget appearance options (i.e. fg/bg color, font, background image, etc...)
+
+5. finish implementation of dynamic form reconstruction (i.e. listen for changes to form)
+
+6. menus
+
+7. toolbar
+
+
+WYSIWYG
+
+1. Finish items 1-4 from xidgets.
+
+2. undo/redo 

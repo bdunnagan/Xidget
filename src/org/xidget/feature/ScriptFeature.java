@@ -45,7 +45,7 @@ public class ScriptFeature implements IScriptFeature
     context.set( "xidget", holder);
     
     ScriptAction script = scripts.get( name);
-    script.run( context);
+    if ( script != null) script.run( context);
   }
 
   private IModelObject holder;

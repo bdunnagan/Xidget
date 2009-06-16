@@ -10,7 +10,9 @@ import java.util.Stack;
 import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
+import org.xidget.binding.LabelBindingRule;
 import org.xidget.binding.LayoutTagHandler;
+import org.xidget.binding.RebuildFlagHandler;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
 import org.xidget.binding.TitleBindingRule;
@@ -52,6 +54,7 @@ public final class Creator
     processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
+    processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new SelectionTagHandler());
     processor.addHandler( "source", new BindingTagHandler( new TextBindingRule()));
@@ -60,6 +63,9 @@ public final class Creator
     processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
+    
+    // dynamic reconfiguration
+    processor.addAttributeHandler( "rebuild", new RebuildFlagHandler());
 
     // scripts
     processor.addHandler( "onPress", new ScriptTagHandler());

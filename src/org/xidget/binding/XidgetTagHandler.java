@@ -62,6 +62,7 @@ public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeatu
   public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
     IXidget xidget = xidgets.pop();
+    System.out.println( "--> "+xidget.getConfig());
     xidget.endConfig( processor, element);
 
     // emit root object

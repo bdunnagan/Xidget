@@ -94,6 +94,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     if ( config == null) throw new RuntimeException( "Layout not defined for xidget: "+xidget);
     
+    Log.printf( "layout", "Compile: %s\n", xidget);
+    
     compiled = true;
     nodes = new ArrayList<IComputeNode>();
 
@@ -107,6 +109,10 @@ public class AnchorLayoutFeature implements ILayoutFeature
 
     // sort nodes
     nodes = sort( nodes);
+    
+    // dump nodes
+    for( int i=0; i<nodes.size(); i++)
+      System.out.printf( "%d: %s\n", i, nodes.get( i));
   }
   
   /**

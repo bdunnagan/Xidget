@@ -35,7 +35,7 @@ public class LayoutTagHandler extends AbstractTagHandler
     IXidget xidget = xidgetFeature.getXidget();
     if ( xidget == null) throw new TagException( "Parent tag handler is not a xidget: "+element);
 
-    // quietly return if there is not layout feature
+    // quietly return if there is no layout feature
     ILayoutFeature feature = xidget.getFeature( ILayoutFeature.class);
     if ( feature == null) return false;
     
@@ -51,7 +51,10 @@ public class LayoutTagHandler extends AbstractTagHandler
       try
       {
         IExpression layoutExpr = XPath.createExpression( Xlate.get( element, (String)null));
+        
         IModelObject layout = layoutExpr.queryFirst( new StatefulContext( processor.getContext(), element));
+        if ( layout == null) throw new TagException( "Layout not found: "+layout);
+        
         feature.configure( processor, layout);
       }
       catch( Exception e)

@@ -11,27 +11,19 @@ import org.xidget.layout.IComputeNode;
  */
 public interface IComputeNodeFeature
 {
+  public enum Type { top, left, right, bottom, width, height, horizontal_center, vertical_center};
+  
   /**
    * Returns the anchor of the specified type for this xidget as follows:
-   * <ul>
-   * <li><i>x0</i> - WidgetLeftNode 
-   * <li><i>y0</i> - WidgetTopNode
-   * <li><i>x1</i> - WidgetRightNode 
-   * <li><i>y1</i> - WidgetBottomNode
-   * <li><i>xc</i> - WidgetHorizontalCenterNode
-   * <li><i>yc</i> - WidgetVerticalCenterNode
-   * <li><i>w</i> - WidgetWidthNode
-   * <li><i>h</i> - WidgetHeightNode
-   * </ul>
    * @param type The type of anchor.
    * @return Returns null or the widget anchor of the specified type.
    */
-  public IComputeNode getAnchor( String type);
+  public IComputeNode getAnchor( Type type);
   
   /**
    * Returns the anchor of a parent container for use by its children.
    * @param type The type of anchor.
    * @return Returns null or the anchor of a parent container for use by its children.
    */
-  public IComputeNode getParentAnchor( String type);
+  public IComputeNode getParentAnchor( Type type);
 }

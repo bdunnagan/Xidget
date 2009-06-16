@@ -10,12 +10,6 @@ package org.xidget.ifeature.button;
 public interface IButtonWidgetFeature
 {
   /**
-   * Set the button image.
-   * @param image The image.
-   */
-  public void setImage( Object image);
-  
-  /**
    * Set the button state (only applies to toggle and checkbox buttons).
    * @param state The state.
    */
