@@ -55,6 +55,7 @@ public final class Creator
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
+    processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new SelectionTagHandler());
     processor.addHandler( "source", new BindingTagHandler( new TextBindingRule()));
