@@ -33,4 +33,9 @@ public interface ILayoutFeature
    * @param node The computation node.
    */
   public void addNode( IComputeNode node);
+
+  /**
+   * Reset the layout and remove cached information.
+   */
+  public void reset();
 }

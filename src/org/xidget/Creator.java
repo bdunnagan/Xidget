@@ -5,6 +5,7 @@
 package org.xidget;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import org.xidget.binding.BindingTagHandler;
@@ -15,6 +16,7 @@ import org.xidget.binding.LayoutTagHandler;
 import org.xidget.binding.RebuildFlagHandler;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
+import org.xidget.binding.SkipTagHandler;
 import org.xidget.binding.TitleBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
@@ -25,9 +27,15 @@ import org.xidget.binding.table.SubTableTagHandler;
 import org.xidget.binding.text.EditableBindingRule;
 import org.xidget.binding.text.TextBindingRule;
 import org.xidget.binding.tree.SubTreeTagHandler;
+import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
+import org.xidget.config.ifeature.IXidgetFeature;
+import org.xidget.ifeature.IBindFeature;
+import org.xidget.ifeature.IComputeNodeFeature;
+import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
+import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -65,6 +73,9 @@ public final class Creator
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
     
+    // skip
+    processor.addHandler( "functions", new SkipTagHandler());
+    
     // dynamic reconfiguration
     processor.addAttributeHandler( "rebuild", new RebuildFlagHandler());
 
@@ -99,11 +110,93 @@ public final class Creator
   }
   
   /**
+   * Create and bind the xidget hierarchy for the specified configuration.
+   * @param context The configuration context.
+   */
+  public List<IXidget> create( StatefulContext context) throws TagException
+  {
+    // parse and build
+    List<IXidget> xidgets = parse( context);
+    if ( xidgets.size() == 0) return Collections.emptyList();
+    
+    // create widget hierarchy
+    build( xidgets.get( 0));
+    
+    // bind the xidget
+    IBindFeature bindFeature = xidgets.get( 0).getFeature( IBindFeature.class);
+    bindFeature.bind( (StatefulContext)context);
+    
+    return xidgets;
+  }
+  
+  /**
+   * Unbind and dispose the specified xidget hierarchy.
+   * @param xidget The xidget.
+   */
+  public void destroy( IXidget xidget)
+  {
+    // unbind all contexts
+    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+    StatefulContext[] contexts = bindFeature.getBoundContexts().toArray( new StatefulContext[ 0]);
+    for( StatefulContext context: contexts) bindFeature.unbind( (StatefulContext)context);
+    
+    // destroy widget hierarchy
+    IWidgetCreationFeature creationFeature = xidget.getFeature( IWidgetCreationFeature.class);
+    creationFeature.destroyWidgets();
+    
+    // clear xidget attribure
+    xidget.getConfig().removeAttribute( "xidget");
+    
+    // remove xidget from parent
+    xidget.getParent().getChildren().remove( xidget);
+  }
+  
+  /**
+   * Destroy and recreate the specified xidget.
+   * @param xidget The xidget.
+   * @return Returns null or the new xidget.
+   */
+  public IXidget rebuild( IXidget xidget) throws TagException
+  {
+    // get context
+    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+    List<StatefulContext> contexts = bindFeature.getBoundContexts();
+    if ( contexts.size() == 0) return null;
+
+    // only rebind first context
+    StatefulContext context = contexts.get( 0);
+
+    // reset parent layout
+    IXidget parent = xidget.getParent();
+    ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
+    layoutFeature.reset();
+    IComputeNodeFeature computeNodeFeature = parent.getFeature( IComputeNodeFeature.class);
+    computeNodeFeature.clearParentAnchors();
+    
+    // destroy
+    destroy( xidget);
+    
+    // parse and build
+    IModelObject config = xidget.getConfig();
+    processor.process( new ParentTagHandler( xidget.getParent()), new StatefulContext( context, config));
+    
+    // create widget hierarchy
+    xidget = (IXidget)config.getAttribute( "xidget");
+    build( xidget);
+    
+    // bind the xidget
+    bindFeature = xidget.getFeature( IBindFeature.class);
+    bindFeature.bind( (StatefulContext)context);
+    
+    return xidget;
+  }
+  
+  /**
    * Parse the specified xidget configuration. (Features are configured here)
    * @param element The root of the configuration.
    * @return Returns the list of xidgets created.
    */
-  public List<IXidget> parse( StatefulContext context) throws TagException
+  private List<IXidget> parse( StatefulContext context) throws TagException
   {
     List<Object> result = processor.process( context);
     List<IXidget> xidgets = new ArrayList<IXidget>( result.size());
@@ -116,7 +209,7 @@ public final class Creator
    * hierarchy can be accessed through an appropriate platform-specific feature.
    * @param root The root of the xidget hierarchy.
    */
-  public void build( IXidget root)
+  private void build( IXidget root)
   {
     Stack<IXidget> stack = new Stack<IXidget>();
     stack.push( root);
@@ -142,6 +235,61 @@ public final class Creator
   {
     if ( instance == null) instance = new Creator();
     return instance;
+  }
+
+  /**
+   * An implementation of ITagHandler that is passed to the TagProcessor to support parenting 
+   * of newly created xidgets when rebuilding a sub-tree of the xidget hierarchy.
+   */
+  private class ParentTagHandler implements ITagHandler, IXidgetFeature
+  {
+    public ParentTagHandler( IXidget xidget)
+    {
+      this.xidget = xidget;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xidget.config.ITagHandler#filter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
+     */
+    public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
+    {
+      return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.xidget.config.ITagHandler#enter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
+     */
+    public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
+    {
+      return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.xidget.config.ITagHandler#exit(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
+     */
+    public void exit( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see org.xidget.config.ifeature.IXidgetFeature#getXidget()
+     */
+    public IXidget getXidget()
+    {
+      return xidget;
+    }
+
+    /* (non-Javadoc)
+     * @see org.xidget.IFeatured#getFeature(java.lang.Class)
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getFeature( Class<T> clss)
+    {
+      if ( clss == IXidgetFeature.class) return (T)this;
+      return null;
+    }
+    
+    private IXidget xidget;
   }
   
   private static Creator instance;

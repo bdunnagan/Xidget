@@ -15,15 +15,11 @@ public class WidgetHeightNode extends ComputeNode
   /**
    * Create an anchor valued relative to the height of a container widget.
    * @param container The widget.
-   * @param y0 The y0 anchor.
-   * @param y1 The y1 anchor.
    */
-  public WidgetHeightNode( IWidgetFeature container, IComputeNode y0, IComputeNode y1)
+  public WidgetHeightNode( IWidgetFeature container)
   {
     this.container = container;
     this.bounds = new Bounds();
-    addDependency( y0);
-    addDependency( y1);
   }
   
   /* (non-Javadoc)

@@ -12,10 +12,9 @@ import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IAsyncFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xmodel.IModelObject;
-import org.xmodel.ModelListener;
 import org.xmodel.Xlate;
+import org.xmodel.external.NonSyncingListener;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -76,7 +75,8 @@ public class RebuildFlagHandler implements ITagHandler
      */
     public void bind( StatefulContext context)
     {
-      xidget.getConfig().addModelListener( new Listener( xidget, context)); 
+      Listener listener = new Listener( xidget, context);
+      listener.install( xidget.getConfig()); 
     }
 
     /* (non-Javadoc)
@@ -84,13 +84,14 @@ public class RebuildFlagHandler implements ITagHandler
      */
     public void unbind( StatefulContext context)
     {
-      xidget.getConfig().removeModelListener( new Listener( xidget, context)); 
+      Listener listener = new Listener( xidget, context);
+      listener.uninstall( xidget.getConfig()); 
     }
     
     private IXidget xidget;
   }
   
-  private static class Listener extends ModelListener implements Runnable
+  private static class Listener extends NonSyncingListener implements Runnable
   {
     public Listener( IXidget xidget, StatefulContext context)
     {
@@ -123,27 +124,16 @@ public class RebuildFlagHandler implements ITagHandler
      */
     public void run()
     {
-      rebuild();
-    }
-    
-    /**
-     * Rebuild the form represented by the associated xidget.
-     */
-    private void rebuild()
-    {
-      // unbind xidget
-      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-      if ( bindFeature != null) bindFeature.unbind( context);
-
-      // destroy widget sub-tree
-      IWidgetCreationFeature creationFeature = xidget.getFeature( IWidgetCreationFeature.class);
-      if ( creationFeature != null) creationFeature.destroyWidgets();
-
-      // rebuild sub-tree
-      Creator.getInstance().build( xidget);
-      
-      // bind xidget
-      if ( bindFeature != null) bindFeature.bind( context);
+      try
+      {
+        uninstall( xidget.getConfig());
+        Creator.getInstance().rebuild( xidget);
+        install( xidget.getConfig());
+      }
+      catch( TagException e)
+      {
+        System.err.println( e);
+      }
     }
     
     /* (non-Javadoc)

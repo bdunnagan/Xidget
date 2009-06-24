@@ -25,6 +25,7 @@ public class BindFeature implements IBindFeature
   public BindFeature( IXidget xidget)
   {
     this.xidget = xidget;
+    this.contexts = new ArrayList<StatefulContext>( 1);
   }
   
   /**
@@ -70,6 +71,9 @@ public class BindFeature implements IBindFeature
   public void bind( StatefulContext context)
   {
     Log.printf( "xidget", "bind: %s with %s\n", xidget, context);
+    
+    // add context to list
+    contexts.add( context);
     
     // create widget-context association
     IWidgetContextFeature widgetContextFeature = xidget.getFeature( IWidgetContextFeature.class);
@@ -149,9 +153,21 @@ public class BindFeature implements IBindFeature
           widgetContextFeature.removeAssociation( widget);
       }
     }    
+    
+    // remove context from list
+    contexts.remove( context);
   }
   
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.IBindFeature#getBoundContexts()
+   */
+  public List<StatefulContext> getBoundContexts()
+  {
+    return contexts;
+  }
+
   protected IXidget xidget;
+  protected List<StatefulContext> contexts;
   protected List<IXidgetBinding> bindBeforeChildren;
   protected List<IXidgetBinding> bindAfterChildren;
   private List<String> ignore;

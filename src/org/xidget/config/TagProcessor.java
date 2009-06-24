@@ -83,6 +83,15 @@ public class TagProcessor implements IFeatured
   }
 
   /**
+   * Returns the objects emitted by the root tag handlers.
+   * @return Returns the objects emitted by the root tag handles.
+   */
+  public List<Object> getRoots()
+  {
+    return roots;
+  }
+  
+  /**
    * Returns the context with which the process method was invoked.
    * @return Returns the context with which the process method was invoked.
    */
@@ -108,7 +117,7 @@ public class TagProcessor implements IFeatured
    * @param parent The parent handler of the root.
    * @param context The root of the fragment.
    */
-  private void process( ITagHandler parent, IContext context) throws TagException
+  public void process( ITagHandler parent, IContext context) throws TagException
   {
     long t0 = System.nanoTime();
     

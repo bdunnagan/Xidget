@@ -4,6 +4,7 @@
  */
 package org.xidget.ifeature;
 
+import java.util.List;
 import org.xidget.binding.IXidgetBinding;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -41,4 +42,10 @@ public interface IBindFeature
    * @param context The context.
    */
   public void unbind( StatefulContext context);
+
+  /**
+   * Returns the list of currently bound contexts.
+   * @return Returns the list of currently bound contexts.
+   */
+  public List<StatefulContext> getBoundContexts();
 }

@@ -62,11 +62,12 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void layout()
   {
-    if ( !compiled) compile(); 
+    if ( !compiled) compile();
+    if ( nodes == null) return;
     
-    Log.printf( "layout", "\nCompute Graph --------------\n");
+    Log.printf( "layout", "Layout: %s\n", xidget);
     for( IComputeNode anchor: nodes) anchor.update();
-    Log.printf( "layout", "\nDone -----------------------\n");
+    Log.println( "layout", "");
   }
   
   /* (non-Javadoc)
@@ -87,12 +88,21 @@ public class AnchorLayoutFeature implements ILayoutFeature
     nodes.add( node);
   }
 
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ILayoutFeature#reset()
+   */
+  public void reset()
+  {
+    compiled = false;
+    nodes.clear();
+  }
+
   /**
    * Execute the layout script and sort the computation nodes.
    */
   private void compile()
   {
-    if ( config == null) throw new RuntimeException( "Layout not defined for xidget: "+xidget);
+    if ( config == null) return;
     
     Log.printf( "layout", "Compile: %s\n", xidget);
     
@@ -101,7 +111,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
 
     // run layout script
     XActionDocument document = new XActionDocument( config);
-    document.setClassLoader( getClass().getClassLoader());
+    ClassLoader loader = getClass().getClassLoader();
+    document.setClassLoader( loader);
     ScriptAction script = document.createScript();
     
     StatefulContext context = new StatefulContext( xidget.getConfig());

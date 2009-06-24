@@ -53,8 +53,8 @@ public class ComputeNodeFeature implements IComputeNodeFeature
       case left: node = new WidgetLeftNode( widget); break;
       case right: node = new WidgetRightNode( widget); break;
       case bottom: node = new WidgetBottomNode( widget); break;
-      case width: node = new WidgetWidthNode( widget, getAnchor( Type.left), getAnchor( Type.right)); break;
-      case height: node = new WidgetHeightNode( widget, getAnchor( Type.top), getAnchor( Type.bottom)); break;
+      case width: node = new WidgetWidthNode( widget); break;
+      case height: node = new WidgetHeightNode( widget); break;
       case vertical_center: node = new WidgetVerticalCenterNode( widget); break;
       case horizontal_center: node = new WidgetHorizontalCenterNode( widget); break;
     }
@@ -88,6 +88,15 @@ public class ComputeNodeFeature implements IComputeNodeFeature
     
     parentNodes[ ordinal] = node;
     return node;    
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.IComputeNodeFeature#clearParentAnchors()
+   */
+  public void clearParentAnchors()
+  {
+    nodes = new IComputeNode[ Type.values().length];
+    parentNodes = new IComputeNode[ Type.values().length];
   }
 
   protected IXidget xidget;

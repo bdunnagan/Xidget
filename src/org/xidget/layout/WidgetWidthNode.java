@@ -15,15 +15,11 @@ public class WidgetWidthNode extends ComputeNode
   /**
    * Create an anchor valueed relative to its container widget.
    * @param container The widget.
-   * @param x0 The x0 anchor.
-   * @param x1 The x1 anchor.
    */
-  public WidgetWidthNode( IWidgetFeature container, IComputeNode x0, IComputeNode x1)
+  public WidgetWidthNode( IWidgetFeature container)
   {
     this.container = container;
     this.bounds = new Bounds();
-    addDependency( x0);
-    addDependency( x1);
   }
   
   /* (non-Javadoc)

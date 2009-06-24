@@ -11,6 +11,7 @@ import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.ModelAlgorithms;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -141,11 +142,15 @@ public abstract class Xidget implements IXidget
     if ( config == null) return "unconfigured";
     
     StringBuilder sb = new StringBuilder();
-    sb.append( config.getType());
     if ( config.getID().length() > 0) 
     {
+      sb.append( config.getType());
       sb.append( "#");
       sb.append( config.getID());
+    }
+    else
+    {
+      sb.append( ModelAlgorithms.createIdentityPath( config));
     }
     
     return sb.toString();

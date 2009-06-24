@@ -7,6 +7,7 @@ package org.xidget.layout.xaction;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IComputeNodeFeature;
+import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IComputeNodeFeature.Type;
 import org.xidget.layout.ConstantNode;
 import org.xidget.layout.IComputeNode;
@@ -21,7 +22,8 @@ import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
 /**
- * An action that creates one or more dependencies between xidget anchors.
+ * An implementation of IXAction that creates a dependency between any two xidget anchors,
+ * including dependencies between a container and its children.
  */
 public class DependAction extends GuardedAction
 {
@@ -33,13 +35,13 @@ public class DependAction extends GuardedAction
   {
     super.configure( document);
    
-    List<IModelObject> nodes = document.getRoot().getChildren( "node");
+    IModelObject sourceNode = document.getRoot().getFirstChild( "source");
+    sourceExpr = document.getExpression( sourceNode);
+    sourceType = Xlate.get( sourceNode, "type", (String)null);
     
-    sourceExpr = document.getExpression( nodes.get( 0));
-    sourceType = Xlate.get( nodes.get( 0), "type", (String)null);
-    
-    dependExpr = document.getExpression( nodes.get( 1));
-    dependType = Xlate.get( nodes.get( 1), "type", (String)null);
+    IModelObject dependNode = document.getRoot().getFirstChild( "depend");
+    dependExpr = document.getExpression( dependNode);
+    dependType = Xlate.get( dependNode, "type", (String)null);
     
     percentExpr = document.getExpression( "percent", true);
     offsetExpr = document.getExpression( "offset", true);
@@ -52,41 +54,51 @@ public class DependAction extends GuardedAction
   @Override
   protected void doAction( IContext context)
   {
+    IModelObject parentConfig = context.getObject();
+    IXidget parent = (IXidget)parentConfig.getAttribute( "xidget");
+    ILayoutFeature layout = parent.getFeature( ILayoutFeature.class);
+    
     List<IModelObject> inElements = sourceExpr.query( context, null);
-    List<IModelObject> outElements = dependExpr.query( context, null);
-  
+    List<IModelObject> outElements = (dependExpr != null)? dependExpr.query( context, null): null;
+    
     for( IModelObject inElement: inElements)
     {
-      for( IModelObject outElement: outElements)
+      IXidget source = (IXidget)inElement.getAttribute( "xidget");
+      if ( source == null) throw new XActionException( "First xidget not found: "+inElement);
+      
+      IComputeNode sourceNode = getComputeNode( source, source == parent, Type.valueOf( sourceType));
+      
+      if ( constantExpr == null)
       {
-        IXidget source = (IXidget)inElement.getAttribute( "xidget");
-        if ( source == null) throw new XActionException( "First xidget not found: "+inElement);
-        
-        IXidget depend = (IXidget)outElement.getAttribute( "xidget");
-        if ( depend == null) throw new XActionException( "Second xidget not found: "+outElement);
-  
-        IComputeNode sourceNode = getComputeNode( source, source == parent, Type.valueOf( sourceType));
-        IComputeNode dependNode = getComputeNode( depend, depend == parent, Type.valueOf( dependType));
-        
-        if ( offsetExpr != null && percentExpr == null)
+        for( IModelObject outElement: outElements)
         {
-          double offset = offsetExpr.evaluateNumber( context);
-          dependNode = new OffsetNode( dependNode, (int)offset);
+          IXidget depend = (IXidget)outElement.getAttribute( "xidget");
+          if ( depend == null) throw new XActionException( "Second xidget not found: "+outElement);
+    
+          IComputeNode dependNode = getComputeNode( depend, depend == parent, Type.valueOf( dependType));
+          
+          if ( offsetExpr != null && percentExpr == null)
+          {
+            double offset = offsetExpr.evaluateNumber( context);
+            dependNode = new OffsetNode( dependNode, (int)offset);
+          }
+          else if ( percentExpr != null)
+          {
+            double offset = (offsetExpr != null)? offsetExpr.evaluateNumber( context): 0;
+            double percent = percentExpr.evaluateNumber( context);
+            dependNode = new ProportionalNode( dependNode, (float)percent, (int)offset);
+          }
+          
+          sourceNode.addDependency( dependNode);
         }
-        else if ( percentExpr != null)
-        {
-          double offset = (offsetExpr != null)? offsetExpr.evaluateNumber( context): 0;
-          double percent = percentExpr.evaluateNumber( context);
-          dependNode = new ProportionalNode( dependNode, (float)percent, (int)offset);
-        }
-        else if ( constantExpr != null)
-        {
-          double constant = constantExpr.evaluateNumber( context);
-          dependNode = new ConstantNode( (int)constant);
-        }
-        
-        sourceNode.addDependency( dependNode);
       }
+      else
+      {
+        double constant = constantExpr.evaluateNumber( context);
+        sourceNode.addDependency( new ConstantNode( (int)constant));
+      }
+      
+      layout.addNode( sourceNode);
     }
   }     
   

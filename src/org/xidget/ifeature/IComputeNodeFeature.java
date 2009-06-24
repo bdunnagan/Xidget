@@ -26,4 +26,9 @@ public interface IComputeNodeFeature
    * @return Returns null or the anchor of a parent container for use by its children.
    */
   public IComputeNode getParentAnchor( Type type);
+  
+  /**
+   * Resets all of the parent anchors. This method should be called when the xidget hierarchy changes.
+   */
+  public void clearParentAnchors();
 }
