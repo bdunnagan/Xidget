@@ -4,6 +4,7 @@
  */
 package org.xidget.ifeature;
 
+import java.util.List;
 import org.xidget.config.TagProcessor;
 import org.xidget.layout.IComputeNode;
 import org.xmodel.IModelObject;
@@ -29,11 +30,28 @@ public interface ILayoutFeature
   public void configure( TagProcessor processor, IModelObject element);
   
   /**
+   * Reconfigure the layout from the current configuration element.
+   */
+  public void reconfigure();
+  
+  /**
    * Add a node to the layout.
    * @param node The computation node.
    */
   public void addNode( IComputeNode node);
+  
+  /**
+   * Remove a node from the layout.
+   * @param node The node to be removed.
+   */
+  public void removeNode( IComputeNode node);
 
+  /**
+   * Returns the list of nodes.
+   * @return Returns the list of nodes.
+   */
+  public List<IComputeNode> getNodes();
+  
   /**
    * Reset the layout and remove cached information.
    */

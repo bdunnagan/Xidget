@@ -13,6 +13,8 @@ import org.xidget.layout.ConstantNode;
 import org.xidget.layout.IComputeNode;
 import org.xidget.layout.OffsetNode;
 import org.xidget.layout.ProportionalNode;
+import org.xidget.layout.XGrabNode;
+import org.xidget.layout.YGrabNode;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
@@ -46,6 +48,9 @@ public class DependAction extends GuardedAction
     percentExpr = document.getExpression( "percent", true);
     offsetExpr = document.getExpression( "offset", true);
     constantExpr = document.getExpression( "constant", true);
+    
+    String grabText = Xlate.get( document.getRoot(), "grab", "none");
+    grab = Grab.valueOf( grabText);
   }
   
   /* (non-Javadoc)
@@ -86,7 +91,12 @@ public class DependAction extends GuardedAction
           {
             double offset = (offsetExpr != null)? offsetExpr.evaluateNumber( context): 0;
             double percent = percentExpr.evaluateNumber( context);
-            dependNode = new ProportionalNode( dependNode, (float)percent, (int)offset);
+            switch( grab)
+            {
+              case none: dependNode = new ProportionalNode( dependNode, (float)percent, (int)offset); break;
+              case x: dependNode = new XGrabNode( dependNode, (float)percent, (int)offset); break;
+              case y: dependNode = new YGrabNode( dependNode, (float)percent, (int)offset); break;
+            }
           }
           
           sourceNode.addDependency( dependNode);
@@ -116,6 +126,8 @@ public class DependAction extends GuardedAction
     return parent? feature.getParentAnchor( type): feature.getAnchor( type);
   }
     
+  private enum Grab { none, x, y};
+  
   private IExpression sourceExpr;
   private IExpression dependExpr;
   private String sourceType;
@@ -123,4 +135,5 @@ public class DependAction extends GuardedAction
   private IExpression percentExpr;
   private IExpression offsetExpr;
   private IExpression constantExpr;
+  private Grab grab;
 }

@@ -16,9 +16,17 @@ Xidgets
 
 7. toolbar
 
+8. dialogs  
+
 
 WYSIWYG
 
 1. Finish items 1-4 from xidgets.
 
 2. undo/redo 
+
+
+DIALOG
+ 
+  Parameters:
+    1. modality: 

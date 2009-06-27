@@ -13,7 +13,6 @@ import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.LabelBindingRule;
 import org.xidget.binding.LayoutTagHandler;
-import org.xidget.binding.RebuildFlagHandler;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
 import org.xidget.binding.SkipTagHandler;
@@ -76,9 +75,6 @@ public final class Creator
     // skip
     processor.addHandler( "functions", new SkipTagHandler());
     
-    // dynamic reconfiguration
-    processor.addAttributeHandler( "rebuild", new RebuildFlagHandler());
-
     // scripts
     processor.addHandler( "onPress", new ScriptTagHandler());
     processor.addHandler( "onOpen", new ScriptTagHandler());

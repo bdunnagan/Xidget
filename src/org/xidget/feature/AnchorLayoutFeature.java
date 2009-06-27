@@ -23,32 +23,6 @@ import org.xmodel.xpath.expression.StatefulContext;
  * A layout algorithm where the layout contraints are specified as attachments (joints) between
  * xidgets. This layout algorithm is similar to the SWT FormLayout or Swing SpringLayout, but
  * provides consistent behavior across platforms.
- * <p>
- * <code>
- * <layout name="l1">
- *   [<size>width, height</size>]
- *   [<min>width, height</min>]
- *   [<max>width, height</max>]
- *   <x0 attach="xpath" side="[x0|x1|y0|y1]" pad="N" anchor="%N"/>
- *   <y0 attach="xpath" side="[x0|x1|y0|y1]" pad="N" anchor="%N"/>
- *   <x1 attach="xpath" side="[x0|x1|y0|y1]" pad="N" anchor="%N"/>
- *   <y1 attach="xpath" side="[x0|x1|y0|y1]" pad="N" anchor="%N"/>
- * </layout>
- * <p>
- * The xpath argument is relative to the xidget in which the layout element appears.
- * Therefore, the following layout could be used for a vertical layout:
- * <p>
- * <layout name="vertical">
- *   <x0 attach=".." side="left" pad="5"/>
- *   <y0 attach="preceding::*[1]" side="bottom" pad="3"/>
- *   <y0 attach=".." side="top" pad="5"/>
- *   <x1 attach=".." side="right" pad="5"/>
- * </layout>
- * <p>
- * When there is more than one declaration for a particular side, the first declaration
- * whose xpath expression is not an empty set will be used. This allows for a more 
- * compact representation of some layouts.
- * </code>
  */
 public class AnchorLayoutFeature implements ILayoutFeature
 {
@@ -62,11 +36,16 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void layout()
   {
-    if ( !compiled) compile();
-    if ( nodes == null) return;
+    if ( sorted == null) compile();
     
     Log.printf( "layout", "Layout: %s\n", xidget);
-    for( IComputeNode anchor: nodes) anchor.update();
+    
+    if ( sorted != null)
+    {
+      for( IComputeNode node: sorted) 
+        node.update();
+    }
+    
     Log.println( "layout", "");
   }
   
@@ -75,17 +54,46 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void configure( TagProcessor processor, IModelObject element)
   {
-    compiled = false;
+    sorted = null;
     config = element;
   }
    
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ILayoutFeature#reconfigure()
+   */
+  public void reconfigure()
+  {
+    sorted = null;
+  }
+
   /* (non-Javadoc)
    * @see org.xidget.layout.ILayoutFeature#addNode(org.xidget.layout.IComputeNode)
    */
   public void addNode( IComputeNode node)
   {
     Log.printf( "layout", "Added: %s\n", node);
-    nodes.add( node);
+    
+    // a node can only appear in the list once but the node dependencies may have changed
+    sorted = null;
+    if ( !nodes.contains( node)) nodes.add( node);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ILayoutFeature#removeNode(org.xidget.layout.IComputeNode)
+   */
+  public void removeNode( IComputeNode node)
+  {
+    Log.printf( "layout", "Added: %s\n", node);
+    sorted = null;
+    nodes.remove( node);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ILayoutFeature#getNodes()
+   */
+  public List<IComputeNode> getNodes()
+  {
+    return nodes;
   }
 
   /* (non-Javadoc)
@@ -93,7 +101,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void reset()
   {
-    compiled = false;
+    sorted = null;
     nodes.clear();
   }
 
@@ -102,28 +110,32 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void compile()
   {
-    if ( config == null) return;
-    
     Log.printf( "layout", "Compile: %s\n", xidget);
-    
-    compiled = true;
-    nodes = new ArrayList<IComputeNode>();
 
-    // run layout script
-    XActionDocument document = new XActionDocument( config);
-    ClassLoader loader = getClass().getClassLoader();
-    document.setClassLoader( loader);
-    ScriptAction script = document.createScript();
+    // execute layout script if defined
+    if ( config != null)
+    {
+      nodes = new ArrayList<IComputeNode>();
+      
+      XActionDocument document = new XActionDocument( config);
+      ClassLoader loader = getClass().getClassLoader();
+      document.setClassLoader( loader);
+      ScriptAction script = document.createScript();
+      
+      StatefulContext context = new StatefulContext( xidget.getConfig());
+      script.run( context);
+    }
     
-    StatefulContext context = new StatefulContext( xidget.getConfig());
-    script.run( context);
-
-    // sort nodes
-    nodes = sort( nodes);
-    
-    // dump nodes
-    for( int i=0; i<nodes.size(); i++)
-      System.out.printf( "%d: %s\n", i, nodes.get( i));
+    // create final node list
+    if ( nodes != null)
+    {
+      // sort nodes
+      sorted = sort( nodes);
+      
+      // dump final node list
+      for( int i=0; i<sorted.size(); i++)
+        Log.printf( "layout", "%d: %s\n", i, sorted.get( i));
+    }
   }
   
   /**
@@ -167,5 +179,5 @@ public class AnchorLayoutFeature implements ILayoutFeature
   private IXidget xidget;
   private IModelObject config;
   private List<IComputeNode> nodes;
-  private boolean compiled;
+  private List<IComputeNode> sorted;
 }

@@ -81,6 +81,21 @@ public abstract class ComputeNode implements IComputeNode
   }
   
   /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#mouseGrab(int, int)
+   */
+  public Grab mouseGrab( int x, int y)
+  {
+    return Grab.none;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#move(float, float)
+   */
+  public void move( float x, float y)
+  {
+  }
+
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override
