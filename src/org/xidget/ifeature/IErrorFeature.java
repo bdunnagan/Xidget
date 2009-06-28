@@ -5,7 +5,7 @@
 package org.xidget.ifeature;
 
 /**
- * An adapter for reporting a xidget data error.
+ * An interface for reporting a xidget data error.
  */
 public interface IErrorFeature
 {

@@ -37,7 +37,7 @@ public class XidgetAction extends GuardedAction
     {
       StatefulContext inner = new StatefulContext( context, root);
       Creator creator = Creator.getInstance();
-      creator.create( inner);
+      creator.create( inner, true);
     }
     catch( TagException e)
     {

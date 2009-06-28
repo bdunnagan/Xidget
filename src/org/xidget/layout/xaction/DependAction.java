@@ -71,7 +71,7 @@ public class DependAction extends GuardedAction
       IXidget source = (IXidget)inElement.getAttribute( "xidget");
       if ( source == null) throw new XActionException( "First xidget not found: "+inElement);
       
-      IComputeNode sourceNode = getComputeNode( source, source == parent, Type.valueOf( sourceType));
+      IComputeNode sourceNode = getComputeNode( source, Type.valueOf( sourceType));
       
       if ( constantExpr == null)
       {
@@ -80,7 +80,7 @@ public class DependAction extends GuardedAction
           IXidget depend = (IXidget)outElement.getAttribute( "xidget");
           if ( depend == null) throw new XActionException( "Second xidget not found: "+outElement);
     
-          IComputeNode dependNode = getComputeNode( depend, depend == parent, Type.valueOf( dependType));
+          IComputeNode dependNode = getComputeNode( depend, Type.valueOf( dependType));
           
           if ( offsetExpr != null && percentExpr == null)
           {
@@ -114,16 +114,14 @@ public class DependAction extends GuardedAction
   
   /**
    * Returns the IComputeNode of the specified type for the specified xidget.
-   * If the parent flag is true, then the xidget is the parent container.
    * @param xidget The xidget.
-   * @param parent True if xidget is parent container.
    * @param type The type of IComputeNode.
    * @return Returns the IComputeNode of the specified type for the specified xidget.
    */
-  private IComputeNode getComputeNode( IXidget xidget, boolean parent, Type type)
+  private IComputeNode getComputeNode( IXidget xidget, Type type)
   {
     IComputeNodeFeature feature = xidget.getFeature( IComputeNodeFeature.class);
-    return parent? feature.getParentAnchor( type): feature.getAnchor( type);
+    return feature.getComputeNode( type);
   }
     
   private enum Grab { none, x, y};

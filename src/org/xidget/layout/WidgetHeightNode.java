@@ -23,6 +23,15 @@ public class WidgetHeightNode extends ComputeNode
   }
   
   /* (non-Javadoc)
+   * @see org.xidget.layout.ComputeNode#hasValue()
+   */
+  @Override
+  public boolean hasValue()
+  {
+    return true;
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
   public float getValue()

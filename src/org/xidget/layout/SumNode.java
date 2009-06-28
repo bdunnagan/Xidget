@@ -10,14 +10,14 @@ import org.xidget.Log;
 /**
  * An implementation of IComputeNode that calculates the difference between two nodes.
  */
-public class DifferenceNode extends ComputeNode
+public class SumNode extends ComputeNode
 {
   /**
    * Computes node2 minus node1.
    * @param node1 The first node.
    * @param node2 The second node.
    */
-  public DifferenceNode( IComputeNode node1, IComputeNode node2)
+  public SumNode( IComputeNode node1, IComputeNode node2)
   {
     addDependency( node1);
     addDependency( node2);
@@ -29,7 +29,7 @@ public class DifferenceNode extends ComputeNode
   public float getValue()
   {
     List<IComputeNode> nodes = getDependencies();
-    return nodes.get( 0).getValue() - nodes.get( 1).getValue();
+    return nodes.get( 0).getValue() + nodes.get( 1).getValue();
   }
 
   /* (non-Javadoc)
@@ -38,7 +38,7 @@ public class DifferenceNode extends ComputeNode
   public void setValue( float value)
   {
     List<IComputeNode> nodes = getDependencies();
-    nodes.get( 0).setValue( nodes.get( 1).getValue() + value);
+    nodes.get( 0).setValue( nodes.get( 1).getValue() - value);
   }
 
   /* (non-Javadoc)
@@ -58,7 +58,7 @@ public class DifferenceNode extends ComputeNode
     if ( hasValue()) Log.printf( "layout", "update: (%.1f) %s\n", getValue(), toString()); 
     else Log.printf( "layout", "update: (?) %s\n", toString());
   }
-  
+
   /* (non-Javadoc)
    * @see org.xidget.layout.ComputeNode#toString()
    */
@@ -67,7 +67,7 @@ public class DifferenceNode extends ComputeNode
   {
     StringBuilder sb = new StringBuilder();
     List<IComputeNode> nodes = getDependencies();
-    sb.append( "difference( ");
+    sb.append( "sum( ");
     sb.append( nodes.get( 0)); sb.append( ", ");
     sb.append( nodes.get( 1));
     sb.append( ")");

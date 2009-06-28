@@ -11,8 +11,8 @@ import java.util.Stack;
 import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
+import org.xidget.binding.ErrorBindingRule;
 import org.xidget.binding.LabelBindingRule;
-import org.xidget.binding.LayoutTagHandler;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
 import org.xidget.binding.SkipTagHandler;
@@ -34,6 +34,7 @@ import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
+import org.xidget.ifeature.IComputeNodeFeature.Type;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -61,6 +62,7 @@ public final class Creator
     processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
+    processor.addHandler( "error", new BindingTagHandler( new ErrorBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
@@ -80,10 +82,6 @@ public final class Creator
     processor.addHandler( "onOpen", new ScriptTagHandler());
     processor.addHandler( "onClose", new ScriptTagHandler());
 
-    // layout
-    processor.addHandler( "layout", new LayoutTagHandler());
-    processor.addAttributeHandler( "layout", new LayoutTagHandler());
-    
     // sub-tables and sub-trees
     processor.addHandler( "tree", new SubTreeTagHandler());
     processor.addHandler( "table", new SubTableTagHandler());
@@ -108,19 +106,31 @@ public final class Creator
   /**
    * Create and bind the xidget hierarchy for the specified configuration.
    * @param context The configuration context.
+   * @param bind True if new xidget should be bound.
    */
-  public List<IXidget> create( StatefulContext context) throws TagException
+  public List<IXidget> create( StatefulContext context, boolean bind) throws TagException
   {
-    // parse and build
+    long t0 = System.nanoTime();
+    
+    // parse configuration
     List<IXidget> xidgets = parse( context);
     if ( xidgets.size() == 0) return Collections.emptyList();
     
-    // create widget hierarchy
+    long t1 = System.nanoTime();
+    Log.printf( "perf", "parse: %3.2fms\n", (t1-t0)/1000000f);
+    
+    // build widget hierarchy
     build( xidgets.get( 0));
+    
+    long t2 = System.nanoTime();
+    Log.printf( "perf", "build: %3.2fms\n", (t2-t1)/1000000f);
     
     // bind the xidget
     IBindFeature bindFeature = xidgets.get( 0).getFeature( IBindFeature.class);
     bindFeature.bind( (StatefulContext)context);
+    
+    long t3 = System.nanoTime();
+    Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
     
     return xidgets;
   }
@@ -144,7 +154,8 @@ public final class Creator
     xidget.getConfig().removeAttribute( "xidget");
     
     // remove xidget from parent
-    xidget.getParent().getChildren().remove( xidget);
+    if ( xidget.getParent() != null) 
+      xidget.getParent().getChildren().remove( xidget);
   }
   
   /**
@@ -165,9 +176,10 @@ public final class Creator
     // reset parent layout
     IXidget parent = xidget.getParent();
     ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
-    layoutFeature.reset();
+    layoutFeature.clearNodes();
     IComputeNodeFeature computeNodeFeature = parent.getFeature( IComputeNodeFeature.class);
-    computeNodeFeature.clearParentAnchors();
+    computeNodeFeature.getComputeNode( Type.width).clearDependencies();
+    computeNodeFeature.getComputeNode( Type.height).clearDependencies();
     
     // destroy
     destroy( xidget);

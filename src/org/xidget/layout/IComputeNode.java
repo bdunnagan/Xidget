@@ -18,6 +18,17 @@ public interface IComputeNode
   public void addDependency( IComputeNode node);
   
   /**
+   * Remove the specified dependency.
+   * @param node The dependency.
+   */
+  public void removeDependency( IComputeNode node);
+  
+  /**
+   * Clear all dependencies.
+   */
+  public void clearDependencies();
+  
+  /**
    * Returns the nodes which must be computed before this node.
    * @return Returns the nodes which must be computed before this node.
    */

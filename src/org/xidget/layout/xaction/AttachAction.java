@@ -4,11 +4,13 @@
  */
 package org.xidget.layout.xaction;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.ILayoutFeature;
-import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.IComputeNodeFeature.Type;
+import org.xidget.layout.ConstantNode;
 import org.xidget.layout.IComputeNode;
 import org.xidget.layout.OffsetNode;
 import org.xidget.layout.ProportionalNode;
@@ -16,10 +18,10 @@ import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
-import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An action which defines one to four attachments for a xidget. The <i>xidgets</i> variable
@@ -38,39 +40,26 @@ public class AttachAction extends GuardedAction
     super.configure( document);
    
     xidgetExpr = document.getExpression( "xidget", true);
-    
     IModelObject root = document.getRoot();
-    x0 = createAttachment( root.getFirstChild( "left"));
-    y0 = createAttachment( root.getFirstChild( "top"));
-    x1 = createAttachment( root.getFirstChild( "right"));
-    y1 = createAttachment( root.getFirstChild( "bottom"));
-    xc = createAttachment( root.getFirstChild( "hcenter"));
-    yc = createAttachment( root.getFirstChild( "vcenter"));
+    
+    attachments = new ArrayList<Attachment>();
+    for( Type type: Type.values())
+    {
+      IModelObject element = root.getFirstChild( type.name());
+      if ( element != null)
+      {
+        Attachment attachment = new Attachment();
+        attachment.anchor1 = type;
+        attachment.anchor2 = Type.valueOf( Xlate.get( element, "anchor", element.getType()));
+        attachment.xidgetExpr = Xlate.get( element, "attach", thisExpr);
+        attachment.constantExpr = Xlate.get( element, "constant", (IExpression)null);
+        attachment.offsetExpr = Xlate.get( element, "offset", (IExpression)null);
+        attachment.percentExpr = Xlate.get( element, "percent", (IExpression)null);
+        attachments.add( attachment);
+      }
+    }
   }
   
-  /**
-   * Create an attachment from the specified element.
-   * @param element The element describing the attachment.
-   * @return Returns the attachment.
-   */
-  private Attachment createAttachment( IModelObject element)
-  {
-    if ( element == null) return null;
-    
-    Attachment attachment = new Attachment();
-    attachment.expr = Xlate.get( element, "attach", thisExpr);
-    attachment.type = Type.valueOf( Xlate.get( element, "side", (String)null));
-    attachment.padExpr = Xlate.get( element, "pad", (IExpression)null);
-    
-    if ( element.getAttribute( "percent") != null)
-    {
-      attachment.proportional = true;
-      attachment.percentExpr = Xlate.get( element, "percent", (IExpression)null);
-    }
-    
-    return attachment;
-  }
-
   /* (non-Javadoc)
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
@@ -79,118 +68,98 @@ public class AttachAction extends GuardedAction
   {
     IModelObject element = context.getObject();
     if ( xidgetExpr != null) element = xidgetExpr.queryFirst( context);
-    if ( element == null) return;
     
     // get xidget for which attachments are being created
     IXidget xidget = (IXidget)element.getAttribute( "xidget");
     if ( xidget == null) return;
     
-    IWidgetFeature widget = xidget.getFeature( IWidgetFeature.class);
-    
-    IXidget parent = xidget.getParent();
-    IWidgetFeature container = (parent != null)? parent.getFeature( IWidgetFeature.class): null;
-    ILayoutFeature layout = (parent != null)? parent.getFeature( ILayoutFeature.class): xidget.getFeature( ILayoutFeature.class); 
-
-    // create nodes
-    if ( x0 != null) createNode( layout, context, Type.left, x0, container, xidget, widget);
-    if ( y0 != null) createNode( layout, context, Type.top, y0, container, xidget, widget);
-    if ( x1 != null) createNode( layout, context, Type.right, x1, container, xidget, widget);
-    if ( y1 != null) createNode( layout, context, Type.bottom, y1, container, xidget, widget);
-    if ( xc != null) createNode( layout, context, Type.horizontal_center, xc, container, xidget, widget);
-    if ( yc != null) createNode( layout, context, Type.vertical_center, yc, container, xidget, widget);
+    // create nodes for attachments
+    for( Attachment attachment: attachments)
+      createNodes( attachment, context, xidget);
   }
       
   /**
-   * Get the peer of the attachment defined by the specified expression.
-   * @param context The context.
-   * @param peerExpr The peer expression.
-   * @return Returns the peer of an attachment.
-   */
-  private IXidget getPeer( IContext context, IExpression peerExpr)
-  {
-    IModelObject element = peerExpr.queryFirst( context);
-    return (element != null)? (IXidget)element.getAttribute( "xidget"): null;
-  }
-  
-  /**
-   * Create an attachment for the specified widget.
-   * @param context The context.
-   * @param container The container.
-   * @param widget The widget.
+   * Attach anchors of the specified xidget based on the specified attachment.
    * @param attachment The attachment.
+   * @param context The context.
+   * @param xidget1 The xidget.
    */
-  private void createNode( ILayoutFeature layout, IContext context, Type type, Attachment attachment, IWidgetFeature container, IXidget xidget, IWidgetFeature widget)
+  private void createNodes( Attachment attachment, IContext context, IXidget xidget1)
   {
-    IXidget peer = getPeer( context, attachment.expr);
-    if ( peer == null) throw new XActionException( "Peer xidget of attachment not found: "+attachment.expr);
-
-    int pad = (attachment.padExpr != null)? (int)attachment.padExpr.evaluateNumber( context): 0;
-    float percent = (attachment.percentExpr != null)? (float)attachment.percentExpr.evaluateNumber( context): 0f;
+    StatefulContext context1 = new StatefulContext( context, xidget1.getConfig());
     
-    if ( xidget.getFeature( IComputeNodeFeature.class) == null) return;
-    if ( peer.getFeature( IComputeNodeFeature.class) == null) return;
-    
-    // attaching to parent container is different from attaching to peer
-    IWidgetFeature peerWidget = peer.getFeature( IWidgetFeature.class);
-    if ( peerWidget != container)
+    IXidget xidget2 = xidget1.getParent();
+    if ( attachment.xidgetExpr != null)
     {
-      IComputeNode node1 = xidget.getFeature( IComputeNodeFeature.class).getAnchor( type);
-      IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getAnchor( attachment.type);
-      if ( pad != 0)
-      {
-        node1.addDependency( new OffsetNode( node2, pad));
-      }
-      else
-      {
-        node1.addDependency( node2);
-      }
-      
-      // add node to layout
-      layout.addNode( node1);
+      IModelObject xidgetNode = attachment.xidgetExpr.queryFirst( context);
+      if ( xidgetNode == null) return;
+    
+      xidget2 = (IXidget)xidgetNode.getAttribute( "xidget");
+    }
+    
+    IComputeNode anchor1 = getComputeNode( xidget1, attachment.anchor1);
+    
+    // override all other dependencies with the new ones created here
+    anchor1.clearDependencies();
+    
+    IComputeNode anchor2 = getComputeNode( xidget2, attachment.anchor2);
+    
+    // must either have anchor or constant expression
+    if ( anchor2 == null && attachment.constantExpr == null) return;
+    
+    // cases
+    if ( attachment.constantExpr != null)
+    {
+      int constant = (int)attachment.constantExpr.evaluateNumber( context1);
+      anchor1.addDependency( new ConstantNode( constant));
+    }
+    else if ( attachment.percentExpr != null)
+    {
+      float percent = (float)attachment.percentExpr.evaluateNumber( context1);
+      int offset = (attachment.offsetExpr != null)? (int)attachment.offsetExpr.evaluateNumber( context1): 0;
+      anchor1.addDependency( new ProportionalNode( anchor2, percent, offset));
+    }
+    else if ( attachment.offsetExpr != null)
+    {
+      int offset = (int)attachment.offsetExpr.evaluateNumber( context1);
+      anchor1.addDependency( new OffsetNode( anchor2, offset));
     }
     else
     {
-      // change meaning of offsets when dealing with container
-      if ( attachment.type == Type.right || attachment.type == Type.bottom)
-      {
-        pad = -pad;
-        percent = 1 - percent;
-      }
-      
-      IComputeNode node1 = xidget.getFeature( IComputeNodeFeature.class).getAnchor( type);
-      if ( attachment.proportional)
-      {
-        // both x0 and x1 create a WidgetWidthNode (similarly for y-coordinate)
-        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getParentAnchor( attachment.type);
-        node1.addDependency( new ProportionalNode( node2, percent, pad));
-      }
-      else
-      {
-        IComputeNode node2 = peer.getFeature( IComputeNodeFeature.class).getParentAnchor( attachment.type);
-        node1.addDependency( new OffsetNode( node2, pad));
-      }
-      
-      // add node to layout
-      layout.addNode( node1);
+      anchor1.addDependency( anchor2);
     }
+
+    // always use the xidget in the context since xidget1 may be the container, itself
+    IXidget parent = (IXidget)context.getObject().getAttribute( "xidget");
+    ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
+    layoutFeature.addNode( anchor1);
+  }
+  
+  /**
+   * Returns the specified IComputeNode from the specified xidget.
+   * @param xidget The xidget.
+   * @param anchor The anchor type.
+   * @return Returns the specified IComputeNode from the specified xidget.
+   */
+  private static IComputeNode getComputeNode( IXidget xidget, Type anchor)
+  {
+    if ( xidget == null || anchor == null) return null;
+    IComputeNodeFeature computeNodeFeature = xidget.getFeature( IComputeNodeFeature.class);
+    return computeNodeFeature.getComputeNode( anchor);
   }
   
   final class Attachment
   {
-    Type type;
-    IExpression expr;
-    IExpression padExpr;
+    Type anchor1;
+    Type anchor2;
+    IExpression xidgetExpr;
+    IExpression offsetExpr;
     IExpression percentExpr;
-    boolean proportional;
+    IExpression constantExpr;
   }
 
   private final static IExpression thisExpr = XPath.createExpression( ".");
   
   private IExpression xidgetExpr;
-  private Attachment x0;
-  private Attachment y0;
-  private Attachment x1;
-  private Attachment y1;
-  private Attachment xc;
-  private Attachment yc;
+  private List<Attachment> attachments;
 }

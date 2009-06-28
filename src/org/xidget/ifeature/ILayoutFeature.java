@@ -5,9 +5,8 @@
 package org.xidget.ifeature;
 
 import java.util.List;
-import org.xidget.config.TagProcessor;
 import org.xidget.layout.IComputeNode;
-import org.xmodel.IModelObject;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An interface for the layout algorithm feature. This feature is responsible
@@ -18,21 +17,16 @@ import org.xmodel.IModelObject;
 public interface ILayoutFeature
 {
   /**
+   * Configure the layout from the layout script or attachment declarations.
+   * This method will reevaluate the configuration when called more than once.
+   */
+  public void configure();
+  
+  /**
    * Layout the children of the container.
+   * @param context The widget context.
    */
-  public void layout();
-  
-  /**
-   * Configure the layout.
-   * @param processor The tag processor.
-   * @param element The layout element.
-   */
-  public void configure( TagProcessor processor, IModelObject element);
-  
-  /**
-   * Reconfigure the layout from the current configuration element.
-   */
-  public void reconfigure();
+  public void layout( StatefulContext context);
   
   /**
    * Add a node to the layout.
@@ -47,13 +41,13 @@ public interface ILayoutFeature
   public void removeNode( IComputeNode node);
 
   /**
+   * Remove all nodes from the layout.
+   */
+  public void clearNodes();
+
+  /**
    * Returns the list of nodes.
    * @return Returns the list of nodes.
    */
   public List<IComputeNode> getNodes();
-  
-  /**
-   * Reset the layout and remove cached information.
-   */
-  public void reset();
 }

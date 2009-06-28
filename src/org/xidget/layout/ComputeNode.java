@@ -24,6 +24,22 @@ public abstract class ComputeNode implements IComputeNode
   }
   
   /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#removeDependency(org.xidget.layout.IComputeNode)
+   */
+  public void removeDependency( IComputeNode node)
+  {
+    if ( dependencies != null) dependencies.remove( node);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#clearDependencies()
+   */
+  public void clearDependencies()
+  {
+    if ( dependencies != null) dependencies.clear();
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getDepends()
    */
   public List<IComputeNode> getDependencies()
@@ -65,8 +81,10 @@ public abstract class ComputeNode implements IComputeNode
    */
   protected String printDependencies()
   {
+    if ( cycle) return "...";
     if ( dependencies == null || dependencies.size() == 0) return "";
     
+    cycle = true;
     StringBuilder sb = new StringBuilder();
     sb.append( " {");
     String sep = " ";
@@ -76,6 +94,7 @@ public abstract class ComputeNode implements IComputeNode
       sb.append( dependency);
     }
     sb.append( "}");
+    cycle = false;
     
     return sb.toString();
   }
@@ -106,4 +125,5 @@ public abstract class ComputeNode implements IComputeNode
 
   private List<IComputeNode> dependencies;
   private boolean hasValue;
+  private boolean cycle;
 }
