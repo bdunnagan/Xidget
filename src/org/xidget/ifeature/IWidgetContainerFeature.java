@@ -33,4 +33,28 @@ public interface IWidgetContainerFeature
    * layout changes after the container is visible.
    */
   public void relayout();
+  
+  /**
+   * Returns the width of the inside of the container.
+   * @return Returns the width of the inside of the container.
+   */
+  public int getWidth();
+
+  /**
+   * Set the width of the inside of the container.
+   * @param width The width.
+   */
+  public void setWidth( int width);
+  
+  /**
+   * Returns the height of the inside of the container.
+   * @return Returns the height of the inside of the container.
+   */
+  public int getHeight();
+  
+  /**
+   * Set the height of the inside of the container.
+   * @param height The height.
+   */
+  public void setHeight( int height);
 }

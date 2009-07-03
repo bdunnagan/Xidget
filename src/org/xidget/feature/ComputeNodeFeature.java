@@ -6,7 +6,11 @@ package org.xidget.feature;
 
 import org.xidget.IXidget;
 import org.xidget.ifeature.IComputeNodeFeature;
+import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xidget.ifeature.IWidgetFeature;
+import org.xidget.layout.ConstantNode;
+import org.xidget.layout.ContainerHeightNode;
+import org.xidget.layout.ContainerWidthNode;
 import org.xidget.layout.IComputeNode;
 import org.xidget.layout.WidgetBottomNode;
 import org.xidget.layout.WidgetHeightNode;
@@ -23,35 +27,64 @@ public class ComputeNodeFeature implements IComputeNodeFeature
   public ComputeNodeFeature( IXidget xidget)
   {
     this.xidget = xidget;
-    this.nodes = new IComputeNode[ Type.values().length];
+    this.childNodes = new IComputeNode[ Type.values().length];
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.ifeature.IComputeNodeFeature#getAnchor(org.xidget.ifeature.IComputeNodeFeature.Type)
+   * @see org.xidget.ifeature.IComputeNodeFeature#getComputeNode(org.xidget.ifeature.IComputeNodeFeature.Type, boolean)
    */
-  public IComputeNode getComputeNode( Type type)
+  public IComputeNode getComputeNode( Type type, boolean container)
   {
-    IWidgetFeature widget = xidget.getFeature( IWidgetFeature.class);
-    if ( widget == null) return null;
-    
-    int ordinal = type.ordinal();
-    IComputeNode node = nodes[ ordinal];
-    if ( node != null) return node;
-    
-    switch( type)
+    if ( container)
     {
-      case top: node = new WidgetTopNode( widget); break;
-      case left: node = new WidgetLeftNode( widget); break;
-      case right: node = new WidgetRightNode( widget); break;
-      case bottom: node = new WidgetBottomNode( widget); break;
-      case width: node = new WidgetWidthNode( widget); break;
-      case height: node = new WidgetHeightNode( widget); break;
+      IWidgetContainerFeature containerFeature = xidget.getFeature( IWidgetContainerFeature.class);
+      if ( containerFeature == null) return null;
+      
+      switch( type)
+      {
+        case top:
+        case left:
+          return new ConstantNode( 0); 
+          
+        case right:
+        case width:
+          if ( containerWidth == null) containerWidth = new ContainerWidthNode( containerFeature);
+          return containerWidth;
+          
+        case bottom:
+        case height: 
+          if ( containerHeight == null) containerHeight = new ContainerHeightNode( containerFeature);
+          return containerHeight;
+      }
     }
-
-    nodes[ type.ordinal()] = node;
-    return node;
+    else
+    {
+      IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+      if ( widgetFeature == null) return null;
+      
+      int ordinal = type.ordinal();
+      IComputeNode node = childNodes[ ordinal];
+      if ( node != null) return node;
+      
+      switch( type)
+      {
+        case top: node = new WidgetTopNode( widgetFeature); break;
+        case left: node = new WidgetLeftNode( widgetFeature); break;
+        case right: node = new WidgetRightNode( widgetFeature); break;
+        case bottom: node = new WidgetBottomNode( widgetFeature); break;
+        case width: node = new WidgetWidthNode( widgetFeature); break;
+        case height: node = new WidgetHeightNode( widgetFeature); break;
+      }
+      
+      childNodes[ type.ordinal()] = node;
+      return node;
+    }
+    
+    return null;
   }
 
   protected IXidget xidget;
-  protected IComputeNode[] nodes;
+  protected IComputeNode[] childNodes;
+  protected IComputeNode containerWidth;
+  protected IComputeNode containerHeight;
 }

@@ -23,23 +23,6 @@ public class WidgetBottomNode extends ComputeNode
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.layout.ComputeNode#hasValue()
-   */
-  @Override
-  public boolean hasValue()
-  {
-    if ( super.hasValue()) return true;
-    
-    //
-    // The bottom edge of a widget is always defined if its height is greater than zero.
-    // The converse is not true, however.  The value may still be defined if the height
-    // is zero in the case that the layout process computed a zero value for the height.
-    //
-    widget.getBounds( bounds);
-    return ( bounds.height > 0);
-  }
-
-  /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
   public float getValue()

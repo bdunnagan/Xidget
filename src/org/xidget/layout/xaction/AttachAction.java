@@ -54,7 +54,7 @@ public class AttachAction extends GuardedAction
       {
         Attachment attachment = new Attachment();
         attachment.anchor1 = type;
-        attachment.anchor2 = Type.valueOf( Xlate.get( element, "anchor", "none"));
+        attachment.anchor2 = Type.valueOf( Xlate.get( element, "anchor", element.getType()));
         attachment.xidgetExpr = Xlate.get( element, "attach", thisExpr);
         attachment.constantExpr = Xlate.get( element, "constant", (IExpression)null);
         attachment.offsetExpr = Xlate.get( element, "offset", (IExpression)null);
@@ -112,35 +112,14 @@ public class AttachAction extends GuardedAction
     // validation
     if ( xidget1 == xidget2)
       throw new XActionException( "Cannot make attachment to self: "+XmlIO.toString( getDocument().getRoot()));
-    
-    if ( xidget2 == parent && attachment.anchor2 != Type.none)
-      throw new XActionException( "Cannot specify anchor when attaching to container: "+XmlIO.toString( getDocument().getRoot()));
-    
-    // select appropriate anchor for container attachment
-    Type anchor2 = attachment.anchor2;
-    if ( xidget2 == parent)
-    {
-      switch( attachment.anchor1)
-      {
-        case top:
-        case bottom:
-          anchor2 = Type.height;
-          break;
-          
-        case left:
-        case right:
-          anchor2 = Type.width;
-          break;
-      }
-    }
-    
+        
     // make attachments
-    IComputeNode computeNode1 = getComputeNode( xidget1, attachment.anchor1);
+    IComputeNode computeNode1 = getComputeNode( xidget1, attachment.anchor1, xidget1 == parent);
     
     // override all other dependencies with the new ones created here
     computeNode1.clearDependencies();
     
-    IComputeNode computeNode2 = getComputeNode( xidget2, anchor2);
+    IComputeNode computeNode2 = getComputeNode( xidget2, attachment.anchor2, xidget2 == parent);
     
     // must either have anchor or constant expression
     if ( computeNode2 == null && attachment.constantExpr == null) return;
@@ -155,9 +134,6 @@ public class AttachAction extends GuardedAction
       if ( xidget2 != parent)
         throw new XActionException( "Constant attachments must be specified relative to the container: "+XmlIO.toString( getDocument().getRoot()));
       
-      if ( anchor2 != Type.width && anchor2 != Type.height)
-        throw new XActionException( "Constant attachment cannot be specified relative to an anchor: "+XmlIO.toString( getDocument().getRoot()));
-      
       int constant = (int)attachment.constantExpr.evaluateNumber( context1, 0);
       computeNode1.addDependency( new ConstantNode( constant));
     }
@@ -168,12 +144,6 @@ public class AttachAction extends GuardedAction
       
       if ( xidget2 != parent)
         throw new XActionException( "Proportional attachments must be specified relative to the container: "+XmlIO.toString( getDocument().getRoot()));
-      
-      if ( (attachment.anchor1 == Type.left || attachment.anchor1 == Type.right) && anchor2 != Type.width)
-        throw new XActionException( "Left or right attachment must be made proprotional to width of container: "+XmlIO.toString( getDocument().getRoot()));
-      
-      if ( (attachment.anchor1 == Type.top || attachment.anchor1 == Type.bottom) && anchor2 != Type.height)
-        throw new XActionException( "Top or bottom attachment must be made proprotional to height of container: "+XmlIO.toString( getDocument().getRoot()));
       
       float percent = (float)attachment.percentExpr.evaluateNumber( context1, 0);
       int offset = (attachment.offsetExpr != null)? (int)attachment.offsetExpr.evaluateNumber( context1, 0): 0;
@@ -195,9 +165,6 @@ public class AttachAction extends GuardedAction
     }
     else if ( attachment.offsetExpr != null)
     {
-      if ( xidget2 == parent && anchor2 != Type.width && anchor2 != Type.height)
-        throw new XActionException( "Offset attachment to container must specify width or height: "+XmlIO.toString( getDocument().getRoot()));
-      
       int offset = (int)attachment.offsetExpr.evaluateNumber( context1, 0);
       computeNode1.addDependency( new OffsetNode( computeNode2, offset));
     }
@@ -215,13 +182,15 @@ public class AttachAction extends GuardedAction
    * Returns the specified IComputeNode from the specified xidget.
    * @param xidget The xidget.
    * @param anchor The anchor type.
+   * @param container True if the node is for attaching to the inside of the container.
    * @return Returns the specified IComputeNode from the specified xidget.
    */
-  private static IComputeNode getComputeNode( IXidget xidget, Type anchor)
+  private static IComputeNode getComputeNode( IXidget xidget, Type anchor, boolean container)
   {
     if ( xidget == null || anchor == null) return null;
+    
     IComputeNodeFeature computeNodeFeature = xidget.getFeature( IComputeNodeFeature.class);
-    return computeNodeFeature.getComputeNode( anchor);
+    return computeNodeFeature.getComputeNode( anchor, container);
   }
   
   final class Attachment

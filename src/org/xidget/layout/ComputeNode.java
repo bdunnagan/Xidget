@@ -48,31 +48,14 @@ public abstract class ComputeNode implements IComputeNode
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.layout.IComputeNode#hasValue()
-   */
-  public boolean hasValue()
-  {
-    return hasValue;
-  }
-
-  /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#update()
    */
   public void update()
   {
-    hasValue = false;
-    for( IComputeNode dependency: getDependencies())
-    {
-      if ( dependency.hasValue())
-      {
-        hasValue = true;
-        setValue( dependency.getValue());
-        break;
-      }
-    }
+    if ( dependencies != null && dependencies.size() > 0)
+      setValue( dependencies.get( 0).getValue());
     
-    if ( hasValue()) Log.printf( "layout", "update: (%.1f) %s\n", getValue(), toString()); 
-    else Log.printf( "layout", "update: (?) %s\n", toString());
+    Log.printf( "layout", "update: (%.1f) %s\n", getValue(), toString()); 
   }
   
   /**
@@ -81,7 +64,7 @@ public abstract class ComputeNode implements IComputeNode
    */
   protected String printDependencies()
   {
-    if ( cycle) return "...";
+    if ( cycle) return " ...";
     if ( dependencies == null || dependencies.size() == 0) return "";
     
     cycle = true;
@@ -124,6 +107,5 @@ public abstract class ComputeNode implements IComputeNode
   }
 
   private List<IComputeNode> dependencies;
-  private boolean hasValue;
   private boolean cycle;
 }

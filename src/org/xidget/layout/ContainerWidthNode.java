@@ -4,31 +4,28 @@
  */
 package org.xidget.layout;
 
-import org.xidget.ifeature.IWidgetFeature;
-import org.xidget.ifeature.IWidgetFeature.Bounds;
+import org.xidget.ifeature.IWidgetContainerFeature;
 
 /**
- * An anchor which represents the width of a container.
+ * An anchor which is valued relative to the height of a container widget.
  */
-public class WidgetWidthNode extends ComputeNode
+public class ContainerWidthNode extends ComputeNode
 {
   /**
-   * Create an anchor valueed relative to its container widget.
+   * Create an anchor valued relative to the height of a container widget.
    * @param container The widget.
    */
-  public WidgetWidthNode( IWidgetFeature container)
+  public ContainerWidthNode( IWidgetContainerFeature container)
   {
     this.container = container;
-    this.bounds = new Bounds();
   }
-  
+
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()
    */
   public float getValue()
   {
-    container.getBounds( bounds);
-    return bounds.width;
+    return container.getWidth();
   }
 
   /* (non-Javadoc)
@@ -36,8 +33,7 @@ public class WidgetWidthNode extends ComputeNode
    */
   public void setValue( float value)
   {
-    container.getBounds( bounds);
-    container.setBounds( bounds.x, bounds.y, value, bounds.height);
+    container.setWidth( (int)Math.round( value));
   }
 
   /* (non-Javadoc)
@@ -47,11 +43,10 @@ public class WidgetWidthNode extends ComputeNode
   public String toString()
   {
     StringBuilder sb = new StringBuilder();
-    sb.append( container); sb.append( ":WIDTH");
+    sb.append( container); sb.append( ":C_WIDTH");
     sb.append( printDependencies());
     return sb.toString();
   }
 
-  private IWidgetFeature container;
-  private Bounds bounds;
+  private IWidgetContainerFeature container;
 }

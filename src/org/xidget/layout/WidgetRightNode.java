@@ -21,23 +21,6 @@ public class WidgetRightNode extends ComputeNode
     this.widget = widget;
     this.bounds = new Bounds();
   }
-  
-  /* (non-Javadoc)
-   * @see org.xidget.layout.ComputeNode#hasValue()
-   */
-  @Override
-  public boolean hasValue()
-  {
-    if ( super.hasValue()) return true;
-    
-    //
-    // The right edge of a widget is always defined if its width is greater than zero.
-    // The converse is not true, however.  The value may still be defined if the width
-    // is zero in the case that the layout process computed a zero value for the width.
-    //
-    widget.getBounds( bounds);
-    return ( bounds.width > 0);
-  }
 
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()

@@ -178,8 +178,8 @@ public final class Creator
     ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
     layoutFeature.clearNodes();
     IComputeNodeFeature computeNodeFeature = parent.getFeature( IComputeNodeFeature.class);
-    computeNodeFeature.getComputeNode( Type.width).clearDependencies();
-    computeNodeFeature.getComputeNode( Type.height).clearDependencies();
+    computeNodeFeature.getComputeNode( Type.width, true).clearDependencies();
+    computeNodeFeature.getComputeNode( Type.height, true).clearDependencies();
     
     // destroy
     destroy( xidget);

@@ -21,15 +21,6 @@ public class WidgetHeightNode extends ComputeNode
     this.container = container;
     this.bounds = new Bounds();
   }
-  
-  /* (non-Javadoc)
-   * @see org.xidget.layout.ComputeNode#hasValue()
-   */
-  @Override
-  public boolean hasValue()
-  {
-    return true;
-  }
 
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#getValue()

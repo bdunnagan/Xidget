@@ -41,12 +41,6 @@ public interface IComputeNode
   public void update();
 
   /**
-   * Returns true if the node has a defined value.
-   * @return Returns true if the node has a defined value.
-   */
-  public boolean hasValue();
-  
-  /**
    * Returns the value of this node.
    * @return Returns the value of this node.
    */
