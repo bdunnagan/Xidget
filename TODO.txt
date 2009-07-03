@@ -26,7 +26,9 @@ WYSIWYG
 2. undo/redo 
 
 
-DIALOG
- 
-  Parameters:
-    1. modality: 
+Problems:
+
+  Layout:
+  
+    1. No way to set layout variables (e.g. $marginLeft) per form.
+    2. JTabbedPane layout not working well.

@@ -11,7 +11,7 @@ import org.xidget.layout.IComputeNode;
  */
 public interface IComputeNodeFeature
 {
-  public enum Type { top, left, right, bottom, width, height};
+  public enum Type { top, left, right, bottom, width, height, none};
   
   /**
    * Returns the node of the specified type for this xidget as follows:

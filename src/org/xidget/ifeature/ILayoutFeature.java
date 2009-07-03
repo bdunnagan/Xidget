@@ -50,4 +50,10 @@ public interface ILayoutFeature
    * @return Returns the list of nodes.
    */
   public List<IComputeNode> getNodes();
+  
+  /**
+   * Returns all nodes including dependencies.
+   * @return Returns all nodes including dependencies.
+   */
+  public List<IComputeNode> getAllNodes();
 }

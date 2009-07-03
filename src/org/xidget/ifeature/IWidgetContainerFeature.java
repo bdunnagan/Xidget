@@ -33,10 +33,4 @@ public interface IWidgetContainerFeature
    * layout changes after the container is visible.
    */
   public void relayout();
-  
-  /**
-   * Returns the internal margins of the container (left, top, right, bottom).
-   * @return Returns the internal margins of the container.
-   */
-  public int[] getInsets();
 }

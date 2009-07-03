@@ -11,18 +11,12 @@ import java.util.Set;
 import java.util.Stack;
 import org.xidget.IXidget;
 import org.xidget.Log;
-import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.ILayoutFeature;
-import org.xidget.ifeature.IComputeNodeFeature.Type;
-import org.xidget.layout.ConstantNode;
 import org.xidget.layout.IComputeNode;
-import org.xidget.layout.OffsetNode;
-import org.xidget.layout.ProportionalNode;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xaction.XActionDocument;
-import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -104,6 +98,14 @@ public class AnchorLayoutFeature implements ILayoutFeature
     return nodes;
   }
 
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ILayoutFeature#getAllNodes()
+   */
+  public List<IComputeNode> getAllNodes()
+  {
+    return sorted;
+  }
+
   /**
    * Execute the layout script and sort the computation nodes.
    * @param context The widget context.
@@ -114,34 +116,41 @@ public class AnchorLayoutFeature implements ILayoutFeature
 
     IModelObject config = xidget.getConfig();
     
-    // get layout script element
-    IModelObject layout = config.getAttributeNode( "layout");
-    if ( layout == null) layout = config.getFirstChild( "layout");
-    
-    // bail if no layout
-    if ( layout == null) return;
-    
-    // get attachment declarations
-    List<IModelObject> attachments = layout.getChildren( "attachment");
-
-    // process attachments
-    if ( attachments.size() > 0)
+    // load script pointed to by layout attribute
+    ScriptAction script = null;
+    if ( config.getAttribute( "layout") != null)
     {
-      for( IModelObject attachment: attachments)
-        processAttachment( attachment);
+      IExpression layoutExpr = Xlate.get( config, "layout", (IExpression)null);
+      IModelObject element = layoutExpr.queryFirst( context);
+      if ( element != null)
+      {
+        XActionDocument document = new XActionDocument( element);
+        ClassLoader loader = getClass().getClassLoader();
+        document.setClassLoader( loader);
+        script = document.createScript();
+      }
     }
     
-    // execute layout script if defined
+    // load script in layout child
     else
     {
-      IExpression layoutExpr = Xlate.childGet( layout, "script", Xlate.get( layout, (IExpression)null));
-      IModelObject element = layoutExpr.queryFirst( context);
-      
-      XActionDocument document = new XActionDocument( element);
-      ClassLoader loader = getClass().getClassLoader();
-      document.setClassLoader( loader);
-      ScriptAction script = document.createScript();
-      
+      IModelObject layout = config.getFirstChild( "layout");
+      if ( layout != null)
+      {
+        IModelObject scriptNode = layout.getFirstChild( "script");
+        if ( scriptNode != null)
+        {
+          XActionDocument document = new XActionDocument( scriptNode);
+          ClassLoader loader = getClass().getClassLoader();
+          document.setClassLoader( loader);
+          script = document.createScript();
+        }
+      }
+    }
+    
+    // execute script
+    if ( script != null)
+    {
       StatefulContext scriptContext = new StatefulContext( context, xidget.getConfig());
       script.run( scriptContext);
     }
@@ -157,90 +166,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
         Log.printf( "layout", "%d: %s\n", i, sorted.get( i));
     }
   }
-  
-  /**
-   * Add IComputeNodes according to the specified attachment declaration.
-   * @param attachment The attachment declaration.
-   */
-  private void processAttachment( IModelObject attachment)
-  {
-    IModelObject config = xidget.getConfig();
-    StatefulContext context = new StatefulContext( config);
     
-    IExpression toExpr = Xlate.get( attachment, "to", (IExpression)containerExpr);
-    if ( toExpr == null)
-    {
-      Log.printf( "layout", "Missing 'to' expression in attachment declaration: %s\n", xidget);
-      return;
-    }
-    
-    IModelObject toNode = toExpr.queryFirst( context);
-    if ( toNode == null)
-    {
-      Log.printf( "layout", "Empty set returned by 'to' expression in attachment declaration: %s\n", xidget);
-      return;
-    }
-
-    IXidget toXidget = (IXidget)toNode.getAttribute( "xidget");
-    if ( toXidget == null)
-    {
-      Log.printf( "layout", "Node returned by 'to' expression in attachment declaration is not a xidget: %s\n", toNode);
-      return;
-    }
-    
-    IComputeNode fromComputeNode = getComputeNode( xidget, Type.valueOf( attachment.getType()));
-    
-    // clear dependencies
-    fromComputeNode.clearDependencies();
-    
-    // make sure this computation node is part of the layout
-    addNode( fromComputeNode);
-
-    // create intermediate computation nodes
-    IExpression constantExpr = Xlate.get( attachment, "constant", (IExpression)null);
-    IExpression offsetExpr = Xlate.get( attachment, "offset", (IExpression)null);
-    IExpression percentExpr = Xlate.get( attachment, "percent", (IExpression)null);
-
-    if ( constantExpr != null)
-    {
-      double constant = constantExpr.evaluateNumber( context);
-      fromComputeNode.addDependency( new ConstantNode( (int)Math.round( constant)));
-    }
-    else
-    {
-      IComputeNode toComputeNode = getComputeNode( toXidget, Type.valueOf( Xlate.get( attachment, "side", attachment.getType())));
-      
-      int offset = (int)Math.round( (offsetExpr != null)? offsetExpr.evaluateNumber( context): 0);
-      if ( percentExpr != null)
-      {
-        float percent = (float)percentExpr.evaluateNumber( context);
-        ProportionalNode percentNode = new ProportionalNode( toComputeNode, percent, offset);
-        fromComputeNode.addDependency( percentNode);
-      }
-      else if ( offset > 0)
-      {
-        OffsetNode offsetNode = new OffsetNode( toComputeNode, offset);
-        fromComputeNode.addDependency( offsetNode);
-      }
-      else
-      {
-        fromComputeNode.addDependency( toComputeNode);
-      }
-    }
-  }
-  
-  /**
-   * Returns the specified IComputeNode from the specified xidget.
-   * @param xidget The xidget.
-   * @param type The type of node.
-   * @return Returns the specified IComputeNode from the specified xidget.
-   */
-  public static IComputeNode getComputeNode( IXidget xidget, Type type)
-  {
-    IComputeNodeFeature feature = xidget.getFeature( IComputeNodeFeature.class);
-    return feature.getComputeNode( type);
-  }
-  
   /**
    * Dependency sort the specified anchors.
    * @param anchors The anchors.
@@ -279,8 +205,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
     return sorted;
   }
 
-  private final IExpression containerExpr = XPath.createExpression( "..");
-  
   private IXidget xidget;
   private List<IComputeNode> nodes;
   private List<IComputeNode> sorted;
