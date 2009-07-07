@@ -72,7 +72,7 @@ public class XGrabNode extends ComputeNode
     return sb.toString();
   }
 
-  private final static int tolerance = 3;
+  private final static int tolerance = 5;
   
   private float percent;
   private int offset;

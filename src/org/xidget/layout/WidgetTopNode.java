@@ -37,7 +37,7 @@ public class WidgetTopNode extends ComputeNode
   public void setValue( float value)
   {
     widget.getBounds( bounds);
-    widget.setBounds( bounds.x, value, bounds.width, bounds.height);
+    widget.setBounds( bounds.x, value, bounds.width, bounds.height - bounds.y + value);
   }
 
   /* (non-Javadoc)

@@ -11,6 +11,7 @@ import org.xidget.config.TagException;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.dialog.IDialogFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.ModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xaction.XActionDocument;
@@ -57,10 +58,15 @@ public class OpenDialogAction extends GuardedAction
     {
       throw new XActionException( "Unable to create dialog: "+config, e);
     }
-    
+        
     // find dialog context
     IModelObject element = contextExpr.queryFirst( context);
     StatefulContext dialogContext = new StatefulContext( context, element);
+    
+    // set xidget in dialog context
+    IModelObject holder = new ModelObject( "xidget");
+    holder.setValue( xidget);
+    dialogContext.set( "dialog", holder);
     
     // bind dialog
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
@@ -70,7 +76,7 @@ public class OpenDialogAction extends GuardedAction
     try
     {
       IDialogFeature dialogFeature = xidget.getFeature( IDialogFeature.class);
-      dialogFeature.open();
+      dialogFeature.open( dialogContext);
       if ( onClose != null) onClose.run( dialogContext);
     }
     finally
