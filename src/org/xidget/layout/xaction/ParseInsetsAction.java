@@ -4,6 +4,7 @@
  */
 package org.xidget.layout.xaction;
 
+import org.xidget.layout.Margins;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
@@ -36,11 +37,11 @@ public class ParseInsetsAction extends GuardedAction
   protected void doAction( IContext context)
   {
     String input = inputExpr.evaluateString( context);
-    String[] parts = input.split( ",");
-    if ( parts.length > 0) context.set( prefix+"l", parts[ 0]); else context.set( prefix+"l", "0");
-    if ( parts.length > 1) context.set( prefix+"t", parts[ 1]); else context.set( prefix+"t", "0");
-    if ( parts.length > 2) context.set( prefix+"r", parts[ 2]); else context.set( prefix+"r", "0");
-    if ( parts.length > 3) context.set( prefix+"b", parts[ 3]); else context.set( prefix+"b", "0");
+    Margins margins = new Margins( input);
+    context.set( prefix+"l", margins.x0);
+    context.set( prefix+"t", margins.y0);
+    context.set( prefix+"r", margins.x1);
+    context.set( prefix+"b", margins.y1);
   }
 
   private String prefix;

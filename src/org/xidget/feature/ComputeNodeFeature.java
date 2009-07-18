@@ -122,8 +122,9 @@ public class ComputeNodeFeature implements IComputeNodeFeature
         case width:
           if ( outsideWidth == null)
           {
-            IComputeNode width = new SubtractNode( getComputeNode( Type.right, false), getComputeNode( Type.left, false));
             outsideWidth = new WidgetHandle( getName( xidget, type, container), 0);
+            
+            IComputeNode width = new SubtractNode( getComputeNode( Type.right, false), getComputeNode( Type.left, false));
             outsideWidth.addDependency( width);
             
             IComputeNode insideWidth = getComputeNode( Type.width, true);
@@ -134,8 +135,9 @@ public class ComputeNodeFeature implements IComputeNodeFeature
         case height:
           if ( outsideHeight == null)
           {
-            IComputeNode height = new SubtractNode( getComputeNode( Type.bottom, false), getComputeNode( Type.top, false));
             outsideHeight = new WidgetHandle( getName( xidget, type, container), 0);
+            
+            IComputeNode height = new SubtractNode( getComputeNode( Type.bottom, false), getComputeNode( Type.top, false));
             outsideHeight.addDependency( height);
             
             IComputeNode insideHeight = getComputeNode( Type.height, true);
