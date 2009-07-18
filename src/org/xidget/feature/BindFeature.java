@@ -120,6 +120,8 @@ public class BindFeature implements IBindFeature
   {
     Log.printf( "xidget", "unbind: %s with %s\n", xidget, context);
     
+    if ( !contexts.remove( context)) return;
+    
     // call onClose script
     IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
     if ( scriptFeature != null) scriptFeature.runScript( "onClose", context);
@@ -153,9 +155,6 @@ public class BindFeature implements IBindFeature
           widgetContextFeature.removeAssociation( widget);
       }
     }    
-    
-    // remove context from list
-    contexts.remove( context);
   }
   
   /* (non-Javadoc)
@@ -164,6 +163,15 @@ public class BindFeature implements IBindFeature
   public List<StatefulContext> getBoundContexts()
   {
     return contexts;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.IBindFeature#getBoundContext()
+   */
+  public StatefulContext getBoundContext()
+  {
+    if ( contexts.size() > 1) throw new IllegalStateException( "More than one context is bound to: "+xidget);
+    return (contexts.size() > 0)? contexts.get( 0): null;
   }
 
   protected IXidget xidget;

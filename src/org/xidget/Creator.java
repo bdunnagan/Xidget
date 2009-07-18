@@ -16,15 +16,14 @@ import org.xidget.binding.LabelBindingRule;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
 import org.xidget.binding.SkipTagHandler;
+import org.xidget.binding.SourceTagHandler;
 import org.xidget.binding.TitleBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
-import org.xidget.binding.button.ButtonBindingRule;
 import org.xidget.binding.table.ColumnTitleBindingRule;
 import org.xidget.binding.table.RowSetBindingRule;
 import org.xidget.binding.table.SubTableTagHandler;
 import org.xidget.binding.text.EditableBindingRule;
-import org.xidget.binding.text.TextBindingRule;
 import org.xidget.binding.tree.SubTreeTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
@@ -67,8 +66,7 @@ public final class Creator
     processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new SelectionTagHandler());
-    processor.addHandler( "source", new BindingTagHandler( new TextBindingRule()));
-    processor.addHandler( "source", new BindingTagHandler( new ButtonBindingRule()));
+    processor.addHandler( "source", new SourceTagHandler());
     processor.addHandler( "title", new BindingTagHandler( new TitleBindingRule()));
     processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
@@ -126,11 +124,14 @@ public final class Creator
     Log.printf( "perf", "build: %3.2fms\n", (t2-t1)/1000000f);
     
     // bind the xidget
-    IBindFeature bindFeature = xidgets.get( 0).getFeature( IBindFeature.class);
-    bindFeature.bind( (StatefulContext)context);
+    if ( bind)
+    {
+      IBindFeature bindFeature = xidgets.get( 0).getFeature( IBindFeature.class);
+      bindFeature.bind( (StatefulContext)context);
     
-    long t3 = System.nanoTime();
-    Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
+      long t3 = System.nanoTime();
+      Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
+    }
     
     return xidgets;
   }

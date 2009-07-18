@@ -60,7 +60,7 @@ public class OpenDialogAction extends GuardedAction
     }
         
     // find dialog context
-    IModelObject element = contextExpr.queryFirst( context);
+    IModelObject element = (contextExpr != null)? contextExpr.queryFirst( context): context.getObject();
     StatefulContext dialogContext = new StatefulContext( context, element);
     
     // set xidget in dialog context

@@ -48,4 +48,12 @@ public interface IBindFeature
    * @return Returns the list of currently bound contexts.
    */
   public List<StatefulContext> getBoundContexts();
+  
+  /**
+   * Returns the singular context that was bound. If more than one context has been
+   * bound then this method throws an exception. Most xidgets are only ever bound
+   * to one context. These xidgets have features that are dependent on this property.
+   * @return Returns null or the singular context that was bound.
+   */
+  public StatefulContext getBoundContext();
 }

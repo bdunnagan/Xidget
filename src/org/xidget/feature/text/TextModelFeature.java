@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.xidget.IXidget;
 import org.xidget.config.util.TextTransform;
+import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IErrorFeature;
+import org.xidget.ifeature.IOptionalNodeFeature;
 import org.xidget.ifeature.text.ITextModelFeature;
 import org.xidget.text.ITextValidator;
 import org.xmodel.IModelObject;
@@ -67,50 +69,56 @@ public class TextModelFeature implements ITextModelFeature
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.ifeature.ISourceFeature#getSource()
-   */
-  public IModelObject getSource()
-  {
-    return getSource( allChannel);
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.ISourceFeature#setSource(org.xmodel.IModelObject)
-   */
-  public void setSource( IModelObject node)
-  {
-    setSource( allChannel, node);
-  }
-
-  /* (non-Javadoc)
    * @see org.xidget.text.adapter.IModelTextAdapter#setText(java.lang.String, java.lang.String)
    */
   public void setText( String channelName, String text)
   {
     Channel channel = channels.get( channelName);
-    if ( channel != null && channel.source != null && !channel.updating) 
+    if ( channel != null && !channel.updating) 
     {
-      // transform
-      if ( channel.transform != null) 
-        text = channel.transform.transform( text);
-      
-      // validate
-      IErrorFeature errorFeature = xidget.getFeature( IErrorFeature.class);
-      if ( errorFeature != null && channel.validator != null)
+      //
+      // Create or delete optional nodes depending on whether text is empty.
+      // Note that the optional element is discarded without setting its value.
+      //
+      IOptionalNodeFeature optionalNodeFeature = xidget.getFeature( IOptionalNodeFeature.class);
+      if ( optionalNodeFeature != null)
       {
-        String error = channel.validator.validate( text);
-        if ( error != null) errorFeature.valueError( error);
+        IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+        if ( channel.source == null)
+        {
+          if ( text.length() > 0) optionalNodeFeature.createOptionalNodes( channelName, bindFeature.getBoundContext());
+        }
+        else if ( channel.source != null)
+        {
+          if ( text.length() == 0) optionalNodeFeature.deleteOptionalNodes( channelName, bindFeature.getBoundContext());
+        }
       }
       
-      // commit
-      try
+      // update
+      if ( channel.source != null)
       {
-        channel.updating = true;
-        channel.source.setValue( text);
-      }
-      finally
-      {
-        channel.updating = false;
+        // transform
+        if ( channel.transform != null) 
+          text = channel.transform.transform( text);
+        
+        // validate
+        IErrorFeature errorFeature = xidget.getFeature( IErrorFeature.class);
+        if ( errorFeature != null && channel.validator != null)
+        {
+          String error = channel.validator.validate( text);
+          if ( error != null) errorFeature.valueError( error);
+        }
+        
+        // commit
+        try
+        {
+          channel.updating = true;
+          channel.source.setValue( text);
+        }
+        finally
+        {
+          channel.updating = false;
+        }
       }
     }
   }

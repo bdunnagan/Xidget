@@ -4,7 +4,6 @@
  */
 package org.xidget.layout;
 
-
 /**
  * An IComputeNode which is a fixed offset from another node.
  */
@@ -17,38 +16,20 @@ public class OffsetNode extends ComputeNode
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.layout.IComputeNode#getValue()
-   */
-  public float getValue()
-  {
-    return value;
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.layout.IComputeNode#setValue(int)
+   * @see org.xidget.layout.ComputeNode#setValue(float)
    */
   public void setValue( float value)
   {
-    this.value = value + offset;
+    super.setValue( value + offset);
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.layout.ComputeNode#toString()
+   * @see java.lang.Object#toString()
    */
-  @Override
   public String toString()
   {
-    StringBuilder sb = new StringBuilder();
-    sb.append( "offset( "); sb.append( offset);
-    for( IComputeNode dependency: getDependencies())
-    {
-      sb.append( ", ");
-      sb.append( dependency);
-    }
-    sb.append( ")");
-    return sb.toString();
+    return String.format( "%d. (%s) %+d <- %s", getID(), printValue(), offset, printDependencies());
   }
-
+  
   private int offset;
-  private float value;
 }

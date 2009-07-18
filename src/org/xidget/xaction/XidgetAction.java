@@ -1,7 +1,10 @@
 package org.xidget.xaction;
 
+import java.util.List;
 import org.xidget.Creator;
+import org.xidget.IXidget;
 import org.xidget.config.TagException;
+import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
@@ -37,7 +40,12 @@ public class XidgetAction extends GuardedAction
     {
       StatefulContext inner = new StatefulContext( context, root);
       Creator creator = Creator.getInstance();
-      creator.create( inner, true);
+      List<IXidget> xidgets = creator.create( inner, true);
+      for( IXidget xidget: xidgets)
+      {
+        IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+        if ( widgetFeature != null) widgetFeature.setVisible( true);
+      }
     }
     catch( TagException e)
     {

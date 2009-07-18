@@ -40,6 +40,15 @@ public class Pair
     y = Integer.parseInt( parts[ 1].trim());    
   }
   
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString()
+  {
+    return String.format( "%d, %d", x, y);
+  }
+
   public int x;
   public int y;
 }

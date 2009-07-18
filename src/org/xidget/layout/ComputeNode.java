@@ -14,13 +14,26 @@ import org.xidget.Log;
  */
 public abstract class ComputeNode implements IComputeNode
 {
+  public ComputeNode()
+  {
+    id = ++sid;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#getID()
+   */
+  public int getID()
+  {
+    return id;
+  }
+
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#addDependency(org.xidget.layout.IComputeNode)
    */
   public void addDependency( IComputeNode node)
   {
     if ( dependencies == null) dependencies = new ArrayList<IComputeNode>( 1);
-    dependencies.add( 0, node);
+    if ( !dependencies.contains( node)) dependencies.add( 0, node);
   }
   
   /* (non-Javadoc)
@@ -48,14 +61,91 @@ public abstract class ComputeNode implements IComputeNode
   }
 
   /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#hasXHandle()
+   */
+  public boolean hasXHandle()
+  {
+    return false;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#hasYHandle()
+   */
+  public boolean hasYHandle()
+  {
+    return false;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#hasValue()
+   */
+  public boolean hasValue()
+  {
+    return hasValue || defaultValue != null;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#reset()
+   */
+  public void reset()
+  {
+    hasValue = false;
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#update()
    */
   public void update()
   {
-    if ( dependencies != null && dependencies.size() > 0)
-      setValue( dependencies.get( 0).getValue());
+    if ( !hasValue)
+    {
+      for( IComputeNode dependency: getDependencies())
+      {
+        if ( dependency.hasValue())
+        {
+          setValue( dependency.getValue());
+          break;
+        }
+      }
+    }
     
-    Log.printf( "layout", "update: (%.1f) %s\n", getValue(), toString()); 
+    Log.printf( "layout", "update: %s\n", toString()); 
+  }
+  
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#getValue()
+   */
+  public float getValue()
+  {
+    if ( hasValue) return value;
+    if ( defaultValue != null) return defaultValue;
+    return Float.MAX_VALUE;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#setValue(float)
+   */
+  public void setValue( float value)
+  {
+    this.value = value;
+    this.hasValue = true;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.layout.IComputeNode#setDefaultValue(java.lang.Float)
+   */
+  public void setDefaultValue( Float value)
+  {
+    this.defaultValue = value;
+  }
+
+  /**
+   * Print the value of the node or ? if not defined.
+   * @return Returns the value string.
+   */
+  protected String printValue()
+  {
+    return hasValue()? String.format( "%2.1f", getValue()): "?";
   }
   
   /**
@@ -64,48 +154,28 @@ public abstract class ComputeNode implements IComputeNode
    */
   protected String printDependencies()
   {
-    if ( cycle) return " ...";
     if ( dependencies == null || dependencies.size() == 0) return "";
     
+    if ( cycle) return " ...";
     cycle = true;
+    
     StringBuilder sb = new StringBuilder();
-    sb.append( " {");
-    String sep = " ";
     for( IComputeNode dependency: dependencies)
     {
-      sb.append( sep); sep = ", ";
-      sb.append( dependency);
+      if ( sb.length() > 0) sb.append( ", ");
+      sb.append( dependency.getID());
     }
-    sb.append( "}");
-    cycle = false;
     
+    cycle = false;
     return sb.toString();
   }
-  
-  /* (non-Javadoc)
-   * @see org.xidget.layout.IComputeNode#mouseGrab(int, int)
-   */
-  public Grab mouseGrab( int x, int y)
-  {
-    return Grab.none;
-  }
 
-  /* (non-Javadoc)
-   * @see org.xidget.layout.IComputeNode#move(float, float)
-   */
-  public void move( float x, float y)
-  {
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
-  @Override
-  public String toString()
-  {
-    return getClass().getSimpleName();
-  }
+  private static int sid = 1000;
 
   private List<IComputeNode> dependencies;
+  private boolean hasValue;
+  private float value;
+  private Float defaultValue;
+  private int id;
   private boolean cycle;
 }

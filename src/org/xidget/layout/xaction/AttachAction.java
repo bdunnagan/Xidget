@@ -10,12 +10,9 @@ import org.xidget.IXidget;
 import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IComputeNodeFeature.Type;
-import org.xidget.layout.ConstantNode;
+import org.xidget.layout.AnchorNode;
 import org.xidget.layout.IComputeNode;
 import org.xidget.layout.OffsetNode;
-import org.xidget.layout.ProportionalNode;
-import org.xidget.layout.XGrabNode;
-import org.xidget.layout.YGrabNode;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
@@ -134,8 +131,8 @@ public class AttachAction extends GuardedAction
       if ( xidget2 != parent)
         throw new XActionException( "Constant attachments must be specified relative to the container: "+XmlIO.toString( getDocument().getRoot()));
       
-      int constant = (int)attachment.constantExpr.evaluateNumber( context1, 0);
-      computeNode1.addDependency( new ConstantNode( constant));
+      float constant = (float)attachment.constantExpr.evaluateNumber( context1, 0);
+      computeNode1.setDefaultValue( constant);
     }
     else if ( attachment.percentExpr != null)
     {
@@ -148,20 +145,9 @@ public class AttachAction extends GuardedAction
       float percent = (float)attachment.percentExpr.evaluateNumber( context1, 0);
       int offset = (attachment.offsetExpr != null)? (int)attachment.offsetExpr.evaluateNumber( context1, 0): 0;
       
-      IComputeNode dependency = null;
-      if ( attachment.handleExpr != null && attachment.handleExpr.evaluateBoolean( context, false))
-      {
-        if ( attachment.anchor1 == Type.left || attachment.anchor1 == Type.right)
-          dependency = new XGrabNode( computeNode2, percent, offset);
-        else
-          dependency = new YGrabNode( computeNode2, percent, offset);
-      }
-      else
-      {
-        dependency = new ProportionalNode( computeNode2, percent, offset);
-      }
-      
-      computeNode1.addDependency( dependency);
+      AnchorNode anchor = new AnchorNode( xidget2, attachment.anchor1, percent, offset);
+      anchor.setHandle( attachment.handleExpr != null && attachment.handleExpr.evaluateBoolean( context, false));
+      computeNode1.addDependency( anchor);
     }
     else if ( attachment.offsetExpr != null)
     {

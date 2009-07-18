@@ -37,6 +37,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void configure()
   {
+    //TODO: rename this method???
     sorted = null;
   }
 
@@ -51,8 +52,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
     
     if ( sorted != null)
     {
-      for( IComputeNode node: sorted) 
-        node.update();
+      for( IComputeNode node: sorted) node.reset();
+      for( IComputeNode node: sorted) node.update();
     }
     
     Log.println( "layout", "");
@@ -188,12 +189,14 @@ public class AnchorLayoutFeature implements ILayoutFeature
         
         boolean found = false;
         for( IComputeNode depend: current.getDependencies())
+        {
           if ( !consumed.contains( depend))
           {
             found = true;
             stack.push( depend);
             consumed.add( depend);
           }
+        }
         
         if ( !found)
         {
@@ -202,6 +205,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
         }
       }
     }
+
     return sorted;
   }
 

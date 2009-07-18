@@ -36,8 +36,12 @@ public class Log
   {
     if ( debugs.contains( system))
     {
-      System.out.printf( "[%s] ", system.toUpperCase());
-      System.out.printf( format, objects);
+      String string = String.format( format, objects);
+      String[] lines = string.split( "\n");
+      for( String line: lines)
+      {
+        System.out.printf( "[%s] %s\n", system.toUpperCase(), line);
+      }
     }
   }
   
@@ -50,8 +54,11 @@ public class Log
   {
     if ( debugs.contains( system))
     {
-      System.out.printf( "[%s] ", system.toUpperCase());
-      System.out.println( message);
+      String[] lines = message.split( "\n");
+      for( String line: lines)
+      {
+        System.out.printf( "[%s] %s\n", system.toUpperCase(), line);
+      }
     }
   }
   

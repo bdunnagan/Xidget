@@ -5,6 +5,7 @@
 package org.xidget.ifeature;
 
 import org.xidget.IXidget;
+import org.xidget.layout.Margins;
 
 /**
  * An interface for layout and adding and removing widgets from the container represented by the
@@ -35,26 +36,8 @@ public interface IWidgetContainerFeature
   public void relayout();
   
   /**
-   * Returns the width of the inside of the container.
-   * @return Returns the width of the inside of the container.
+   * Returns the inside margins of the container.
+   * @return Returns the inside margins of the container.
    */
-  public int getWidth();
-
-  /**
-   * Set the width of the inside of the container.
-   * @param width The width.
-   */
-  public void setWidth( int width);
-  
-  /**
-   * Returns the height of the inside of the container.
-   * @return Returns the height of the inside of the container.
-   */
-  public int getHeight();
-  
-  /**
-   * Set the height of the inside of the container.
-   * @param height The height.
-   */
-  public void setHeight( int height);
+  public Margins getInsideMargins();
 }

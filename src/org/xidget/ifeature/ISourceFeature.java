@@ -19,18 +19,6 @@ import org.xmodel.IModelObject;
 public interface ISourceFeature
 {
   /**
-   * Set the default source node.
-   * @param node The source node.
-   */
-  public void setSource( IModelObject node);
-  
-  /**
-   * Get the default source node.
-   * @return Returns null or the default source node.
-   */
-  public IModelObject getSource();
-  
-  /**
    * Set the source node of the specified channel.
    * @param channel The source channel.
    * @param node The source node.
