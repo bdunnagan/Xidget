@@ -30,10 +30,8 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
-import org.xidget.ifeature.IComputeNodeFeature.Type;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -177,10 +175,7 @@ public final class Creator
     // reset parent layout
     IXidget parent = xidget.getParent();
     ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
-    layoutFeature.clearNodes();
-    IComputeNodeFeature computeNodeFeature = parent.getFeature( IComputeNodeFeature.class);
-    computeNodeFeature.getComputeNode( Type.width, true).clearDependencies();
-    computeNodeFeature.getComputeNode( Type.height, true).clearDependencies();
+    layoutFeature.configure();
     
     // destroy
     destroy( xidget);

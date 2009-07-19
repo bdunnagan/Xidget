@@ -4,6 +4,7 @@
  */
 package org.xidget.ifeature;
 
+import java.util.List;
 import org.xidget.layout.IComputeNode;
 
 /**
@@ -23,4 +24,12 @@ public interface IComputeNodeFeature
    * @return Returns null or the widget compute node of the specified type.
    */
   public IComputeNode getComputeNode( Type type, boolean container);
+  
+  /**
+   * Returns the list of nodes that have been requested. It is assumed that if a node is requested
+   * then the node should be included in the layout. This is helpful since some nodes may be created
+   * in hidden ways.
+   * @return Returns the list of nodes that have been requested.
+   */
+  public List<IComputeNode> getAccessedList();
 }

@@ -4,6 +4,8 @@
  */
 package org.xidget.feature;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.IWidgetContainerFeature;
@@ -67,16 +69,16 @@ public class ComputeNodeFeature implements IComputeNodeFeature
         case right:
           if ( insideX1 == null) 
           {
-            insideX1 = new WidgetHandle( getName( xidget, type, container), -margins.x1);
-            insideX1.addDependency( getComputeNode( Type.width, true));
+            insideX1 = new WidgetHandle( getName( xidget, type, container), 0);
+            insideX1.addDependency( new OffsetNode( getComputeNode( Type.width, true), -margins.x1));
           }
           return insideX1;
 
         case bottom:
           if ( insideY1 == null) 
           {
-            insideY1 = new WidgetHandle( getName( xidget, type, container), -margins.y1);
-            insideY1.addDependency( getComputeNode( Type.height, true));
+            insideY1 = new WidgetHandle( getName( xidget, type, container), 0);
+            insideY1.addDependency( new OffsetNode( getComputeNode( Type.height, true), -margins.y1));
           }
           return insideY1;
           
@@ -96,11 +98,19 @@ public class ComputeNodeFeature implements IComputeNodeFeature
       switch( type)
       {
         case top:
-          if ( outsideY0 == null) outsideY0 = new WidgetHandle( getName( xidget, type, container), 0);
+          if ( outsideY0 == null) 
+          {
+            outsideY0 = new WidgetHandle( getName( xidget, type, container), 0);
+            outsideY0.addDependency( new SubtractNode( getComputeNode( Type.bottom, false), getComputeNode( Type.height, false)));
+          }
           return outsideY0;
           
         case left:
-          if ( outsideX0 == null) outsideX0 = new WidgetHandle( getName( xidget, type, container), 0);
+          if ( outsideX0 == null) 
+          {
+            outsideX0 = new WidgetHandle( getName( xidget, type, container), 0);
+            outsideX0.addDependency( new SubtractNode( getComputeNode( Type.right, false), getComputeNode( Type.width, false)));
+          }
           return outsideX0;
           
         case right:
@@ -126,9 +136,6 @@ public class ComputeNodeFeature implements IComputeNodeFeature
             
             IComputeNode width = new SubtractNode( getComputeNode( Type.right, false), getComputeNode( Type.left, false));
             outsideWidth.addDependency( width);
-            
-            IComputeNode insideWidth = getComputeNode( Type.width, true);
-            outsideWidth.addDependency( new OffsetNode( insideWidth, margins.x0 + margins.x1));
           }
           return outsideWidth;
           
@@ -139,15 +146,36 @@ public class ComputeNodeFeature implements IComputeNodeFeature
             
             IComputeNode height = new SubtractNode( getComputeNode( Type.bottom, false), getComputeNode( Type.top, false));
             outsideHeight.addDependency( height);
-            
-            IComputeNode insideHeight = getComputeNode( Type.height, true);
-            outsideHeight.addDependency( new OffsetNode( insideHeight, margins.y0 + margins.y1));
           }
           return outsideHeight;
           
         default:     return null;
       }
     }
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.IComputeNodeFeature#getAccessedList()
+   */
+  public List<IComputeNode> getAccessedList()
+  {
+    List<IComputeNode> nodes = new ArrayList<IComputeNode>( 12);
+    
+    if ( insideX0 != null) nodes.add( insideX0);
+    if ( insideY0 != null) nodes.add( insideY0);
+    if ( insideX1 != null) nodes.add( insideX1);
+    if ( insideY1 != null) nodes.add( insideY1);
+    if ( insideWidth != null) nodes.add( insideWidth);
+    if ( insideHeight != null) nodes.add( insideHeight);
+    
+    if ( outsideX0 != null) nodes.add( outsideX0);
+    if ( outsideY0 != null) nodes.add( outsideY0);
+    if ( outsideX1 != null) nodes.add( outsideX1);
+    if ( outsideY1 != null) nodes.add( outsideY1);
+    if ( outsideWidth != null) nodes.add( outsideWidth);
+    if ( outsideHeight != null) nodes.add( outsideHeight);
+    
+    return nodes;
   }
 
   protected IXidget xidget;

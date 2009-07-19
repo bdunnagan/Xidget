@@ -39,14 +39,12 @@ public class ChoicesTagHandler extends AbstractTagHandler
     IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
     if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
+    //
+    // This tag handler does not handle statically defined choices. So there is nothing to do if the
+    // element has no children (no static choices).  Static choices are handled in the IWidgetCreationFeature.
+    //
     IXidget xidget = xidgetFeature.getXidget();
-    if ( element.getNumberOfChildren() > 0)
-    {
-      IChoiceListFeature feature = xidget.getFeature( IChoiceListFeature.class);
-      for( IModelObject child: element.getChildren())
-        feature.addChoice( Xlate.get( child, ""));
-    }
-    else
+    if ( element.getNumberOfChildren() == 0)
     {
       // create expression
       String xpath = Xlate.get( element, "");

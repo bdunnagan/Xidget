@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IComputeNodeFeature;
-import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IComputeNodeFeature.Type;
 import org.xidget.layout.AnchorNode;
 import org.xidget.layout.IComputeNode;
@@ -158,10 +157,6 @@ public class AttachAction extends GuardedAction
     {
       computeNode1.addDependency( computeNode2);
     }
-
-    // always use the xidget in the context since xidget1 may be the container, itself
-    ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
-    layoutFeature.addNode( computeNode1);
   }
   
   /**

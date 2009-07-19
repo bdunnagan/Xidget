@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.Stack;
 import org.xidget.IXidget;
 import org.xidget.Log;
+import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.layout.IComputeNode;
 import org.xmodel.IModelObject;
@@ -53,54 +54,21 @@ public class AnchorLayoutFeature implements ILayoutFeature
     if ( sorted != null)
     {
       for( IComputeNode node: sorted) node.reset();
+      
+      //
+      // Two passes gives circular dependencies a chance to resolve.
+      // This could also be accomplished with a better sorting algorithm.
+      //
+      for( IComputeNode node: sorted) node.update();
       for( IComputeNode node: sorted) node.update();
     }
     
     Log.println( "layout", "");
   }
   
-  /* (non-Javadoc)
-   * @see org.xidget.layout.ILayoutFeature#addNode(org.xidget.layout.IComputeNode)
-   */
-  public void addNode( IComputeNode node)
-  {
-    Log.printf( "layout", "Added: %s\n", node);
-    
-    // a node can only appear in the list once but the node dependencies may have changed
-    sorted = null;
-    if ( nodes == null) nodes = new ArrayList<IComputeNode>();
-    if ( !nodes.contains( node)) nodes.add( node);
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.ILayoutFeature#removeNode(org.xidget.layout.IComputeNode)
-   */
-  public void removeNode( IComputeNode node)
-  {
-    Log.printf( "layout", "Added: %s\n", node);
-    sorted = null;
-    if ( nodes != null) nodes.remove( node);
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.ILayoutFeature#clearNodes()
-   */
-  public void clearNodes()
-  {
-    sorted = null;
-    if ( nodes != null) nodes.clear();
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.ILayoutFeature#getNodes()
-   */
-  public List<IComputeNode> getNodes()
-  {
-    return nodes;
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.ILayoutFeature#getAllNodes()
+  /**
+   * Returns all nodes including dependencies.
+   * @return Returns all nodes including dependencies.
    */
   public List<IComputeNode> getAllNodes()
   {
@@ -154,6 +122,18 @@ public class AnchorLayoutFeature implements ILayoutFeature
     {
       StatefulContext scriptContext = new StatefulContext( context, xidget.getConfig());
       script.run( scriptContext);
+    }
+    
+    // add container nodes to the layout
+    nodes = new ArrayList<IComputeNode>();
+    IComputeNodeFeature computeNodeFeature = xidget.getFeature( IComputeNodeFeature.class);
+    nodes.addAll( computeNodeFeature.getAccessedList());
+    
+    // add nodes for children
+    for( IXidget child: xidget.getChildren())
+    {
+      computeNodeFeature = child.getFeature( IComputeNodeFeature.class);
+      nodes.addAll( computeNodeFeature.getAccessedList());
     }
     
     // create final node list

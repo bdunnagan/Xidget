@@ -51,11 +51,14 @@ public class SubtractNode extends ComputeNode
   @Override
   public void update()
   {
-    List<IComputeNode> nodes = getDependencies();
-    if ( nodes.get( 0).hasValue() && nodes.get( 1).hasValue())
-      setValue( nodes.get( 0).getValue() - nodes.get( 1).getValue());
-    
-    Log.printf( "layout", "update: %s\n", toString()); 
+    if ( !hasValue())
+    {
+      List<IComputeNode> nodes = getDependencies();
+      if ( nodes.get( 0).hasValue() && nodes.get( 1).hasValue())
+        setValue( nodes.get( 0).getValue() - nodes.get( 1).getValue());
+      
+      Log.printf( "layout", "update: %s\n", toString());
+    }
   }
 
   /* (non-Javadoc)

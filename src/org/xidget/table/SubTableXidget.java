@@ -23,7 +23,7 @@ public class SubTableXidget extends Xidget
   {
     rowSetFeature = new RowSetFeature( this);
     columnSetFeature = new ColumnSetFeature( this);
-    bindFeature = new BindFeature( this);
+    bindFeature = new BindFeature( this, new String[] { "text", "combo", "button"});
   }
   
   /* (non-Javadoc)

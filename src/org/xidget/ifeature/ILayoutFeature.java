@@ -4,8 +4,6 @@
  */
 package org.xidget.ifeature;
 
-import java.util.List;
-import org.xidget.layout.IComputeNode;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -27,33 +25,4 @@ public interface ILayoutFeature
    * @param context The widget context.
    */
   public void layout( StatefulContext context);
-  
-  /**
-   * Add a node to the layout.
-   * @param node The computation node.
-   */
-  public void addNode( IComputeNode node);
-  
-  /**
-   * Remove a node from the layout.
-   * @param node The node to be removed.
-   */
-  public void removeNode( IComputeNode node);
-
-  /**
-   * Remove all nodes from the layout.
-   */
-  public void clearNodes();
-
-  /**
-   * Returns the list of nodes.
-   * @return Returns the list of nodes.
-   */
-  public List<IComputeNode> getNodes();
-  
-  /**
-   * Returns all nodes including dependencies.
-   * @return Returns all nodes including dependencies.
-   */
-  public List<IComputeNode> getAllNodes();
 }

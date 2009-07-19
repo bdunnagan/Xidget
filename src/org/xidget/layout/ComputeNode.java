@@ -81,7 +81,7 @@ public abstract class ComputeNode implements IComputeNode
    */
   public boolean hasValue()
   {
-    return hasValue || defaultValue != null;
+    return hasValue || hasDefault;
   }
 
   /* (non-Javadoc)
@@ -107,9 +107,9 @@ public abstract class ComputeNode implements IComputeNode
           break;
         }
       }
+      
+      Log.printf( "layout", "update: %s\n", toString()); 
     }
-    
-    Log.printf( "layout", "update: %s\n", toString()); 
   }
   
   /* (non-Javadoc)
@@ -117,9 +117,7 @@ public abstract class ComputeNode implements IComputeNode
    */
   public float getValue()
   {
-    if ( hasValue) return value;
-    if ( defaultValue != null) return defaultValue;
-    return Float.MAX_VALUE;
+    return value;
   }
 
   /* (non-Javadoc)
@@ -136,7 +134,15 @@ public abstract class ComputeNode implements IComputeNode
    */
   public void setDefaultValue( Float value)
   {
-    this.defaultValue = value;
+    if ( value == null) 
+    {
+      hasDefault = false;
+    }
+    else
+    {
+      hasDefault = true;
+      setValue( value);
+    }
   }
 
   /**
@@ -174,8 +180,8 @@ public abstract class ComputeNode implements IComputeNode
 
   private List<IComputeNode> dependencies;
   private boolean hasValue;
+  private boolean hasDefault;
   private float value;
-  private Float defaultValue;
   private int id;
   private boolean cycle;
 }
