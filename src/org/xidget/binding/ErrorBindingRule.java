@@ -49,6 +49,7 @@ public class ErrorBindingRule implements IBindingRule
     @Override
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
+      // TODO: multiple error validators stomp on each other.  Need to take any error message if present.
       IErrorFeature feature = xidget.getFeature( IErrorFeature.class);
       if ( structure) feature.structureError( newValue); else feature.valueError( newValue);
     }
