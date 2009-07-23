@@ -1,11 +1,6 @@
-/*
- * Stonewall Networks, Inc.
- *
- *   Project: XXidgetPlugin
- *   Author:  bdunnagan
- *   Date:    May 5, 2005
- *
- * Copyright 2005.  Stonewall Networks, Inc.
+/**
+ * Xidget - UI Toolkit based on XModel
+ * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
 package org.xidget;
 
@@ -25,32 +20,34 @@ import org.xmodel.xpath.expression.IExpression.ResultType;
  * corresponding boolean expressions which define when the xidget should be bound.  The boolean
  * expressions are bound to the same context as the xidgets.
  */
-public class XidgetSwitch extends ExpressionListener
+public class ConfigurationSwitch<T> extends ExpressionListener
 {
-  public XidgetSwitch()
+  public ConfigurationSwitch( IListener<T> listener)
   {
-    cases = new HashMap<IExpression, IXidget>();
+    this.listener = listener;
+    cases = new HashMap<IExpression, T>();
     ignore = false;
-  }
-  
-  /* (non-Javadoc)
-   * @see dunnagan.bob.xmodel.ui.model.IConditionalXidget#setDefaultXidget(dunnagan.bob.xmodel.ui.model.ViewXidget)
-   */
-  public void setDefaultXidget( IXidget xidget)
-  {
-    defaultXidget = xidget;
   }
 
   /**
-   * Add a xidget to the switch.
-   * @param condition A boolean expression indicating when the xidget should be bound.
-   * @param xidget The xidget to be bound.
+   * Set the default configuration handler.
+   * @param handler Null or the default configuration handler.
    */
-  public void addCase( IExpression condition, IXidget xidget)
+  public void setDefaultHandler( T handler)
+  {
+    defaultHandler = handler;
+  }
+
+  /**
+   * Add a handler to the switch.
+   * @param condition A boolean expression indicating when the handler will be used.
+   * @param handler The handler associated with the configuration.
+   */
+  public void addCase( IExpression condition, T handler)
   {
     if ( condition.getType() != ResultType.BOOLEAN) 
-      throw new IllegalArgumentException( "XidgetSwitch expression is not boolean: "+condition);
-    cases.put( condition, xidget);
+      throw new IllegalArgumentException( "Expression is not boolean: "+condition);
+    cases.put( condition, handler);
   }
   
   /**
@@ -72,25 +69,25 @@ public class XidgetSwitch extends ExpressionListener
   }
   
   /**
-   * Returns the xidgets associated with all cases.
-   * @return Returns the xidgets associated with all cases.
+   * Returns the handlers associated with all cases.
+   * @return Returns the handlers associated with all cases.
    */
-  public List<IXidget> getXidgets()
+  public List<T> getHandlers()
   {
-    if ( defaultXidget != null)
+    if ( defaultHandler != null)
     {
-      List<IXidget> result = new ArrayList<IXidget>( cases.values());
-      result.add( 0, defaultXidget);
+      List<T> result = new ArrayList<T>( cases.values());
+      result.add( 0, defaultHandler);
       return result;
     }
     else
     {
-      return new ArrayList<IXidget>( cases.values());
+      return new ArrayList<T>( cases.values());
     }
   }
 
   /**
-   * Bind the switch. This will determine the matching case and bind it.
+   * Bind the switch and notify listeners of the matching case.
    * @param context The context.
    */
   public void bind( StatefulContext context)
@@ -101,18 +98,21 @@ public class XidgetSwitch extends ExpressionListener
       if ( condition == null)
       {
         bindAllCases( context);
-        if ( defaultXidget != null) defaultXidget.bind( context);
+        if ( defaultHandler != null)
+        {
+          listener.notifyMatch( context, defaultHandler);
+        }
       }
       else
       {
-        IXidget xidget = cases.get( condition);
-        xidget.bind( context);
+        T handler = cases.get( condition);
+        listener.notifyMatch( context, handler);
         bindCase( context, condition);
       }
     }
     catch( ExpressionException e)
     {
-      Log.printf( "xidget", "Failed to evaluate condition for XidgetSwitch: %s\n", e);
+      Log.printf( "handler", "Failed to evaluate condition for ConditionalSwitch: %s\n", e);
     }
   }
 
@@ -128,18 +128,21 @@ public class XidgetSwitch extends ExpressionListener
       if ( condition == null)
       {
         unbindAllCases( context);
-        if ( defaultXidget != null) defaultXidget.unbind( context);
+        if ( defaultHandler != null)
+        {
+          listener.notifyMismatch( context, defaultHandler);
+        }
       }
       else
       {
-        IXidget xidget = cases.get( condition);
-        xidget.unbind( context);
+        T handler = cases.get( condition);
+        listener.notifyMismatch( context, handler);
         unbindCase( context, condition);
       }
     }
     catch( ExpressionException e)
     {
-      Log.printf( "xidget", "Failed to evaluate condition for XidgetSwitch: %s\n", e);
+      Log.printf( "handler", "Failed to evaluate condition for ConditionalSwitch: %s\n", e);
     }
   }
   
@@ -148,7 +151,7 @@ public class XidgetSwitch extends ExpressionListener
    * @param context THe context.
    * @return Returns the currently selected case.
    */
-  public IXidget getSelectedCase( IContext context)
+  public T getSelectedCase( IContext context)
   {
     try
     {
@@ -157,7 +160,7 @@ public class XidgetSwitch extends ExpressionListener
     }
     catch( ExpressionException e)
     {
-      Log.printf( "xidget", "Failed to evaluate condition for XidgetSwitch: %s\n", e);
+      Log.printf( "handler", "Failed to evaluate condition for ConditionalSwitch: %s\n", e);
     }
     return null;
   }
@@ -230,30 +233,30 @@ public class XidgetSwitch extends ExpressionListener
           unbindCase( context, otherCondition);
       
       // notify mismatch of default model
-      if ( defaultXidget != null)
+      if ( defaultHandler != null)
       {
         ignore = true;
-        defaultXidget.unbind( (StatefulContext)context);
+        listener.notifyMismatch( (StatefulContext)context, defaultHandler);
         ignore = false;
       }
       
       // notify match
-      IXidget xidget = cases.get( expression);
-      if ( xidget != null)
+      T handler = cases.get( expression);
+      if ( handler != null)
       {
         ignore = true;
-        xidget.bind( (StatefulContext)context);
+        listener.notifyMatch( (StatefulContext)context, handler);
         ignore = false;
       }
     }
     else
     {
       // notify mismatch 
-      IXidget xidget = cases.get( expression);
-      if ( xidget != null) 
+      T handler = cases.get( expression);
+      if ( handler != null) 
       {
         ignore = true;
-        xidget.unbind( (StatefulContext)context);
+        listener.notifyMismatch( (StatefulContext)context, handler);
         ignore = false;
       }
       
@@ -269,10 +272,10 @@ public class XidgetSwitch extends ExpressionListener
               bindCase( context, otherCondition);
           
           // notify match of default model
-          if ( defaultXidget != null)
+          if ( defaultHandler != null)
           {
             ignore = true;
-            defaultXidget.bind( (StatefulContext)context);
+            listener.notifyMatch( (StatefulContext)context, defaultHandler);
             ignore = false;
           }
         }
@@ -283,19 +286,43 @@ public class XidgetSwitch extends ExpressionListener
           
           // notify match
           ignore = true;
-          IXidget selectedXidget = cases.get( condition);
-          if ( selectedXidget != null) selectedXidget.bind( (StatefulContext)context);
+          T selectedHandler = cases.get( condition);
+          if ( selectedHandler != null) 
+          {
+            listener.notifyMatch( (StatefulContext)context, selectedHandler);
+          }
           ignore = false;
         }
       }
       catch( ExpressionException e)
       {
-        Log.printf( "xidget", "Unable to evaluate conditional model expression: %s\n", e);
+        Log.printf( "handler", "Unable to evaluate conditional model expression: %s\n", e);
       }
     }
   }
 
-  private IXidget defaultXidget;
-  private Map<IExpression, IXidget> cases;
+  /**
+   * An interface for receiving configuration switch notifications.
+   */
+  public interface IListener<T>
+  {
+    /**
+     * Called when the specified handler's case is matched.
+     * @param context The context.
+     * @param handler The handler.
+     */
+    public void notifyMatch( StatefulContext context, T handler);
+    
+    /**
+     * Called when the specified handler's case does not match.
+     * @param context The context.
+     * @param handler The handler.
+     */
+    public void notifyMismatch( StatefulContext context, T handler);
+  }
+
+  private IListener<T> listener;
+  private T defaultHandler;
+  private Map<IExpression, T> cases;
   private boolean ignore;
 }

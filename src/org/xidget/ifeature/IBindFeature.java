@@ -34,14 +34,16 @@ public interface IBindFeature
   /**
    * Bind to the specified context.
    * @param context The context.
+   * @param notify True if initial notification should be performed.
    */
-  public void bind( StatefulContext context);
+  public void bind( StatefulContext context, boolean notify);
   
   /**
    * Unbind from the specified context.
    * @param context The context.
+   * @param notify True if final notification should be performed.
    */
-  public void unbind( StatefulContext context);
+  public void unbind( StatefulContext context, boolean notify);
 
   /**
    * Returns the list of currently bound contexts.

@@ -70,7 +70,7 @@ public class OpenDialogAction extends GuardedAction
     
     // bind dialog
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    bindFeature.bind( dialogContext);
+    bindFeature.bind( dialogContext, true);
     
     // open dialog
     try
@@ -82,7 +82,7 @@ public class OpenDialogAction extends GuardedAction
     finally
     {
       // unbind dialog
-      bindFeature.unbind( dialogContext);
+      bindFeature.unbind( dialogContext, false);
       
       // destory
       Creator.getInstance().destroy( xidget);

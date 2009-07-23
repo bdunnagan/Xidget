@@ -20,43 +20,28 @@ public class XidgetBinding implements IXidgetBinding
    */
   public XidgetBinding( IExpression expression, IExpressionListener listener)
   {
-    this( expression, listener, Notify.bind);
-  }
-  
-  /**
-   * Create a binding and specify the notification scheme.
-   * @param expression The expression.
-   * @param listener The listener.
-   * @param notify The notification scheme.
-   */
-  public XidgetBinding( IExpression expression, IExpressionListener listener, Notify notify)
-  {
     this.expression = expression;
     this.listener = listener;
-    this.notify = notify;
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.IXidgetBinding#bind(org.xmodel.xpath.expression.StatefulContext)
+   * @see org.xidget.binding.IXidgetBinding#bind(org.xmodel.xpath.expression.StatefulContext, boolean)
    */
-  public void bind( StatefulContext context)
+  public void bind( StatefulContext context, boolean notify)
   {
-    if ( notify == Notify.bind || notify == Notify.both) 
-      expression.addNotifyListener( context, listener); 
+    if ( notify) expression.addNotifyListener( context, listener);
     else expression.addListener( context, listener);
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.IXidgetBinding#unbind(org.xmodel.xpath.expression.StatefulContext)
+   * @see org.xidget.binding.IXidgetBinding#unbind(org.xmodel.xpath.expression.StatefulContext, boolean)
    */
-  public void unbind( StatefulContext context)
+  public void unbind( StatefulContext context, boolean notify)
   {
-    if ( notify == Notify.unbind || notify == Notify.both) 
-      expression.removeNotifyListener( context, listener); 
-    else expression.removeListener( context, listener);
+    if ( notify) expression.removeNotifyListener( context, listener);
+    else expression.removeListener( context, listener); 
   }
   
-  private Notify notify;
   private IExpression expression;
   private IExpressionListener listener;
 }

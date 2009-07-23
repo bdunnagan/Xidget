@@ -13,18 +13,17 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public interface IXidgetBinding
 {
-  public enum Notify { bind, unbind, both, none};
-  
   /**
    * Bind the listener to the expression in the specified context.
    * @param context The context.
    * @param notify True if initial notification should be performed.
    */
-  public void bind( StatefulContext context);
+  public void bind( StatefulContext context, boolean notify);
   
   /**
    * Unbind the listener from the expression in the specified context.
    * @param context The context.
+   * @param notify True if final notification should be performed.
    */
-  public void unbind( StatefulContext context);
+  public void unbind( StatefulContext context, boolean notify);
 }

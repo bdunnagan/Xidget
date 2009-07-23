@@ -7,9 +7,11 @@ package org.xidget.feature.tree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.xidget.ConfigurationSwitch;
 import org.xidget.IXidget;
 import org.xidget.Log;
-import org.xidget.XidgetSwitch;
+import org.xidget.ifeature.IBindFeature;
+import org.xidget.ifeature.tree.IRowSetFeature;
 import org.xidget.ifeature.tree.ITreeExpandFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xidget.tree.Row;
@@ -104,7 +106,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     Log.printf( "xidget.tree", "%s: real expand: %s\n", hashCode(), row);
     
     // bind subtree to get real content
-    XidgetSwitch treeSwitch = getSwitch( row);
+    ConfigurationSwitch<IXidget> treeSwitch = getSwitch( row);
     treeSwitch.bind( row.getContext());
   }
   
@@ -120,7 +122,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     Log.printf( "xidget.tree", "%s: real collapse: %s\n", hashCode(), row);
     
     // unbind subtree to remove real content
-    XidgetSwitch treeSwitch = getSwitch( row);
+    ConfigurationSwitch<IXidget> treeSwitch = getSwitch( row);
     treeSwitch.unbind( row.getContext());
   }
   
@@ -180,7 +182,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     if ( parent != null && !parent.isExpanded()) return false;
     
     // 2. at least one case in xidget switch
-    XidgetSwitch treeSwitch = getSwitch( row);
+    ConfigurationSwitch<IXidget> treeSwitch = getSwitch( row);
     if ( treeSwitch.getCaseCount() == 0) return false;
     
     // 3. row object is dirty
@@ -273,11 +275,11 @@ public class TreeExpandFeature implements ITreeExpandFeature
    * @param row The row.
    * @return Returns the tree switch for the specified row.
    */
-  private XidgetSwitch getSwitch( Row row)
+  private ConfigurationSwitch<IXidget> getSwitch( Row row)
   {
     if ( row.getSwitch() == null)
     {
-      XidgetSwitch treeSwitch = new XidgetSwitch();
+      ConfigurationSwitch<IXidget> treeSwitch = new ConfigurationSwitch<IXidget>( switchListener);
       List<IXidget> xidgets = findTree( row);
       for( IXidget xidget: xidgets)
       {
@@ -290,6 +292,28 @@ public class TreeExpandFeature implements ITreeExpandFeature
     return row.getSwitch();
   }
 
+  private ConfigurationSwitch.IListener<IXidget> switchListener = new ConfigurationSwitch.IListener<IXidget>() {
+    public void notifyMatch( StatefulContext context, IXidget handler)
+    {
+      // bind xidget
+      IBindFeature bindFeature = handler.getFeature( IBindFeature.class);
+      bindFeature.bind( context, true);
+    }
+    public void notifyMismatch( StatefulContext context, IXidget handler)
+    {
+      // unbind xidget
+      IBindFeature bindFeature = handler.getFeature( IBindFeature.class);
+      bindFeature.unbind( context, false);
+  
+      // clear rows of all tables in tree
+      for( IXidget child: handler.getChildren())
+      {
+        IRowSetFeature rowSetFeature = child.getFeature( IRowSetFeature.class);
+        if ( rowSetFeature != null) rowSetFeature.setRows( context, Collections.<IModelObject>emptyList());
+      }
+    }
+  };
+  
   protected IXidget xidget;
   private StatefulContext dummy;
 }

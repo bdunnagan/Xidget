@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
-import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelAlgorithms;
-import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * A convenience base implementation of IXidget.
@@ -104,24 +102,6 @@ public abstract class Xidget implements IXidget
   {
     IWidgetCreationFeature feature = getFeature( IWidgetCreationFeature.class);
     if ( feature != null) feature.destroyWidgets();
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#bind(org.xmodel.xpath.expression.StatefulContext)
-   */
-  public final void bind( StatefulContext context)
-  {
-    IBindFeature bindFeature = getFeature( IBindFeature.class);
-    if ( bindFeature != null) bindFeature.bind( context);
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.IXidget#unbind(org.xmodel.xpath.expression.StatefulContext)
-   */
-  public final void unbind( StatefulContext context)
-  {
-    IBindFeature bindFeature = getFeature( IBindFeature.class);
-    if ( bindFeature != null) bindFeature.unbind( context);
   }
 
   /* (non-Javadoc)

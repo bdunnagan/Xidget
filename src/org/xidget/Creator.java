@@ -125,7 +125,7 @@ public final class Creator
     if ( bind)
     {
       IBindFeature bindFeature = xidgets.get( 0).getFeature( IBindFeature.class);
-      bindFeature.bind( (StatefulContext)context);
+      bindFeature.bind( (StatefulContext)context, true);
     
       long t3 = System.nanoTime();
       Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
@@ -143,7 +143,7 @@ public final class Creator
     // unbind all contexts
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
     StatefulContext[] contexts = bindFeature.getBoundContexts().toArray( new StatefulContext[ 0]);
-    for( StatefulContext context: contexts) bindFeature.unbind( (StatefulContext)context);
+    for( StatefulContext context: contexts) bindFeature.unbind( (StatefulContext)context, false);
     
     // destroy widget hierarchy
     IWidgetCreationFeature creationFeature = xidget.getFeature( IWidgetCreationFeature.class);
@@ -190,7 +190,7 @@ public final class Creator
     
     // bind the xidget
     bindFeature = xidget.getFeature( IBindFeature.class);
-    bindFeature.bind( (StatefulContext)context);
+    bindFeature.bind( (StatefulContext)context, true);
     
     return xidget;
   }

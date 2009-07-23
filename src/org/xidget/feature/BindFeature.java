@@ -66,9 +66,9 @@ public class BindFeature implements IBindFeature
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.feature.IBindFeature#bind(org.xmodel.xpath.expression.StatefulContext)
+   * @see org.xidget.ifeature.IBindFeature#bind(org.xmodel.xpath.expression.StatefulContext, boolean)
    */
-  public void bind( StatefulContext context)
+  public void bind( StatefulContext context, boolean notify)
   {
     Log.printf( "xidget", "bind: %s with %s\n", xidget, context);
     
@@ -95,7 +95,7 @@ public class BindFeature implements IBindFeature
     // internal bindings
     if ( bindBeforeChildren != null)
       for( IXidgetBinding binding: bindBeforeChildren)
-        binding.bind( context);
+        binding.bind( context, notify);
     
     // bind children
     for( IXidget child: xidget.getChildren())
@@ -103,20 +103,20 @@ public class BindFeature implements IBindFeature
       if ( ignore == null || !ignore.contains( child.getConfig().getType()))
       {
         IBindFeature bindFeature = child.getFeature( IBindFeature.class);
-        bindFeature.bind( context);
+        bindFeature.bind( context, notify);
       }
     }
     
     // internal bindings
     if ( bindAfterChildren != null)
       for( IXidgetBinding binding: bindAfterChildren)
-        binding.bind( context);
+        binding.bind( context, notify);
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.feature.IBindFeature#unbind(org.xmodel.xpath.expression.StatefulContext)
+   * @see org.xidget.ifeature.IBindFeature#unbind(org.xmodel.xpath.expression.StatefulContext, boolean)
    */
-  public void unbind( StatefulContext context)
+  public void unbind( StatefulContext context, boolean notify)
   {
     Log.printf( "xidget", "unbind: %s with %s\n", xidget, context);
     
@@ -129,19 +129,19 @@ public class BindFeature implements IBindFeature
     // internal bindings
     if ( bindBeforeChildren != null)
       for( IXidgetBinding binding: bindBeforeChildren)
-        binding.unbind( context);
+        binding.unbind( context, notify);
     
     // unbind children
     for( IXidget child: xidget.getChildren())
     {
       IBindFeature bindFeature = child.getFeature( IBindFeature.class);
-      bindFeature.unbind( context);
+      bindFeature.unbind( context, notify);
     }
 
     // internal bindings
     if ( bindAfterChildren != null)
       for( IXidgetBinding binding: bindAfterChildren)
-        binding.unbind( context);
+        binding.unbind( context, notify);
     
     // remove widget-context association
     IWidgetContextFeature widgetContextFeature = xidget.getFeature( IWidgetContextFeature.class);

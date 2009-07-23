@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.XidgetSwitch;
+import org.xidget.ConfigurationSwitch;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -175,7 +175,7 @@ public class Row
    * Set the tree switch for this row.
    * @param treeSwitch The tree switch.
    */
-  public void setSwitch( XidgetSwitch treeSwitch)
+  public void setSwitch( ConfigurationSwitch<IXidget> treeSwitch)
   {
     this.treeSwitch = treeSwitch;
   }
@@ -184,7 +184,7 @@ public class Row
    * Returns the tree switch for this row.
    * @return Returns null or the tree switch for this row.
    */
-  public XidgetSwitch getSwitch()
+  public ConfigurationSwitch<IXidget> getSwitch()
   {
     return treeSwitch;
   }
@@ -235,6 +235,6 @@ public class Row
   private List<List<Row>> tables;
   private StatefulContext context;
   private List<Cell> cells;
-  private XidgetSwitch treeSwitch;
+  private ConfigurationSwitch<IXidget> treeSwitch;
   private boolean expanded;
 }
