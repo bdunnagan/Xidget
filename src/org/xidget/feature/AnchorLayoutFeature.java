@@ -54,13 +54,12 @@ public class AnchorLayoutFeature implements ILayoutFeature
     if ( sorted != null)
     {
       for( IComputeNode node: sorted) node.reset();
+      for( IComputeNode node: sorted) node.update();
       
-      //
-      // Two passes gives circular dependencies a chance to resolve.
-      // This could also be accomplished with a better sorting algorithm.
-      //
-      for( IComputeNode node: sorted) node.update();
-      for( IComputeNode node: sorted) node.update();
+      // reevaluate all undefined nodes that may be able to be computed now
+      for( IComputeNode node: sorted)
+        if ( !node.hasValue())
+          node.update();
     }
     
     Log.println( "layout", "");
@@ -149,7 +148,9 @@ public class AnchorLayoutFeature implements ILayoutFeature
   }
     
   /**
-   * Dependency sort the specified anchors.
+   * Dependency sort the specified anchors. The algorithm must insure that when there
+   * is a dependency cycle, the list of nodes in the cycle appears twice in the output
+   * so that the layout can attempt to resolve it.
    * @param anchors The anchors.
    * @return Returns the sorted anchors.
    */

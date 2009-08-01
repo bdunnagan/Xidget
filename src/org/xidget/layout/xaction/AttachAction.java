@@ -111,10 +111,6 @@ public class AttachAction extends GuardedAction
         
     // make attachments
     IComputeNode computeNode1 = getComputeNode( xidget1, attachment.anchor1, xidget1 == parent);
-    
-    // override all other dependencies with the new ones created here
-    computeNode1.clearDependencies();
-    
     IComputeNode computeNode2 = getComputeNode( xidget2, attachment.anchor2, xidget2 == parent);
     
     // must either have anchor or constant expression

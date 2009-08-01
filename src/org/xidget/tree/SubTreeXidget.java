@@ -10,6 +10,7 @@ import org.xidget.feature.tree.TreeExpandFeature;
 import org.xidget.ifeature.IAsyncFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IErrorFeature;
+import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.tree.ITreeExpandFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
@@ -43,6 +44,7 @@ public class SubTreeXidget extends Xidget
     if ( clss == IWidgetFeature.class) return (T)getParent().getFeature( clss);
     if ( clss == IErrorFeature.class) return (T)getParent().getFeature( clss);
     if ( clss == IAsyncFeature.class) return (T)getParent().getFeature( clss);
+    if ( clss == IWidgetCreationFeature.class) return (T)getParent().getFeature( clss);
     
     return super.getFeature( clss);
   }

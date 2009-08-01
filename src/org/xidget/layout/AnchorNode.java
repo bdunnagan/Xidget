@@ -44,14 +44,12 @@ public class AnchorNode extends ComputeNode
     {
       case left:
       case right:
-      case width:
-        super.addDependency( feature.getComputeNode( Type.width, true));
+        super.addDependency( feature.getComputeNode( Type.right, true));
         break;
       
       case top:
       case bottom:
-      case height:
-        super.addDependency( feature.getComputeNode( Type.height, true));
+        super.addDependency( feature.getComputeNode( Type.bottom, true));
         break;
     }
   }
