@@ -6,6 +6,7 @@ package org.xidget.feature;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.Log;
@@ -14,6 +15,9 @@ import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IScriptFeature;
 import org.xidget.ifeature.IWidgetContextFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
+import org.xmodel.IModelObject;
+import org.xmodel.ModelObject;
+import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -74,6 +78,15 @@ public class BindFeature implements IBindFeature
     
     // add context to list
     contexts.add( context);
+    
+    // optionally assign xidget to variable
+    String variable = Xlate.get( xidget.getConfig(), "assign", (String)null);
+    if ( variable != null)
+    {
+      IModelObject holder = new ModelObject( "xidget");
+      holder.setValue( xidget);
+      context.set( variable, holder);
+    }
     
     // create widget-context association
     IWidgetContextFeature widgetContextFeature = xidget.getFeature( IWidgetContextFeature.class);
@@ -154,7 +167,11 @@ public class BindFeature implements IBindFeature
         for( Object widget: widgets)
           widgetContextFeature.removeAssociation( widget);
       }
-    }    
+    }
+    
+    // unassign variable
+    String variable = Xlate.get( xidget.getConfig(), "assign", (String)null);
+    if ( variable != null) context.set( variable, Collections.<IModelObject>emptyList());
   }
   
   /* (non-Javadoc)

@@ -14,12 +14,14 @@ import java.util.List;
 import org.xidget.Creator;
 import org.xidget.IToolkit;
 import org.xidget.IXidget;
+import org.xidget.IToolkit.FileDialogType;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xaction.XActionException;
+import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -41,12 +43,14 @@ public class OpenFileDialogAction extends GuardedAction
     super.configure( document);
     
     variable = Xlate.get( document.getRoot(), "assign", (String)null);
-    multiSelect = Xlate.get( document.getRoot(), "multi", false);
+    
+    typeExpr = document.getExpression( "type", true);
+    if ( typeExpr == null) typeExpr = XPath.createExpression( "'openOne'");
     
     windowExpr = document.getExpression( "window", true);
+    filterExpr = document.getExpression( "filter", true);
     descriptionExpr = document.getExpression( "description", true);
     targetExpr = document.getExpression( "target", true);
-    if ( targetExpr == null) targetExpr = document.getExpression();
   }
 
   /* (non-Javadoc)
@@ -60,13 +64,15 @@ public class OpenFileDialogAction extends GuardedAction
     IXidget xidget = (IXidget)windowNode.getValue();
     if ( xidget == null) throw new XActionException( "Window is undefined: "+windowExpr);
 
+    FileDialogType type = FileDialogType.valueOf( typeExpr.evaluateString( context));
     String description = (descriptionExpr != null)? descriptionExpr.evaluateString( context): "";
+
     
     // open dialog
     IToolkit toolkit = Creator.getInstance().getToolkit();
-    String[] paths = toolkit.openFileDialog( xidget, (StatefulContext)context, filterExpr, description, multiSelect);
+    String[] paths = toolkit.openFileDialog( xidget, (StatefulContext)context, filterExpr, description, type);
     
-    if ( multiSelect)
+    if ( type == FileDialogType.openMany)
     {
       List<IModelObject> entries = new ArrayList<IModelObject>();
       for( String path: paths)
@@ -114,6 +120,6 @@ public class OpenFileDialogAction extends GuardedAction
   private IExpression targetExpr;
   private IExpression filterExpr;
   private IExpression descriptionExpr;
+  private IExpression typeExpr;
   private String variable;
-  private boolean multiSelect;
 }
