@@ -17,7 +17,7 @@ import org.xmodel.xpath.expression.IExpression;
 /**
  * An XAction that calls the <code>Creator.rebuild</code> method for a specified xidget.
  */
-public class RebuildAction extends GuardedAction
+public class RebuildXidgetAction extends GuardedAction
 {
   /* (non-Javadoc)
    * @see org.xmodel.xaction.GuardedAction#configure(org.xmodel.xaction.XActionDocument)

@@ -12,6 +12,7 @@ import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.ErrorBindingRule;
+import org.xidget.binding.IconBindingRule;
 import org.xidget.binding.LabelBindingRule;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
@@ -32,8 +33,10 @@ import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
+import org.xidget.xpath.IsFolderFunction;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
+import org.xmodel.xpath.function.FunctionFactory;
 
 /**
  * A convenience class that provides methods for parsing a configuration file, 
@@ -60,6 +63,7 @@ public final class Creator
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "error", new BindingTagHandler( new ErrorBindingRule()));
+    processor.addHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
@@ -84,9 +88,8 @@ public final class Creator
     
     // processor.addHandler( "context", new BindingTagHandler( new ContextBindingRule()));
     
-    // toolkit configuration
-    if ( toolkit == null) throw new RuntimeException( "Platform toolkit not defined on Creator.");
-    toolkit.configure( processor);
+    // register functions
+    registerCustomXPaths();
   }
 
   /**
@@ -94,9 +97,27 @@ public final class Creator
    * if the toolkit is specified from a thread other than the UI thread.
    * @param toolkit The toolkit.
    */
-  public static void setToolkit( IToolkit toolkit)
+  public void setToolkit( IToolkit toolkit)
   {
-    Creator.toolkit = toolkit;
+    this.toolkit = toolkit; 
+    if ( toolkit != null) toolkit.configure( processor);
+  }
+
+  /**
+   * Returns the platofmr-specific tookit.
+   * @return Returns the platofmr-specific tookit.
+   */
+  public IToolkit getToolkit()
+  {
+    return toolkit;
+  }
+  
+  /**
+   * Register custom xpaths.
+   */
+  private void registerCustomXPaths()
+  {
+    FunctionFactory.getInstance().register( IsFolderFunction.name, IsFolderFunction.class);
   }
   
   /**
@@ -297,6 +318,6 @@ public final class Creator
   }
   
   private static Creator instance;
-  private static IToolkit toolkit;
+  private IToolkit toolkit;
   private TagProcessor processor;
 }
