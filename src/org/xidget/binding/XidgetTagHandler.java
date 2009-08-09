@@ -14,7 +14,9 @@ import org.xidget.config.ifeature.IXidgetFeature;
 import org.xmodel.IModelObject;
 
 /**
- * A base implementation of ITagHandler for xidgets that handles xidget parenting.
+ * An implementation of ITagHandler for processing xidget declarations. This handler will
+ * not process declarations that have a <i>when</i> attribute or element, as these
+ * declarations belong to a ConfigurationSwitch, which is lazily constructed.
  */
 public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeature
 {
@@ -33,6 +35,9 @@ public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeatu
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
+    // ignore all switched xidgets
+    if ( element.getAttribute( "when") != null || element.getFirstChild( "when") != null) return false;
+    
     try
     {
       // get parent xidget (before pushing this xidget on the stack)

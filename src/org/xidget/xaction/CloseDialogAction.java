@@ -22,14 +22,16 @@ public class CloseDialogAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     IModelObject holder = xidgetExpr.queryFirst( context);
-    if ( holder == null) return;
+    if ( holder == null) return null;
     
     IXidget xidget = (IXidget)holder.getValue();
     IDialogFeature feature = xidget.getFeature( IDialogFeature.class);
     feature.close( (StatefulContext)context);
+    
+    return null;
   }
   
   private final IExpression xidgetExpr = XPath.createExpression( "$dialog"); 

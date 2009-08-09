@@ -41,7 +41,7 @@ public class ChoicesTagHandler extends AbstractTagHandler
 
     //
     // This tag handler does not handle statically defined choices. So there is nothing to do if the
-    // element has no children (no static choices).  Static choices are handled in the IWidgetCreationFeature.
+    // element has children (static choices).  Static choices are handled in the IWidgetCreationFeature.
     //
     IXidget xidget = xidgetFeature.getXidget();
     if ( element.getNumberOfChildren() == 0)

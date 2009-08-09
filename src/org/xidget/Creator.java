@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import org.xidget.binding.BindingTagHandler;
+import org.xidget.binding.ChildrenBindingRule;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.ErrorBindingRule;
@@ -58,6 +59,7 @@ public final class Creator
     this.processor = new TagProcessor();
 
     // general
+    processor.addHandler( "children", new BindingTagHandler( new ChildrenBindingRule()));
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
@@ -65,14 +67,18 @@ public final class Creator
     processor.addHandler( "error", new BindingTagHandler( new ErrorBindingRule()));
     processor.addHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
-    processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new SelectionTagHandler());
     processor.addHandler( "source", new SourceTagHandler());
     processor.addHandler( "title", new BindingTagHandler( new TitleBindingRule()));
-    processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
+    
+    // attributes
+    processor.addAttributeHandler( "children", new BindingTagHandler( new ChildrenBindingRule()));
+    processor.addAttributeHandler( "image", new BindingTagHandler( new IconBindingRule()));
+    processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
+    processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));
     
     // skip
     processor.addHandler( "functions", new SkipTagHandler());
@@ -217,7 +223,7 @@ public final class Creator
   }
   
   /**
-   * Parse the specified xidget configuration. (Features are configured here)
+   * Parse the specified xidget configuration.
    * @param element The root of the configuration.
    * @return Returns the list of xidgets created.
    */

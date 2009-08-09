@@ -69,15 +69,11 @@ public class CommandAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     // get command stack, if it doesn't exist then just execute do-script
     IModelObject stack = stackExpr.queryFirst( context);
-    if ( stack == null)
-    {
-      doScript.run( context);
-      return;
-    }
+    if ( stack == null) return doScript.run( context);
       
     // remove commands that have been undone
     int index = Xlate.get( stack, "index", 0);
@@ -93,6 +89,7 @@ public class CommandAction extends GuardedAction
     copyVariables( context, command.redoContext);
     
     // install listeners on entities
+    Object[] result = null;
     if ( listenShallowExpr != null || listenDeepExpr != null)
     {
       changeSet = new ChangeSet();
@@ -103,7 +100,7 @@ public class CommandAction extends GuardedAction
       for( IModelObject entity: shallows) entity.addModelListener( shallowListener);
       
       // execute do script
-      doScript.run( context);
+      result = doScript.run( context);
       
       // remove listeners on entities
       for( IModelObject entity: deeps) deepListener.uninstall( entity);
@@ -112,7 +109,7 @@ public class CommandAction extends GuardedAction
     else
     {
       // execute do script
-      doScript.run( context);
+      result = doScript.run( context);
     }
     
     // create undo context and freeze leaf variables
@@ -127,6 +124,8 @@ public class CommandAction extends GuardedAction
       entry.addChild( new Reference( getDocument().getRoot()));
       stack.addChild( entry);
     }
+    
+    return result;
   }
   
   /**

@@ -4,6 +4,8 @@
  */
 package org.xidget;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -63,6 +65,19 @@ public class Log
   }
   
   /**
+   * Log an exception from the specified system.
+   * @param system The system.
+   * @param e The exception.
+   */
+  public void log( String system, Exception e)
+  {
+    StringWriter string = new StringWriter();
+    PrintWriter writer = new PrintWriter( string);
+    e.printStackTrace( writer);
+    System.err.println( string.toString());
+  }
+  
+  /**
    * Log for the specified system.
    * @param system The system.
    * @param format The format string.
@@ -81,6 +96,16 @@ public class Log
   public static void println( String system, String message)
   {
     getInstance().log( system, message);
+  }
+  
+  /**
+   * Log an exception for the specified system.
+   * @param system The system.
+   * @param e The exception.
+   */
+  public static void exception( String system, Exception e)
+  {
+    Log.getInstance().log( system, e);
   }
   
   /**

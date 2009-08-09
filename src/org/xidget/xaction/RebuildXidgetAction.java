@@ -33,7 +33,7 @@ public class RebuildXidgetAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     for( IModelObject element: xidgetExpr.query( context, null))
     {
@@ -47,6 +47,8 @@ public class RebuildXidgetAction extends GuardedAction
         throw new XActionException( "Unable to rebuild xidget: "+xidget, e);
       }
     }
+    
+    return null;
   }
   
   private IExpression xidgetExpr;

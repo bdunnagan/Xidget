@@ -14,6 +14,7 @@ import org.xidget.ifeature.IOptionalNodeFeature;
 import org.xidget.ifeature.text.ITextModelFeature;
 import org.xidget.text.ITextValidator;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IExpression;
 
 /**
@@ -21,9 +22,6 @@ import org.xmodel.xpath.expression.IExpression;
  */
 public class TextModelFeature implements ITextModelFeature
 {  
-  public final static String allChannel = "all";
-  public final static String selectedChannel = "selected";
-  
   public TextModelFeature( IXidget xidget)
   {
     this.xidget = xidget;
@@ -65,7 +63,11 @@ public class TextModelFeature implements ITextModelFeature
   public void setSource( String channelName, IModelObject node)
   {
     Channel channel = channels.get( channelName);
-    if ( channel != null) channel.source = node;
+    if ( channel != null) 
+    {
+      channel.source = node;
+      setText( channelName, Xlate.get( node, ""));
+    }
   }
 
   /* (non-Javadoc)

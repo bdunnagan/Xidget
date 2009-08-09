@@ -56,7 +56,7 @@ public class OpenFileDialogAction extends GuardedAction
   /* (non-Javadoc)
    * @see dunnagan.bob.xmodel.ui.swt.form.actions.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     IModelObject windowNode = windowExpr.queryFirst( context);
     if ( windowNode == null) throw new XActionException( "Window is undefined: "+windowExpr);
@@ -114,6 +114,8 @@ public class OpenFileDialogAction extends GuardedAction
         if ( scope != null) scope.set( variable, (paths.length > 0? paths[ 0]: ""));
       }
     }
+    
+    return null;
   }
 
   private IExpression windowExpr;

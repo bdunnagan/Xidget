@@ -31,7 +31,7 @@ public class RelayoutAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     for( IModelObject element: xidgetExpr.query( context, null))
     {
@@ -42,6 +42,8 @@ public class RelayoutAction extends GuardedAction
         if ( feature != null) feature.relayout();
       }
     }
+    
+    return null;
   }
   
   private IExpression xidgetExpr;

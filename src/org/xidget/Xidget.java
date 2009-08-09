@@ -28,9 +28,7 @@ public abstract class Xidget implements IXidget
    */
   private final void setParent( IXidget parent)
   {
-    if ( this.parent != null) this.parent.getChildren().remove( this);
     this.parent = parent;
-    if ( parent != null) parent.getChildren().add( this);
   }
 
   /* (non-Javadoc)
@@ -50,6 +48,33 @@ public abstract class Xidget implements IXidget
     return children;
   }
 
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#addChild(org.xidget.IXidget)
+   */
+  public void addChild( IXidget xidget)
+  {
+    ((Xidget)xidget).setParent( this);
+    getChildren().add( xidget);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#addChild(int, org.xidget.IXidget)
+   */
+  public void addChild( int index, IXidget xidget)
+  {
+    ((Xidget)xidget).setParent( this);
+    getChildren().add( index, xidget);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#removeChild(org.xidget.IXidget)
+   */
+  public void removeChild( IXidget xidget)
+  {
+    ((Xidget)xidget).setParent( null);
+    getChildren().remove( xidget);
+  }
+
   /**
    * Stubbed implementation for convenience.
    * @param processor The tag processor.
@@ -59,7 +84,7 @@ public abstract class Xidget implements IXidget
    */
   public final boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
   {
-    setParent( parent);
+    if ( parent != null) parent.addChild( this);
     
     // set xidget attribute and save config (bi-directional mapping)
     element.setAttribute( "xidget", this);

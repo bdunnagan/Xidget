@@ -29,18 +29,20 @@ public class RedoAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     IModelObject stack = stackExpr.queryFirst( context);
     int index = Xlate.get( stack, "index", 0) - 1;
-    if ( index < 0) return;
+    if ( index < 0) return null;
     
     IModelObject entry = stack.getChild( index);
-    if ( entry == null) return;
+    if ( entry == null) return null;
     
     Command command = (Command)entry.getAttribute( "instance");
     Xlate.set( stack, "index", index);
     command.redo();
+    
+    return null;
   }
   
   private IExpression stackExpr;

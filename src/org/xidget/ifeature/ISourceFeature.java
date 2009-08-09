@@ -18,6 +18,9 @@ import org.xmodel.IModelObject;
  */
 public interface ISourceFeature
 {
+  public final static String allChannel = "all";
+  public final static String selectedChannel = "selected";
+  
   /**
    * Set the source node of the specified channel.
    * @param channel The source channel.

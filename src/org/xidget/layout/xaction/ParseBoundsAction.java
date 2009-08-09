@@ -33,7 +33,7 @@ public class ParseBoundsAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     String input = inputExpr.evaluateString( context);
     String[] parts = input.split( ",");
@@ -41,6 +41,8 @@ public class ParseBoundsAction extends GuardedAction
     if ( parts.length > 1) context.set( prefix+"y", parts[ 1]); else context.set( prefix+"y", "0");
     if ( parts.length > 2) context.set( prefix+"w", parts[ 2]); else context.set( prefix+"w", "0");
     if ( parts.length > 3) context.set( prefix+"h", parts[ 3]); else context.set( prefix+"h", "0");
+    
+    return null;
   }
 
   private String prefix;

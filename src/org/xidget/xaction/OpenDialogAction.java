@@ -42,7 +42,7 @@ public class OpenDialogAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     IModelObject config = dialogExpr.queryFirst( context);
     if ( config == null) throw new XActionException( "Unable to open dialog because configuration not found: "+dialogExpr);
@@ -77,7 +77,7 @@ public class OpenDialogAction extends GuardedAction
     {
       IDialogFeature dialogFeature = xidget.getFeature( IDialogFeature.class);
       dialogFeature.open( dialogContext);
-      if ( onClose != null) onClose.run( dialogContext);
+      if ( onClose != null) return onClose.run( dialogContext);
     }
     finally
     {
@@ -87,6 +87,8 @@ public class OpenDialogAction extends GuardedAction
       // destory
       Creator.getInstance().destroy( xidget);
     }
+    
+    return null;
   }
   
   private IExpression dialogExpr;

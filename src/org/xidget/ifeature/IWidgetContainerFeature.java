@@ -21,6 +21,13 @@ public interface IWidgetContainerFeature
    * @param child The child.
    */
   public void addWidget( IXidget child);
+
+  /**
+   * Add the widget of the specified child to the container at the specified index.
+   * @param index The index of insertion.
+   * @param child The child.
+   */
+  public void addWidget( int index, IXidget child);
   
   /**
    * Remove the widget of the specified child to the container.

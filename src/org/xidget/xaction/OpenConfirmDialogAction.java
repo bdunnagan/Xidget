@@ -48,7 +48,7 @@ public class OpenConfirmDialogAction extends GuardedAction
   /* (non-Javadoc)
    * @see dunnagan.bob.xmodel.ui.swt.form.actions.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     IModelObject windowNode = windowExpr.queryFirst( context);
     if ( windowNode == null) throw new XActionException( "Window is undefined: "+windowExpr);
@@ -77,6 +77,8 @@ public class OpenConfirmDialogAction extends GuardedAction
       IVariableScope scope = context.getScope();
       if ( scope != null) scope.set( variable, confirmation.name());
     }
+    
+    return null;
   }
 
   private IExpression windowExpr;

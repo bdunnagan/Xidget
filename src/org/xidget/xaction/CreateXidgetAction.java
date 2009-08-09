@@ -37,7 +37,7 @@ public class CreateXidgetAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     IModelObject root = sourceExpr.queryFirst( context);
     if ( root == null) throw new XActionException( "Xidget not found at: "+sourceExpr);
@@ -72,6 +72,8 @@ public class CreateXidgetAction extends GuardedAction
     {
       throw new XActionException( e);
     }
+    
+    return null;
   }
   
   private IExpression sourceExpr;

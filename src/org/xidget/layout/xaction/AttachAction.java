@@ -65,7 +65,7 @@ public class AttachAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     // get container xidget
     IModelObject element = context.getObject();
@@ -75,15 +75,17 @@ public class AttachAction extends GuardedAction
     if ( xidgetExpr != null) element = xidgetExpr.queryFirst( context);
     
     // no child xidget found
-    if ( element == null) return;
+    if ( element == null) return null;
     
     // get xidget for which attachments are being created
     IXidget xidget = (IXidget)element.getAttribute( "xidget");
-    if ( xidget == null) return;
+    if ( xidget == null) return null;
     
     // create nodes for attachments
     for( Attachment attachment: attachments)
       createNodes( attachment, context, parent, xidget);
+    
+    return null;
   }
       
   /**

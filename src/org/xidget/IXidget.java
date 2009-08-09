@@ -27,6 +27,25 @@ public interface IXidget extends IFeatured
   public List<IXidget> getChildren();
   
   /**
+   * Add a child to this xidget.
+   * @param xidget The xidget.
+   */
+  public void addChild( IXidget xidget);
+  
+  /**
+   * Add a child to this xidget at the specified index.
+   * @param index The index of insertion.
+   * @param xidget The xidget.
+   */
+  public void addChild( int index, IXidget xidget);
+  
+  /**
+   * Remove a child xidget.
+   * @param xidget The xidget.
+   */
+  public void removeChild( IXidget xidget);
+  
+  /**
    * Called when the start tag of the configuration is encountered - before children.
    * @param processor The tag processor.
    * @param parent Null or the parent of this xidget.

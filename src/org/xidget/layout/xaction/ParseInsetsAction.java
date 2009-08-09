@@ -34,7 +34,7 @@ public class ParseInsetsAction extends GuardedAction
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
   @Override
-  protected void doAction( IContext context)
+  protected Object[] doAction( IContext context)
   {
     String input = inputExpr.evaluateString( context);
     Margins margins = new Margins( input);
@@ -42,6 +42,8 @@ public class ParseInsetsAction extends GuardedAction
     context.set( prefix+"t", margins.y0);
     context.set( prefix+"r", margins.x1);
     context.set( prefix+"b", margins.y1);
+    
+    return null;
   }
 
   private String prefix;
