@@ -14,6 +14,7 @@ import org.xidget.Log;
 import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.layout.IComputeNode;
+import org.xidget.layout.WidgetHandle;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.ScriptAction;
@@ -60,6 +61,11 @@ public class AnchorLayoutFeature implements ILayoutFeature
       for( IComputeNode node: sorted)
         if ( !node.hasValue())
           node.update();
+      
+      // warn about unconstrained nodes
+      for( IComputeNode node: sorted)
+        if ( !node.hasValue() && node instanceof WidgetHandle)
+          Log.printf( "layout", "Node is unconstrained: %s\n", node);
     }
     
     Log.println( "layout", "");
@@ -105,14 +111,10 @@ public class AnchorLayoutFeature implements ILayoutFeature
       IModelObject layout = config.getFirstChild( "layout");
       if ( layout != null)
       {
-        IModelObject scriptNode = layout.getFirstChild( "script");
-        if ( scriptNode != null)
-        {
-          XActionDocument document = new XActionDocument( scriptNode);
-          ClassLoader loader = getClass().getClassLoader();
-          document.setClassLoader( loader);
-          script = document.createScript();
-        }
+        XActionDocument document = new XActionDocument( layout);
+        ClassLoader loader = getClass().getClassLoader();
+        document.setClassLoader( loader);
+        script = document.createScript();
       }
     }
     

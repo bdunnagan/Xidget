@@ -34,7 +34,9 @@ import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
+import org.xidget.xpath.FileExistsFunction;
 import org.xidget.xpath.IsFolderFunction;
+import org.xidget.xpath.ValidateXPathFunction;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 import org.xmodel.xpath.function.FunctionFactory;
@@ -123,7 +125,9 @@ public final class Creator
    */
   private void registerCustomXPaths()
   {
+    FunctionFactory.getInstance().register( FileExistsFunction.name, FileExistsFunction.class);
     FunctionFactory.getInstance().register( IsFolderFunction.name, IsFolderFunction.class);
+    FunctionFactory.getInstance().register( ValidateXPathFunction.name, ValidateXPathFunction.class);
   }
   
   /**
@@ -202,7 +206,7 @@ public final class Creator
     // reset parent layout
     IXidget parent = xidget.getParent();
     ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
-    layoutFeature.configure();
+    if ( layoutFeature != null) layoutFeature.configure();
     
     // destroy
     destroy( xidget);

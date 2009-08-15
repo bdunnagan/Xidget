@@ -35,9 +35,6 @@ public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeatu
    */
   public boolean enter( TagProcessor processor, ITagHandler parent, IModelObject element) throws TagException
   {
-    // ignore all switched xidgets
-    if ( element.getAttribute( "when") != null || element.getFirstChild( "when") != null) return false;
-    
     try
     {
       // get parent xidget (before pushing this xidget on the stack)

@@ -30,7 +30,9 @@ public class ComputeNodeFeature implements IComputeNodeFeature
    */
   private static String getName( IXidget xidget, Type type, boolean inside)
   {
-    return String.format( "%s:%s:%s", xidget, type, inside? "inside": "outside");
+    String name = String.format( "%s:%s:%s", xidget, type, inside? "inside": "outside");
+    if ( name.length() > 60) name = name.substring( name.length() - 60);
+    return name;
   }
   
   /* (non-Javadoc)

@@ -219,7 +219,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     for( IXidget child: candidates)
     {
       IModelObject element = child.getConfig();
-      IExpression parentExpr = Xlate.get( element, "parent", XPath.createExpression( "*"));
+      IExpression parentExpr = Xlate.get( element, "table", XPath.createExpression( "table"));
       List<IModelObject> result = parentExpr.query( treeElement, null);
       if ( result.contains( tableElement)) trees.add( child); 
     }
@@ -283,8 +283,8 @@ public class TreeExpandFeature implements ITreeExpandFeature
       List<IXidget> xidgets = findTree( row);
       for( IXidget xidget: xidgets)
       {
-        IExpression condition = Xlate.get( xidget.getConfig(), "when", XPath.createExpression( "true()"));
-        if ( condition != null) treeSwitch.addCase( condition, xidget);
+        IExpression condition = Xlate.get( xidget.getConfig(), "when", (IExpression)null);
+        if ( condition != null) treeSwitch.addCase( condition, xidget); else treeSwitch.setDefaultHandler( xidget);
       }
       row.setSwitch( treeSwitch);
     }

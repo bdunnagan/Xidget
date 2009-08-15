@@ -40,6 +40,9 @@ public class EnableBindingRule implements IBindingRule
       this.xidget = xidget;
     }
     
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, boolean)
+     */
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
