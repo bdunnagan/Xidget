@@ -97,19 +97,15 @@ public abstract class ComputeNode implements IComputeNode
    */
   public void update()
   {
-    if ( !hasValue)
+    for( IComputeNode dependency: getDependencies())
     {
-      for( IComputeNode dependency: getDependencies())
+      if ( dependency.hasValue())
       {
-        if ( dependency.hasValue())
-        {
-          setValue( dependency.getValue());
-          break;
-        }
+        setValue( dependency.getValue());
+        break;
       }
-      
-      Log.printf( "layout", "update: %s\n", toString()); 
     }
+    Log.printf( "layout", "update: %s\n", toString()); 
   }
   
   /* (non-Javadoc)

@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import org.xidget.binding.BackgroundBindingRule;
 import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.ChildrenBindingRule;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.ErrorBindingRule;
+import org.xidget.binding.ForegroundBindingRule;
 import org.xidget.binding.IconBindingRule;
 import org.xidget.binding.LabelBindingRule;
 import org.xidget.binding.ScriptTagHandler;
@@ -61,12 +63,14 @@ public final class Creator
     this.processor = new TagProcessor();
 
     // general
+    processor.addHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addHandler( "children", new BindingTagHandler( new ChildrenBindingRule()));
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "error", new BindingTagHandler( new ErrorBindingRule()));
+    processor.addHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
@@ -77,7 +81,9 @@ public final class Creator
     processor.addHandler( "trigger", new TriggerTagHandler());
     
     // attributes
+    processor.addAttributeHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addAttributeHandler( "children", new BindingTagHandler( new ChildrenBindingRule()));
+    processor.addAttributeHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addAttributeHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));

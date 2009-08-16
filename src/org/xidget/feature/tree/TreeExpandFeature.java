@@ -183,7 +183,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
     
     // 2. at least one case in xidget switch
     ConfigurationSwitch<IXidget> treeSwitch = getSwitch( row);
-    if ( treeSwitch.getCaseCount() == 0) return false;
+    if ( treeSwitch.getHandlers().size() == 0) return false;
     
     // 3. row object is dirty
     //StatefulContext context = row.getContext();

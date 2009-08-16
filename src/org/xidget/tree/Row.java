@@ -163,6 +163,15 @@ public class Row
   }
   
   /**
+   * Returns all the cells in the row.
+   * @return Returns all the cells in the row.
+   */
+  public List<Cell> getCells()
+  {
+    return cells;
+  }
+  
+  /**
    * Returns the table to which this row belongs.
    * @return Returns the table to which this row belongs.
    */

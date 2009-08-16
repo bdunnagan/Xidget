@@ -29,7 +29,7 @@ import org.xmodel.xpath.expression.StatefulContext;
  * elements to the xidget which are children of the container to which this layout is being
  * applied.
  */
-public class AttachAction extends GuardedAction
+public class LayoutAttachAction extends GuardedAction
 {
   /* (non-Javadoc)
    * @see org.xmodel.xaction.GuardedAction#configure(org.xmodel.xaction.XActionDocument)

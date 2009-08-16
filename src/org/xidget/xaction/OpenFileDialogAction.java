@@ -10,6 +10,7 @@
 package org.xidget.xaction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.xidget.Creator;
 import org.xidget.IToolkit;
@@ -67,6 +68,12 @@ public class OpenFileDialogAction extends GuardedAction
     FileDialogType type = FileDialogType.valueOf( typeExpr.evaluateString( context));
     String description = (descriptionExpr != null)? descriptionExpr.evaluateString( context): "";
 
+    // initialize the variable
+    if ( variable != null)
+    {
+      IVariableScope scope = context.getScope();
+      if ( scope != null) scope.set( variable, Collections.<IModelObject>emptyList());
+    }
     
     // open dialog
     IToolkit toolkit = Creator.getInstance().getToolkit();

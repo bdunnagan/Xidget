@@ -37,7 +37,7 @@ public class ConfigurationSwitch<T> extends ExpressionListener
   {
     defaultHandler = handler;
   }
-
+  
   /**
    * Add a handler to the switch.
    * @param condition A boolean expression indicating when the handler will be used.

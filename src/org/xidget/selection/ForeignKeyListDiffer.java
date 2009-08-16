@@ -28,8 +28,8 @@ public class ForeignKeyListDiffer extends AbstractSelectionDiffer
    */
   public ForeignKeyListDiffer( String fromAttribute, String toAttribute)
   {
-    this.fromAttribute = fromAttribute;
-    this.toAttribute = toAttribute;
+    this.fromAttribute = (fromAttribute != null)? fromAttribute: "id";
+    this.toAttribute = (toAttribute != null)? toAttribute: "id";
   }
   
   /* (non-Javadoc)
@@ -38,10 +38,9 @@ public class ForeignKeyListDiffer extends AbstractSelectionDiffer
   @Override
   public IModelObject createReference( IModelObject node)
   {
-    Object id = (fromAttribute != null)? node.getAttribute( fromAttribute): node.getValue();
+    Object id = node.getAttribute( fromAttribute);
     IModelObject result = new ModelObject( node.getType());
-    if ( toAttribute == null) result.setValue( id);
-    else result.setAttribute( toAttribute, id);
+    result.setAttribute( toAttribute, id);
     return result;
   }
 
@@ -51,8 +50,7 @@ public class ForeignKeyListDiffer extends AbstractSelectionDiffer
   @Override
   public Object getIdentity( IModelObject node)
   {
-    if ( fromAttribute != null) return Xlate.get( node, fromAttribute, (String)null);
-    return Xlate.get( node, (String)null);
+    return Xlate.get( node, fromAttribute, (String)null);
   }
 
   /* (non-Javadoc)
@@ -64,23 +62,10 @@ public class ForeignKeyListDiffer extends AbstractSelectionDiffer
     IModelObject node1 = (IModelObject)object1;
     IModelObject node2 = (IModelObject)object2;
   
-    // foreign key is stored in text
-    if ( toAttribute == null)
-    {
-      Object value1 = node1.getValue();
-      Object value2 = node2.getValue();
-      if ( value1 == null || value2 == null) return value1 == value2;
-      return value1.equals( value2);
-    }
-    
-    // foreign key is stored in attribute
-    else
-    {
-      Object value1 = node1.getAttribute( toAttribute);
-      Object value2 = node2.getAttribute( toAttribute);
-      if ( value1 == null || value2 == null) return value1 == value2;
-      return value1.equals( value2);
-    }
+    Object value1 = node1.getAttribute( toAttribute);
+    Object value2 = node2.getAttribute( toAttribute);
+    if ( value1 == null || value2 == null) return value1 == value2;
+    return value1.equals( value2);
   }
 
   private String fromAttribute;

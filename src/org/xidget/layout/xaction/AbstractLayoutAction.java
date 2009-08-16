@@ -50,11 +50,19 @@ public abstract class AbstractLayoutAction extends GuardedAction
     Margins margins = new Margins( marginsExpr.evaluateString( context));
     int spacing = (int)spacingExpr.evaluateNumber( context);
     
+    // find children eligible for layout
+    List<IXidget> children = new ArrayList<IXidget>();
+    for( IXidget child: parent.getChildren())
+    {
+      if ( child.getFeature( IComputeNodeFeature.class) != null)
+        children.add( child);
+    }
+    
     // layout
     if ( xidgetsExpr == null)
     {
       if ( parent.getChildren().size() > 0)
-        layout( context, parent, parent.getChildren(), margins, spacing);
+        layout( context, parent, children, margins, spacing);
     }
     else
     {
@@ -63,7 +71,8 @@ public abstract class AbstractLayoutAction extends GuardedAction
       for( IModelObject node: elements)
       {
         IXidget xidget = (IXidget)node.getAttribute( "xidget");
-        if ( xidget != null) xidgets.add( xidget);
+        if ( xidget != null && xidget.getFeature( IComputeNodeFeature.class) != null) 
+          xidgets.add( xidget);
       }
       
       layout( context, parent, xidgets, margins, spacing);

@@ -14,7 +14,6 @@ import org.xidget.Log;
 import org.xidget.ifeature.IComputeNodeFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.layout.IComputeNode;
-import org.xidget.layout.WidgetHandle;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.ScriptAction;
@@ -56,16 +55,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     {
       for( IComputeNode node: sorted) node.reset();
       for( IComputeNode node: sorted) node.update();
-      
-      // reevaluate all undefined nodes that may be able to be computed now
-      for( IComputeNode node: sorted)
-        if ( !node.hasValue())
-          node.update();
-      
-      // warn about unconstrained nodes
-      for( IComputeNode node: sorted)
-        if ( !node.hasValue() && node instanceof WidgetHandle)
-          Log.printf( "layout", "Node is unconstrained: %s\n", node);
+      for( IComputeNode node: sorted) node.update();
     }
     
     Log.println( "layout", "");
@@ -134,7 +124,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     for( IXidget child: xidget.getChildren())
     {
       computeNodeFeature = child.getFeature( IComputeNodeFeature.class);
-      nodes.addAll( computeNodeFeature.getAccessedList());
+      if ( computeNodeFeature != null) nodes.addAll( computeNodeFeature.getAccessedList());
     }
     
     // create final node list

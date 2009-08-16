@@ -59,4 +59,16 @@ public interface IWidgetFeature
    * @param tooltip The tooltip.
    */
   public void setTooltip( String tooltip);
+  
+  /**
+   * Set the foreground color of the widget.
+   * @param color The foreground color.
+   */
+  public void setForeground( int color);
+  
+  /**
+   * Set the background color of the widget.
+   * @param color The background color.
+   */
+  public void setBackground( int color);
 }
