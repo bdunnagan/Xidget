@@ -27,7 +27,7 @@ public class LayoutFillYAction extends AbstractLayoutAction
     IComputeNode parentTop = getParentNode( parent, Type.top);
     IComputeNode parentBottom = getParentNode( parent, Type.bottom);
     
-    for( IXidget child: parent.getChildren())
+    for( IXidget child: children)
     {
       IComputeNode top = getComputeNode( child, Type.top);
       top.addDependency( new OffsetNode( parentTop, margins.y0));

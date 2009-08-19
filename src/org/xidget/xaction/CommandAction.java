@@ -2,14 +2,16 @@ package org.xidget.xaction;
 
 import java.util.Collections;
 import java.util.List;
-import org.xmodel.ChangeSet;
+import org.xmodel.IChangeSet;
 import org.xmodel.IModelListener;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelListener;
 import org.xmodel.ModelObject;
 import org.xmodel.Reference;
 import org.xmodel.Xlate;
+import org.xmodel.diff.RegularChangeSet;
 import org.xmodel.external.NonSyncingListener;
+import org.xmodel.listeners.UndoListener;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xaction.XActionDocument;
@@ -21,9 +23,9 @@ import org.xmodel.xpath.variable.IVariableScope;
 /**
  * An XAction which executes a script and creates a record of the changes performed by the script.
  * The record represents the command, and optionally its undo script.  The command is stored in 
- * a user-defined place called the <i>command stack</i>.  The command stack is convenient for 
+ * a user-defined place called the <i>command history</i>.  The command history is convenient for 
  * determining when a form is dirty, as well as for handling undo requests.  The UndoAction will
- * undo one command on a user-defined command stack.  The user does not need to be aware of the 
+ * undo one command on a user-defined command history.  The user does not need to be aware of the 
  * schema of the command.
  * <p>
  * The action has three sections:
@@ -40,7 +42,7 @@ import org.xmodel.xpath.variable.IVariableScope;
  * expressions define elements on which listeners will be installed to create an invertible ChangeSet.  The
  * expressions are given by the <i>listenDeep</i> and/or <i>listenShallow</i> attributes (or children).  If
  * the change set created by the listener is empty after the do-script is executed, then the command will not
- * be put on the stack.
+ * be put on the history.
  */
 public class CommandAction extends GuardedAction
 {
@@ -52,7 +54,7 @@ public class CommandAction extends GuardedAction
   {
     super.configure( document);
     
-    stackExpr = document.getExpression( "stack", true);
+    historyExpr = document.getExpression( "history", true);
     
     listenDeepExpr = document.getExpression( "listenDeep", true);
     listenShallowExpr = document.getExpression( "listenShallow", true);
@@ -71,15 +73,17 @@ public class CommandAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
-    // get command stack, if it doesn't exist then just execute do-script
-    IModelObject stack = stackExpr.queryFirst( context);
-    if ( stack == null) return doScript.run( context);
+    // get command history, if it doesn't exist then just execute do-script
+    IModelObject history = historyExpr.queryFirst( context);
+    if ( history == null) return doScript.run( context);
       
-    // remove commands that have been undone
-    int index = Xlate.get( stack, "index", 0);
-    for( int i=index; i>0; i--) stack.removeChild( stack.getNumberOfChildren() - 1);
-    Xlate.set( stack, "index", 0);
-    index = 0;
+    // update index
+    int index = Xlate.get( history, "index", 0);
+    Xlate.set( history, "index", index+1);
+    
+    // remove trailing commands in history
+    for( int i=index; i<history.getNumberOfChildren(); i++)
+      history.removeChild( index);
     
     // create new command
     Command command = new Command();
@@ -92,7 +96,10 @@ public class CommandAction extends GuardedAction
     Object[] result = null;
     if ( listenShallowExpr != null || listenDeepExpr != null)
     {
-      changeSet = new ChangeSet();
+      IChangeSet undoSet = new RegularChangeSet();
+      IChangeSet redoSet = new RegularChangeSet();
+      command.setChangeSets( undoSet, redoSet);
+      undoListener = new UndoListener( undoSet, redoSet);
 
       List<IModelObject> deeps = (listenDeepExpr != null)? listenDeepExpr.query( context, null): Collections.<IModelObject>emptyList();
       List<IModelObject> shallows = (listenShallowExpr != null)? listenShallowExpr.query( context, null): Collections.<IModelObject>emptyList();
@@ -105,6 +112,9 @@ public class CommandAction extends GuardedAction
       // remove listeners on entities
       for( IModelObject entity: deeps) deepListener.uninstall( entity);
       for( IModelObject entity: shallows) entity.removeModelListener( shallowListener);
+      
+      // undo listener not needed now
+      undoListener = null;
     }
     else
     {
@@ -117,12 +127,12 @@ public class CommandAction extends GuardedAction
     copyVariables( context, command.undoContext);
   
     // put command on stack (unless there is a change set and it is empty)
-    if ( changeSet == null || changeSet.getSize() > 0)
+    if ( command.undoSet == null || command.undoSet.getSize() > 0)
     {
       IModelObject entry = new ModelObject( "command", Integer.toString( count));
       entry.setAttribute( "instance", command);
       entry.addChild( new Reference( getDocument().getRoot()));
-      stack.addChild( entry);
+      history.addChild( entry);
     }
     
     return result;
@@ -144,51 +154,57 @@ public class CommandAction extends GuardedAction
     public void notifyAddChild( IModelObject parent, IModelObject child, int index)
     {
       super.notifyAddChild( parent, child, index);
-      if ( changeSet != null) changeSet.notifyAddChild( parent, child, index);
+      if ( undoListener != null) undoListener.notifyAddChild( parent, child, index);
     }
     public void notifyRemoveChild( IModelObject parent, IModelObject child, int index)
     {
       super.notifyRemoveChild( parent, child, index);
-      if ( changeSet != null) changeSet.notifyRemoveChild( parent, child, index);
+      if ( undoListener != null) undoListener.notifyRemoveChild( parent, child, index);
     }
     public void notifyChange( IModelObject object, String attrName, Object newValue, Object oldValue)
     {
-      if ( changeSet != null) changeSet.notifyChange( object, attrName, newValue, oldValue);
+      if ( undoListener != null) undoListener.notifyChange( object, attrName, newValue, oldValue);
     }
     public void notifyClear( IModelObject object, String attrName, Object oldValue)
     {
-      if ( changeSet != null) changeSet.notifyClear( object, attrName, oldValue);
+      if ( undoListener != null) undoListener.notifyClear( object, attrName, oldValue);
     }
   };
   
   private IModelListener shallowListener = new ModelListener() {
     public void notifyAddChild( IModelObject parent, IModelObject child, int index)
     {
-      if ( changeSet != null) changeSet.notifyAddChild( parent, child, index);
+      if ( undoListener != null) undoListener.notifyAddChild( parent, child, index);
     }
     public void notifyRemoveChild( IModelObject parent, IModelObject child, int index)
     {
-      if ( changeSet != null) changeSet.notifyRemoveChild( parent, child, index);
+      if ( undoListener != null) undoListener.notifyRemoveChild( parent, child, index);
     }
     public void notifyChange( IModelObject object, String attrName, Object newValue, Object oldValue)
     {
-      if ( changeSet != null) changeSet.notifyChange( object, attrName, newValue, oldValue);
+      if ( undoListener != null) undoListener.notifyChange( object, attrName, newValue, oldValue);
     }
     public void notifyClear( IModelObject object, String attrName, Object oldValue)
     {
-      if ( changeSet != null) changeSet.notifyClear( object, attrName, oldValue);
+      if ( undoListener != null) undoListener.notifyClear( object, attrName, oldValue);
     }
   };
   
   public class Command
   {
+    public void setChangeSets( IChangeSet undoSet, IChangeSet redoSet)
+    {
+      this.undoSet = undoSet;
+      this.redoSet = redoSet;
+    }
+    
     /**
      * Returns true if this command has an undo script.
      * @return Returns true if this command has an undo script.
      */
     public boolean canUndo()
     {
-      return undoScript != null || changeSet != null;
+      return undoScript != null || undoSet != null;
     }
     
     /**
@@ -196,7 +212,7 @@ public class CommandAction extends GuardedAction
      */
     public void undo()
     {
-      if ( changeSet != null) changeSet.createUndoSet().applyChanges();
+      if ( undoSet != null) undoSet.applyChanges();
       if ( undoScript != null) undoScript.run( undoContext);
     }
     
@@ -205,20 +221,22 @@ public class CommandAction extends GuardedAction
      */
     public void redo()
     {
-      if ( changeSet != null) changeSet.applyChanges();
+      if ( redoSet != null) redoSet.applyChanges();
       if ( redoScript != null) redoScript.run( redoContext);
     }
     
     private IContext redoContext;
     private IContext undoContext;
+    private IChangeSet undoSet;
+    private IChangeSet redoSet;
   }
   
   private static int count = 0;
   
-  private IExpression stackExpr;
+  private IExpression historyExpr;
   private IExpression listenDeepExpr;
   private IExpression listenShallowExpr;
-  private ChangeSet changeSet;
+  private UndoListener undoListener;
   private ScriptAction doScript;
   private ScriptAction undoScript;
   private ScriptAction redoScript;

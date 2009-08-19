@@ -9,8 +9,8 @@ import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
 /**
- * An XAction which will undo one command from a user-defined command stack.  The schema of the commands
- * on the command stack are defined by the CommandAction.  The user does not need to be aware of this
+ * An XAction which will undo one command from a user-defined command history.  The schema of the commands
+ * on the command history are defined by the CommandAction.  The user does not need to be aware of this
  * schema.
  */
 public class RedoAction extends GuardedAction
@@ -22,7 +22,7 @@ public class RedoAction extends GuardedAction
   public void configure( XActionDocument document)
   {
     super.configure( document);
-    stackExpr = document.getExpression( "stack", true);
+    historyExpr = document.getExpression( "history", true);
   }
   
   /* (non-Javadoc)
@@ -31,19 +31,18 @@ public class RedoAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
-    IModelObject stack = stackExpr.queryFirst( context);
-    int index = Xlate.get( stack, "index", 0) - 1;
-    if ( index < 0) return null;
-    
-    IModelObject entry = stack.getChild( index);
-    if ( entry == null) return null;
-    
+    IModelObject history = historyExpr.queryFirst( context);
+    int index = Xlate.get( history, "index", 0);    
+    if ( index == history.getNumberOfChildren()) return null;
+      
+    IModelObject entry = history.getChild( index);
     Command command = (Command)entry.getAttribute( "instance");
-    Xlate.set( stack, "index", index);
     command.redo();
+    
+    Xlate.set( history, "index", index+1);
     
     return null;
   }
   
-  private IExpression stackExpr;
+  private IExpression historyExpr;
 }

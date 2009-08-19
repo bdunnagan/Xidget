@@ -221,7 +221,9 @@ public class SelectionModelFeature implements ISelectionModelFeature
      */
     public void notifyAddChild( IModelObject parent, IModelObject child, int index)
     {
+      if ( selectionModelFeature.updating) return;
       selectionModelFeature.updating = true;
+      
       try
       {
         ISelectionWidgetFeature feature = selectionModelFeature.xidget.getFeature( ISelectionWidgetFeature.class);
@@ -241,7 +243,9 @@ public class SelectionModelFeature implements ISelectionModelFeature
      */
     public void notifyRemoveChild( IModelObject parent, IModelObject child, int index)
     {
+      if ( selectionModelFeature.updating) return;
       selectionModelFeature.updating = true;
+      
       try
       {
         ISelectionWidgetFeature feature = selectionModelFeature.xidget.getFeature( ISelectionWidgetFeature.class);
