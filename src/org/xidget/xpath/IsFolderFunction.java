@@ -7,6 +7,7 @@ package org.xidget.xpath;
 import java.io.File;
 import java.util.List;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionException;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -44,9 +45,29 @@ public class IsFolderFunction extends Function
   {
     assertArgs( 1, 1);
     
-    String value = getArgument( 0).evaluateString( context);
-    File file = new File( value);
-    return file.isDirectory();
+    IExpression arg0 = getArgument( 0);
+    ResultType type = arg0.getType( context);
+    if ( type == ResultType.STRING)
+    {
+      String value = getArgument( 0).evaluateString( context);
+      File file = new File( value);
+      return file.isDirectory();
+    }
+    else if ( type == ResultType.NODES)
+    {
+      List<IModelObject> nodes = arg0.evaluateNodes( context);
+      for( IModelObject node: nodes)
+      {
+        String value = Xlate.get( node, "");
+        File file = new File( value);
+        if ( !file.isDirectory()) return false; 
+      }
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   /* (non-Javadoc)

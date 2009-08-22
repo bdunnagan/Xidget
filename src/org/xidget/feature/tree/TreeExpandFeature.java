@@ -164,7 +164,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
       if ( child.getContext() == dummy)
       {
         row.removeChild( 0, i);
-        feature.removeRows( row, i, new Row[] { child}); 
+        feature.removeRows( row, i, new Row[] { child}, true); 
         break;
       }
     }

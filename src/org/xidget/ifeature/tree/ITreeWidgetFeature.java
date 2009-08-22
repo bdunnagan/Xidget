@@ -36,8 +36,9 @@ public interface ITreeWidgetFeature
    * @param parent The parent row.
    * @param rowIndex The index of the first row.
    * @param rows The rows that were removed.
+   * @param dummy True if the dummy/temporary node is being removed.
    */
-  public void removeRows( Row parent, int rowIndex, Row[] rows);
+  public void removeRows( Row parent, int rowIndex, Row[] rows, boolean dummy);
   
   /**
    * Fire update events. This method is called after all changes to the table rows
