@@ -4,6 +4,7 @@
  */
 package org.xidget.binding.text;
 
+import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
 import org.xidget.feature.text.TextModelFeature;
@@ -43,6 +44,26 @@ public class EditableBindingRule implements IBindingRule
       this.xidget = xidget;
     }
     
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyAdd(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
+      feature.setEditable( expression.evaluateBoolean( context));
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyRemove(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
+      feature.setEditable( expression.evaluateBoolean( context));
+    }
+
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
       ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);

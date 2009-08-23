@@ -45,6 +45,8 @@ public class CreateXidgetAction extends GuardedAction
     try
     {
       StatefulContext inner = new StatefulContext( context, root);
+      initVariables( inner);
+      
       Creator creator = Creator.getInstance();
       List<IXidget> xidgets = creator.create( inner, true);
       
@@ -74,6 +76,16 @@ public class CreateXidgetAction extends GuardedAction
     }
     
     return null;
+  }
+  
+  /**
+   * Initialize global variables on the specified context.
+   * @param context The context.
+   */
+  private void initVariables( StatefulContext context)
+  {
+    if ( context.get( "org.xidget.ui") == null)
+      context.set( "org.xidget.ui", new ModelObject( "org.xidget.ui"));
   }
   
   private IExpression sourceExpr;

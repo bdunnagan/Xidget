@@ -12,6 +12,7 @@ import org.xidget.ifeature.IComputeNodeFeature.Type;
 import org.xidget.layout.IComputeNode;
 import org.xidget.layout.Margins;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xpath.XPath;
@@ -32,8 +33,21 @@ public abstract class AbstractLayoutAction extends GuardedAction
     super.configure( document);
     
     xidgetsExpr = document.getExpression( "xidgets", true);
-    marginsExpr = XPath.createExpression( "ancestor-or-self::*/@margins");
-    spacingExpr = XPath.createExpression( "ancestor-or-self::*/@spacing");
+    
+    IModelObject layout = document.getRoot().getParent().getFirstChild( "layout");
+    if ( layout != null)
+    {
+      String marginsSpec = Xlate.get( layout, "margins", Xlate.childGet( layout, "margins", (String)null));
+      marginsExpr = XPath.createExpression ( marginsSpec);
+      
+      String spacingSpec = Xlate.get( layout, "spacing", Xlate.childGet( layout, "spacing", (String)null));
+      spacingExpr = XPath.createExpression ( spacingSpec);
+    }
+    else
+    {
+      marginsExpr = XPath.createExpression( "'5'");
+      spacingExpr = XPath.createExpression( "'5'");
+    }
   }
 
   /* (non-Javadoc)

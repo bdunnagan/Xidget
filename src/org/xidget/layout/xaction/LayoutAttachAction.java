@@ -40,7 +40,20 @@ public class LayoutAttachAction extends GuardedAction
   {
     super.configure( document);
    
-    marginsExpr = XPath.createExpression( "ancestor-or-self::*/@margins");
+    IModelObject layout = document.getRoot().getParent().getFirstChild( "layout");
+    if ( layout != null)
+    {
+      String marginsSpec = Xlate.get( layout, "margins", Xlate.childGet( layout, "margins", (String)null));
+      marginsExpr = XPath.createExpression ( marginsSpec);
+      
+      String spacingSpec = Xlate.get( layout, "spacing", Xlate.childGet( layout, "spacing", (String)null));
+      spacingExpr = XPath.createExpression ( spacingSpec);
+    }
+    else
+    {
+      marginsExpr = XPath.createExpression( "'5'");
+      spacingExpr = XPath.createExpression( "'5'");
+    }
     
     xidgetExpr = document.getExpression( "xidget", true);
     IModelObject root = document.getRoot();
@@ -98,9 +111,16 @@ public class LayoutAttachAction extends GuardedAction
    */
   private void createNodes( Attachment attachment, IContext context, IXidget parent, IXidget xidget1)
   {
-    StatefulContext context1 = new StatefulContext( context, xidget1.getConfig());
-    Margins margins = new Margins( marginsExpr.evaluateString( context));
+    StatefulContext configContext = new StatefulContext( context, xidget1.getConfig());
     
+    // get parameters
+    marginsExpr.setVariable( "containerType", parent.getConfig().getType());
+    Margins margins = new Margins( marginsExpr.evaluateString( configContext));
+    
+    spacingExpr.setVariable( "containerType", parent.getConfig().getType());
+    int spacing = (int)spacingExpr.evaluateNumber( configContext);
+    
+    // find other xidget
     IXidget xidget2 = parent;
     if ( attachment.xidgetExpr != null)
     {
@@ -121,25 +141,35 @@ public class LayoutAttachAction extends GuardedAction
     // must either have anchor or constant expression
     if ( computeNode2 == null) return;
     
-    int margin = 0;
+    int padding = 0;
     if ( xidget2 == parent)
     {
       switch( attachment.anchor2)
       {
-        case top:    margin = margins.y0; break;
-        case left:   margin = margins.x0; break;
-        case right:  margin = -margins.x1; break;
-        case bottom: margin = -margins.y1; break; 
+        case top:    padding = margins.y0; break;
+        case left:   padding = margins.x0; break;
+        case right:  padding = -margins.x1; break;
+        case bottom: padding = -margins.y1; break; 
       }
     }
     else if ( xidget1 == parent)
     {
       switch( attachment.anchor2)
       {
-        case top:    margin = -margins.y0; break;
-        case left:   margin = -margins.x0; break;
-        case right:  margin = margins.x1; break;
-        case bottom: margin = margins.y1; break; 
+        case top:    padding = -margins.y0; break;
+        case left:   padding = -margins.x0; break;
+        case right:  padding = margins.x1; break;
+        case bottom: padding = margins.y1; break; 
+      }
+    }
+    else
+    {
+      switch( attachment.anchor1)
+      {
+        case top:    if ( attachment.anchor2 == Type.bottom) padding = spacing; break;
+        case left:   if ( attachment.anchor2 == Type.right) padding = spacing; break;
+        case right:  if ( attachment.anchor2 == Type.left) padding = -spacing; break;
+        case bottom: if ( attachment.anchor2 == Type.top) padding = -spacing; break;
       }
     }
     
@@ -152,21 +182,21 @@ public class LayoutAttachAction extends GuardedAction
       if ( xidget2 != parent)
         throw new XActionException( "Proportional attachments must be specified relative to the container: "+XmlIO.toString( getDocument().getRoot()));
       
-      float percent = (float)attachment.percentExpr.evaluateNumber( context1, 0);
-      int offset = (attachment.offsetExpr != null)? (int)attachment.offsetExpr.evaluateNumber( context1, 0): 0;
+      float percent = (float)attachment.percentExpr.evaluateNumber( configContext, 0);
+      int offset = (attachment.offsetExpr != null)? (int)attachment.offsetExpr.evaluateNumber( configContext, 0): 0;
       
-      AnchorNode anchor = new AnchorNode( xidget2, attachment.anchor1, percent, offset + margin);
+      AnchorNode anchor = new AnchorNode( xidget2, attachment.anchor1, percent, offset + padding);
       anchor.setHandle( attachment.handleExpr != null && attachment.handleExpr.evaluateBoolean( context, false));
       computeNode1.addDependency( anchor);
     }
     else if ( attachment.offsetExpr != null)
     {
-      int offset = (int)attachment.offsetExpr.evaluateNumber( context1, 0);
-      computeNode1.addDependency( new OffsetNode( computeNode2, offset + margin));
+      int offset = (int)attachment.offsetExpr.evaluateNumber( configContext, 0);
+      computeNode1.addDependency( new OffsetNode( computeNode2, offset + padding));
     }
     else
     {
-      computeNode1.addDependency( new OffsetNode( computeNode2, margin));
+      computeNode1.addDependency( new OffsetNode( computeNode2, padding));
     }
   }
   
@@ -200,4 +230,5 @@ public class LayoutAttachAction extends GuardedAction
   private IExpression xidgetExpr;
   private List<Attachment> attachments;
   private IExpression marginsExpr;
+  private IExpression spacingExpr;
 }
