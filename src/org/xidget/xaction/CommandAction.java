@@ -77,14 +77,6 @@ public class CommandAction extends GuardedAction
     IModelObject history = historyExpr.queryFirst( context);
     if ( history == null) return doScript.run( context);
       
-    // update index
-    int index = Xlate.get( history, "index", 0);
-    Xlate.set( history, "index", index+1);
-    
-    // remove trailing commands in history
-    for( int i=index; i<history.getNumberOfChildren(); i++)
-      history.removeChild( index);
-    
     // create new command
     Command command = new Command();
     
@@ -129,6 +121,15 @@ public class CommandAction extends GuardedAction
     // put command on stack (unless there is a change set and it is empty)
     if ( command.undoSet == null || command.undoSet.getSize() > 0)
     {
+      // update index
+      int index = Xlate.get( history, "index", 0);
+      Xlate.set( history, "index", index+1);
+      
+      // remove trailing commands in history
+      for( int i=index; i<history.getNumberOfChildren(); i++)
+        history.removeChild( index);
+      
+      // add command to stack
       IModelObject entry = new ModelObject( "command", Integer.toString( count));
       entry.setAttribute( "instance", command);
       entry.addChild( new Reference( getDocument().getRoot()));

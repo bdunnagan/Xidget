@@ -28,7 +28,7 @@ public class LayoutBottomTopAction extends AbstractLayoutAction
     // attach the bottom side of the first xidget to the form
     IComputeNode next = getParentNode( parent, Type.bottom);
     IComputeNode node = getComputeNode( children.get( children.size() - 1), Type.bottom);
-    node.addDependency( new OffsetNode( next, margins.y1));
+    node.addDependency( new OffsetNode( next, -margins.y1));
     
     // attach the bottom side of each xidget to the top side of the next xidget
     int last = children.size() - 1;
