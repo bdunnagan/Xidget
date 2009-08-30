@@ -378,6 +378,18 @@ public class TagProcessor implements IFeatured
   }
   
   /**
+   * Replaces the first handler with the specified tag. If the tag does not have a handler, it is added.
+   * @param tag The tag.
+   * @param handler The replacement handler.
+   */
+  public void replaceHandler( String tag, ITagHandler handler)
+  {
+    List<ITagHandler> handlers = getHandlers( tag);
+    if ( handlers.size() > 0) removeHandler( tag, handlers.get( 0));
+    addHandler( tag, handler);
+  }
+  
+  /**
    * Returns the handlers for the specified tag.
    * @param tag The tag.
    * @return Returns the handlers for the specified tag.

@@ -31,5 +31,6 @@ public class TimerAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
+    return null;
   }
 }

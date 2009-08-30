@@ -4,7 +4,6 @@
  */
 package org.xidget.binding;
 
-import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
@@ -41,26 +40,6 @@ public class EnableBindingRule implements IBindingRule
       this.xidget = xidget;
     }
     
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyAdd(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.util.List)
-     */
-    @Override
-    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
-    {
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setEnabled( expression.evaluateBoolean( context));
-    }
-
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyRemove(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.util.List)
-     */
-    @Override
-    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
-    {
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setEnabled( expression.evaluateBoolean( context));
-    }
-
     /* (non-Javadoc)
      * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, boolean)
      */
