@@ -14,9 +14,9 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
- * The binding rule for the <i>enable</i> configuration element.
+ * The binding rule for the <i>visible</i> configuration element.
  */
-public class EnableBindingRule implements IBindingRule
+public class VisibleBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
@@ -48,7 +48,7 @@ public class EnableBindingRule implements IBindingRule
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setEnabled( expression.evaluateBoolean( context));
+      feature.setVisible( expression.evaluateBoolean( context));
     }
 
     /* (non-Javadoc)
@@ -58,7 +58,7 @@ public class EnableBindingRule implements IBindingRule
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setEnabled( expression.evaluateBoolean( context));
+      feature.setVisible( expression.evaluateBoolean( context));
     }
 
     /* (non-Javadoc)
@@ -67,7 +67,7 @@ public class EnableBindingRule implements IBindingRule
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setEnabled( newValue);
+      feature.setVisible( newValue);
     }
 
     private IXidget xidget;

@@ -24,6 +24,7 @@ import org.xidget.binding.SourceTagHandler;
 import org.xidget.binding.TitleBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
+import org.xidget.binding.VisibleBindingRule;
 import org.xidget.binding.table.ColumnTitleBindingRule;
 import org.xidget.binding.table.RowSetBindingRule;
 import org.xidget.binding.table.SubTableTagHandler;
@@ -79,6 +80,7 @@ public final class Creator
     processor.addHandler( "title", new BindingTagHandler( new TitleBindingRule()));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
+    processor.addHandler( "visible", new BindingTagHandler( new VisibleBindingRule()));
     
     // attributes
     processor.addAttributeHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));

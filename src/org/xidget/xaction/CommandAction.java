@@ -1,13 +1,13 @@
 package org.xidget.xaction;
 
+import java.text.DateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.xmodel.IChangeSet;
 import org.xmodel.IModelListener;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelListener;
-import org.xmodel.ModelObject;
-import org.xmodel.Reference;
 import org.xmodel.Xlate;
 import org.xmodel.diff.RegularChangeSet;
 import org.xmodel.external.NonSyncingListener;
@@ -46,6 +46,11 @@ import org.xmodel.xpath.variable.IVariableScope;
  */
 public class CommandAction extends GuardedAction
 {
+  public CommandAction()
+  {
+    dateFormat = DateFormat.getDateTimeInstance();
+  }
+  
   /* (non-Javadoc)
    * @see org.xmodel.xaction.GuardedAction#configure(org.xmodel.xaction.XActionDocument)
    */
@@ -126,13 +131,15 @@ public class CommandAction extends GuardedAction
       Xlate.set( history, "index", index+1);
       
       // remove trailing commands in history
-      for( int i=index; i<history.getNumberOfChildren(); i++)
+      int size = history.getNumberOfChildren();
+      for( int i=index; i<size; i++)
         history.removeChild( index);
       
       // add command to stack
-      IModelObject entry = new ModelObject( "command", Integer.toString( count));
+      IModelObject entry = getDocument().getRoot().cloneTree();
+      entry.setID( ""+count++);
       entry.setAttribute( "instance", command);
-      entry.addChild( new Reference( getDocument().getRoot()));
+      entry.setAttribute( "time", dateFormat.format( new Date()));
       history.addChild( entry);
     }
     
@@ -241,4 +248,5 @@ public class CommandAction extends GuardedAction
   private ScriptAction doScript;
   private ScriptAction undoScript;
   private ScriptAction redoScript;
+  private DateFormat dateFormat;
 }
