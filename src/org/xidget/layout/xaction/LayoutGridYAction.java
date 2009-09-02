@@ -12,7 +12,6 @@ import org.xidget.layout.IComputeNode;
 import org.xidget.layout.Margins;
 import org.xidget.layout.OffsetNode;
 import org.xmodel.xaction.XActionDocument;
-import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
@@ -33,7 +32,7 @@ public class LayoutGridYAction extends AbstractLayoutAction
   public void configure( XActionDocument document)
   {
     super.configure( document);
-    handlesExpr = XPath.createExpression( "../@handles = 'true'");
+    handleExpr = document.getExpression( "handle", true);
   }
 
   /* (non-Javadoc)
@@ -46,16 +45,16 @@ public class LayoutGridYAction extends AbstractLayoutAction
     float y = 0;
     float dy = 1f / children.size();
     int last = children.size() - 1;
-    boolean handles = handlesExpr.evaluateBoolean( context);
+    boolean handle = (handleExpr != null)? handleExpr.evaluateBoolean( context): false;
     
     // attach the bottom side of each xidget to the grid, offset by half the interstice
-    for( int i=1; i < last; i++)
+    for( int i=0; i < last; i++)
     {
       IXidget child = children.get( i);
       y += dy;
       IComputeNode node = getComputeNode( child, Type.bottom);
       AnchorNode anchor = new AnchorNode( parent, Type.bottom, y, -halfSpacing);
-      if ( handles) anchor.setHandle( true);
+      if ( handle) anchor.setHandle( true);
       node.addDependency( anchor);
     }
     
@@ -80,5 +79,5 @@ public class LayoutGridYAction extends AbstractLayoutAction
     node.addDependency( new OffsetNode( form, -margins.y1));
   }
   
-  private IExpression handlesExpr;
+  private IExpression handleExpr;
 }

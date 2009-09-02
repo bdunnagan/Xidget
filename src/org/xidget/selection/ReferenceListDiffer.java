@@ -38,7 +38,7 @@ public class ReferenceListDiffer extends AbstractSelectionDiffer
   @Override
   public Object getIdentity( IModelObject node)
   {
-    return node;
+    return node.getReferent();
   }
 
   /* (non-Javadoc)
