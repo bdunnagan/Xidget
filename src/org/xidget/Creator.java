@@ -189,7 +189,7 @@ public final class Creator
     creationFeature.destroyWidgets();
     
     // clear xidget attribure
-    xidget.getConfig().removeAttribute( "xidget");
+    xidget.getConfig().removeAttribute( "instance");
     
     // remove xidget from parent
     if ( xidget.getParent() != null) 
@@ -224,7 +224,7 @@ public final class Creator
     processor.process( new ParentTagHandler( xidget.getParent()), new StatefulContext( context, config));
     
     // create widget hierarchy
-    xidget = (IXidget)config.getAttribute( "xidget");
+    xidget = (IXidget)config.getAttribute( "instance");
     build( xidget);
     
     // bind the xidget

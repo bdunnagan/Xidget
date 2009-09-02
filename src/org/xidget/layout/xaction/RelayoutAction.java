@@ -35,7 +35,7 @@ public class RelayoutAction extends GuardedAction
   {
     for( IModelObject element: xidgetExpr.query( context, null))
     {
-      IXidget xidget = (IXidget)element.getAttribute( "xidget");
+      IXidget xidget = (IXidget)element.getAttribute( "instance");
       if ( xidget != null)
       {
         IWidgetContainerFeature feature = xidget.getFeature( IWidgetContainerFeature.class);

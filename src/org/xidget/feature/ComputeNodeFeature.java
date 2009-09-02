@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IComputeNodeFeature;
+import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.layout.IComputeNode;
+import org.xidget.layout.OffsetNode;
+import org.xidget.layout.Size;
 import org.xidget.layout.WidgetHandle;
 
 /**
@@ -73,29 +76,48 @@ public class ComputeNodeFeature implements IComputeNodeFeature
     }
     else
     {
+      IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+      Size size = new Size(); widgetFeature.getPreferredSize( size);
+      
       switch( type)
       {
         case top:
-          if ( outsideY0 == null) outsideY0 = new WidgetHandle( getName( xidget, type, container), 0);
+          if ( outsideY0 == null)
+          {
+            outsideY0 = new WidgetHandle( getName( xidget, type, container), 0);
+            if ( size.height > 0) outsideY0.addDependency( new OffsetNode( getComputeNode( Type.bottom, false), -size.height));
+          }
           return outsideY0;
           
         case left:
-          if ( outsideX0 == null) outsideX0 = new WidgetHandle( getName( xidget, type, container), 0);
+          if ( outsideX0 == null)
+          {
+            outsideX0 = new WidgetHandle( getName( xidget, type, container), 0);
+            if ( size.width > 0) outsideX0.addDependency( new OffsetNode( getComputeNode( Type.right, false), -size.width));
+          }
           return outsideX0;
           
         case right:
-          if ( outsideX1 == null) outsideX1 = new WidgetHandle( getName( xidget, type, container), 0);
+          if ( outsideX1 == null) 
+          {
+            outsideX1 = new WidgetHandle( getName( xidget, type, container), 0);
+            if ( size.width > 0) outsideX1.addDependency( new OffsetNode( getComputeNode( Type.left, false), size.width));
+          }
           return outsideX1;
           
         case bottom:
-          if ( outsideY1 == null) outsideY1 = new WidgetHandle( getName( xidget, type, container), 0);
+          if ( outsideY1 == null) 
+          {
+            outsideY1 = new WidgetHandle( getName( xidget, type, container), 0);
+            if ( size.height > 0) outsideY1.addDependency( new OffsetNode( getComputeNode( Type.top, false), size.height));
+          }
           return outsideY1;
           
         default:     return null;
       }
     }
   }
-
+  
   /* (non-Javadoc)
    * @see org.xidget.ifeature.IComputeNodeFeature#getAccessedList()
    */

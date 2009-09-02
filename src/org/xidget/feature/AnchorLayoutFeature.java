@@ -49,8 +49,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     if ( sorted == null) compile( context);
     
-    Log.printf( "layout", "Layout: %s\n", xidget);
-    
     if ( sorted != null)
     {
       for( IComputeNode node: sorted) node.reset();

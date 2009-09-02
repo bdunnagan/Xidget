@@ -58,7 +58,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
   {
     // get parent xidget
     IModelObject element = context.getObject();
-    IXidget parent = (IXidget)element.getAttribute( "xidget");
+    IXidget parent = (IXidget)element.getAttribute( "instance");
     
     // get parameters
     Margins margins = new Margins( marginsExpr.evaluateString( context));
@@ -84,7 +84,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
       List<IXidget> xidgets = new ArrayList<IXidget>( elements.size());
       for( IModelObject node: elements)
       {
-        IXidget xidget = (IXidget)node.getAttribute( "xidget");
+        IXidget xidget = (IXidget)node.getAttribute( "instance");
         if ( xidget != null && xidget.getFeature( IComputeNodeFeature.class) != null) 
           xidgets.add( xidget);
       }

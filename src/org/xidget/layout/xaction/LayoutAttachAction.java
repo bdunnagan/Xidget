@@ -84,7 +84,7 @@ public class LayoutAttachAction extends GuardedAction
   {
     // get container xidget
     IModelObject element = context.getObject();
-    IXidget parent = (IXidget)element.getAttribute( "xidget");
+    IXidget parent = (IXidget)element.getAttribute( "instance");
     
     // evaluate child xidget
     if ( xidgetExpr != null) element = xidgetExpr.queryFirst( context);
@@ -93,7 +93,7 @@ public class LayoutAttachAction extends GuardedAction
     if ( element == null) return null;
     
     // get xidget for which attachments are being created
-    IXidget xidget = (IXidget)element.getAttribute( "xidget");
+    IXidget xidget = (IXidget)element.getAttribute( "instance");
     if ( xidget == null) return null;
     
     // create nodes for attachments
@@ -127,7 +127,7 @@ public class LayoutAttachAction extends GuardedAction
       IModelObject xidgetNode = attachment.xidgetExpr.queryFirst( context);
       if ( xidgetNode == null) return;
     
-      xidget2 = (IXidget)xidgetNode.getAttribute( "xidget");
+      xidget2 = (IXidget)xidgetNode.getAttribute( "instance");
     }
     
     // validation

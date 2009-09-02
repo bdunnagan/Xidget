@@ -87,7 +87,7 @@ public abstract class Xidget implements IXidget
     if ( parent != null) parent.addChild( this);
     
     // set xidget attribute and save config (bi-directional mapping)
-    element.setAttribute( "xidget", this);
+    element.setAttribute( "instance", this);
     config = element;
     
     // create features
