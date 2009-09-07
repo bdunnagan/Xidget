@@ -37,10 +37,10 @@ public abstract class AbstractLayoutAction extends GuardedAction
     IModelObject layout = document.getRoot().getParent().getFirstChild( "layout");
     if ( layout != null)
     {
-      String marginsSpec = Xlate.get( layout, "margins", Xlate.childGet( layout, "margins", (String)null));
+      String marginsSpec = Xlate.get( layout, "margins", Xlate.childGet( layout, "margins", "@margins"));
       marginsExpr = XPath.createExpression ( marginsSpec);
       
-      String spacingSpec = Xlate.get( layout, "spacing", Xlate.childGet( layout, "spacing", (String)null));
+      String spacingSpec = Xlate.get( layout, "spacing", Xlate.childGet( layout, "spacing", "@spacing"));
       spacingExpr = XPath.createExpression ( spacingSpec);
     }
     else
