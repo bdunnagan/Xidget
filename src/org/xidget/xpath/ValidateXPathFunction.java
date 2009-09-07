@@ -12,6 +12,7 @@ import org.xmodel.xpath.expression.ExpressionException;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.function.Function;
+import org.xmodel.xpath.parser.generated.TokenMgrError;
 
 /**
  * A custom XPath function that validates its string argument as an xpath expression
@@ -54,6 +55,10 @@ public class ValidateXPathFunction extends Function
       return "";
     }
     catch( PathSyntaxException e)
+    {
+      return e.getLocalizedMessage();
+    }
+    catch( TokenMgrError e)
     {
       return e.getLocalizedMessage();
     }

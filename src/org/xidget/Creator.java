@@ -97,6 +97,8 @@ public final class Creator
     processor.addHandler( "onPress", new ScriptTagHandler());
     processor.addHandler( "onOpen", new ScriptTagHandler());
     processor.addHandler( "onClose", new ScriptTagHandler());
+    processor.addHandler( "onDrag", new ScriptTagHandler());
+    processor.addHandler( "onDrop", new ScriptTagHandler());
 
     // sub-tables and sub-trees
     processor.addHandler( "tree", new SubTreeTagHandler());
