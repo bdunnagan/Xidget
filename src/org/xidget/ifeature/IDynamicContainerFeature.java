@@ -23,4 +23,10 @@ public interface IDynamicContainerFeature
    * @param nodes The nodes.
    */
   public void setChildren( StatefulContext context, List<IModelObject> nodes);
+  
+  /**
+   * Returns the list of children for this container.
+   * @return Returns the list of children for this container.
+   */
+  public List<IModelObject> getChildren();
 }
