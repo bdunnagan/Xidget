@@ -5,7 +5,6 @@
 package org.xidget.feature.tree;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.tree.IColumnSetFeature;
@@ -13,7 +12,8 @@ import org.xidget.ifeature.tree.IRowSetFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xidget.tree.Row;
 import org.xmodel.IModelObject;
-import org.xmodel.diff.AbstractListDiffer;
+import org.xmodel.diff.ListDiffer;
+import org.xmodel.diff.ListDiffer.Change;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -63,7 +63,7 @@ public class RowSetFeature implements IRowSetFeature
     int offset = parent.getOffset( tableIndex);
     
     // find changes
-    Differ differ = new Differ();
+    ListDiffer differ = new ListDiffer();
     differ.diff( toElements( children), nodes);
     List<Change> changes = differ.getChanges();
     
@@ -140,62 +140,7 @@ public class RowSetFeature implements IRowSetFeature
     for( Row row: rows) elements.add( row.getContext().getObject());
     return elements;
   }
-  
-  /**
-   * An implementation of AbstractListDiffer which calls the createInsertChange
-   * and createDeleteChange methods.
-   */
-  @SuppressWarnings("unchecked")
-  private static class Differ extends AbstractListDiffer
-  {
-    /* (non-Javadoc)
-     * @see org.xmodel.diff.IListDiffer#notifyInsert(java.util.List, int, int, java.util.List, int, int)
-     */
-    public void notifyInsert( List lhs, int lIndex, int lAdjust, List rhs, int rIndex, int count)
-    {
-      Change change = new Change();
-      change.lIndex = lIndex + lAdjust;
-      change.rIndex = rIndex;
-      change.count = count;
-      
-      if ( changes == null) changes = new ArrayList<Change>();
-      changes.add( change);
-    }
-
-    /* (non-Javadoc)
-     * @see org.xmodel.diff.IListDiffer#notifyRemove(java.util.List, int, int, java.util.List, int)
-     */
-    public void notifyRemove( List lhs, int lIndex, int lAdjust, List rhs, int count)
-    {
-      Change change = new Change();
-      change.lIndex = lIndex + lAdjust;
-      change.rIndex = -1;
-      change.count = count;
-      
-      if ( changes == null) changes = new ArrayList<Change>();
-      changes.add( change);
-    }
     
-    /**
-     * Returns the changes.
-     * @return Returns the changes.
-     */
-    public List<Change> getChanges()
-    {
-      if ( changes == null) return Collections.emptyList();
-      return changes;
-    }
-    
-    private List<Change> changes;
-  }
-  
-  private static class Change
-  {
-    public int lIndex;
-    public int rIndex;
-    public int count;
-  }
-  
   protected IXidget xidget;
   private int tableIndex;
 }
