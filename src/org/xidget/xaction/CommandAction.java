@@ -59,6 +59,7 @@ public class CommandAction extends GuardedAction
   {
     super.configure( document);
     
+    summaryExpr = document.getExpression( "summary", true);
     historyExpr = document.getExpression( "history", true);
     
     listenDeepExpr = document.getExpression( "listenDeep", true);
@@ -137,6 +138,7 @@ public class CommandAction extends GuardedAction
       
       // add command to stack
       IModelObject entry = getDocument().getRoot().cloneTree();
+      entry.setAttribute( "summary", summaryExpr.evaluateString( context));
       entry.setID( ""+count++);
       entry.setAttribute( "instance", command);
       entry.setAttribute( "time", dateFormat.format( new Date()));
@@ -240,7 +242,8 @@ public class CommandAction extends GuardedAction
   }
   
   private static int count = 0;
-  
+
+  private IExpression summaryExpr;
   private IExpression historyExpr;
   private IExpression listenDeepExpr;
   private IExpression listenShallowExpr;
