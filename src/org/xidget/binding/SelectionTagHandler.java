@@ -52,6 +52,10 @@ public class SelectionTagHandler implements ITagHandler
     IExpression expression = Xlate.childGet( element, "parent", Xlate.get( element, "parent", (IExpression)null));
     if ( expression == null) throw new TagException( "Error in parent expression.");
     
+    // configure selection model
+    ISelectionModelFeature selectionModelFeature = xidget.getFeature( ISelectionModelFeature.class);
+    selectionModelFeature.configure( element);
+    
     // create binding
     XidgetBinding binding = new XidgetBinding( expression, new Listener( xidget));
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);

@@ -14,6 +14,12 @@ import org.xmodel.xpath.expression.StatefulContext;
 public interface ISelectionModelFeature
 {
   /**
+   * Configure this feature from the specified element.
+   * @param element The element.
+   */
+  public void configure( IModelObject element);
+  
+  /**
    * Set the parent of the selection.
    * @param context The parent context.
    * @param element The selection parent element.

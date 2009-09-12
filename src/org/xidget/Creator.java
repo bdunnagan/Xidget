@@ -12,6 +12,7 @@ import org.xidget.binding.BackgroundBindingRule;
 import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.ChildrenBindingRule;
 import org.xidget.binding.ChoicesTagHandler;
+import org.xidget.binding.ContextTagHandler;
 import org.xidget.binding.EnableBindingRule;
 import org.xidget.binding.ErrorBindingRule;
 import org.xidget.binding.ForegroundBindingRule;
@@ -67,6 +68,7 @@ public final class Creator
     processor.addHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addHandler( "children", new BindingTagHandler( new ChildrenBindingRule()));
     processor.addHandler( "choices", new ChoicesTagHandler());
+    processor.addHandler( "context", new ContextTagHandler());
     processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
@@ -85,6 +87,7 @@ public final class Creator
     // attributes
     processor.addAttributeHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addAttributeHandler( "children", new BindingTagHandler( new ChildrenBindingRule()));
+    processor.addAttributeHandler( "context", new ContextTagHandler());
     processor.addAttributeHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addAttributeHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
@@ -103,8 +106,6 @@ public final class Creator
     // sub-tables and sub-trees
     processor.addHandler( "tree", new SubTreeTagHandler());
     processor.addHandler( "table", new SubTableTagHandler());
-    
-    // processor.addHandler( "context", new BindingTagHandler( new ContextBindingRule()));
     
     // register functions
     registerCustomXPaths();

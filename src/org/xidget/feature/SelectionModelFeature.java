@@ -28,16 +28,12 @@ public class SelectionModelFeature implements ISelectionModelFeature
   public SelectionModelFeature( IXidget xidget)
   {
     this.xidget = xidget;
-    
-    // configure
-    configure( xidget.getConfig().getFirstChild( "selection"));
   }
 
-  /**
-   * Configure this feature from the specified element.
-   * @param element The element.
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ISelectionModelFeature#configure(org.xmodel.IModelObject)
    */
-  protected void configure( IModelObject element)
+  public void configure( IModelObject element)
   {
     filterExpr = Xlate.childGet( element, "filter", Xlate.get( element, "filter", (IExpression)null));
     

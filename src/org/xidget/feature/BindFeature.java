@@ -113,10 +113,14 @@ public class BindFeature implements IBindFeature
     // bind children
     for( IXidget child: xidget.getChildren())
     {
-      if ( ignore == null || !ignore.contains( child.getConfig().getType()))
+      IModelObject config = child.getConfig();
+      if ( ignore == null || !ignore.contains( config.getType()))
       {
-        IBindFeature bindFeature = child.getFeature( IBindFeature.class);
-        bindFeature.bind( context, notify);
+        if ( Xlate.get( config, "context", Xlate.childGet( config, "context", (String)null)) == null)
+        {
+          IBindFeature bindFeature = child.getFeature( IBindFeature.class);
+          bindFeature.bind( context, notify);
+        }
       }
     }
     
