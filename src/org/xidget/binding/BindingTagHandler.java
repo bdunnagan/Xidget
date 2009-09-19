@@ -77,9 +77,7 @@ public class BindingTagHandler extends AbstractTagHandler
     
     // create expression
     String xpath = Xlate.get( element, "");
-    if ( xpath.length() == 0)
-      throw new TagException(
-        "Empty expression in binding.");
+    if ( xpath.length() == 0) return;
     
     IExpression expression = XPath.createExpression( xpath);
     

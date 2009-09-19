@@ -82,7 +82,7 @@ public abstract class Xidget implements IXidget
    * @param element The configuration element.
    * @return Returns true.
    */
-  public final boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
+  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
   {
     if ( parent != null) parent.addChild( this);
     
