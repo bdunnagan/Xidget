@@ -58,8 +58,8 @@ public class OpenConfirmDialogAction extends GuardedAction
 
     String title = titleExpr.evaluateString( context);
     String message = messageExpr.evaluateString( context);
-    boolean allowCancel = allowCancelExpr.evaluateBoolean( context);
-    IModelObject imageNode = imageExpr.queryFirst( context);
+    boolean allowCancel = (allowCancelExpr != null)? allowCancelExpr.evaluateBoolean( context): false;
+    IModelObject imageNode = (imageExpr != null)? imageExpr.queryFirst( context): null;
     Object image = (imageNode != null)? imageNode.getValue(): null;
     
     // open dialog

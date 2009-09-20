@@ -40,7 +40,8 @@ public class LayoutAttachAction extends GuardedAction
   {
     super.configure( document);
    
-    IModelObject layout = document.getRoot().getParent().getFirstChild( "layout");
+    IModelObject root = document.getRoot();
+    IModelObject layout = root.getParent().getFirstChild( "layout");
     if ( layout != null)
     {
       String marginsSpec = Xlate.get( layout, "margins", Xlate.childGet( layout, "margins", (String)null));
@@ -54,9 +55,10 @@ public class LayoutAttachAction extends GuardedAction
       marginsExpr = XPath.createExpression( "'5'");
       spacingExpr = XPath.createExpression( "'5'");
     }
-    
+
+    // configure should only specify one of the following
+    xidgetID = Xlate.get( root, "xid", (String)null);
     xidgetExpr = document.getExpression( "xidget", true);
-    IModelObject root = document.getRoot();
     
     attachments = new ArrayList<Attachment>();
     for( Type type: Type.values())
@@ -87,7 +89,16 @@ public class LayoutAttachAction extends GuardedAction
     IXidget parent = (IXidget)element.getAttribute( "instance");
     
     // evaluate child xidget
-    if ( xidgetExpr != null) element = xidgetExpr.queryFirst( context);
+    if ( xidgetID != null)
+    {
+      for( IModelObject child: element.getChildren())
+        if ( child.getID().equals( xidgetID))
+          element = child;
+    }
+    else if ( xidgetExpr != null) 
+    {
+      element = xidgetExpr.queryFirst( context);
+    }
     
     // no child xidget found
     if ( element == null) return null;
@@ -227,6 +238,7 @@ public class LayoutAttachAction extends GuardedAction
 
   private final static IExpression thisExpr = XPath.createExpression( ".");
   
+  private String xidgetID;
   private IExpression xidgetExpr;
   private List<Attachment> attachments;
   private IExpression marginsExpr;
