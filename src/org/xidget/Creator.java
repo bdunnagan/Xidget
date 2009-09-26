@@ -136,6 +136,15 @@ public final class Creator
   }
   
   /**
+   * Returns the TagProcessor. Clients are free to change the handlers.
+   * @return Returns the TagProcessor.
+   */
+  public TagProcessor getTagProcessor()
+  {
+    return processor;
+  }
+  
+  /**
    * Register custom xpaths.
    */
   private void registerCustomXPaths()
@@ -161,23 +170,66 @@ public final class Creator
     long t1 = System.nanoTime();
     Log.printf( "perf", "parse: %3.2fms\n", (t1-t0)/1000000f);
     
-    // build widget hierarchy
-    build( xidgets.get( 0));
-    
-    long t2 = System.nanoTime();
-    Log.printf( "perf", "build: %3.2fms\n", (t2-t1)/1000000f);
-    
-    // bind the xidget
-    if ( bind)
+    for( IXidget xidget: xidgets)
     {
-      IBindFeature bindFeature = xidgets.get( 0).getFeature( IBindFeature.class);
-      bindFeature.bind( (StatefulContext)context, true);
-    
-      long t3 = System.nanoTime();
-      Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
+      // build widget hierarchy
+      build( xidget);
+      
+      long t2 = System.nanoTime();
+      Log.printf( "perf", "build: %3.2fms\n", (t2-t1)/1000000f);
+      t1 = t2;
+      
+      // bind the xidget
+      if ( bind)
+      {
+        IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+        bindFeature.bind( (StatefulContext)context, true);
+      
+        long t3 = System.nanoTime();
+        Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
+        t1 = t3;
+      }
     }
     
     return xidgets;
+  }
+  
+  /**
+   * Create and bind the xidget hierarchy for the specified configuration.
+   * @param parent The parent xidget.
+   * @param context The configuration context.
+   * @param bind True if new xidget should be bound.
+   */
+  public void create( IXidget parent, StatefulContext context, boolean bind) throws TagException
+  {
+    long t0 = System.nanoTime();
+    
+    // parse configuration
+    parse( parent, context);
+    
+    long t1 = System.nanoTime();
+    Log.printf( "perf", "parse: %3.2fms\n", (t1-t0)/1000000f);
+    
+    // build widget hierarchy
+    for( IXidget child: parent.getChildren())
+    {
+      build( child);
+      
+      long t2 = System.nanoTime();
+      Log.printf( "perf", "build: %3.2fms\n", (t2-t1)/1000000f);
+      t1 = t2;
+      
+      // bind the xidget
+      if ( bind)
+      {
+        IBindFeature bindFeature = child.getFeature( IBindFeature.class);
+        bindFeature.bind( (StatefulContext)context, true);
+      
+        long t3 = System.nanoTime();
+        Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
+        t1 = t3;
+      }
+    }
   }
   
   /**
@@ -246,7 +298,7 @@ public final class Creator
    * @param element The root of the configuration.
    * @return Returns the list of xidgets created.
    */
-  private List<IXidget> parse( StatefulContext context) throws TagException
+  public List<IXidget> parse( StatefulContext context) throws TagException
   {
     List<Object> result = processor.process( context);
     List<IXidget> xidgets = new ArrayList<IXidget>( result.size());
@@ -255,11 +307,22 @@ public final class Creator
   }
   
   /**
+   * Parse the specified xidget configuration.
+   * @param xidget Null or a parent xidget.
+   * @param element The root of the configuration.
+   * @return Returns the list of xidgets created.
+   */
+  public void parse( IXidget parent, StatefulContext context) throws TagException
+  {
+    processor.process( new ParentTagHandler( parent), context);
+  }
+  
+  /**
    * Create the widget hierarchy for the specified xidget. The root of the widget
    * hierarchy can be accessed through an appropriate platform-specific feature.
    * @param root The root of the xidget hierarchy.
    */
-  private void build( IXidget root)
+  public void build( IXidget root)
   {
     Stack<IXidget> stack = new Stack<IXidget>();
     stack.push( root);

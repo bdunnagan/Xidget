@@ -385,7 +385,7 @@ public class TagProcessor implements IFeatured
   public void replaceHandler( String tag, ITagHandler handler)
   {
     List<ITagHandler> handlers = getHandlers( tag);
-    if ( handlers.size() > 0) removeHandler( tag, handlers.get( 0));
+    if ( handlers != null && handlers.size() > 0) removeHandler( tag, handlers.get( 0));
     addHandler( tag, handler);
   }
   
