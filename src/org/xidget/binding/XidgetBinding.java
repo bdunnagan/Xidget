@@ -27,19 +27,17 @@ public class XidgetBinding implements IXidgetBinding
   /* (non-Javadoc)
    * @see org.xidget.binding.IXidgetBinding#bind(org.xmodel.xpath.expression.StatefulContext, boolean)
    */
-  public void bind( StatefulContext context, boolean notify)
+  public void bind( StatefulContext context)
   {
-    if ( notify) expression.addNotifyListener( context, listener);
-    else expression.addListener( context, listener);
+    expression.addNotifyListener( context, listener);
   }
 
   /* (non-Javadoc)
    * @see org.xidget.binding.IXidgetBinding#unbind(org.xmodel.xpath.expression.StatefulContext, boolean)
    */
-  public void unbind( StatefulContext context, boolean notify)
+  public void unbind( StatefulContext context)
   {
-    if ( notify) expression.removeNotifyListener( context, listener);
-    else expression.removeListener( context, listener); 
+    expression.removeListener( context, listener);
   }
   
   private IExpression expression;

@@ -72,7 +72,7 @@ public class BindFeature implements IBindFeature
   /* (non-Javadoc)
    * @see org.xidget.ifeature.IBindFeature#bind(org.xmodel.xpath.expression.StatefulContext, boolean)
    */
-  public void bind( StatefulContext context, boolean notify)
+  public void bind( StatefulContext context)
   {
     Log.printf( "xidget", "bind: %s with %s\n", xidget, context);
     
@@ -108,18 +108,18 @@ public class BindFeature implements IBindFeature
     // internal bindings
     if ( bindBeforeChildren != null)
       for( IXidgetBinding binding: bindBeforeChildren)
-        binding.bind( context, notify);
+        binding.bind( context);
     
     // bind children
     for( IXidget child: xidget.getChildren())
     {
       IModelObject config = child.getConfig();
-      if ( ignore == null || !ignore.contains( config.getType()))
+      if ( !shouldIgnore( config))
       {
         if ( Xlate.get( config, "context", Xlate.childGet( config, "context", (String)null)) == null)
         {
           IBindFeature bindFeature = child.getFeature( IBindFeature.class);
-          bindFeature.bind( context, notify);
+          bindFeature.bind( context);
         }
       }
     }
@@ -127,13 +127,13 @@ public class BindFeature implements IBindFeature
     // internal bindings
     if ( bindAfterChildren != null)
       for( IXidgetBinding binding: bindAfterChildren)
-        binding.bind( context, notify);
+        binding.bind( context);
   }
 
   /* (non-Javadoc)
    * @see org.xidget.ifeature.IBindFeature#unbind(org.xmodel.xpath.expression.StatefulContext, boolean)
    */
-  public void unbind( StatefulContext context, boolean notify)
+  public void unbind( StatefulContext context)
   {
     Log.printf( "xidget", "unbind: %s with %s\n", xidget, context);
     
@@ -146,19 +146,19 @@ public class BindFeature implements IBindFeature
     // internal bindings
     if ( bindBeforeChildren != null)
       for( IXidgetBinding binding: bindBeforeChildren)
-        binding.unbind( context, notify);
+        binding.unbind( context);
     
     // unbind children
     for( IXidget child: xidget.getChildren())
     {
       IBindFeature bindFeature = child.getFeature( IBindFeature.class);
-      bindFeature.unbind( context, notify);
+      bindFeature.unbind( context);
     }
 
     // internal bindings
     if ( bindAfterChildren != null)
       for( IXidgetBinding binding: bindAfterChildren)
-        binding.unbind( context, notify);
+        binding.unbind( context);
     
     // remove widget-context association
     IWidgetContextFeature widgetContextFeature = xidget.getFeature( IWidgetContextFeature.class);
@@ -176,6 +176,16 @@ public class BindFeature implements IBindFeature
     // unassign variable
     String variable = Xlate.get( xidget.getConfig(), "assign", (String)null);
     if ( variable != null) context.set( variable, Collections.<IModelObject>emptyList());
+  }
+  
+  /**
+   * Returns true if the specified configuration element should be ignored when binding.
+   * @param config The configuration element.
+   * @return Returns true if the specified configuration element should be ignored.
+   */
+  protected boolean shouldIgnore( IModelObject config)
+  {
+    return ignore != null && ignore.contains( config.getType());
   }
   
   /* (non-Javadoc)

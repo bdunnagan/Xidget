@@ -65,7 +65,7 @@ public class TriggerTagHandler extends AbstractTagHandler
     /* (non-Javadoc)
      * @see org.xidget.IXidgetBinding#bind(org.xmodel.xpath.expression.StatefulContext)
      */
-    public void bind( StatefulContext context, boolean notify)
+    public void bind( StatefulContext context)
     {
       trigger.activate( context);
     }
@@ -73,7 +73,7 @@ public class TriggerTagHandler extends AbstractTagHandler
     /* (non-Javadoc)
      * @see org.xidget.IXidgetBinding#unbind(org.xmodel.xpath.expression.StatefulContext)
      */
-    public void unbind( StatefulContext context, boolean notify)
+    public void unbind( StatefulContext context)
     {
       trigger.deactivate( context);
     }

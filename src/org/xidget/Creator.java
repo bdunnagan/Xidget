@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Stack;
 import org.xidget.binding.BackgroundBindingRule;
 import org.xidget.binding.BindingTagHandler;
-import org.xidget.binding.ChildrenBindingRule;
+import org.xidget.binding.ChildrenTagHandler;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.ContextTagHandler;
 import org.xidget.binding.EnableBindingRule;
@@ -67,7 +67,7 @@ public final class Creator
 
     // general
     processor.addHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
-    processor.addHandler( "children", new BindingTagHandler( new ChildrenBindingRule()));
+    processor.addHandler( "children", new ChildrenTagHandler());
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "context", new ContextTagHandler());
     processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
@@ -90,7 +90,7 @@ public final class Creator
     
     // attributes
     processor.addAttributeHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
-    processor.addAttributeHandler( "children", new BindingTagHandler( new ChildrenBindingRule()));
+    processor.addAttributeHandler( "children", new ChildrenTagHandler());
     processor.addAttributeHandler( "context", new ContextTagHandler());
     processor.addAttributeHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addAttributeHandler( "image", new BindingTagHandler( new IconBindingRule()));
@@ -183,7 +183,7 @@ public final class Creator
       if ( bind)
       {
         IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-        bindFeature.bind( (StatefulContext)context, true);
+        bindFeature.bind( (StatefulContext)context);
       
         long t3 = System.nanoTime();
         Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
@@ -223,7 +223,7 @@ public final class Creator
       if ( bind)
       {
         IBindFeature bindFeature = child.getFeature( IBindFeature.class);
-        bindFeature.bind( (StatefulContext)context, true);
+        bindFeature.bind( (StatefulContext)context);
       
         long t3 = System.nanoTime();
         Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
@@ -241,7 +241,7 @@ public final class Creator
     // unbind all contexts
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
     StatefulContext[] contexts = bindFeature.getBoundContexts().toArray( new StatefulContext[ 0]);
-    for( StatefulContext context: contexts) bindFeature.unbind( (StatefulContext)context, false);
+    for( StatefulContext context: contexts) bindFeature.unbind( (StatefulContext)context);
     
     // destroy widget hierarchy
     IWidgetCreationFeature creationFeature = xidget.getFeature( IWidgetCreationFeature.class);
@@ -278,9 +278,21 @@ public final class Creator
     // destroy
     destroy( xidget);
     
-    // parse and build
+    //
+    // Reparse the configuration. If the parse fails, save the exception to rethrow
+    // after the xidget has been rebuilt. Otherwise, the context that was unbound
+    // will be forgotten and the xidget cannot be rebuilt.
+    //
     IModelObject config = xidget.getConfig();
-    processor.process( new ParentTagHandler( xidget.getParent()), new StatefulContext( context, config));
+    TagException exception = null;
+    try
+    {
+      processor.process( new ParentTagHandler( xidget.getParent()), new StatefulContext( context, config));
+    }
+    catch( TagException e)
+    {
+      exception = e;
+    }
     
     // create widget hierarchy
     xidget = (IXidget)config.getAttribute( "instance");
@@ -288,7 +300,10 @@ public final class Creator
     
     // bind the xidget
     bindFeature = xidget.getFeature( IBindFeature.class);
-    bindFeature.bind( (StatefulContext)context, true);
+    bindFeature.bind( (StatefulContext)context);
+    
+    // rethrow parse exception
+    if ( exception != null) throw exception;
     
     return xidget;
   }

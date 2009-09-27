@@ -12,6 +12,7 @@ import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.PathSyntaxException;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IExpression;
@@ -79,14 +80,20 @@ public class BindingTagHandler extends AbstractTagHandler
     String xpath = Xlate.get( element, "");
     if ( xpath.length() == 0) return;
     
-    IExpression expression = XPath.createExpression( xpath);
-    
-    // create binding
-    IExpressionListener listener = rule.getListener( xidget, element);
-    XidgetBinding binding = new XidgetBinding( expression, listener);
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    if ( beforeChildren) bindFeature.addBindingBeforeChildren( binding); 
-    else bindFeature.addBindingAfterChildren( binding);
+    try
+    {
+      // create binding
+      IExpression expression = XPath.compileExpression( xpath);
+      IExpressionListener listener = rule.getListener( xidget, element);
+      XidgetBinding binding = new XidgetBinding( expression, listener);
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      if ( beforeChildren) bindFeature.addBindingBeforeChildren( binding); 
+      else bindFeature.addBindingAfterChildren( binding);
+    }
+    catch( PathSyntaxException e)
+    {
+      throw new TagException( String.format( "Error in expression: %s", element), e);
+    }
   }
 
   private IBindingRule rule;

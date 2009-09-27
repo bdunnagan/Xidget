@@ -74,14 +74,14 @@ public class ContextTagHandler extends AbstractTagHandler
       if ( nested != null)
       {
         if ( nested.getObject() == node) return;
-        feature.unbind( nested, false);
+        feature.unbind( nested);
       }
       
       if ( node != null)
       {
         nested = new StatefulContext( context, node);
         map.put( context, nested);
-        feature.bind( nested, true);
+        feature.bind( nested);
       }
     }
     
@@ -102,10 +102,10 @@ public class ContextTagHandler extends AbstractTagHandler
       IBindFeature feature = xidget.getFeature( IBindFeature.class);
       
       StatefulContext oldContext = NamedContexts.get( oldValue);
-      if ( oldContext != null) feature.unbind( oldContext, false);
+      if ( oldContext != null) feature.unbind( oldContext);
       
       StatefulContext newContext = NamedContexts.get( newValue);
-      if ( newContext != null) feature.bind( newContext, true);
+      if ( newContext != null) feature.bind( newContext);
     }
 
     public boolean requiresValueNotification()

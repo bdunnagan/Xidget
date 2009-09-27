@@ -16,14 +16,12 @@ public interface IXidgetBinding
   /**
    * Bind the listener to the expression in the specified context.
    * @param context The context.
-   * @param notify True if initial notification should be performed.
    */
-  public void bind( StatefulContext context, boolean notify);
+  public void bind( StatefulContext context);
   
   /**
    * Unbind the listener from the expression in the specified context.
    * @param context The context.
-   * @param notify True if final notification should be performed.
    */
-  public void unbind( StatefulContext context, boolean notify);
+  public void unbind( StatefulContext context);
 }

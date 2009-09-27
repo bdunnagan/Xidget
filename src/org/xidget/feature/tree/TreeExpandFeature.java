@@ -297,13 +297,13 @@ public class TreeExpandFeature implements ITreeExpandFeature
     {
       // bind xidget
       IBindFeature bindFeature = handler.getFeature( IBindFeature.class);
-      bindFeature.bind( context, true);
+      bindFeature.bind( context);
     }
     public void notifyMismatch( StatefulContext context, IXidget handler)
     {
       // unbind xidget
       IBindFeature bindFeature = handler.getFeature( IBindFeature.class);
-      bindFeature.unbind( context, false);
+      bindFeature.unbind( context);
   
       // clear rows of all tables in tree
       for( IXidget child: handler.getChildren())
