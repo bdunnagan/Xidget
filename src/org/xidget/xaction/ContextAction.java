@@ -13,6 +13,7 @@ import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
+import org.xmodel.xpath.expression.IExpression.ResultType;
 
 /**
  * An XAction similar to the existing ContextAction that also handles named contexts.
@@ -20,36 +21,37 @@ import org.xmodel.xpath.expression.StatefulContext;
 public class ContextAction extends XAction
 {
   /* (non-Javadoc)
-   * @see com.stonewall.cornerstone.cpmi.xaction.GuardedAction#configure(
-   * com.stonewall.cornerstone.cpmi.xaction.XActionDocument)
+   * @see org.xmodel.xaction.XAction#configure(org.xmodel.xaction.XActionDocument)
    */
   @Override
   public void configure( XActionDocument document)
   {
     super.configure( document);
 
-    nameExpr = document.getExpression( "name", true);
     sourceExpr = document.getExpression( "source", true);
     script = document.createScript( "source", "name");
   }
 
   /* (non-Javadoc)
-   * @see com.stonewall.cornerstone.cpmi.xaction.IXAction#run(org.xmodel.xpath.expression.IContext)
+   * @see org.xmodel.xaction.XAction#doRun(org.xmodel.xpath.expression.IContext)
    */
   public Object[] doRun( IContext context)
   {
-    if ( nameExpr != null)
+    if ( sourceExpr != null)
     {
-      StatefulContext named = NamedContexts.get( nameExpr.evaluateString( context));
-      if ( named != null) return script.run( named);
-    }
-    else if ( sourceExpr != null)
-    {
-      IModelObject source = sourceExpr.queryFirst( context);
-      if ( source != null)
+      if ( sourceExpr.getType( context) == ResultType.STRING)
       {
-        StatefulContext nested = new StatefulContext( context, source);
-        return script.run( nested);
+        StatefulContext named = NamedContexts.get( sourceExpr.evaluateString( context));
+        if ( named != null) return script.run( named);
+      }
+      else
+      {
+        IModelObject source = sourceExpr.queryFirst( context);
+        if ( source != null)
+        {
+          StatefulContext nested = new StatefulContext( context, source);
+          return script.run( nested);
+        }
       }
     }
     else
@@ -66,7 +68,6 @@ public class ContextAction extends XAction
     return null;
   }
 
-  private IExpression nameExpr;
   private IExpression sourceExpr;
   private ScriptAction script;
 }

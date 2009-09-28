@@ -135,16 +135,41 @@ public class LayoutAttachAction extends GuardedAction
     IXidget xidget2 = parent;
     if ( attachment.xidgetExpr != null)
     {
+      List<IXidget> children = parent.getChildren();
+      int index = children.indexOf( xidget1);
+      IXidget prev = (index == 0)? parent: children.get( index-1);
+      IXidget next = (index == children.size() - 1)? parent: children.get( index+1);
+      
+      attachment.xidgetExpr.setVariable( "previous", prev.getConfig());
+      attachment.xidgetExpr.setVariable( "next", next.getConfig());
+      
       IModelObject xidgetNode = attachment.xidgetExpr.queryFirst( context);
       if ( xidgetNode == null) return;
-    
       xidget2 = (IXidget)xidgetNode.getAttribute( "instance");
     }
     
     // validation
     if ( xidget1 == xidget2)
       throw new XActionException( "Cannot make attachment to self: "+XmlIO.toString( getDocument().getRoot()));
-        
+
+    if ( attachment.anchor2 == Type.nearest)
+    {
+      if ( xidget2 == parent) 
+      {
+        attachment.anchor2 = attachment.anchor1;
+      }
+      else
+      {
+        switch( attachment.anchor1)
+        {
+          case top: attachment.anchor2 = Type.bottom; break;
+          case left: attachment.anchor2 = Type.right; break;
+          case right: attachment.anchor2 = Type.left; break;
+          case bottom: attachment.anchor2 = Type.top; break;
+        }
+      }
+    }
+    
     // make attachments
     IComputeNode computeNode1 = getComputeNode( xidget1, attachment.anchor1, xidget1 == parent);
     IComputeNode computeNode2 = getComputeNode( xidget2, attachment.anchor2, xidget2 == parent);

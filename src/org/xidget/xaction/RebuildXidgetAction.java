@@ -37,7 +37,10 @@ public class RebuildXidgetAction extends GuardedAction
   {
     for( IModelObject element: xidgetExpr.query( context, null))
     {
-      IXidget xidget = (IXidget)element.getAttribute( "instance");
+      Object object = element.getAttribute( "instance");
+      if ( !(object instanceof IXidget)) continue;
+      
+      IXidget xidget = (IXidget)object;
       try
       {
         if ( xidget != null) Creator.getInstance().rebuild( xidget);
