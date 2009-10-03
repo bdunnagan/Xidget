@@ -155,16 +155,16 @@ public final class Creator
   }
   
   /**
-   * Create and bind the xidget hierarchy for the specified configuration.
-   * @param context The configuration context.
-   * @param bind True if new xidget should be bound.
+   * Create the xidget hierarchy for the specified configuration.
+   * @param parent Null or the parent xidget.
+   * @param configContext The configuration context.
    */
-  public List<IXidget> create( StatefulContext context, boolean bind) throws TagException
+  public List<IXidget> create( IXidget parent, StatefulContext configContext) throws TagException
   {
     long t0 = System.nanoTime();
     
     // parse configuration
-    List<IXidget> xidgets = parse( context);
+    List<IXidget> xidgets = (parent != null)? parse( parent, configContext): parse( configContext);
     if ( xidgets.size() == 0) return Collections.emptyList();
     
     long t1 = System.nanoTime();
@@ -178,17 +178,6 @@ public final class Creator
       long t2 = System.nanoTime();
       Log.printf( "perf", "build: %3.2fms\n", (t2-t1)/1000000f);
       t1 = t2;
-      
-      // bind the xidget
-      if ( bind)
-      {
-        IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-        bindFeature.bind( (StatefulContext)context);
-      
-        long t3 = System.nanoTime();
-        Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
-        t1 = t3;
-      }
     }
     
     return xidgets;
@@ -196,42 +185,25 @@ public final class Creator
   
   /**
    * Create and bind the xidget hierarchy for the specified configuration.
-   * @param parent The parent xidget.
-   * @param context The configuration context.
-   * @param bind True if new xidget should be bound.
+   * @param parent Null or the parent xidget.
+   * @param configContext The configuration context.
+   * @param bindContext The binding context.
    */
-  public void create( IXidget parent, StatefulContext context, boolean bind) throws TagException
+  public List<IXidget> create( IXidget parent, StatefulContext configContext, StatefulContext bindContext) throws TagException
   {
     long t0 = System.nanoTime();
-    
-    // parse configuration
-    parse( parent, context);
-    
-    long t1 = System.nanoTime();
-    Log.printf( "perf", "parse: %3.2fms\n", (t1-t0)/1000000f);
-    
-    // build widget hierarchy
-    for( IXidget child: parent.getChildren())
+    List<IXidget> xidgets = create( parent, configContext);
+    for( IXidget xidget: xidgets)
     {
-      build( child);
-      
-      long t2 = System.nanoTime();
-      Log.printf( "perf", "build: %3.2fms\n", (t2-t1)/1000000f);
-      t1 = t2;
-      
-      // bind the xidget
-      if ( bind)
-      {
-        IBindFeature bindFeature = child.getFeature( IBindFeature.class);
-        bindFeature.bind( (StatefulContext)context);
-      
-        long t3 = System.nanoTime();
-        Log.printf( "perf", "bind: %3.2fms\n", (t3-t2)/1000000f);
-        t1 = t3;
-      }
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      bindFeature.bind( (StatefulContext)bindContext);
+    
+      long t1 = System.nanoTime();
+      Log.printf( "perf", "bind: %3.2fms\n", (t1-t0)/1000000f);
     }
+    return xidgets;
   }
-  
+      
   /**
    * Unbind and dispose the specified xidget hierarchy.
    * @param xidget The xidget.
@@ -327,9 +299,14 @@ public final class Creator
    * @param element The root of the configuration.
    * @return Returns the list of xidgets created.
    */
-  public void parse( IXidget parent, StatefulContext context) throws TagException
+  public List<IXidget> parse( IXidget parent, StatefulContext context) throws TagException
   {
+    List<IXidget> children = new ArrayList<IXidget>( parent.getChildren());
     processor.process( new ParentTagHandler( parent), context);
+
+    List<IXidget> created = new ArrayList<IXidget>( parent.getChildren());
+    created.removeAll( children);
+    return created;
   }
   
   /**

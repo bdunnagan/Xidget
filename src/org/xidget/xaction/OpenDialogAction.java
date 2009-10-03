@@ -51,7 +51,7 @@ public class OpenDialogAction extends GuardedAction
     
     try
     {
-      List<IXidget> xidgets = Creator.getInstance().create( new StatefulContext( context, config), false);
+      List<IXidget> xidgets = Creator.getInstance().create( null, new StatefulContext( context, config));
       xidget = xidgets.get( 0);
     }
     catch( TagException e)

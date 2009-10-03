@@ -98,7 +98,7 @@ public class DynamicContainerFeature implements IDynamicContainerFeature, IListe
     {
       Child child = list.get( index);
       child.config = new StatefulContext( context, clone);
-      List<IXidget> xidgets = Creator.getInstance().create( child.config, false);
+      List<IXidget> xidgets = Creator.getInstance().create( null, child.config);
       if ( xidgets.size() > 0)
       {
         IXidget childXidget = xidgets.get( 0);

@@ -83,15 +83,6 @@ public class TagProcessor implements IFeatured
   }
 
   /**
-   * Returns the objects emitted by the root tag handlers.
-   * @return Returns the objects emitted by the root tag handles.
-   */
-  public List<Object> getRoots()
-  {
-    return roots;
-  }
-  
-  /**
    * Returns the context with which the process method was invoked.
    * @return Returns the context with which the process method was invoked.
    */
@@ -107,20 +98,20 @@ public class TagProcessor implements IFeatured
    */
   public List<Object> process( IContext context) throws TagException
   {
-    roots.clear();
-    process( null, context);
-    return roots;
+    return process( null, context);
   }
   
   /**
    * Process the specified fragment specifying the initial parent handler.
    * @param parent The parent handler of the root.
    * @param context The root of the fragment.
+   * @return Returns the objects emitted by root tag handlers.
    */
-  public void process( ITagHandler parent, IContext context) throws TagException
+  public List<Object> process( ITagHandler parent, IContext context) throws TagException
   {
     long t0 = System.nanoTime();
     
+    roots.clear();
     this.context = context;
     
     Stack<Entry> stack = new Stack<Entry>();
@@ -144,6 +135,8 @@ public class TagProcessor implements IFeatured
     
     long t1 = System.nanoTime();
     Log.printf( "perf", "TagProcessor.process: time=%3.3fms\n", ((t1-t0)/1000000f));
+    
+    return roots;
   }
 
   /**

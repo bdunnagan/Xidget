@@ -29,7 +29,11 @@ public class CreateXidgetAction extends GuardedAction
   public void configure( XActionDocument document)
   {
     super.configure( document);
-    sourceExpr = document.getExpression();
+    
+    contextExpr = document.getExpression( "context", true);
+    parentExpr = document.getExpression( "parent", true);
+    xidgetExpr = document.getExpression( "xidget", true);
+    if ( xidgetExpr == null) xidgetExpr = document.getExpression();
     variable = Xlate.get( document.getRoot(), "assign", (String)null);
   }
 
@@ -39,16 +43,18 @@ public class CreateXidgetAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
-    IModelObject root = sourceExpr.queryFirst( context);
-    if ( root == null) throw new XActionException( "Xidget not found at: "+sourceExpr);
-    
+    IModelObject root = xidgetExpr.queryFirst( context);
+    if ( root == null) throw new XActionException( "Xidget not found at: "+xidgetExpr);
+
     try
     {
-      StatefulContext inner = new StatefulContext( context, root);
-      initVariables( inner);
+      StatefulContext configContext = new StatefulContext( context, root);
+      initVariables( configContext);
       
-      Creator creator = Creator.getInstance();
-      List<IXidget> xidgets = creator.create( inner, true);
+      StatefulContext bindContext = createBindContext( context, configContext);
+      IModelObject parentNode = (parentExpr != null)? parentExpr.queryFirst( context): null;
+      IXidget parent = Xlate.get( parentNode, "instance", (IXidget)null);
+      List<IXidget> xidgets = Creator.getInstance().create( parent, configContext, bindContext);
       
       if ( variable != null)
       {
@@ -77,6 +83,22 @@ public class CreateXidgetAction extends GuardedAction
     
     return null;
   }
+
+  /**
+   * Create the context in which the xidget will be bound. The configuration context will be its parent.
+   * @param context The xaction context.
+   * @param configContext The configuration context.
+   * @return Returns the new binding context.
+   */
+  private StatefulContext createBindContext( IContext context, StatefulContext configContext)
+  {
+    if ( contextExpr != null)
+    {
+      IModelObject node = contextExpr.queryFirst( context);
+      if ( node != null) return new StatefulContext( configContext, node);
+    }
+    return configContext;
+  }
   
   /**
    * Initialize global variables on the specified context.
@@ -88,6 +110,8 @@ public class CreateXidgetAction extends GuardedAction
       context.set( "org.xidget.ui", new ModelObject( "org.xidget.ui"));
   }
   
-  private IExpression sourceExpr;
+  private IExpression contextExpr;
+  private IExpression parentExpr;
+  private IExpression xidgetExpr;
   private String variable;
 }
