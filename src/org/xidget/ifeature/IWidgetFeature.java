@@ -71,4 +71,22 @@ public interface IWidgetFeature
    * @param color The background color.
    */
   public void setBackground( int color);
+  
+  /**
+   * Set the name of the font family.
+   * @param font The font family name (i.e. courier).
+   */
+  public void setFont( String font);
+  
+  /**
+   * Set the font style.
+   * @param style The font style name (i.e. italic).
+   */
+  public void setFontStyle( String style);
+  
+  /**
+   * Set the font size.
+   * @param size The size of the font in points.
+   */
+  public void setFontSize( double size);
 }
