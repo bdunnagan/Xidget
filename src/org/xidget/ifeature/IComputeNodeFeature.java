@@ -21,9 +21,10 @@ public interface IComputeNodeFeature
    * zero offset, for example.
    * @param type The type of node.
    * @param container True if a node for the inside of a container should be returned.
+   * @param create True if the node should be created if it does not exist.
    * @return Returns null or the widget compute node of the specified type.
    */
-  public IComputeNode getComputeNode( Type type, boolean container);
+  public IComputeNode getComputeNode( Type type, boolean container, boolean create);
   
   /**
    * Returns the list of nodes that have been requested. It is assumed that if a node is requested

@@ -34,6 +34,8 @@ import org.xidget.binding.table.RowSetBindingRule;
 import org.xidget.binding.table.ShowGridBindingRule;
 import org.xidget.binding.table.SubTableTagHandler;
 import org.xidget.binding.text.EditableBindingRule;
+import org.xidget.binding.text.XinTagHandler;
+import org.xidget.binding.text.XoutTagHandler;
 import org.xidget.binding.tree.SubTreeTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
@@ -90,6 +92,8 @@ public final class Creator
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
     processor.addHandler( "visible", new BindingTagHandler( new VisibleBindingRule()));
+    processor.addHandler( "xin", new XinTagHandler());
+    processor.addHandler( "xout", new XoutTagHandler());
     
     // tables
     processor.addHandler( "showGrid", new BindingTagHandler( new ShowGridBindingRule()));

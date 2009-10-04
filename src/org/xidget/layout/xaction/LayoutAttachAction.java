@@ -248,7 +248,7 @@ public class LayoutAttachAction extends GuardedAction
     if ( xidget == null || anchor == null) return null;
     
     IComputeNodeFeature computeNodeFeature = xidget.getFeature( IComputeNodeFeature.class);
-    return computeNodeFeature.getComputeNode( anchor, container);
+    return computeNodeFeature.getComputeNode( anchor, container, true);
   }
   
   final class Attachment

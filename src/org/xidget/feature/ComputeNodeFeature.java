@@ -41,14 +41,14 @@ public class ComputeNodeFeature implements IComputeNodeFeature
   /* (non-Javadoc)
    * @see org.xidget.ifeature.IComputeNodeFeature#getComputeNode(org.xidget.ifeature.IComputeNodeFeature.Type, boolean)
    */
-  public IComputeNode getComputeNode( Type type, boolean container)
+  public IComputeNode getComputeNode( Type type, boolean container, boolean create)
   {
     if ( container)
     {
       switch( type)
       {
         case top:
-          if ( insideY0 == null)
+          if ( insideY0 == null && create)
           {
             insideY0 = new WidgetHandle( getName( xidget, type, container), 0);
             insideY0.setDefaultValue( 0f);
@@ -56,7 +56,7 @@ public class ComputeNodeFeature implements IComputeNodeFeature
           return insideY0;
           
         case left:   
-          if ( insideX0 == null) 
+          if ( insideX0 == null && create) 
           {
             insideX0 = new WidgetHandle( getName( xidget, type, container), 0);
             insideX0.setDefaultValue( 0f);
@@ -64,11 +64,11 @@ public class ComputeNodeFeature implements IComputeNodeFeature
           return insideX0;
           
         case right:
-          if ( insideX1 == null) insideX1 = new WidgetHandle( getName( xidget, type, container), 0);
+          if ( insideX1 == null && create) insideX1 = new WidgetHandle( getName( xidget, type, container), 0);
           return insideX1;
 
         case bottom:
-          if ( insideY1 == null) insideY1 = new WidgetHandle( getName( xidget, type, container), 0);
+          if ( insideY1 == null && create) insideY1 = new WidgetHandle( getName( xidget, type, container), 0);
           return insideY1;
           
         default:     return null;
@@ -82,34 +82,34 @@ public class ComputeNodeFeature implements IComputeNodeFeature
       switch( type)
       {
         case top:
-          if ( outsideY0 == null)
+          if ( outsideY0 == null && create)
           {
             outsideY0 = new WidgetHandle( getName( xidget, type, container), 0);
-            if ( size.height > 0) outsideY0.addDependency( new OffsetNode( getComputeNode( Type.bottom, false), -size.height));
+            if ( size.height > 0) outsideY0.addDependency( new OffsetNode( getComputeNode( Type.bottom, false, create), -size.height));
           }
           return outsideY0;
           
         case left:
-          if ( outsideX0 == null)
+          if ( outsideX0 == null && create)
           {
             outsideX0 = new WidgetHandle( getName( xidget, type, container), 0);
-            if ( size.width > 0) outsideX0.addDependency( new OffsetNode( getComputeNode( Type.right, false), -size.width));
+            if ( size.width > 0) outsideX0.addDependency( new OffsetNode( getComputeNode( Type.right, false, create), -size.width));
           }
           return outsideX0;
           
         case right:
-          if ( outsideX1 == null) 
+          if ( outsideX1 == null && create) 
           {
             outsideX1 = new WidgetHandle( getName( xidget, type, container), 0);
-            if ( size.width > 0) outsideX1.addDependency( new OffsetNode( getComputeNode( Type.left, false), size.width));
+            if ( size.width > 0) outsideX1.addDependency( new OffsetNode( getComputeNode( Type.left, false, create), size.width));
           }
           return outsideX1;
           
         case bottom:
-          if ( outsideY1 == null) 
+          if ( outsideY1 == null && create) 
           {
             outsideY1 = new WidgetHandle( getName( xidget, type, container), 0);
-            if ( size.height > 0) outsideY1.addDependency( new OffsetNode( getComputeNode( Type.top, false), size.height));
+            if ( size.height > 0) outsideY1.addDependency( new OffsetNode( getComputeNode( Type.top, false, create), size.height));
           }
           return outsideY1;
           

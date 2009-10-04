@@ -20,15 +20,6 @@ import org.xmodel.xpath.expression.IExpression;
  */
 public class XoutTagHandler extends AbstractTagHandler
 {
-  /**
-   * Create a tag handler associated with the specified text channel.
-   * @param channel The text channel.
-   */
-  public XoutTagHandler( String channel)
-  {
-    this.channel = channel;
-  }
-  
   /* (non-Javadoc)
    * @see org.xidget.config.processor.ITagHandler#enter(org.xidget.config.processor.TagProcessor, 
    * org.xidget.config.processor.ITagHandler, org.xmodel.IModelObject)
@@ -43,10 +34,8 @@ public class XoutTagHandler extends AbstractTagHandler
     
     IXidget xidget = xidgetFeature.getXidget();
     ITextModelFeature adapter = xidget.getFeature( ITextModelFeature.class);
-    adapter.setTransform( channel, xoutExpr);
+    adapter.setTransform( ITextModelFeature.allChannel, xoutExpr);
     
     return false;
   }
-
-  private String channel;
 }

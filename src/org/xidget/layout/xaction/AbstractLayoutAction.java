@@ -104,7 +104,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
   protected static IComputeNode getComputeNode( IXidget xidget, Type type)
   {
     IComputeNodeFeature feature = xidget.getFeature( IComputeNodeFeature.class);
-    return feature.getComputeNode( type, false);
+    return feature.getComputeNode( type, false, true);
   }
   
   /**
@@ -116,7 +116,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
   protected static IComputeNode getParentNode( IXidget xidget, Type type)
   {
     IComputeNodeFeature feature = xidget.getFeature( IComputeNodeFeature.class);
-    return feature.getComputeNode( type, true);
+    return feature.getComputeNode( type, true, true);
   }
   
   /**
