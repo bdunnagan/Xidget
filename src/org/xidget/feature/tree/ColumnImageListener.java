@@ -32,7 +32,7 @@ public class ColumnImageListener extends ExpressionListener
   @Override
   public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
   {
-    nodes.clear(); expression.query( context, nodes);
+    nodes = expression.query( context, null);
     
     Object value = nodes.get( 0).getValue();
     row.getCell( columnIndex).icon = value;
@@ -48,7 +48,7 @@ public class ColumnImageListener extends ExpressionListener
   @Override
   public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
   {
-    nodes.clear(); expression.query( context, nodes);
+    nodes = expression.query( context, null);
     
     Object value = (nodes.size() > 0)? nodes.get( 0).getValue(): null;
     row.getCell( columnIndex).icon = value;

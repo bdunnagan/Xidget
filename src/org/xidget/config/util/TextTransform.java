@@ -20,14 +20,15 @@ public class TextTransform
   
   /**
    * Transform the specified text.
+   * @param context The parent context.
    * @param text The text.
    * @return Returns the transformed text.
    */
-  public String transform( String text)
+  public String transform( StatefulContext context, String text)
   {
-    StatefulContext context = new StatefulContext();
-    context.set( "v", text);
-    return expression.evaluateString( context);
+    StatefulContext transformContext = new StatefulContext( context);
+    transformContext.set( "v", text);
+    return expression.evaluateString( transformContext);
   }
   
   private IExpression expression;

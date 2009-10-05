@@ -5,6 +5,7 @@
 package org.xidget.ifeature;
 
 import org.xmodel.IModelObject;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An interface for accessing the source element(s) of a xidget. The source element
@@ -23,10 +24,11 @@ public interface ISourceFeature
   
   /**
    * Set the source node of the specified channel.
+   * @param context The parent context.
    * @param channel The source channel.
    * @param node The source node.
    */
-  public void setSource( String channel, IModelObject node);
+  public void setSource( StatefulContext context, String channel, IModelObject node);
   
   /**
    * Get the source node of the specified channel.

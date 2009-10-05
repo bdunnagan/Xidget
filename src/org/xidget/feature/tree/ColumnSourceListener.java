@@ -83,7 +83,7 @@ public class ColumnSourceListener extends ExpressionListener
   @Override
   public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
   {
-    nodes.clear(); expression.query( context, nodes);
+    nodes = expression.query( context, null);
 
     setText( Xlate.get( nodes.get( 0), ""));
     setSource( nodes.get( 0));    
@@ -96,7 +96,7 @@ public class ColumnSourceListener extends ExpressionListener
   @Override
   public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
   {
-    nodes.clear(); expression.query( context, nodes);
+    nodes = expression.query( context, null);
   
     IModelObject node = (nodes.size() > 0)? nodes.get( 0): null;
     setText( Xlate.get( node, ""));

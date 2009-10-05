@@ -7,6 +7,7 @@ package org.xidget.ifeature.text;
 import org.xidget.ifeature.ISourceFeature;
 import org.xidget.text.ITextValidator;
 import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * The interface for setting the text of a text channel. The idea of a text widget
@@ -21,10 +22,11 @@ public interface ITextModelFeature extends ISourceFeature
 {
   /**
    * Set the text of the source node associated with the specified channel.
+   * @param context The parent context.
    * @param channel The channel.
    * @param text The text.
    */
-  public void setText( String channel, String text);
+  public void setText( StatefulContext context, String channel, String text);
   
   /**
    * Set the expression used to transform the text before it goes into the model.

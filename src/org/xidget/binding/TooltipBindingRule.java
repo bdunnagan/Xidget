@@ -50,8 +50,7 @@ public class TooltipBindingRule implements IBindingRule
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes.clear();
-      expression.query( context, nodes);
+      nodes = expression.query( context, null);
       if ( nodes.size() > 0) 
       {
         IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);

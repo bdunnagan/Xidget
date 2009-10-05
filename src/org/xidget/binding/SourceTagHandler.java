@@ -24,6 +24,7 @@ import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An implementation of ITagHandler for the <i>source</i> element.
@@ -87,10 +88,10 @@ public class SourceTagHandler extends AbstractTagHandler
       IModelObject source = expression.queryFirst( context);
       if ( source == sourceFeature.getSource( channel)) return;      
       
-      sourceFeature.setSource( channel, source);
+      sourceFeature.setSource( (StatefulContext)context, channel, source);
       
       ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( channel, Xlate.get( source, ""));
+      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, Xlate.get( source, ""));
       
       IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
       if ( buttonWidgetFeature != null) buttonWidgetFeature.setState( Xlate.get( source, false));
@@ -102,10 +103,10 @@ public class SourceTagHandler extends AbstractTagHandler
       IModelObject source = expression.queryFirst( context);
       if ( source == sourceFeature.getSource( channel)) return;      
       
-      sourceFeature.setSource( channel, source);
+      sourceFeature.setSource( (StatefulContext)context, channel, source);
       
       ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( channel, Xlate.get( source, ""));
+      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, Xlate.get( source, ""));
       
       IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
       if ( buttonWidgetFeature != null) buttonWidgetFeature.setState( Xlate.get( source, false));
@@ -114,7 +115,7 @@ public class SourceTagHandler extends AbstractTagHandler
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
       ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( channel, Boolean.toString( newValue));
+      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, Boolean.toString( newValue));
       
       IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
       if ( buttonWidgetFeature != null) buttonWidgetFeature.setState( newValue);
@@ -123,7 +124,7 @@ public class SourceTagHandler extends AbstractTagHandler
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
       ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( channel, Double.toString( newValue));
+      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, Double.toString( newValue));
       
       IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
       if ( buttonWidgetFeature != null)
@@ -137,7 +138,7 @@ public class SourceTagHandler extends AbstractTagHandler
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
       ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( channel, newValue);
+      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, newValue);
       
       try
       {
@@ -157,7 +158,7 @@ public class SourceTagHandler extends AbstractTagHandler
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
       ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( channel, Xlate.get( object, ""));
+      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)contexts[ 0], channel, Xlate.get( object, ""));
       
       try
       {

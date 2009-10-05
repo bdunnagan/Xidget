@@ -85,7 +85,7 @@ public class ColumnTitleBindingRule implements IBindingRule
     @Override
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes.clear(); expression.query( context, nodes);
+      nodes = expression.query( context, null);
       ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
       feature.setTitle( column, Xlate.get( nodes.get( 0), ""));
     }
@@ -97,7 +97,7 @@ public class ColumnTitleBindingRule implements IBindingRule
     @Override
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes.clear(); expression.query( context, nodes);
+      nodes = expression.query( context, null);
       IModelObject node = (nodes.size() > 0)? nodes.get( 0): null;
       ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
       feature.setTitle( column, Xlate.get( node, ""));

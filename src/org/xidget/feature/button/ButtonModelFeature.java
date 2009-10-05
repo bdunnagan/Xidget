@@ -8,6 +8,7 @@ import org.xidget.feature.text.TextModelFeature;
 import org.xidget.ifeature.button.IButtonModelFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * A default implementation of button model feature.
@@ -17,7 +18,7 @@ public class ButtonModelFeature implements IButtonModelFeature
   /* (non-Javadoc)
    * @see org.xidget.ifeature.ISourceFeature#setSource(java.lang.String, org.xmodel.IModelObject)
    */
-  public void setSource( String channel, IModelObject node)
+  public void setSource( StatefulContext context, String channel, IModelObject node)
   {
     if ( channel == TextModelFeature.allChannel) this.node = node;
   }

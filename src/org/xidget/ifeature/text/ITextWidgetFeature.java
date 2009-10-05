@@ -5,6 +5,7 @@
 package org.xidget.ifeature.text;
 
 import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * The interface for setting the text of a text widget. The idea of a text widget
@@ -25,10 +26,11 @@ public interface ITextWidgetFeature
   
   /**
    * Set the text of the widget associated with the specified channel.
+   * @param context The parent context.
    * @param channel The channel.
    * @param text The text.
    */
-  public void setText( String channel, String text);
+  public void setText( StatefulContext context, String channel, String text);
   
   /**
    * Set the expression used to transform the text before it goes into the widget.

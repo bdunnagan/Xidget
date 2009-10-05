@@ -73,13 +73,13 @@ public class ChoicesTagHandler extends AbstractTagHandler
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes.clear(); expression.query( context, nodes);
+      nodes = expression.query( context, null);
       updateChoices( nodes);
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes.clear(); expression.query( context, nodes);
+      nodes = expression.query( context, null);
       updateChoices( nodes);
     }
     

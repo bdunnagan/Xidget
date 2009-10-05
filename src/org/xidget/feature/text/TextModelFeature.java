@@ -16,6 +16,7 @@ import org.xidget.text.ITextValidator;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An implementation of IModelTextAdapter which supports a variable number of channels.
@@ -60,20 +61,20 @@ public class TextModelFeature implements ITextModelFeature
   /* (non-Javadoc)
    * @see org.xidget.text.adapter.IModelTextAdapter#setSource(java.lang.String, org.xmodel.IModelObject)
    */
-  public void setSource( String channelName, IModelObject node)
+  public void setSource( StatefulContext context, String channelName, IModelObject node)
   {
     Channel channel = channels.get( channelName);
     if ( channel != null) 
     {
       channel.source = node;
-      setText( channelName, Xlate.get( node, ""));
+      setText( context, channelName, Xlate.get( node, ""));
     }
   }
 
   /* (non-Javadoc)
    * @see org.xidget.text.adapter.IModelTextAdapter#setText(java.lang.String, java.lang.String)
    */
-  public void setText( String channelName, String text)
+  public void setText( StatefulContext context, String channelName, String text)
   {
     Channel channel = channels.get( channelName);
     if ( channel != null && !channel.updating) 
@@ -101,7 +102,7 @@ public class TextModelFeature implements ITextModelFeature
       {
         // transform
         if ( channel.transform != null) 
-          text = channel.transform.transform( text);
+          text = channel.transform.transform( context, text);
         
         // validate
         IErrorFeature errorFeature = xidget.getFeature( IErrorFeature.class);
