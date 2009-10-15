@@ -11,6 +11,7 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.text.ITextModelFeature;
+import org.xidget.ifeature.text.ITextWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IExpression;
@@ -33,8 +34,8 @@ public class XoutTagHandler extends AbstractTagHandler
     IExpression xoutExpr = Xlate.get( element, (IExpression)null);
     
     IXidget xidget = xidgetFeature.getXidget();
-    ITextModelFeature adapter = xidget.getFeature( ITextModelFeature.class);
-    adapter.setTransform( ITextModelFeature.allChannel, xoutExpr);
+    ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
+    feature.setTransform( ITextModelFeature.allChannel, xoutExpr);
     
     return false;
   }

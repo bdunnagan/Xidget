@@ -67,7 +67,15 @@ public class TextModelFeature implements ITextModelFeature
     if ( channel != null) 
     {
       channel.source = node;
-      setText( context, channelName, Xlate.get( node, ""));
+      
+      // validate
+      String text = Xlate.get( node, "");
+      IErrorFeature errorFeature = xidget.getFeature( IErrorFeature.class);
+      if ( errorFeature != null && channel.validator != null)
+      {
+        String error = channel.validator.validate( text);
+        if ( error != null) errorFeature.valueError( error);
+      }
     }
   }
 

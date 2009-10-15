@@ -33,8 +33,8 @@ public class XinTagHandler extends AbstractTagHandler
     IExpression xinExpr = Xlate.get( element, (IExpression)null);
     
     IXidget xidget = xidgetFeature.getXidget();
-    ITextModelFeature adapter = xidget.getFeature( ITextModelFeature.class);
-    adapter.setTransform( ITextModelFeature.allChannel, xinExpr);
+    ITextModelFeature feature = xidget.getFeature( ITextModelFeature.class);
+    feature.setTransform( ITextModelFeature.allChannel, xinExpr);
     
     return false;
   }

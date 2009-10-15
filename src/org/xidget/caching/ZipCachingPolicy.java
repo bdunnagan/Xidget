@@ -11,15 +11,15 @@ import org.xmodel.external.ICache;
 /**
  * An extension of JarCachingPolicy that uses the toolkit IFileAssociation for loading images.
  */
-public class JarCachingPolicy extends org.xmodel.external.caching.JarCachingPolicy
+public class ZipCachingPolicy extends org.xmodel.external.caching.ZipCachingPolicy
 {
-  public JarCachingPolicy()
+  public ZipCachingPolicy()
   {
     IToolkit toolkit = Creator.getInstance().getToolkit();
     addAssociation( toolkit.getImageFileAssociation());
   }
 
-  public JarCachingPolicy( ICache cache)
+  public ZipCachingPolicy( ICache cache)
   {
     super( cache);
     IToolkit toolkit = Creator.getInstance().getToolkit();

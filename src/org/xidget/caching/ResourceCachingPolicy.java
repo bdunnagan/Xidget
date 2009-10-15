@@ -11,7 +11,6 @@ import org.xmodel.external.ConfiguredCachingPolicy;
 import org.xmodel.external.ICache;
 import org.xmodel.external.IExternalReference;
 import org.xmodel.external.UnboundedCache;
-import org.xmodel.external.caching.JarCachingPolicy;
 
 /**
  * A caching policy that provides access to resources associated with a bean-sprayer
@@ -28,10 +27,10 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
     super( cache);
     
     fileCachingPolicy = new FileSystemCachingPolicy( cache);
-    jarCachingPolicy = new JarCachingPolicy( cache);
+    zipCachingPolicy = new ZipCachingPolicy( cache);
     
     String[] static1 = fileCachingPolicy.getStaticAttributes();
-    String[] static2 = jarCachingPolicy.getStaticAttributes();
+    String[] static2 = zipCachingPolicy.getStaticAttributes();
     String[] static3 = new String[ static1.length + static2.length];
     System.arraycopy( static1, 0, static3, 0, static1.length);
     System.arraycopy( static2, 0, static3, static1.length, static2.length);
@@ -46,7 +45,7 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
   {
     if ( useJar( reference))
     {
-      jarCachingPolicy.sync( reference);
+      zipCachingPolicy.sync( reference);
     }
     else
     {
@@ -60,7 +59,7 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
   @Override
   public void checkin( IExternalReference reference)
   {
-    if ( useJar( reference)) jarCachingPolicy.checkin( reference);
+    if ( useJar( reference)) zipCachingPolicy.checkin( reference);
     else fileCachingPolicy.checkin( reference);
   }
 
@@ -70,7 +69,7 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
   @Override
   public void checkout( IExternalReference reference)
   {
-    if ( useJar( reference)) jarCachingPolicy.checkout( reference);
+    if ( useJar( reference)) zipCachingPolicy.checkout( reference);
     else fileCachingPolicy.checkout( reference);
   }
 
@@ -80,7 +79,7 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
   @Override
   public void clear( IExternalReference reference) throws CachingException
   {
-    if ( useJar( reference)) jarCachingPolicy.clear( reference);
+    if ( useJar( reference)) zipCachingPolicy.clear( reference);
     else fileCachingPolicy.clear( reference);
   }
 
@@ -90,13 +89,13 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
   @Override
   public void flush( IExternalReference reference) throws CachingException
   {
-    if ( useJar( reference)) jarCachingPolicy.flush( reference);
+    if ( useJar( reference)) zipCachingPolicy.flush( reference);
     else fileCachingPolicy.flush( reference);
   }
 
   /**
-   * Returns true if the jar caching policy should be used.
-   * @return Returns true if the jar caching policy should be used.
+   * Returns true if the zip caching policy should be used.
+   * @return Returns true if the zip caching policy should be used.
    */
   private boolean useJar( IExternalReference reference)
   {
@@ -110,6 +109,6 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
   }
 
   private FileSystemCachingPolicy fileCachingPolicy;
-  private JarCachingPolicy jarCachingPolicy;
+  private ZipCachingPolicy zipCachingPolicy;
   private Boolean useJar;
 }
