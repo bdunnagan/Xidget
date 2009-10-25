@@ -7,15 +7,11 @@ package org.xidget.layout.xaction;
 import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.IComputeNodeFeature;
-import org.xidget.ifeature.IComputeNodeFeature.Type;
-import org.xidget.layout.IComputeNode;
+import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.layout.Margins;
 import org.xmodel.IModelObject;
-import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
-import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
@@ -31,23 +27,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
   public void configure( XActionDocument document)
   {
     super.configure( document);
-    
     xidgetsExpr = document.getExpression( "xidgets", true);
-    
-    IModelObject layout = document.getRoot().getParent().getFirstChild( "layout");
-    if ( layout != null)
-    {
-      String marginsSpec = Xlate.get( layout, "margins", Xlate.childGet( layout, "margins", "@margins"));
-      marginsExpr = XPath.createExpression ( marginsSpec);
-      
-      String spacingSpec = Xlate.get( layout, "spacing", Xlate.childGet( layout, "spacing", "@spacing"));
-      spacingExpr = XPath.createExpression ( spacingSpec);
-    }
-    else
-    {
-      marginsExpr = XPath.createExpression( "'5'");
-      spacingExpr = XPath.createExpression( "'5'");
-    }
   }
 
   /* (non-Javadoc)
@@ -61,22 +41,15 @@ public abstract class AbstractLayoutAction extends GuardedAction
     IXidget parent = (IXidget)element.getAttribute( "instance");
     
     // get parameters
-    Margins margins = new Margins( marginsExpr.evaluateString( context));
-    int spacing = (int)spacingExpr.evaluateNumber( context);
-    
-    // find children eligible for layout
-    List<IXidget> children = new ArrayList<IXidget>();
-    for( IXidget child: parent.getChildren())
-    {
-      if ( child.getFeature( IComputeNodeFeature.class) != null)
-        children.add( child);
-    }
+    ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
+    Margins margins = layoutFeature.getMargins();
+    int spacing = layoutFeature.getSpacing();
     
     // layout
     if ( xidgetsExpr == null)
     {
       if ( parent.getChildren().size() > 0)
-        layout( context, parent, children, margins, spacing);
+        layout( context, parent, parent.getChildren(), margins, spacing);
     }
     else
     {
@@ -85,38 +58,12 @@ public abstract class AbstractLayoutAction extends GuardedAction
       for( IModelObject node: elements)
       {
         IXidget xidget = (IXidget)node.getAttribute( "instance");
-        if ( xidget != null && xidget.getFeature( IComputeNodeFeature.class) != null) 
-          xidgets.add( xidget);
+        if ( xidget != null) xidgets.add( xidget);
       }
-      
       layout( context, parent, xidgets, margins, spacing);
     }
     
     return null;
-  }
-  
-  /**
-   * Returns the IComputeNode of the specified type from the specified xidget.
-   * @param xidget The xidget.
-   * @param type The type of node.
-   * @return Returns the IComputeNode of the specified type from the specified xidget.
-   */
-  protected static IComputeNode getComputeNode( IXidget xidget, Type type)
-  {
-    IComputeNodeFeature feature = xidget.getFeature( IComputeNodeFeature.class);
-    return feature.getComputeNode( type, false, true);
-  }
-  
-  /**
-   * Returns the IComputeNode of the specified type from the specified xidget.
-   * @param xidget The xidget.
-   * @param type The type of node.
-   * @return Returns the IComputeNode of the specified type from the specified xidget.
-   */
-  protected static IComputeNode getParentNode( IXidget xidget, Type type)
-  {
-    IComputeNodeFeature feature = xidget.getFeature( IComputeNodeFeature.class);
-    return feature.getComputeNode( type, true, true);
   }
   
   /**
@@ -130,6 +77,4 @@ public abstract class AbstractLayoutAction extends GuardedAction
   protected abstract void layout( IContext context, IXidget parent, List<IXidget> children, Margins margins, int spacing);
 
   private IExpression xidgetsExpr;
-  private IExpression marginsExpr;
-  private IExpression spacingExpr;
 }

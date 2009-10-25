@@ -4,25 +4,118 @@
  */
 package org.xidget.ifeature;
 
+import java.util.List;
+import org.xidget.IXidget;
+import org.xidget.layout.Margins;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
- * An interface for the layout algorithm feature. This feature is responsible
- * for computing new positions for widgets as a result of a change in the
- * position of a particular widget. This feature is associated with xidgets
- * that represent containers.
+ * An interface for the layout algorithm feature. This feature is responsible for computing new
+ * positions for widgets as a result of a change in the position of a particular widget. This
+ * feature is associated with xidgets that represent containers.
  */
 public interface ILayoutFeature
 {
+  public enum Side { top, left, right, bottom};
+  
   /**
-   * Configure the layout from the layout script or attachment declarations.
-   * This method will reevaluate the configuration when called more than once.
+   * Discard cached layout information.
    */
-  public void configure();
+  public void invalidate();
   
   /**
    * Layout the children of the container.
    * @param context The widget context.
    */
   public void layout( StatefulContext context);
+  
+  /**
+   * Set the margins.
+   * @param margins The margins.
+   */
+  public void setMargins( Margins margins);
+  
+  /**
+   * Returns the margins.
+   * @return Returns the margins.
+   */
+  public Margins getMargins(); 
+  
+  /**
+   * Set the spacing.
+   * @param spacing The spacing.
+   */
+  public void setSpacing( int spacing);
+  
+  /**
+   * Returns the spacing.
+   * @return Returns the spacing.
+   */
+  public int getSpacing();
+  
+  /**
+   * Attach the specified xidget to its previous peer.
+   * @param xidget The xidget.
+   * @param fromSide The side of the xidget to be attached.
+   * @param toSide The side of the previous xidget.
+   * @param offset The offset.
+   */
+  public void attachPrevious( IXidget xidget, Side fromSide, Side toSide, int offset);
+  
+  /**
+   * Attach the specified xidget to its next peer.
+   * @param xidget The xidget.
+   * @param fromSide The side of the xidget to be attached.
+   * @param toSide The side of the next xidget.
+   * @param offset The offset.
+   */
+  public void attachNext( IXidget xidget, Side fromSide, Side toSide, int offset);
+  
+  /**
+   * Attach the specified xidget to the opposite side of the specific peer.
+   * @param xidget The xidget.
+   * @param side The side of the xidget to be attached.
+   * @param peer The peer xidget.
+   * @param offset The offset.
+   */
+  public void attachPeer( IXidget xidget, Side side, IXidget peer, int offset);
+  
+  /**
+   * Attach the specified xidget to a specific peer.
+   * @param xidget The xidget.
+   * @param fromSide The side of the xidget to be attached.
+   * @param peer The peer xidget.
+   * @param toSide The side of the previous xidget.
+   * @param offset The offset.
+   */
+  public void attachPeer( IXidget xidget, Side fromSide, IXidget peer, Side toSide, int offset);
+
+  /**
+   * Attach the specified xidget to its container.
+   * @param xidget The xidget.
+   * @param side The side of the xidget to be attached.
+   * @param offset The offset from the container.
+   */
+  public void attachContainer( IXidget xidget, Side side, int offset);
+
+  /**
+   * Attach the specified xidget to its container at a position calculated as a percentage
+   * of the appropriate dimension of the container. For example, if the top-side is being
+   * attached, then the height of the container is used.
+   * @param xidget The xidget.
+   * @param side The side of the xidget to be attached.
+   * @param percent The percentage of the dimension of the container.
+   * @param offset The offset from the container.
+   * @param handle True if the anchor point can be moved.
+   */
+  public void attachContainer( IXidget xidget, Side side, float percent, int offset, boolean handle);
+  
+  /**
+   * Attach the right or bottom side of the container to all of the specified xidgets. The container
+   * is attached using a special node that calculates the maximum extent of the xidgets.
+   * @param xidget The xidget.
+   * @param side The side to which the container will be attached.
+   * @param offset The offset.
+   */
+  public void packContainer( List<IXidget> xidgets, Side side, int offset);
 }

@@ -6,10 +6,9 @@ package org.xidget.layout.xaction;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.IComputeNodeFeature.Type;
-import org.xidget.layout.IComputeNode;
+import org.xidget.ifeature.ILayoutFeature;
+import org.xidget.ifeature.ILayoutFeature.Side;
 import org.xidget.layout.Margins;
-import org.xidget.layout.OffsetNode;
 import org.xmodel.xpath.expression.IContext;
 
 /**
@@ -25,11 +24,7 @@ public class LayoutAlignTopAction extends AbstractLayoutAction
   protected void layout( IContext context, IXidget parent, List<IXidget> children, Margins margins, int spacing)
   {
     // attach the top side of each xidget to the form
-    IComputeNode form = getParentNode( parent, Type.top);
-    for( IXidget child: children)
-    {
-      IComputeNode node = getComputeNode( child, Type.top);
-      node.addDependency( new OffsetNode( form, margins.y0));
-    }
+    ILayoutFeature feature = parent.getFeature( ILayoutFeature.class);
+    for( IXidget child: children) feature.attachContainer( child, Side.top, margins.y0);
   }
 }

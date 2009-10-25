@@ -6,10 +6,9 @@ package org.xidget.layout.xaction;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.IComputeNodeFeature.Type;
-import org.xidget.layout.IComputeNode;
+import org.xidget.ifeature.ILayoutFeature;
+import org.xidget.ifeature.ILayoutFeature.Side;
 import org.xidget.layout.Margins;
-import org.xidget.layout.OffsetNode;
 import org.xmodel.xpath.expression.IContext;
 
 /**
@@ -25,11 +24,7 @@ public class LayoutAlignLeftAction extends AbstractLayoutAction
   protected void layout( IContext context, IXidget parent, List<IXidget> children, Margins margins, int spacing)
   {
     // attach the left side of each xidget to the form
-    IComputeNode form = getParentNode( parent, Type.left);
-    for( IXidget child: children)
-    {
-      IComputeNode node = getComputeNode( child, Type.left);
-      node.addDependency( new OffsetNode( form, margins.x0));
-    }
+    ILayoutFeature feature = parent.getFeature( ILayoutFeature.class);
+    for( IXidget child: children) feature.attachContainer( child, Side.left, margins.x0);
   }
 }

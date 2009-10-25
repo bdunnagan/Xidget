@@ -6,10 +6,9 @@ package org.xidget.layout.xaction;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.IComputeNodeFeature.Type;
-import org.xidget.layout.IComputeNode;
+import org.xidget.ifeature.ILayoutFeature;
+import org.xidget.ifeature.ILayoutFeature.Side;
 import org.xidget.layout.Margins;
-import org.xidget.layout.OffsetNode;
 import org.xmodel.xpath.expression.IContext;
 
 /**
@@ -25,17 +24,15 @@ public class LayoutLeftRightAction extends AbstractLayoutAction
   @Override
   protected void layout( IContext context, IXidget parent, List<IXidget> children, Margins margins, int spacing)
   {
+    ILayoutFeature feature = parent.getFeature( ILayoutFeature.class);
+    
     // attach the left side of the first xidget to the form
-    IComputeNode previous = getParentNode( parent, Type.left);
-    IComputeNode node = getComputeNode( children.get( 0), Type.left);
-    node.addDependency( new OffsetNode( previous, margins.x0));
+    feature.attachContainer( children.get( 0), Side.left, margins.x0);
     
     // attach the left side of each xidget to the right side of the previous xidget
     for( int i=1; i<children.size(); i++)
     {
-      previous = getComputeNode( children.get( i-1), Type.right);
-      node = getComputeNode( children.get( i), Type.left);
-      node.addDependency( new OffsetNode( previous, spacing));
+      feature.attachPeer( children.get( i), Side.left, children.get( i-1), Side.right, spacing);
     }
   }
 }

@@ -6,11 +6,9 @@ package org.xidget.layout.xaction;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.IComputeNodeFeature.Type;
-import org.xidget.layout.AnchorNode;
-import org.xidget.layout.IComputeNode;
+import org.xidget.ifeature.ILayoutFeature;
+import org.xidget.ifeature.ILayoutFeature.Side;
 import org.xidget.layout.Margins;
-import org.xidget.layout.OffsetNode;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -41,42 +39,32 @@ public class LayoutGridXAction extends AbstractLayoutAction
   @Override
   protected void layout( IContext context, IXidget parent, List<IXidget> children, Margins margins, int spacing)
   {
+    ILayoutFeature feature = parent.getFeature( ILayoutFeature.class);
+    
     int halfSpacing = spacing / 2;
-    float x = 0;
     float dx = 1f / children.size();
+    float x = dx;
     int last = children.size() - 1;
     boolean handle = (handleExpr != null)? handleExpr.evaluateBoolean( context): false;
     
     // attach the right side of each xidget to the grid, offset by half the interstice
-    for( int i=0; i < last; i++)
+    for( int i=0; i < last; i++, x += dx)
     {
       IXidget child = children.get( i);
-      x += dx;
-      IComputeNode node = getComputeNode( child, Type.right);
-      AnchorNode anchor = new AnchorNode( parent, Type.right, x, -halfSpacing);
-      if ( handle) anchor.setHandle( true);
-      node.addDependency( anchor);
+      feature.attachContainer( child, Side.right, x, -halfSpacing, handle);
     }
     
     // attach the left side of each xidget to the previous xidget, offset by the interstice
     for( int i=1; i <= last; i++)
     {
-      IXidget previous = children.get( i-1);
-      IXidget child = children.get( i);
-      IComputeNode node1 = getComputeNode( child, Type.left);
-      IComputeNode node2 = getComputeNode( previous, Type.right);
-      node1.addDependency( new OffsetNode( node2, spacing));
+      feature.attachPeer( children.get( i), Side.left, children.get( i-1), Side.right, spacing);
     }
     
     // attach the left side of the first xidget to the form
-    IComputeNode form = getParentNode( parent, Type.left);
-    IComputeNode node = getComputeNode( children.get( 0), Type.left);
-    node.addDependency( new OffsetNode( form, margins.x0));
+    feature.attachContainer( children.get( 0), Side.left, margins.x0);
     
     // attach the right side of the last xidget to the form
-    form = getParentNode( parent, Type.right);
-    node = getComputeNode( children.get( last), Type.right);
-    node.addDependency( new OffsetNode( form, -margins.x1));
+    feature.attachContainer( children.get( last), Side.right, -margins.x1);
   }
   
   private IExpression handleExpr;

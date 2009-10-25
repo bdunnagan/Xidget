@@ -6,10 +6,9 @@ package org.xidget.layout.xaction;
 
 import java.util.List;
 import org.xidget.IXidget;
-import org.xidget.ifeature.IComputeNodeFeature.Type;
-import org.xidget.layout.IComputeNode;
+import org.xidget.ifeature.ILayoutFeature;
+import org.xidget.ifeature.ILayoutFeature.Side;
 import org.xidget.layout.Margins;
-import org.xidget.layout.OffsetNode;
 import org.xmodel.xpath.expression.IContext;
 
 /**
@@ -24,16 +23,11 @@ public class LayoutFillYAction extends AbstractLayoutAction
   @Override
   protected void layout( IContext context, IXidget parent, List<IXidget> children, Margins margins, int spacing)
   {
-    IComputeNode parentTop = getParentNode( parent, Type.top);
-    IComputeNode parentBottom = getParentNode( parent, Type.bottom);
-    
+    ILayoutFeature feature = parent.getFeature( ILayoutFeature.class);
     for( IXidget child: children)
     {
-      IComputeNode top = getComputeNode( child, Type.top);
-      top.addDependency( new OffsetNode( parentTop, margins.y0));
-      
-      IComputeNode bottom = getComputeNode( child, Type.bottom);
-      bottom.addDependency( new OffsetNode( parentBottom, -margins.y1));
+      feature.attachContainer( child, Side.top, margins.y0);
+      feature.attachContainer( child, Side.bottom, -margins.y1);
     }
   }
 }
