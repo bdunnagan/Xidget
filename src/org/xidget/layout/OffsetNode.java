@@ -11,6 +11,12 @@ public class OffsetNode extends ComputeNode
 {
   public OffsetNode( IComputeNode node, int offset)
   {
+    this( "", node, offset);
+  }
+  
+  public OffsetNode( String name, IComputeNode node, int offset)
+  {
+    this.name = name;
     this.offset = offset;
     addDependency( node);
   }
@@ -28,8 +34,9 @@ public class OffsetNode extends ComputeNode
    */
   public String toString()
   {
-    return String.format( "%d. (%s) %+d <- %s", getID(), printValue(), offset, printDependencies());
+    return String.format( "%d. %s (%s) %+d <- %s", getID(), name, printValue(), offset, printDependencies());
   }
   
+  private String name;
   private int offset;
 }

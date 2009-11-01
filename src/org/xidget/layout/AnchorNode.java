@@ -23,6 +23,8 @@ public class AnchorNode extends ComputeNode
    */
   public AnchorNode( IComputeNode node1, IComputeNode node2, Side side, float fraction, int offset)
   {
+    this.node1 = node1;
+    this.node2 = node2;
     this.fraction = fraction;
     this.offset = offset;
     this.side = side;

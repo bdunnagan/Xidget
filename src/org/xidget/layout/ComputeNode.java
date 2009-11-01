@@ -81,7 +81,7 @@ public abstract class ComputeNode implements IComputeNode
    */
   public boolean hasValue()
   {
-    return hasValue || hasDefault;
+    return hasValue;
   }
 
   /* (non-Javadoc)
@@ -125,22 +125,6 @@ public abstract class ComputeNode implements IComputeNode
     this.hasValue = true;
   }
 
-  /* (non-Javadoc)
-   * @see org.xidget.layout.IComputeNode#setDefaultValue(java.lang.Float)
-   */
-  public void setDefaultValue( Float value)
-  {
-    if ( value == null) 
-    {
-      hasDefault = false;
-    }
-    else
-    {
-      hasDefault = true;
-      setValue( value);
-    }
-  }
-
   /**
    * Print the value of the node or ? if not defined.
    * @return Returns the value string.
@@ -176,7 +160,6 @@ public abstract class ComputeNode implements IComputeNode
 
   private List<IComputeNode> dependencies;
   private boolean hasValue;
-  private boolean hasDefault;
   private float value;
   private int id;
   private boolean cycle;

@@ -70,12 +70,6 @@ public interface IComputeNode
   public void update();
 
   /**
-   * Set the value of the node to be used if it has no other value.
-   * @param value Null or the default value.
-   */
-  public void setDefaultValue( Float value);
-  
-  /**
    * Set the value of this node.
    * @param value The value.
    */

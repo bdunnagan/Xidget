@@ -4,6 +4,9 @@
  */
 package org.xidget.layout;
 
+import org.xidget.IXidget;
+import org.xidget.ifeature.ILayoutFeature.Side;
+
 /**
  * An implementation of IComputeNode that functions as the handle for one side of a widget.
  * This handle may be the outside of any widget or the inside of a container.
@@ -12,12 +15,13 @@ public class WidgetHandle extends ComputeNode
 {
   /**
    * Create a new WidgeHandle with the specified offset.
-   * @param name The name of the handle.
+   * @param xidget The xidget (for debugging).
+   * @param side The side (for debugging).
    * @param offset The offset from the side of the widget.
    */
-  public WidgetHandle( String name, int offset)
+  public WidgetHandle( IXidget xidget, Side side, int offset)
   {
-    this.name = name;
+    this.name = String.format( "%s#%s", xidget.getConfig().getID(), side.toString());
     this.offset = offset;
   }
 
