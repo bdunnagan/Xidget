@@ -8,7 +8,6 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.ILayoutFeature.Side;
-import org.xidget.layout.Margins;
 import org.xmodel.xpath.expression.IContext;
 
 /**
@@ -21,9 +20,9 @@ public class LayoutPackYAction extends AbstractLayoutAction
    * @see org.xidget.layout.xaction.AbstractLayoutAction#layout(org.xmodel.xpath.expression.IContext, org.xidget.IXidget, java.util.List, org.xidget.layout.Margins, int)
    */
   @Override
-  protected void layout( IContext context, IXidget parent, List<IXidget> children, Margins margins, int spacing)
+  protected void layout( IContext context, IXidget parent, List<IXidget> children, int spacing)
   {
     ILayoutFeature feature = parent.getFeature( ILayoutFeature.class);
-    feature.packContainer( children, Side.bottom, margins.y1);
+    feature.packContainer( children, Side.bottom, 0);
   }
 }

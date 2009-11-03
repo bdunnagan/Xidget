@@ -15,6 +15,7 @@ import java.util.Stack;
 import org.xidget.IXidget;
 import org.xidget.Log;
 import org.xidget.ifeature.ILayoutFeature;
+import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.layout.AnchorNode;
 import org.xidget.layout.Bounds;
@@ -54,7 +55,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     sorted = null;
     groups.clear();
-    createContainerNodes();
   }
 
   /* (non-Javadoc)
@@ -91,26 +91,30 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void initContainerNodes()
   {
-    Margins margins = getMargins();
+    Margins margins = getCompositeMargins();
     
     IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
     Bounds bounds = new Bounds(); widgetFeature.getBounds( bounds);
     
     IComputeNode top = getCreateNode( xidget, Side.top);
+    top.clearDependencies();
     top.addDependency( new ConstantNode( margins.y0));
     
-    IComputeNode left = getCreateNode( xidget, Side.top);
+    IComputeNode left = getCreateNode( xidget, Side.left);
+    left.clearDependencies();
     left.addDependency( new ConstantNode( margins.x0));
     
     if ( bounds.width > 0)
     {
       IComputeNode right = getCreateNode( xidget, Side.right);
+      right.clearDependencies();
       right.addDependency( new ConstantNode( bounds.width - margins.x1));
     }
     
     if ( bounds.height > 0)
     {
       IComputeNode bottom = getCreateNode( xidget, Side.bottom);
+      bottom.clearDependencies();
       bottom.addDependency( new ConstantNode( bounds.height - margins.y1));
     }
   }
@@ -164,9 +168,9 @@ public class AnchorLayoutFeature implements ILayoutFeature
     IComputeNode right = getCreateNode( xidget, Side.right);
     IComputeNode bottom = getCreateNode( xidget, Side.bottom);
 
-    Margins margins = getMargins();
-    if ( right.hasValue()) bounds.width = right.getValue() + margins.x0 + margins.x1;
-    if ( bottom.hasValue()) bounds.height = bottom.getValue() + margins.y0 + margins.y1;
+    Margins margins = getCompositeMargins();
+    if ( right.hasValue()) bounds.width = right.getValue() + margins.x1;
+    if ( bottom.hasValue()) bounds.height = bottom.getValue() + margins.y1;
     
     // set widget size
     widgetFeature.setBounds( bounds.x, bounds.y, bounds.width, bounds.height);
@@ -190,16 +194,44 @@ public class AnchorLayoutFeature implements ILayoutFeature
       if ( xidget.getParent() != null)
       {
         ILayoutFeature parentFeature = xidget.getParent().getFeature( ILayoutFeature.class);
-        if ( parentFeature != null) return parentFeature.getMargins();
+        if ( parentFeature != null) margins = parentFeature.getMargins();
       }
     }
     
-    if ( margins == null) 
-    {
-      margins = new Margins( 2, 2, 2, 2);
-    }
+    if ( margins == null) margins = new Margins( 0, 0, 0, 0);
     
     return margins;
+  }
+  
+  /**
+   * Returns the inside margins requested by the container widget.
+   * @return Returns the inside margins requested by the container widget.
+   */
+  private Margins getContainerMargins()
+  {
+    IWidgetContainerFeature containerFeature = xidget.getFeature( IWidgetContainerFeature.class);
+    if ( containerFeature != null) return containerFeature.getInsideMargins();
+    return null;
+  }
+  
+  /**
+   * Returns the client margins plus the container margins.
+   * @return Returns the client margins plus the container margins.
+   */
+  private Margins getCompositeMargins()
+  {
+    if ( compositeMargins == null)
+    {
+      Margins clientMargins = getMargins();
+      Margins containerMargins = getContainerMargins();
+      compositeMargins = new Margins(
+        clientMargins.x0 + containerMargins.x0,
+        clientMargins.y0 + containerMargins.y0,
+        clientMargins.x1 + containerMargins.x1,
+        clientMargins.y1 + containerMargins.y1);
+    }
+    
+    return compositeMargins;
   }
 
   /* (non-Javadoc)
@@ -305,23 +337,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
         script = document.createScript();
       }
     }
-  }
-  
-  /**
-   * Create the container constant nodes.
-   */
-  private void createContainerNodes()
-  {
-    NodeGroup group = getNodeGroup( xidget);
-    
-    group.top = new WidgetHandle( xidget, Side.top, 0);
-    group.left = new WidgetHandle( xidget, Side.left, 0);
-    group.right = new WidgetHandle( xidget, Side.right, 0);
-    group.bottom = new WidgetHandle( xidget, Side.bottom, 0);
-    
-    Margins margins = getMargins();
-    group.top.addDependency( new ConstantNode( margins.y0));
-    group.left.addDependency( new ConstantNode( margins.x0));
   }
   
   /**
@@ -591,5 +606,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
   private Map<IXidget, NodeGroup> groups;
   private List<IComputeNode> sorted;
   private Margins margins;
+  private Margins compositeMargins;
   private int spacing;
 }

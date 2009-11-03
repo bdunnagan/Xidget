@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
-import org.xidget.layout.Margins;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
@@ -42,14 +41,13 @@ public abstract class AbstractLayoutAction extends GuardedAction
     
     // get parameters
     ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
-    Margins margins = layoutFeature.getMargins();
     int spacing = layoutFeature.getSpacing();
     
     // layout
     if ( xidgetsExpr == null)
     {
       if ( parent.getChildren().size() > 0)
-        layout( context, parent, parent.getChildren(), margins, spacing);
+        layout( context, parent, parent.getChildren(), spacing);
     }
     else
     {
@@ -60,7 +58,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
         IXidget xidget = (IXidget)node.getAttribute( "instance");
         if ( xidget != null) xidgets.add( xidget);
       }
-      layout( context, parent, xidgets, margins, spacing);
+      layout( context, parent, xidgets, spacing);
     }
     
     return null;
@@ -71,10 +69,9 @@ public abstract class AbstractLayoutAction extends GuardedAction
    * @param context The context of the action.
    * @param parent The parent xidget.
    * @param children The xidget to be arranged.
-   * @param margins The margins of the inside of the form.
    * @param spacing The spacing between xidgets.
    */
-  protected abstract void layout( IContext context, IXidget parent, List<IXidget> children, Margins margins, int spacing);
+  protected abstract void layout( IContext context, IXidget parent, List<IXidget> children, int spacing);
 
   private IExpression xidgetsExpr;
 }
