@@ -11,6 +11,7 @@ import org.xidget.ifeature.IScriptFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelObject;
 import org.xmodel.xaction.ScriptAction;
+import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -44,8 +45,16 @@ public class ScriptFeature implements IScriptFeature
 
     context.set( "xidget", holder);
     
-    ScriptAction script = scripts.get( name);
-    if ( script != null) script.run( context);
+    try
+    {
+      ScriptAction script = scripts.get( name);
+      if ( script != null) script.run( context);
+    }
+    catch( XActionException e)
+    {
+      // TODO: need a way to report this error
+      e.printStackTrace( System.err);
+    }
   }
 
   private IModelObject holder;
