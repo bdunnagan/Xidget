@@ -22,14 +22,122 @@ package org.xidget.ifeature;
 import org.xmodel.xaction.IXAction;
 
 /**
- * An interface for interpreting and handling key bindings. The key sequence array consists
- * of one or more keys including any modifiers. The key binding engine is a platform independent
- * engine that will be documented elsewhere. As an example, however, the following key sequence
- * will be valid: { "control", "f1"}.
- * The script string identifies the script to the IScriptFeature.
+ * An interface for interpreting and handling key bindings. This interface is defined in terms
+ * of a xidget-specific key sequence string and an IXAction to be executed when the key sequence
+ * is pressed. The key sequence string consists of one or more modifiers separated by a "+" sign
+ * followed by one or more primary keys separated by commas. The modifiers are separated by a 
+ * comma from the primary keys. For example, the key sequence string, "shift+control,a,b", contains
+ * two modifiers and two primaries.
+ * <p>
+ * This interface defines the key strings for all non-printable characters. These strings should 
+ * be referenced by the platform implementation of xidgets to provide a xidget-specific, cross-
+ * platform mechanism for defining key bindings.
  */
 public interface IKeyFeature
 {
+  public enum Key
+  {
+    comma,
+    
+    f1,
+    f2,
+    f3,
+    f4,
+    f5,
+    f6,
+    f7,
+    f8,
+    f9,
+    f10,
+    f11,
+    f12,
+    f13,
+    f14,
+    f15,
+    f16,
+    f17,
+    f18,
+    f19,
+    f20,
+    f21,
+    f22,
+    f23,
+    f24,
+    
+    alt,
+    altgraph,
+    control,
+    meta,
+    shift,
+    
+    tab,
+    escape,
+    backspace,
+    enter,
+    
+    capslock,
+    numlock,
+    scrolllock,
+    
+    home,
+    end,
+    insert,
+    pageup,
+    pagedown,
+    
+    cut,
+    paste,
+    copy,
+    
+    multiply,
+    subtract,
+    
+    accept,
+    again,
+    allcandidates,
+    alphanumeric,
+    begin,
+    cancel,
+    clear,
+    contextmenu,
+    convert,
+        
+    eurosign,
+    find,
+    fullwidth,
+    halfwidth,
+    help,
+        
+    keypadup,
+    keypadleft,
+    keypadright,
+    keypaddown,
+    
+    up,
+    left,
+    right,
+    down,
+    
+    numpad0,
+    numpad1,
+    numpad2,
+    numpad3,
+    numpad4,
+    numpad5,
+    numpad6,
+    numpad7,
+    numpad8,
+    numpad9,
+    
+    pause,
+    printscreen,
+    separator,
+    space,
+    stop,
+    undo,
+    windows
+  }
+  
   /**
    * Add the specified key-binding.
    * @param keys The keys sequence to be bound.
