@@ -22,6 +22,7 @@ package org.xidget.binding.text;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
+import org.xidget.config.TagProcessor;
 import org.xidget.feature.text.TextModelFeature;
 import org.xidget.ifeature.text.ITextWidgetFeature;
 import org.xmodel.IModelObject;
@@ -47,7 +48,7 @@ public class EditableBindingRule implements IBindingRule
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
-  public IExpressionListener getListener( IXidget xidget, IModelObject element)
+  public IExpressionListener getListener( TagProcessor processor, IXidget xidget, IModelObject element)
   {
     return new Listener( xidget, Xlate.get( element, "channel", TextModelFeature.allChannel));
   }

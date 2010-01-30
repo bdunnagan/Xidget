@@ -26,40 +26,19 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
+import org.xidget.ifeature.IKeyFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.PathSyntaxException;
 import org.xmodel.Xlate;
+import org.xmodel.xaction.IXAction;
+import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xpath.XPath;
+import org.xmodel.xpath.expression.ExpressionListener;
+import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
-import org.xmodel.xpath.expression.IExpressionListener;
 
-/**
- * A tag handler which creates a new XidgetBinding on its parent xidget.
- */
-public class BindingTagHandler extends AbstractTagHandler
+public class KeyTagHandler extends AbstractTagHandler
 {
-  /**
-   * Create the tag handler with the specified rule and bind on the start-tag. 
-   * The binding will be performed after all child xidgets are bound.
-   * @param rule The rule.
-   */
-  public BindingTagHandler( IBindingRule rule)
-  {
-    this( rule, false);
-  }
-  
-  /**
-   * Create the tag handler with the specified rule and bind on the start-tag.
-   * The binding is performed before or after all child xidgets are bound.
-   * @param rule The rule.
-   * @param beforeChildren True if rule should be bound before xidget children are bound.
-   */
-  public BindingTagHandler( IBindingRule rule, boolean beforeChildren)
-  {
-    this.rule = rule;
-    this.beforeChildren = beforeChildren;
-  }
-  
   /* (non-Javadoc)
    * @see org.xidget.config.ITagHandler#enter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
@@ -87,30 +66,45 @@ public class BindingTagHandler extends AbstractTagHandler
     IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
     if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
-    // check if rule applies
     IXidget xidget = xidgetFeature.getXidget();
-    if ( !rule.applies( xidget, element)) return; 
     
     // create expression
-    String xpath = Xlate.get( element, "");
+    String xpath = Xlate.get( element, "keys", "");
     if ( xpath.length() == 0) return;
     
     try
     {
       // create binding
       IExpression expression = XPath.compileExpression( xpath);
-      IExpressionListener listener = rule.getListener( processor, xidget, element);
+      
+      Listener listener = new Listener();
+      listener.xidget = xidget;
+      
+      XActionDocument doc = new XActionDocument( element);
+      doc.setClassLoader( processor.getClassLoader());
+      listener.script = doc.createScript();
+        
       XidgetBinding binding = new XidgetBinding( expression, listener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-      if ( beforeChildren) bindFeature.addBindingBeforeChildren( binding); 
-      else bindFeature.addBindingAfterChildren( binding);
+      bindFeature.addBindingAfterChildren( binding);
     }
     catch( PathSyntaxException e)
     {
       throw new TagException( String.format( "Error in expression: %s", element), e);
     }
   }
-
-  private IBindingRule rule;
-  private boolean beforeChildren;
+  
+  private class Listener extends ExpressionListener
+  {
+    public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
+    {
+      if ( newValue == null) return;
+      
+      IKeyFeature keyFeature = xidget.getFeature( IKeyFeature.class);
+      if ( keyFeature != null) keyFeature.bind( newValue, script);
+    }
+    
+    IXidget xidget;
+    IXAction script;
+  };
 }

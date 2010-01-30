@@ -20,6 +20,7 @@
 package org.xidget.binding;
 
 import org.xidget.IXidget;
+import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IErrorFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -44,7 +45,7 @@ public class ErrorBindingRule implements IBindingRule
   /* (non-Javadoc)
    * @see org.xidget.binding.IBindingRule#getListener(org.xidget.IXidget, org.xmodel.IModelObject)
    */
-  public IExpressionListener getListener( IXidget xidget, IModelObject element)
+  public IExpressionListener getListener( TagProcessor processor, IXidget xidget, IModelObject element)
   {
     return new Listener( xidget, Xlate.get( element, "structure", false));
   }

@@ -22,6 +22,7 @@ package org.xidget.binding.table;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
+import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -46,7 +47,7 @@ public class ColumnTitleBindingRule implements IBindingRule
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#getListener(org.xidget.IXidget)
    */
-  public IExpressionListener getListener( IXidget xidget, IModelObject element)
+  public IExpressionListener getListener( TagProcessor processor, IXidget xidget, IModelObject element)
   {
     int column = element.getParent().getChildren( element.getType()).indexOf( element);
     return new Listener( xidget, column);

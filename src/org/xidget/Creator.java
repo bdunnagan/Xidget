@@ -35,6 +35,7 @@ import org.xidget.binding.FontSizeBindingRule;
 import org.xidget.binding.FontStyleBindingRule;
 import org.xidget.binding.ForegroundBindingRule;
 import org.xidget.binding.IconBindingRule;
+import org.xidget.binding.KeyTagHandler;
 import org.xidget.binding.LabelBindingRule;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
@@ -135,6 +136,9 @@ public final class Creator
     processor.addHandler( "onClose", new ScriptTagHandler());
     processor.addHandler( "onDrag", new ScriptTagHandler());
     processor.addHandler( "onDrop", new ScriptTagHandler());
+    
+    // key bindings
+    processor.addHandler( "onKeyPress", new KeyTagHandler());
 
     // sub-tables and sub-trees
     processor.addHandler( "tree", new SubTreeTagHandler());
