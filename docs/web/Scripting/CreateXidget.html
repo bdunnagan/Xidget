@@ -1,0 +1,45 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>CreateXidget Element</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+
+<body>
+<h2>CreateXidget</h2>
+
+<h4>Overview</h4>
+<p>
+The <i>createXidget</i> script element creates and binds a xidget. The location of the xidget configuration
+and the context to which the xidget will be bound are provided to the script. The location of the xidget configuration
+is identified by an xpath which can be defined in three ways: in the text of the element, in the <i>xidget</i> attribute,
+or in the <i>xidget</i> child element. The context is defined in the <i>context</i> attribute or child element. If the
+context is not defined then the current script context is used.<p>
+<p>
+Any xidget can be created with the <i>createXidget</i> script element. If the xidget is an 
+<a href="Xidgets/Application.html"><i>app</i></a> xidget then a new window is created. In this case, the <i>assign</i>
+attribute should contain the name of the variable that will store the instance so that it can be destroyed later.
+If the xidget configuration is not an <a href="Xidgets/Application.html"><i>app</i></a> xidget then the <i>parent</i>
+attribute, or child element, determines the xidget container to which the newly create xidget will be parented.</p>
+<p style="color: #a00000;">
+The event processing loop for the widget toolkit is entered after the main script completes. Thus, the main script
+can create more than one application xidget. The main script must complete, however, for the application window(s) to
+become visible.</p>
+
+<h4>Creating An Application Xidget</h4>
+<p>
+
+
+</body>
+</html>

@@ -20,6 +20,45 @@
 <h2>Introduction To Xidgets</h2>
 
 <h4>Overview</h4>
+<p>
+<i>Xidget</i> is short for Xml Widget. A xidget is an xml element that defines the appearance and behavior of a widget. So
+why do we need another xml widget schema? The main difference between xidgets and other xml widget schemas is that xidgets
+leverage the Java Advanced Hierarchical Model (JAHM) framework. JAHM makes it possible for Java code to receive notification
+when the result of an arbitrary xpath expression changes. In the context of the xidget framework, JAHM makes it possible for
+the xidget schema to implement a bi-directional transform between the visual representation of data and the data-model. This
+technique is particularly powerful when defining complex widgets such as tables and trees.</p>
+<p>
+JAHM also provides an extensible framework for caching external data from the network, a database, the file-system, or any
+other external data source. A <i>caching policy</i> determines when, and how much, data is cached in memory. The
+<i>caching policy</i> also defines how data is transformed into xml so that xpath expressions can access the data. For
+more information on caching policies see <a href="HowToUseExternalReferences.html">How To Use External References</a>.</p>
+<p>
+The xidget schema also includes a simple, extensible scripting language which is designed for scripting the business logic
+in a xidget application. Each element in a xidget script corresponds to a Java class that implements the <i>IXAction</i>
+interface. Extending the scripting language is as simple as implementing this interface (or more often by extending the 
+<i>GuardedAction</i> class), and including a <i>package</i> reference in your xidget configuration. The <i>package</i>
+reference contains the name of the Java package to which the implementation belongs.</p>
+
+<h4>A Simple Xidget Example</h4>
+<p>
+The simplest xidget application consists of two xml files. The first file is the main script. This name of this script
+is passed as an argument to the Main class which is part of the xidget toolkit for a particular widget platform. 
+See <a href="Main Script.html">The Main Script</a> for more information. The second xml file will contain the application 
+xidget configuration. The last line of the main script will call the <i>createXidget</i> script element and supply the
+path of the application xidget configuration, as well as a context element to which the application xidget will be bound.
+For more information on binding and the xidget lifecycle see <a href="Xidgets/Lifecycle.html">The Xidget Lifecycle</a>.</p>
+<p>
+The following code shows a main script that creates an application xidget.</p>
+
+<div class="xml">
+<pre>
+  <script>
+    <assign name="xml">.</assign>
+  </script>
+</pre>
+</div>
+
+
 
 </body>
 </html>
