@@ -1,0 +1,46 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>The Xidget Lifecycle</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+
+<body>
+<h2>The Xidget Lifecycle</h2>
+
+<h4>Xidget Creation</h4>
+<p>
+Xidget creation consists of the following stages: <b>Creation</b>, <b>Initialization</b>, <b>Construction</b>, <b>Binding</b> 
+and <b>Visibility</b>. A xidget is created by calling the <i>createXidget</i> script element. A xidget is associated with a single 
+xpath context that is supplied to the <i>createXidget</i> script, and the xpaths in the xidget configuration are bound to this 
+context when the xidget is bound.</p>
+<p>
+The <b>Creation</b> stage involves instantiating an implementation of the <i>IXidget</i> interface based on a configuration element.
+The mapping of the implementation of <i>IXidget</i> to a configuration element may be defined in the xidget base package, in the
+xidget toolkit implementation, or in a user-defined plugin.</p>
+<p>
+Once the xidget class has been instantiated, the <i>onOpen</i> script is called. At this point, the xpaths within the xidget configuration 
+have not yet been bound to the xidget context. This means, among other things, that the script can create xml fragments and assign them
+to variables that are referenced by xpaths in the xidget configuration.</p>
+<p>
+After the <i>onOpen</i> script is called, the widget hierarchy is built, but the widget hierarchy is not made visible until after the
+xidget is bound to its context. Thus, a widget will be populated based on its xidget xpaths before it becomes visible.</p>
+
+<h4>Xidget Destruction</h4>
+<p>
+Similarly, the xidget destruction consists of the following stages: <b>Visibility</b>, <b>Binding</b>, <b>Destruction</b>, 
+<b>Finalization</b> and <b>Deletion</b>. These stages can be understood by symmetry with the process of creation.</p>
+
+</body>
+</html>

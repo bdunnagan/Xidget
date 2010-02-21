@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>If/Else Elements</title>
+  <style type="text/css">
+p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+<body>
+<h2>If/Else</h2>
+<h4>Overview</h4>
+<p>
+The <i>if</i> script element conditional executes a script. If the <i>if</i>
+condition is not
+met then the next <i>else</i> script element will be executed. An
+xpath defines the condition
+under which the script will be executed. The xpath is evaluated as if
+it were enclosed by the
+boolean() function, so any xpath return type is valid.</p>
+<p>
+There are three different attributes in which the xpath condition may
+be specified. If the
+condition is specified in the <i>test</i> or <i>true</i> attributes
+then the script will be
+executed if the boolean value of the xpath is true. If the condition is
+specified in the
+<i>false</i> attribute then the script will be executed if the boolean
+value of the xpath
+is false.</p>
+<p style="color: #a00000;">
+Keep in mind that almost all script elements may be made conditional by defining the
+<i>when</i> attribute. The <i>when</i> attribute contains an xpath which
+is evaluated as a boolean. Therefore, it is only necessary to use the <i>if</i> script
+element when you need an <i>else</i> script, too.</p>
+
+<h4>Using An If Statement</h4>
+<p>
+The following&nbsp;example will&nbsp;print the string "Frank Wilzcek":</p>
+<div class="xml">
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The
+Lightness of Being']&lt;/assign&gt;
+<br>
+&lt;if test="$book/title = 'The Lightness of Being'"&gt;<br>
+&nbsp; &nbsp;&lt;print&gt;$book/author&lt;/print&gt;<br>
+&lt;/if&gt;
+</div>
+
+<p>
+The following&nbsp;example will also &nbsp;print the string "Frank
+Wilzcek":</p>
+<div class="xml">
+&lt;if <span style="font-weight: bold;">true</span>="$book/title =
+'The Lightness of Being'"&gt;<br>
+&nbsp; &nbsp;&lt;print&gt;$book/author&lt;/print&gt;<br>
+&lt;/if&gt;
+</div>
+
+<p>
+These examples are equivalent to the following:</p>
+
+<div class="xml">
+&lt;print when="$book/title = 'The Lightness of Being'"&gt;$book/author&lt;/print&gt;
+</div>
+
+<h4>Using If/Else Statements</h4>
+<p>
+The following example will print the string "John Irving":</p>
+<div class="xml">
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The
+Cider House Rules']&lt;/assign&gt;
+<br>
+&lt;if test="$book/title = 'The Lightness of Being'"&gt;<br>
+&nbsp; &nbsp;&lt;print&gt;$book/author&lt;/print&gt;<br>
+&lt;/if&gt;
+<br>
+&lt;else&gt;
+&nbsp;<br>
+&nbsp; &nbsp;&lt;print&gt;$book/author&lt;/print&gt;<br>
+&lt;/else&gt;
+</div>
+<h4>Using Negation</h4>
+<p>
+The following example will not print anything:</p>
+<div class="xml">
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The
+Lightness of Being']&lt;/assign&gt;
+<br>
+&lt;if <span style="font-weight: bold;">false</span>="$book/title =
+'The Lightness of Being'"&gt;<br>
+&nbsp;&nbsp; &lt;print&gt;$book/author&lt;/print&gt;<br>
+&lt;/if&gt;
+</div>
+</body>
+</html>

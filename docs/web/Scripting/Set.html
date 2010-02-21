@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>Set Element</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+<body>
+<h2>Set</h2>
+<h4>Overview</h4>
+<p>
+The set script element sets the value of a node. If the node is an
+attribute then the attribute value
+is set. If the node is an element then the element text is set. The
+source xpath is string evaluated
+and used to set the value of each of the nodes in the target node-set.
+If the target xpath does not
+return any nodes, and the target xpath ends in one or more location
+steps then an element is created
+for each location step that does not return at least one node.</p>
+<p>
+The schema of many of the script elements is flexible, allowing the
+user to choose a convention that
+appeals to them. Many of the script elements operate on so-called
+source and target elements. In every
+case, the schema allows the source or target xpath to be defined in an
+attribute, in an element, or as
+the value of the script element. If the source xpath is defined as the
+value of a script element then
+the target must be defined as an attribute, and vice versa.
+</p>
+<h4>Basic Assignment</h4>
+<p>
+The following example sets the <i>author</i> element of a book:</p>
+<div class="xml">
+&lt;set source="'Frank Wilzcek'"&gt;collection('library')/books/book[
+title='The Lightness of Being']/author&lt;/set&gt;
+</div>
+<p>
+The following example sets the <i>id</i> attribute of an element.</p>
+<div class="xml">
+&lt;set source="$id"&gt;collection('library')/books/book[ title='The
+Lightness of Being']/@id&lt;/set&gt;
+</div>
+<p><b>Note:</b><br>
+In general the <i>id</i> attribute should be assigned before an
+element is parented, so that the element has an identity
+when it becomes accessible.</p>
+<p>
+The following example sets the <i>status</i> attribute of every book
+in the library collection.</p>
+<div class="xml">
+&lt;set
+source="'reserved'"&gt;collection('library')/books/book/@status&lt;/set&gt;
+</div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>For Element</title>
+  <style type="text/css">
+p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+<body>
+<h2>For</h2>
+<h4>Overview</h4>
+<p>
+The <i>if</i>
+script element works as either a numeric iterator, or a
+node-set iterator. When the <i>source</i>
+attribute
+or element is present, it contains an xpath that returns the node-set
+to be iterated. The <i>assign</i>
+attribute contains
+the name of the variable to which each element of the node-set will be
+assigned.</p>
+<p>
+Numeric iteration requires the <i>from</i>
+and <i>to</i>
+attributes,
+and optionally the <i>by</i>
+attribute. The <i>from</i>
+attribute contains a numeric xpath that gives the starting value. The <i>to</i>
+attribute contains a numeric xpath that
+gives the ending attribute (inclusive), and the <i>by</i>
+attribute
+contains a numeric attribute that gives the increment.</p>
+<h4>Iterating A Node-Set</h4>
+<p>
+The following example prints each node in the node-set given by the
+source xpath:</p>
+<div class="xml">
+&lt;for assign="node"
+source="collection('library')/books/book"&gt; <br>
+&nbsp; &lt;print&gt;$node&lt;/print&gt;
+<br>
+&lt;/for&gt;
+</div>
+<h4>Numeric Iteration</h4>
+<p>
+The following example prints the numbers from 1 to 10:</p>
+<div class="xml">
+&lt;for assign="i" from="1" to="10"&gt; <br>
+&nbsp; &lt;print&gt;$i&lt;/print&gt;
+<br>
+&lt;/for&gt;
+</div>
+<p>
+The following example prints the odd numbers from 1 to 10:</p>
+<div class="xml">
+&lt;for assign="i" from="1" to="10" by="2"&gt; <br>
+&nbsp; &lt;print&gt;$i&lt;/print&gt;
+<br>
+&lt;/for&gt;
+</div>
+</body>
+</html>

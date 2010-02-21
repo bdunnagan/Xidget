@@ -1,0 +1,50 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Main Script</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    pre.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #303030}
+    div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+  </style>
+</head>
+
+<body>
+<h2>Main Script</h2>
+<p>
+A xidget application is started by invoking the JVM with the platform runnable jar and passing 
+the file-system path of an xml file containing a xidget script. This script is called the main
+script as it is analagous to the main method of a Java application.</p>
+<p>
+The main script is like any other script. It consists of script elements that are responsible
+for creating the application data-model and top-level application xidget.</p>
+
+<h4>Running A Xidget Application</h4>
+<p>
+The following example shows the main script for a "Hello, World!" application.</p>
+
+<div class="xml">
+&lt;assign name="message"&gt;'Hello, World!'&lt;/assign&gt;<br>&lt;print&gt;$message&lt;/print&gt;</div>
+
+<p>
+This script would be executed by running the following command from the command line. The jar
+file, MyJar.xml, should be an executable jar containing all of the class files in the JAHM,
+Xidget and XidgetSwing projects. The argument to the org.xidget.swing.Main class is a path
+relative to the root of the jar file. So, the following example assumes that the main.xml
+script is at the root of the jar file.</p>
+
+<pre class="xml">
+java -jar MyJar.xml main.xml
+</pre>
+
+</body>
+</html>

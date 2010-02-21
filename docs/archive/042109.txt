@@ -1,0 +1,6 @@
+04/21/09
+
+1. Slider pane should be implemented manually: anchors could be designated as moveable and then
+   a roll-over handle would allow the user to move the anchor with the mouse.
+   
+2. 

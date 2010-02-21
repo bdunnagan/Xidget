@@ -1,0 +1,47 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Select Element</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+
+<body>
+<h2>Select</h2>
+
+<h4>Overview</h4>
+<p>
+The <i>select</i> script element executes one of several scripts depending on the string result
+of the xpath contained in the source attribute or element. The <i>select</i> element contains 
+one or more <i>case</i> elements and an optional <i>default</i> element. Each <i>case</i>
+element has an <i>id</i> attribute which determines the case that is selected. The string result
+of the source attribute or element is mapped to a case script by its <i>id</i>.</p>
+
+<h4>Basic Mapping</h4>
+<p>
+The following example will print "John Irving":
+
+<div class="xml">
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The Cider House Rules']&lt;/assign&gt;<br/>
+&lt;select source="$book/author"&gt;<br/>
+&nbsp;&nbsp;&lt;case id="John Irving"&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;print&gt;'John Irving'&lt;/print&gt;<br/>
+&nbsp;&nbsp;&lt;/case&gt;<br/>
+&nbsp;&nbsp;&lt;case id="Frank Wilzcek"&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;print&gt;'Frank Wilzcek'&lt;/print&gt;<br/>
+&nbsp;&nbsp;&lt;/case&gt;<br/>
+&lt;/select&gt;
+</div>
+
+</body>
+</html>

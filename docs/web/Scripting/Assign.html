@@ -1,0 +1,121 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Assign Element</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+
+<body>
+<h2>Assign</h2>
+
+<h4>Overview</h4>
+<p>
+The assign script element assigns the result of an xpath to a variable in the context scope.
+Any of the xpath return types may be assigned to a variable. There is a difference between
+assigning variables using the assign script element and assigning variables using a <i>let</i>
+clause within an xpath. A <i>let</i> clause only defines the variable within the scope of the
+xpath in which it occurs, while the <i>assign</i> script element assigns the variable within
+the current context so that it can be accessed later by other script elements.</p>
+<p>
+The <i>mode</i> attribute 
+provides several options for transforming a node-set before it is assigned. The most common
+use of this attribute is to make a deep copy of the node-set. If the <i>mode</i> attribute 
+is set to <i>ref</i> then a reference to the element is assigned to the variable. A reference 
+behaves exactly like the element it references with the exception that it has a different 
+parent (see the documentation on references for more information).</p>
+<p>
+Although it is possible to append nodes to a node-set in a variable using the xpath union
+operator, the <i>append</i> attribute will do the same thing with the advantage that,
+unlike the union operator, the same node can appear in the node-set twice.</p>
+<p>
+If the <i>define</i> attribute is true then xpath, itself, will be assigned to the variable.
+This is useful if you do not want the xpath to be evaluated immediately.  The xpath will be
+evaluated when the variable is used.</p>
+
+<h4>Basic Assignment</h4>
+<p>
+The following example assigns a string literal to a variable.</p>
+
+<div class="xml">
+&lt;assign name="x"&gt;&apos;I am a big nerd.&apos;&lt;/assign&gt;
+</div>
+
+<p>
+The next example assigns a node-set to a variable.</p>
+
+<div class="xml">
+&lt;assign name="x"&gt;collection('library')/books/book[ title=&apos;The Lightness of Being&apos;]&lt;/assign&gt;
+</div>
+
+<p>
+The next example makes a deep copy of the node-set before assigning it to the variable.</p>
+
+<div class="xml">
+&lt;assign name="x" mode="copy"&gt;collection('library')/books/book[ title=&apos;The Lightness of Being&apos;]&lt;/assign&gt;
+</div>
+
+<p>
+The next example assigns all of the books in the library to the variable.</p>
+
+<div class="xml">
+&lt;assign name="x"&gt;collection('library')/books/book&lt;/assign&gt;
+</div>
+
+<h4>Using the <i>Append</i> Attribute</h4>
+<p>
+As mentioned above, the <i>append</i> attribute can be used to append new nodes to the node-set already assigned to a variable.</p>
+
+<div class="xml">
+&lt;assign name="x"&gt;collection('library')/books/book[ title=&apos;The Lightness of Being&apos;]&lt;/assign&gt;<br/>
+&lt;assign name="x" append="true"&gt;collection('library')/books/book[ title=&apos;The Lightness of Being&apos;]&lt;/assign&gt;
+</div>
+
+<p>
+After executing those statements the variable <i>x</i> will contain the same book element twice. After executing the next 
+statements the node-set will only contain the book once because the union operator removes duplicate nodes.</p>
+
+<div class="xml">
+&lt;assign name="x"&gt;$x | collection('library')/books/book[ title=&apos;The Lightness of Being&apos;]&lt;/assign&gt;
+</div>
+
+<h4>Removing Duplicates with the Union Operator</h4>
+<p>
+The xpath union operator is a convenient way to remove duplicate nodes (and the only way since the framework is not
+fully XPath 2.0 compliant yet ::sigh::).</p>
+
+<div class="xml">
+&lt;assign name="x"&gt;$x | empty()&lt;/assign&gt;
+</div>
+
+<h4>Using the <i>Define</i> Attribute</h4>
+<p>
+When the <i>define</i> attribute is true, the xpath, itself, is assigned to the variable. In this case the xpath is
+not evaluated until the variable is used.</p>
+
+<div class="xml">
+&lt;assign name="y"&gt;'Value Before Assignment'&lt;/assign&gt;<br/>
+&lt;assign name="x" define="true"&gt;$y&lt;/assign&gt;<br/>
+&lt;assign name="y"&gt;'Value After Assignment'&lt;/assign&gt;<br/>
+&lt;print&gt;$x&lt;/print&gt;
+</div>
+
+<p>
+Executing these statements will print the following:</p>
+
+<div class="xml">
+<b>Value After Assignment</b>
+</div>
+
+</body>
+</html>

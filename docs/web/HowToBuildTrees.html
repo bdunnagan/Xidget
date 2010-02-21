@@ -1,0 +1,153 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>How To Build Tree Xidgets</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    pre {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+
+<body>
+<h2>How To Build Tree Xidgets</h2>
+
+<h4>Overview</h4>
+<p>The tree xidget schema is designed as an extension of the table schema - each level of the tree consists of a composite table. The children of each table row are, in turn, defined by a tree xidget schema. In other words, a tree is a cascading arrangement of tables. A table row may have more than one candidate sub-tree declaration. The set of candidates consist of a default declaration and zero or more conditional declarations. A conditional declaration is a declaration that defines the <i>when</i> attribute, which contains a boolean expression that is evaluated relative to the parent table row. If none of the conditional declarations are matched, then the default declaration is used. The <i>when</i> clauses are bound to the parent table row object and will update automatically. This means that the choice of the matching sub-tree declaration is dynamic.</p>
+
+<p>Sub-tree declarations can be recursive, meaning that those definitions apply recursively to all descendant declarations.</p>
+
+<p>The following fragment illustrates a simple tree that displays the elements of the context node and its descendants. Note that not all platforms support trees with multiple columns, sometimes referred to as table-trees (which, in my opinion are very important). The tree schema does support multiple columns, as well as column headings.</p>
+
+<pre>
+&lt;tree&gt;
+  &lt;table&gt;
+    &lt;rows&gt;.&lt;/rows&gt;
+    &lt;cell&gt;
+      &lt;image&gt;$image/element.gif&lt;/image&gt;
+      &lt;source&gt;name()&lt;/source&gt;
+    &lt;/cell&gt;
+    &lt;cell&gt;
+      &lt;source&gt;.&lt;/source&gt;
+    &lt;/cell&gt;
+  &lt;/table&gt;
+  
+  &lt;tree table=&quot;table[ 1]&quot; recursive=&quot;true&quot;&gt;
+    &lt;table&gt;
+      &lt;rows&gt;*&lt;/rows&gt;
+      &lt;cell&gt;
+        &lt;image&gt;$image/element.gif&lt;/image&gt;
+        &lt;source&gt;name()&lt;/source&gt;
+      &lt;/cell&gt;
+      &lt;cell&gt;
+        &lt;source&gt;.&lt;/source&gt;
+      &lt;/cell&gt;
+    &lt;/table&gt;
+  &lt;/tree&gt;
+&lt;/tree&gt;
+</pre>
+
+<p>The root of the tree in the example above is the context node. The sub-tree declaration identifies the table to which it belongs with the <i>table</i> attribute. This attribute is NOT bound. It exists to statically associate a sub-tree declaration to one table declaration. Since the sub-tree declaration does not have a <i>when</i> attribute, it is the default declaration. The <i>recursive</i> attribute makes the tree applicable to all descendant table declarations.</p>
+
+<h4>Composite Tables in Tree Declarations</h4>
+<p>As mentioned above tree declarations can consist of more than one table (a composite table). In this case, the <i>table</i> attribute of the tree declaration statically determines the table rows for which the tree declaration will generate children. In the following example, each tree declaration defines two tables, one for the attributes and one for the children of the parent table row element. Since attributes do not have children, the sub-tree declaration should only be associated with the table that generates elements.</p>
+
+<pre>
+&lt;tree&gt;
+  &lt;table name=&quot;Element&quot;&gt;
+    &lt;rows&gt;.&lt;/rows&gt;
+    &lt;cell&gt;
+      &lt;image&gt;$image/element.gif&lt;/image&gt;
+      &lt;source&gt;name()&lt;/source&gt;
+    &lt;/cell&gt;
+    &lt;cell&gt;
+      &lt;source&gt;.&lt;/source&gt;
+    &lt;/cell&gt;
+  &lt;/table&gt;
+  
+  &lt;tree table=&quot;table[ @name = 'Element']&quot; recursive=&quot;true&quot;&gt;
+    &lt;table name=&quot;Attribute&quot;&gt;
+      &lt;rows&gt;*&lt;/rows&gt;
+      &lt;cell&gt;
+        &lt;image&gt;$image/attribute.gif&lt;/image&gt;
+        &lt;source&gt;name()&lt;/source&gt;
+      &lt;/cell&gt;
+      &lt;cell&gt;
+        &lt;source&gt;.&lt;/source&gt;
+      &lt;/cell&gt;
+    &lt;/table&gt;
+  
+    &lt;table name=&quot;Element&quot;&gt;
+      &lt;rows&gt;*&lt;/rows&gt;
+      &lt;cell&gt;
+        &lt;image&gt;$image/element.gif&lt;/image&gt;
+        &lt;source&gt;name()&lt;/source&gt;
+      &lt;/cell&gt;
+      &lt;cell&gt;
+        &lt;source&gt;.&lt;/source&gt;
+      &lt;/cell&gt;
+    &lt;/table&gt;
+  &lt;/tree&gt;
+&lt;/tree&gt;
+</pre>
+
+<h4>Conditional Subtree Declarations</h4>
+<p>The next fragment demonstrates the use of the <i>when</i> attribute to selectively associate a sub-tree to specified rows of table. This example assumes that the data-model is designed with some elements referencing information in another part of the data-model. An data-model element that is a reference will define the <i>reference</i> attribute, which will contain the string <i>id</i> of the referent node. Two sub-tree declarations are required to distinguish reference elements from normal elements. The default declaration is used for normal elements.</p>
+
+<pre>
+&lt;tree&gt;
+  &lt;table&gt;
+    &lt;rows&gt;.&lt;/rows&gt;
+    &lt;cell&gt;
+      &lt;image&gt;$image/element.gif&lt;/image&gt;
+      &lt;source&gt;name()&lt;/source&gt;
+    &lt;/cell&gt;
+    &lt;cell&gt;
+      &lt;source&gt;.&lt;/source&gt;
+    &lt;/cell&gt;
+  &lt;/table&gt;
+  
+  &lt;tree table=&quot;table[ 1]&quot; recursive=&quot;true&quot;&gt;
+    &lt;table&gt;
+      &lt;rows&gt;*&lt;/rows&gt;
+      &lt;cell&gt;
+        &lt;image&gt;$image/element.gif&lt;/image&gt;
+        &lt;source&gt;name()&lt;/source&gt;
+      &lt;/cell&gt;
+      &lt;cell&gt;
+        &lt;source&gt;.&lt;/source&gt;
+      &lt;/cell&gt;
+    &lt;/table&gt;
+  &lt;/tree&gt;
+  <span style="color: #50B050">
+  &lt;tree table=&quot;table[ 1]&quot; recursive=&quot;true&quot; when=&quot;@reference&quot;&gt;
+    &lt;table&gt;
+      &lt;rows&gt;
+        let $id := @reference;
+        $candidateReferents/*[ @id = $id]
+      &lt;/rows&gt;
+      
+      &lt;cell&gt;
+        &lt;image&gt;$image/element.gif&lt;/image&gt;
+        &lt;source&gt;name()&lt;/source&gt;
+      &lt;/cell&gt;
+      &lt;cell&gt;
+        &lt;source&gt;.&lt;/source&gt;
+      &lt;/cell&gt;
+    &lt;/table&gt;
+  &lt;/tree&gt;</span>
+&lt;/tree&gt;
+</pre>
+
+<h4>Trees and External References</h4>
+<p>The implementation of the tree xidget accesses elements from the data-model on demand - that is, when a tree level is expanded. The <i>rows</i> expression of a sub-tree table is not bound until the tree level of its parent is expanded the first time. Prior to that, the tree will provide an expansion icon even if the <i>rows</i> expression returns an empty node-set. This behavior guarantees that external references are loaded into memory on demand. For more information about external references and caching policies, refer to the XModel documentation.</p>
+
+</body>
+</html>

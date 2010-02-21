@@ -1,0 +1,130 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Create Element</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+
+<body>
+<h2>Create</h2>
+
+<h4>Overview</h4>
+<p>
+The create script element provides several methods of creating an xml
+fragment. The xml fragment may be added to a parent element or assigned
+to variable. The create element executes its children as a script which
+can further modify the xml fragment before it is parented.</p>
+
+<h4>Creating Simple Elements</h4>
+<p>
+The following script will create the element, "myelement", and assign
+it to the variable fragment.</p>
+
+<div class="xml">
+&lt;create assign="fragment" name="'myelement'"/&gt;<br>
+</div>
+
+<p>
+Notice that the &lt;i&gt;name&lt;/i&gt; attribute is an
+xpath.&nbsp; In this case the xpath is a string literal, but it
+could also come from a variable or other place.</p>
+
+<h4>Creating Complex Elements</h4>
+<p>
+The child element &lt;i&gt;template&lt;/i&gt; is the
+only child that is not part of the embedded script.&nbsp; It allows
+an xml fragment to be created from an inline template.&nbsp; The
+template can be included embedded xpath expressions that define the
+content of template nodes.&nbsp; In the following example, a
+template for a book is created.</p>
+
+<div class="xml">
+&lt;assign
+name="author"&gt;'Frank Wilzcek'&lt;/assign&gt;<br>
+&lt;create assign="fragment"&gt;<br>
+&nbsp; &lt;template&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;book id=""&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;title&gt;The Lightness of Being&lt;/title&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;author&gt;{$author}&lt;/author&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/book&gt;<br>
+&nbsp; &lt;/template&gt;<br>
+&nbsp; &lt;id&gt;@id&lt;/id&gt;<br>
+&lt;/create&gt;<br>
+</div>
+
+<p>
+The curly braces "{}" in the author element are replaced with the
+string result of the enclosed xpath. This behavior can be escaped by
+prefixing the first curly brace with a "\".&nbsp; In other words,
+the string "{$author}" will be replaced with "Frank Wilzcek", but the
+string "\{$author}" will not undergo replacement.</p>
+
+<p>
+The &lt;i&gt;id&lt;/i&gt; element is part of the
+embedded script that is executed after the xml fragment is created from
+the template and before the xml fragment is assigned to the
+variable.&nbsp; All children of the create element are part of the
+embedded script except the &lt;i&gt;template&lt;/i&gt;
+element.</p>
+
+<h4>Creating External References</h4>
+<p>
+The create script element can also be used to create external
+references by including the attribute
+&lt;i&gt;annotated&lt;/i&gt; on the
+&lt;i&gt;template&lt;/i&gt; element.</p>
+
+<div class="xml">
+&lt;create assign="fragment"&gt;<br>
+&nbsp; &lt;template annotated="true"&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;book id=""&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;title&gt;The Lightness of Being&lt;/title&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;author&gt;{$author}&lt;/author&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;content
+path="{$contentOnDisk}"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;extern:cache
+class="org.xmodel.external.caching.FileSystemCachingPolicy"/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/content&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/book&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;id&gt;@id&lt;/id&gt;<br>
+&nbsp; &lt;/template&gt;<br>
+&lt;/create&gt;<br>
+</div>
+
+<p>
+In this case, the &lt;i&gt;content&lt;/i&gt; child
+element is an external reference that uses FileSystemCachingPolicy so
+that the content of the book is provided only on demand. For a large
+library of books, you would want all of the
+&lt;i&gt;content&lt;/i&gt; external references to use
+the same cache and limit the size of the cache. This can be
+accomplished by specifying the fully-qualified name of a class that
+implements ICache.</p>
+
+<div class="xml">
+&lt;content path="{$contentOnDisk}"&gt;<br>
+&nbsp; &lt;extern:cache
+class="org.xmodel.external.caching.FileSystemCachingPolicy"
+cache="org.you.MyCache"/&gt;<br>
+&lt;/content&gt;<br>
+</div>
+
+</body>
+</html>
