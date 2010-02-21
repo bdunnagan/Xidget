@@ -14,7 +14,7 @@
     div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
     table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
     td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
-    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}
   </style>
 </head>
 
@@ -46,9 +46,18 @@ script is at the root of the jar file.</p>
 java -jar MyJar.xml main.xml
 </pre>
 
-<h4>Creating The Application Xidget</h4>
 <p>
-The top-level xidget for an application is created by calling the <i>createXidget</i> script
-element. 
+If the name of the script is not provided then <i>main.xml</i> is assumed to be the name. So,
+the following command-line is equivalent to the one above:</p>
+
+<pre class="xml">
+java -jar MyJar.xml
+</pre>
+
+<p>
+The main script of a xidget application will end with one or more calls to the
+<a href="Scripting/CreateXidget.html"><i>createXidget</i></a> script element. Follow the link for
+an simple xidget application example.</p>
+
 </body>
 </html>
