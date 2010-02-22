@@ -39,6 +39,13 @@ before the form is visible. It is also possible to execute a script after the fo
 Forms can be given a title which is treated differently depending on the toolkit implementation and the parent
 container of the form. Typically, a titled form is enclosed in a border with the title visible on the upper-left.
 In a tab container, however, the title of a form is the shown in a tab.</p>
+<p>
+A form can define a popup menu by including a <a href="Menu.html"><i>menu</i></a> xidget. However, form children
+do not inherit a menu defined in their parent container, so menus are usually defined on tables or trees.</p>
+<p>
+A form xidget can define an <i>enable</i> xpath that determines when the form is enabled. A disabled form is
+typically "grayed-out" and does not accept user input. For a complete list of xidget behaviors such as 
+enablement, see <a href="Common/Behaviors.html">Common Xidget Behaviors</a>.</p>
 
 <h4>Container</h4>
 <p>
