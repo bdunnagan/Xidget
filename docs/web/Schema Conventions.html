@@ -1,0 +1,69 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Schema Conventions</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+
+<body>
+<h2>Schema Conventions</h2>
+<p>
+The xml schema of xidgets and xidget script is designed to be flexible so that new users who are unfamiliar with the schema can write
+more verbose, readable xml, while veterans can code succinctly. Xidget script, in particular, is designed so that action parameters
+can be specified in either an element or an attribute. Xidget configuration, on the other hand, tends to favor child elements because
+xidgets have so many parameters. I really dislike xml schemas where the majority of the schema is defined in attributes.</p>
+<p>
+Although a script always has a context, in general scripting elements require that all required parameters be explicitly stated. This
+makes the script easier to understand. In other words, there are no scripting element parameters that assume the script context when
+omitted.</p>
+<p>
+As an example, consider the <i>add</i> scripting element, which adds a child element to a parent element. The <i>add</i> scripting
+element requires a <i>source</i> and a <i>target</i> xpath. The <i>source</i> xpath identifies the elements which will be parented.
+The <i>target</i> xpath identifies the elements that will become the parent of the source elements. Both the <i>source</i> and the
+<i>target</i> parameters may be specified as either attributes or child elements. In addition, to support the most compact 
+representation, one of the parameters may be specified in the text of the scripting element. So, all of the following examples
+have identical behavior:</p>
+
+<div class="xml">
+<pre>
+&lt;add&gt;
+  &lt;source&gt;$newBook"&lt;/source&gt;
+  &lt;target&gt;collection('library')/books/book[ title='The Lightness of Being']&lt;/target&gt;
+&lt;/add&gt;
+</pre>
+</div>
+
+<div class="xml">
+<pre>
+&lt;add source="$newBook" target="collection('library')/books/book[ title='The Lightness of Being']"/&gt;
+</pre>
+</div>
+
+<div class="xml">
+<pre>
+&lt;add source="$newBook"&gt;collection('library')/books/book[ title='The Lightness of Being']&lt;/add&gt;
+</pre>
+</div>
+
+<div class="xml">
+<pre>
+&lt;add target="collection('library')/books/book[ title='The Lightness of Being']"&gt;$newbook&lt;/add&gt;
+</pre>
+</div>
+
+<p>
+For more information on the <i>add</i> script, see <a href="Scripting Reference.html">Scripting Reference</a>.</p>
+
+</body>
+</html>

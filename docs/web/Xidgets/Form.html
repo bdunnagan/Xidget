@@ -34,7 +34,7 @@ Forms support the <i>onOpen</i> and <i>onClose</i> scripts allowing the form to 
 to operate the form. For example, a form can create a private selection node for a table contained in the form.
 The <i>onClose</i> script can be used to save state when a form is closed. The <i>onOpen</i> script is called
 before the form is visible. It is also possible to execute a script after the form becomes visible using a
-<i>trigger</i>. See <a href="Common/Trigger.html">Triggers</a> for more information.</p>
+<i>trigger</i>. See <a href="Scripts/Trigger.html">Triggers</a> for more information.</p>
 <p>
 Forms can be given a title which is treated differently depending on the toolkit implementation and the parent
 container of the form. Typically, a titled form is enclosed in a border with the title visible on the upper-left.
@@ -45,11 +45,11 @@ do not inherit a menu defined in their parent container, so menus are usually de
 <p>
 A form xidget can define an <i>enable</i> xpath that determines when the form is enabled. A disabled form is
 typically "grayed-out" and does not accept user input. For a complete list of xidget behaviors such as 
-enablement, see <a href="Common/Behaviors.html">Common Xidget Behaviors</a>.</p>
+enablement, see <a href="Scripts/Common Scripts.html">Common Xidget Scripts</a>.</p>
 
 <h4>Container</h4>
 <p>
-A <i>form</i> can contain any number of xidgets except top-level xidgets like <i>app</i> or <i>dialog</i>.</p>
+A <i>form</i> can contain any number of xidgets except top-level xidgets like <i>window</i> or <i>dialog</i>.</p>
 <p>
 The following example demonstrates a simple login form. The <i>layoutFillX</i> script element attaches the left
 and right sides of each xidget to the left and right sides of the form, respectively. The <i>layoutTopBottom</i>
@@ -196,20 +196,20 @@ if the password has been saved for the specified username. Note that triggers ma
 </pre>
 </div>
 
-<h4>Common Scripting Elements</h4>
+<h4>Scripts</h4>
 <table>
-<tr>
-  <td><a href="Common/OnOpen.html">OnOpen</a></td>
-  <td>Called before the form widget becomes visible.</td>
-</tr>
-<tr>
-  <td><a href="Common/OnClose.html">OnClose</a></td>
-  <td>Called after the form widget becomes invisible.</td>
-</tr>
-<tr>
-  <td><a href="Common/Trigger.html">Trigger</a></td>
-  <td>Called when an xpath condition is satisfied after the form is visible.</td>
-</tr>
+	<tr>
+	  <td><a href="Scripts/OnOpen.html">OnOpen</a></td>
+	  <td>Called before the form widget becomes visible.</td>
+	</tr>
+	<tr>
+	  <td><a href="Scripts/OnClose.html">OnClose</a></td>
+	  <td>Called after the form widget becomes invisible.</td>
+	</tr>
+	<tr>
+	  <td><a href="Scripts/Trigger.html">Trigger</a></td>
+	  <td>Called when an xpath condition is satisfied after the form is visible.</td>
+	</tr>
 </table>
 
 </body>

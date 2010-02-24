@@ -20,11 +20,23 @@
 <h2>How To Build Tree Xidgets</h2>
 
 <h4>Overview</h4>
-<p>The tree xidget schema is designed as an extension of the table schema - each level of the tree consists of a composite table. The children of each table row are, in turn, defined by a tree xidget schema. In other words, a tree is a cascading arrangement of tables. A table row may have more than one candidate sub-tree declaration. The set of candidates consist of a default declaration and zero or more conditional declarations. A conditional declaration is a declaration that defines the <i>when</i> attribute, which contains a boolean expression that is evaluated relative to the parent table row. If none of the conditional declarations are matched, then the default declaration is used. The <i>when</i> clauses are bound to the parent table row object and will update automatically. This means that the choice of the matching sub-tree declaration is dynamic.</p>
+<p>The tree xidget schema is designed as an extension of the table schema - each level of the tree 
+consists of a composite table. The children of each table row are, in turn, defined by a tree xidget 
+schema. In other words, a tree is a cascading arrangement of tables. A table row may have more than 
+one candidate sub-tree declaration. The set of candidates consist of a default declaration and zero 
+or more conditional declarations. A conditional declaration is a declaration that defines the <i>when</i> 
+attribute, which contains a boolean expression that is evaluated relative to the parent table row. 
+If none of the conditional declarations are matched, then the default declaration is used. The 
+<i>when</i> clauses are bound to the parent table row object and will update automatically. This 
+means that the choice of the matching sub-tree declaration is dynamic.</p>
 
-<p>Sub-tree declarations can be recursive, meaning that those definitions apply recursively to all descendant declarations.</p>
+<p>Sub-tree declarations can be recursive, meaning that those definitions apply recursively to all 
+descendant declarations.</p>
 
-<p>The following fragment illustrates a simple tree that displays the elements of the context node and its descendants. Note that not all platforms support trees with multiple columns, sometimes referred to as table-trees (which, in my opinion are very important). The tree schema does support multiple columns, as well as column headings.</p>
+<p>The following fragment illustrates a simple tree that displays the elements of the context node 
+and its descendants. Note that not all platforms support trees with multiple columns, sometimes 
+referred to as table-trees (which, in my opinion are very important). The tree schema does support 
+multiple columns, as well as column headings.</p>
 
 <pre>
 &lt;tree&gt;
@@ -54,10 +66,19 @@
 &lt;/tree&gt;
 </pre>
 
-<p>The root of the tree in the example above is the context node. The sub-tree declaration identifies the table to which it belongs with the <i>table</i> attribute. This attribute is NOT bound. It exists to statically associate a sub-tree declaration to one table declaration. Since the sub-tree declaration does not have a <i>when</i> attribute, it is the default declaration. The <i>recursive</i> attribute makes the tree applicable to all descendant table declarations.</p>
+<p>The root of the tree in the example above is the context node. The sub-tree declaration identifies 
+the table to which it belongs with the <i>table</i> attribute. This attribute is NOT bound. It exists 
+to statically associate a sub-tree declaration to one table declaration. Since the sub-tree declaration 
+does not have a <i>when</i> attribute, it is the default declaration. The <i>recursive</i> attribute 
+makes the tree applicable to all descendant table declarations.</p>
 
 <h4>Composite Tables in Tree Declarations</h4>
-<p>As mentioned above tree declarations can consist of more than one table (a composite table). In this case, the <i>table</i> attribute of the tree declaration statically determines the table rows for which the tree declaration will generate children. In the following example, each tree declaration defines two tables, one for the attributes and one for the children of the parent table row element. Since attributes do not have children, the sub-tree declaration should only be associated with the table that generates elements.</p>
+<p>As mentioned above tree declarations can consist of more than one table (a composite table). In this 
+case, the <i>table</i> attribute of the tree declaration statically determines the table rows for which 
+the tree declaration will generate children. In the following example, each tree declaration defines two 
+tables, one for the attributes and one for the children of the parent table row element. Since attributes 
+do not have children, the sub-tree declaration should only be associated with the table that generates 
+elements.</p>
 
 <pre>
 &lt;tree&gt;
@@ -99,7 +120,12 @@
 </pre>
 
 <h4>Conditional Subtree Declarations</h4>
-<p>The next fragment demonstrates the use of the <i>when</i> attribute to selectively associate a sub-tree to specified rows of table. This example assumes that the data-model is designed with some elements referencing information in another part of the data-model. An data-model element that is a reference will define the <i>reference</i> attribute, which will contain the string <i>id</i> of the referent node. Two sub-tree declarations are required to distinguish reference elements from normal elements. The default declaration is used for normal elements.</p>
+<p>The next fragment demonstrates the use of the <i>when</i> attribute to selectively associate a 
+sub-tree to specified rows of table. This example assumes that the data-model is designed with some 
+elements referencing information in another part of the data-model. An data-model element that is a 
+reference will define the <i>reference</i> attribute, which will contain the string <i>id</i> of the 
+referent node. Two sub-tree declarations are required to distinguish reference elements from normal 
+elements. The default declaration is used for normal elements.</p>
 
 <pre>
 &lt;tree&gt;
@@ -147,7 +173,13 @@
 </pre>
 
 <h4>Trees and External References</h4>
-<p>The implementation of the tree xidget accesses elements from the data-model on demand - that is, when a tree level is expanded. The <i>rows</i> expression of a sub-tree table is not bound until the tree level of its parent is expanded the first time. Prior to that, the tree will provide an expansion icon even if the <i>rows</i> expression returns an empty node-set. This behavior guarantees that external references are loaded into memory on demand. For more information about external references and caching policies, refer to the XModel documentation.</p>
+<p>
+The implementation of the tree xidget accesses elements from the data-model on demand - that is, when a 
+tree level is expanded. The <i>rows</i> expression of a sub-tree table is not bound until the tree level 
+of its parent is expanded the first time. Prior to that, the tree will provide an expansion icon even if 
+the <i>rows</i> expression returns an empty node-set. This behavior guarantees that external references 
+are loaded into memory on demand. For more information about external references and caching policies, 
+refer to the XModel documentation.</p>
 
 </body>
 </html>

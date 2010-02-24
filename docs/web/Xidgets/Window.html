@@ -23,8 +23,32 @@
 <h4>Overview</h4>
 The <i>window</i> xidget is a top-level window. It may only contain a single <a href="Xidgets/Form.html"><i>form</i></a> xidget
 that defines its content, and a <a href="Xidgets/Menubar.html"><i>menubar</i></a> xidget. The <i>title</i> attribute, or child 
-element, defines the title of the window. A window may also define the <a href="Xidgets/Common/OnOpen.html"><i>onOpen</i></a> and 
-<a href="Xidgets/Common/OnOpen.html"><i>onClose</i></a> scripts for initialization and finalization.</p>
+element, defines the title of the window. A window may also define the <a href="Xidgets/Scripts/OnOpen.html"><i>onOpen</i></a> and 
+<a href="Xidgets/Scripts/OnOpen.html"><i>onClose</i></a> scripts for initialization and finalization.</p>
+
+<h4>Parameters</h4>
+<table>
+  <tr>
+    <td>Title</td>
+    <td>The title of the top-level window.</td>
+  </tr>
+</table>
+
+<h4>Scripts</h4>
+<table>
+	<tr>
+	  <td><a href="Scripts/OnOpen.html">OnOpen</a></td>
+	  <td>Called before the form widget becomes visible.</td>
+	</tr>
+	<tr>
+	  <td><a href="Scripts/OnClose.html">OnClose</a></td>
+	  <td>Called after the form widget becomes invisible.</td>
+	</tr>
+  <tr>
+    <td><a href="Scripts/Trigger.html">Trigger</a></td>
+    <td>Called when an xpath condition is satisfied after the form is visible.</td>
+  </tr>
+</table>
 
 </body>
 </html>

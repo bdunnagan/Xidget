@@ -27,18 +27,26 @@ a succinct expression of user-interface business logic. For example, the button 
 <i>onPress</i> script element when the button is pressed if that element is present.</p>
 <p>
 Within the xidget schema there are three main places where scripts are called. First, each xidget has two scripts
-that are executed when the xidget is opened and closed, respectively. These are the <i>initialize</i> and
-<i>finalize</i> scripts. Second, as mentioned above, each xidget schema is extended with scripts to implement
+that are executed when the xidget is opened and closed, respectively. These are the <i>onOpen</i> and
+<i>onClose</i> scripts. Second, as mentioned above, each xidget schema is extended with scripts to implement
 the xidgets behavior. Third, each xidget schema may define triggers which conditionally execute a script.</p>
+<p style="color: #a00000;">
+Keep in mind that the xidget schema is a static <b>configuration</b> with specific elements that contain
+<b>xidget script</b>. The xidget configuration is not executed and the order of the elements does
+not matter. In contrast, xidget script is executed from top to bottom. Within a xidget configuration,
+most scripts are identified by an element that begins with the prefix, "on", such as "onOpen". Triggers
+are an exception.</p>
 <p>
 The lifetime of a trigger is the same as the xidget that encloses it. When the enclosing xidget is destroyed,
 the trigger is deactivated and the trigger script will not run again for that specific xidget instance.</p>
 <p>
 In addition to the scripts within the xidget schema, a xidget application is started with a main script that
 is passed to the JVM as an argument. The main script is responsible for creating the application data model
-and instantiating the application xidget. For more information go <a href="Main Script.html">here</a>.</p>
+and instantiating a <i>window</i> xidget. For more information go <a href="Main Script.html">here</a>.</p>
 <p>
 Reference documentation for the scripting elements is available <a href="Scripting Reference.html">here</a>.</p>
+<p>
+A discussion of the rationale for the xidget script schema can be found <a href="Schema Conventions.html">here</a>.</p>
 
 <h4>Initialize And Finalize Scripts</h4>
 <p>
