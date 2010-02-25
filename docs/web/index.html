@@ -27,12 +27,14 @@
 
 <h4>Introduction</h4>
 <p>
-Xidgets are a new Java framework for developing user-interfaces in Swing, SWT or any other widget toolkit (currently, only Swing 
-is supported). A xidget user-interface specification contains both the user-interface description and business logic encoded in xml 
-scripts. Xidgets rely heavily on XPath expressions. The xml scripting language is intended to be the most succinct means of coding 
-the user-interface business logic. The scripting language is designed so that it is easy to extend the language with Java classes.  
-In many cases, all of the functionality of a dialog (for example) can be described in a single xml file, including the complete 
-user-interface description, all business logic, as well as complex behaviors such as drag-and-drop and undo/redo.</p>
+The moniker, Xidget, refers to an xml schema for representing user-interfaces and associated business logic. A reference 
+implementation of the schema is provided in Java and Swing. Currently, I am weighing the relative importance of SWT
+versus C++/QT implementation. A xidget user-interface specification contains both the user-interface description and 
+business logic encoded in xml scripts. Xidgets rely heavily on XPath expressions. The xml scripting language is a succinct 
+means of coding the user-interface business logic. The scripting language is designed so that it is easy to extend the 
+language with native code. In many cases, all of the functionality of a user-interface component can be described in a single 
+xml file, including the complete user-interface description, all business logic, as well as complex behaviors such as 
+drag-and-drop and undo/redo.</p>
 <p>
 The simplest xidget is probably a text xidget.  Here is a sample:</p>
 
@@ -54,9 +56,10 @@ the content of the text widget.  XPath expressions can be arbitrarily complex.</
 <p>
 Since xidgets are defined with XPath expressions, application data must be represented in a hierarchical model.  The xidget 
 framework includes a technique for representing arbitrarily large hierarchical models, where a subset of the data is resident
-in memory.  The framework guarantees that data which is currently displayed is memory resident, while allowing the developer
-to make decisions about how data is loaded into memory and how much memory is allocated to each entity.  The problem of caching
-data into memory is completely separate from, and transparent to xidgets.</p>
+in memory. This is called <i>virtual xml</i> because all data-sources accessed by the user-interface may appear to be a single
+enormous xml document accessible by xpath expressions. The framework guarantees that data which is currently displayed is memory 
+resident, while allowing the developer to make decisions about how data is loaded into memory and how much memory is allocated 
+to each entity. The problem of caching data into memory is completely separate from, and transparent to xidgets.</p>
 
 <h4>Documentation</h4>
 <table>
@@ -64,7 +67,7 @@ data into memory is completely separate from, and transparent to xidgets.</p>
   <td><a href="Main Script.html">The Main Script</a></td>
 </tr>
 <tr>
-  <td><a href="Xidget Introduction.html">Xidget Introduction</a></td>
+  <td><a href="Xidget Introduction.html">An Introduction to Xidgets</a></td>
 </tr>
 <tr>
   <td><a href="Xidget Reference.html">Xidget Reference</a></td>
