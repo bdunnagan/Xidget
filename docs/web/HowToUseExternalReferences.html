@@ -20,11 +20,23 @@
 <h2>How To Use External References</h2>
 
 <h4>Overview</h4>
-<p>An external reference is an element in the data-model that points to data stored outside of the application space, like databases, the local file-system or data available over the network. External references use a caching policy to determine how and when data is retrieved from the external location and brought into memory. The external reference serves as the virtual root of the data - the caching policy is responsible for converting the data to the xml schema to which the external reference belongs. The caching policy loads the data when a <i>non-static</i> attribute or child of the external reference is accessed by an xpath expression. Depending on the type of cache used in conjunction with the caching policy, the data may be removed later to meet constraints on memory usage imposed by the cache.</p>
+<p>An external reference is an element in the data-model that points to data stored outside of the application space, 
+like databases, the local file-system or data available over the network. External references use a caching policy to 
+determine how and when data is retrieved from the external location and brought into memory. The external reference 
+serves as the virtual root of the data - the caching policy is responsible for converting the data to the xml schema 
+to which the external reference belongs. The caching policy loads the data when a <i>non-static</i> attribute or 
+child of the external reference is accessed by an xpath expression. Depending on the type of cache used in conjunction 
+with the caching policy, the data may be removed later to meet constraints on memory usage imposed by the cache.</p>
 
-<p>An application must be able to choose which external references to load according to some criteria. The domain of the criteria is stored in <i>static</i> attributes. Another way of thinking about this criteria is that the static attributes define the identity of the external reference in the external storage location. It is often the case that only the <i>id</i> attribute is static. Consider the case of an external reference that points to a row in a relational database table. The <i>id</i> attribute would typically contain the primary key of the table row, allowing the application to select a specific external reference to be loaded based on the primary key.</p>
+<p>An application must be able to choose which external references to load according to some criteria. The domain 
+of the criteria is stored in <i>static</i> attributes. Another way of thinking about this criteria is that the 
+static attributes define the identity of the external reference in the external storage location. It is often 
+the case that only the <i>id</i> attribute is static. Consider the case of an external reference that points to 
+a row in a relational database table. The <i>id</i> attribute would typically contain the primary key of the 
+table row, allowing the application to select a specific external reference to be loaded based on the primary key.</p>
 
-<p>In some cases, the application may want to be able to query information contained in certain children without loading the entire entity. This is accomplished by defining one or more children of the entity to be external references.</p>
+<p>In some cases, the application may want to be able to query information contained in certain children without 
+loading the entire entity. This is accomplished by defining one or more children of the entity to be external references.</p>
 
 <p>The following example demonstrates the creation of an external reference using the <i>create</i> action.</p>
 
