@@ -1,0 +1,82 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>How To Build Choice List Xidgets</title>
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    pre {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+</head>
+
+<body>
+<h2>How To Build Choice List Xidgets</h2>
+
+<h4>Overview</h4>
+<p>
+The <i>combo</i> xidget is often called a "combo box" or a "choice list". Its schema is similar to the <i>text</i> xidget 
+with the addition of a list of choices that the user can select via a drop-down box. The choices may either be provided 
+statically in the configuration or specified via an xpath.</p>
+<p>
+When the choices are specified by an xpath, the choice list is dynamic. If the xidget is also editable then it is easy 
+to create a limited history of the users choice entries.</p>
+
+<h4>Statically Configured Choice List</h4>
+<p>
+The following fragment shows a simple choice list with statically configured choices.</p>
+
+<pre>
+  &lt;combo&gt;
+    &lt;label&gt;'Choices'&lt;/label&gt;
+    &lt;source&gt;$choice&lt;/source&gt;
+    &lt;choices&gt;
+      &lt;choice&gt;Choice 1&lt;/choice&gt;
+      &lt;choice&gt;Choice 2&lt;/choice&gt;
+      &lt;choice&gt;Choice 3&lt;/choice&gt;
+    &lt;/choices&gt;
+  &lt;/combo&gt;
+</pre>
+
+<h4>Dynamic Choice List</h4>
+<p>
+The following fragment shows a dynamically configured choice list. The choices are populated by the values
+of the nodes returned by the <i>$choices/choice</i> xpath. If the node-set changes, the choices will be
+updated.</p>
+
+<pre>
+  &lt;combo&gt;
+    &lt;label&gt;'Choices'&lt;/label&gt;
+    &lt;source&gt;$choice&lt;/source&gt;
+    &lt;choices&gt;$choices/choice&lt;/choices&gt;
+  &lt;/combo&gt;
+</pre>
+
+<h4>Editable Choice List With Limited History</h4>
+<p>
+If the <i>combo</i> xidget is editable then a trigger can be added to update the choice list to reflect
+edited values typed by the user. The history of the user's values can be limited in the trigger script.</p>
+
+<pre>
+  &lt;combo&gt;
+    &lt;editable&gt;true()&lt;/editable&gt;
+    &lt;label&gt;'Choices'&lt;/label&gt;
+    &lt;source&gt;$choice&lt;/source&gt;
+    &lt;choices&gt;$choices/choice&lt;/choices&gt;
+    &lt;trigger source="$choice"&gt;
+      &lt;script when="$choice != '' and not( $choice = $choices/choice)"&gt;
+        &lt;delete when="count( $choices/choice) &gt;= 10"&gt;($choices/choice)[ last()]&lt;/delete&gt;
+        &lt;add source="$choice"&gt;$choices&lt;/add&gt;
+      &lt;/script&gt;
+    &lt;/trigger&gt;
+  &lt;/combo&gt;
+</pre>
+
+</body>
+</html>
