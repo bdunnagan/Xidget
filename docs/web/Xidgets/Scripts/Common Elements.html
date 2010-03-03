@@ -1,0 +1,67 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Common Xidget Elements</title>
+  <link href="../../css/global.css" rel="stylesheet" type="text/css">  
+</head>
+
+<body>
+<h2>Common Xidget Elements</h2>
+
+<h4>Overview</h4>
+<p>
+The xidget schema includes some elements that are common to most xidgets. The xidget reference lists the common elements
+that are allowed for each xidget. Many of the common elements specify xpath expressions. Each element supports a subset
+of the XPath 1.0 return types. String values may be specified with any of the four XPath 1.0 return types, the xpath
+will be evaluated as if it is enclosed in the <i>string()</i> function.</p>
+
+<table style="CommonElements">
+<tr>
+  <td>enable</td>
+  <td>A boolean xpath that determines when the xidget is enabled.</td>
+</tr>
+<tr>
+  <td>label</td>
+  <td>An xpath that determines the label to show to the left of the xidget.</td>
+</tr>
+<tr>
+  <td>source</td>
+  <td>An xpath whose first node stores the text of the xidget.</td>
+</tr>
+<tr>
+  <td>visible</td>
+  <td>A boolean xpath that determines when the xidget is available.</td>
+</tr>
+<tr>
+  <td>foreground</td>
+  <td>An xpath whose string value contains the hexadecimal rgb foreground color.</td>
+</tr>
+<tr>
+  <td>background</td>
+  <td>An xpath whose string value contains the hexadecimal rgb background color.</td>
+</tr>
+<tr>
+  <td>font</td>
+  <td>An xpath whose string value gives the name of the font family.</td>
+</tr>
+<tr>
+  <td>fontStyle</td>
+  <td>An xpath whose string value gives the name of the font style (ex: plain, italic, bold).</td>
+</tr>
+<tr>
+  <td>fontSize</td>
+  <td>An xpath whose numeric value gives the font size in points.</td>
+</tr>
+<tr>
+  <td>tooltip</td>
+  <td>An xpath whose string value gives the tooltip text.</td>
+</tr>
+<tr>
+  <td>error</td>
+  <td>An xpath that returns a non-empty string when there is a validation error.</td>
+</tr>
+</table>
+
+</body>
+</html>
