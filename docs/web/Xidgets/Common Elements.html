@@ -3,7 +3,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta http-equiv="Content-Style-Type" content="text/css"/>
   <title>Common Xidget Elements</title>
-  <link href="../../css/global.css" rel="stylesheet" type="text/css">  
+  <link href="../css/global.css" rel="stylesheet" type="text/css"/>  
 </head>
 
 <body>
@@ -15,11 +15,20 @@ The xidget schema includes some elements that are common to most xidgets. The xi
 that are allowed for each xidget. Many of the common elements specify xpath expressions. Each element supports a subset
 of the XPath 1.0 return types. String values may be specified with any of the four XPath 1.0 return types, the xpath
 will be evaluated as if it is enclosed in the <i>string()</i> function.</p>
+<p>
+The following table lists the common elements.</p>
 
-<table style="CommonElements">
+<table style="XidgetElements">
+<th>Node</th>
+<th>Description</th>
+<th>Regex Format</th>
 <tr>
   <td>enable</td>
   <td>A boolean xpath that determines when the xidget is enabled.</td>
+</tr>
+<tr>
+  <td>editable</td>
+  <td>A boolean xpath that determines when the xidget is editable.</td>
 </tr>
 <tr>
   <td>label</td>
@@ -47,7 +56,8 @@ will be evaluated as if it is enclosed in the <i>string()</i> function.</p>
 </tr>
 <tr>
   <td>fontStyle</td>
-  <td>An xpath whose string value gives the name of the font style (ex: plain, italic, bold).</td>
+  <td>An xpath whose string value gives the name of the font style.</td>
+  <td>(plain|italic|bold)</td>
 </tr>
 <tr>
   <td>fontSize</td>
@@ -60,6 +70,11 @@ will be evaluated as if it is enclosed in the <i>string()</i> function.</p>
 <tr>
   <td>error</td>
   <td>An xpath that returns a non-empty string when there is a validation error.</td>
+</tr>
+<tr>
+  <td>size</td>
+  <td>An xpath whose string value determines the size.</td>
+  <td>width(\s*),(\s*)height(\s*)(char|pixel)</td>
 </tr>
 </table>
 
