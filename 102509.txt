@@ -1,8 +1,0 @@
-102509
-
-Scrolling Idea
-
-For large interfaces using the control key + mouse movement scrolls the viewport.
-The further the mouse moves from the origin, as defined by the location of the mouse
-when the control button was pushed, the faster the user interface scrolls in that 
-direction.

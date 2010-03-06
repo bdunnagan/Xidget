@@ -36,7 +36,8 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
- * An XAction that opens a dialog.
+ * An XAction that opens a dialog xidget given an xpath identifying the configuration and an xpath
+ * that returns the context node for the dialog. A script is executed when the dialog closes.
  */
 public class OpenDialogAction extends GuardedAction
 {
