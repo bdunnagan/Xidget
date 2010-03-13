@@ -3,7 +3,17 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta http-equiv="Content-Style-Type" content="text/css"/>
   <title>Table Xidget</title>
-  <link href="../css/global.css" rel="stylesheet" type="text/css">  
+  <style type="text/css">
+    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
+    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
+    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
+    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
+    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
+    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
+    pre {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
+    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
+    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
+    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
 </head>
 
 <body>
@@ -24,7 +34,6 @@ described below.
 <p>
 The following fragment shows a simple table definition with two columns:
 
-<div style="xml">
 <pre>
 &lt;table&gt;
   &lt;!-- Defines the number of columns and the column headers of the table --&gt;
@@ -44,7 +53,6 @@ The following fragment shows a simple table definition with two columns:
   &lt;/cell&gt;
 &lt;/table&gt;
 </pre>
-</div>
 
 <p>
 The columns of this table are defined by the <i>column</i> elements, which, in this case, are simply string literal expressions. This table will contain 
@@ -58,7 +66,6 @@ A single table xidget may contain multiple table definitions simply by embedding
 The following table expands on the previous example by showing both the attributes and the children of the context node. Note that the <i>column</i> 
 expressions are defined for the outer-most table element. 
 
-<div style="xml">
 <pre>
 &lt;table&gt;
   &lt;column&gt;'Column 1'&lt;/column&gt;
@@ -91,16 +98,13 @@ expressions are defined for the outer-most table element.
   &lt;/table&gt;
 &lt;/table&gt;
 </pre>
-</div>
 
 <h4>Cell Editors</h4>
 <p>
 Most user-interface toolkits support in-place editing of the content of a table cell. The table xidget allows the schema of certain other xidgets to be 
 included within the cell configuration indicating that the xidget should be used to edit that cell. Combo-boxes, text fields and buttons are the most 
 common in-place table cell editors. The following extends the previous example with table cell editors for the value of the attributes and children of 
-the context node:</p>
-
-<div style="xml">
+the context node:
 <pre>
 &lt;table&gt;
   &lt;column&gt;'Column 1'&lt;/column&gt;
@@ -139,23 +143,22 @@ the context node:</p>
   &lt;/table&gt;
 &lt;/table&gt;
 </pre>
-</div>
 
 <p>
 Note that the <i>source</i> expression of the <i>text</i> xidget used to edit the second cell of each row has the same expression as the <i>source</i> 
 expression of the cell, itself.  In theory, the table cell editor could edit data outside of the table cell. Usually, however, these expressions are the 
 same. When the <i>source</i> expression of the table cell transforms the data for display purposes, the editor will need to define the <i>xin</i> and 
-<i>xout</i> expressions to perform the same translation.</p>
+<i>xout</i> expressions to perform the same translation.
 
 <p>
 All of the expressions defined in the table configuration are bound which means that the content of the table always represents the current state of the 
 data-model even for complex expressions. If the <i>rows</i> expression of a table involves an <i>if/then/else</i> expression, then the rows of the table 
-may change based on the if-condition. This is a powerful technique for dynamically controlling the content of the table.</p>
+may change based on the if-condition. This is a powerful technique for dynamically controlling the content of the table.
 
 <h4>Using Image Lookup Tables</h4>
 <p>It is often the case that a single cell definition will need to express different images for the cell depending on the table row node. If there are 
 only a few image choices then this can be handled easily with <i>if/then/else</i> statements. This is clumsy, however, if there are many images. A simple 
-and efficient solution is to create a lookup table when the table is opened and use the table in the image expression.</p>
+and efficient solution is to create a lookup table when the table is opened and use the table in the image expression.
 
 </body>
 </html>

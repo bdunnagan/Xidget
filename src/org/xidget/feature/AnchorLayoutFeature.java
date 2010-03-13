@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+
 import org.xidget.IXidget;
 import org.xidget.Log;
+import org.xidget.ifeature.ILabelFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xidget.ifeature.IWidgetFeature;
@@ -80,6 +82,9 @@ public class AnchorLayoutFeature implements ILayoutFeature
     // initialize the container's inside nodes
     initContainerNodes();
 
+    // calculate the preferred size of labelled xidgets
+    initLabels();
+    
     // compile layout
     if ( sorted == null) 
     {
@@ -132,6 +137,31 @@ public class AnchorLayoutFeature implements ILayoutFeature
       bottom.clearDependencies();
       bottom.addDependency( new ConstantNode( bounds.height - margins.y1));
     }
+  }
+  
+  /**
+   * Find the longest label among the labelled components and initialize
+   * the size of all peer labels to the same size to provide a nice 
+   * alignment. This algorithm may employ a tolerance for alignment.
+   */
+  private void initLabels()
+  {
+    List<ILabelFeature> labelFeatures = new ArrayList<ILabelFeature>();
+    
+    int maxWidth = 0;
+    for( IXidget child: xidget.getChildren())
+    {
+      ILabelFeature labelFeature = child.getFeature( ILabelFeature.class);
+      if ( labelFeature != null)
+      {
+        int labelWidth = labelFeature.getLabelWidth();
+        if ( labelWidth > maxWidth) maxWidth = labelWidth;
+        labelFeatures.add( labelFeature);
+      }
+    }
+    
+    for( ILabelFeature labelFeature: labelFeatures)
+      labelFeature.setLabelWidth( maxWidth);
   }
   
   /**

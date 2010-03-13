@@ -25,8 +25,20 @@ package org.xidget.ifeature;
 public interface ILabelFeature
 {
   /**
+   * Returns the preferred width of the label.
+   * @return Returns the preferred width of the label.
+   */
+  public int getLabelWidth();
+  
+  /**
+   * Set the width of the label (used for pretty alignment).
+   * @param width The width.
+   */
+  public void setLabelWidth( int width);
+  
+  /**
    * Set the text of the label.
    * @param text The text.
    */
-  public void setText( String text);
+  public void setLabelText( String text);
 }

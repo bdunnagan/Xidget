@@ -62,20 +62,20 @@ public class LabelBindingRule implements IBindingRule
     {
       node = nodes.get( 0);
       ILabelFeature feature = xidget.getFeature( ILabelFeature.class);
-      feature.setText( Xlate.get( node, ""));
+      feature.setLabelText( Xlate.get( node, ""));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
       ILabelFeature feature = xidget.getFeature( ILabelFeature.class);
-      feature.setText( Xlate.get( node, ""));
+      feature.setLabelText( Xlate.get( node, ""));
     }
 
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
       ILabelFeature feature = xidget.getFeature( ILabelFeature.class);
-      feature.setText( newValue);
+      feature.setLabelText( newValue);
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
@@ -83,7 +83,7 @@ public class LabelBindingRule implements IBindingRule
       if ( object == node) 
       {
         ILabelFeature feature = xidget.getFeature( ILabelFeature.class);
-        feature.setText( Xlate.get( object, ""));
+        feature.setLabelText( Xlate.get( object, ""));
       }
     }
 
