@@ -125,6 +125,7 @@ public final class Creator
     processor.addAttributeHandler( "fontSize", new BindingTagHandler( new FontSizeBindingRule()));
     processor.addAttributeHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
+    //processor.addAttributeHandler( "size", new BindingTagHandler( new SizeBindingRule()));
     processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));
     
     // skip
@@ -134,6 +135,8 @@ public final class Creator
     processor.addHandler( "onPress", new ScriptTagHandler());
     processor.addHandler( "onOpen", new ScriptTagHandler());
     processor.addHandler( "onClose", new ScriptTagHandler());
+    processor.addHandler( "onShow", new ScriptTagHandler());
+    processor.addHandler( "onHide", new ScriptTagHandler());
     processor.addHandler( "onDrag", new ScriptTagHandler());
     processor.addHandler( "onDrop", new ScriptTagHandler());
     

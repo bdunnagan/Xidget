@@ -1,5 +1,48 @@
-p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
-p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
-p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
-pre {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
-table.XidgetElements {}
+p {
+  margin: 3.0px 0.0px 12.0px 0.25in; 
+  font: 14.0px Times; 
+  width: 7.5in;
+}
+
+p.body {
+  margin: 3.0px 0.0px 3.0px 0.0px; 
+  font: 14.0px Times; 
+  width: 7.5in;
+}
+
+p.code {
+  margin: 10.0px 0.0px 10.0px 0.25in; 
+  font: 12.0px Courier New; 
+  color: #308030
+}
+
+pre {
+  margin: 10.0px 0.0px 10.0px 1.0in; 
+  font: 12.0px Courier New; 
+  color: #308030
+}
+
+table {
+  border-width: 1px;
+  border-spacing: 0px;
+  border-style: outset;
+  border-color: gray;
+  border-collapse: separate;
+  background-color: white;
+  width: 7.5in;
+}
+table th {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: gray;
+  background-color: rgb(250, 240, 230);
+}
+table td {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: gray;
+  background-color: rgb(250, 240, 230);
+  font: 12.0px Courier New; 
+}
