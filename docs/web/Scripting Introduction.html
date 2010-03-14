@@ -3,17 +3,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta http-equiv="Content-Style-Type" content="text/css"/>
   <title>Introduction To Scripting</title>
-  <style type="text/css">
-    p {margin: 3.0px 0.0px 12.0px 0.25in; font: 14.0px Times; width: 7.5in}
-    p.toc1 {margin: 6.0px 0.0px 6.0px 0.25in; font: 14.0px Times Bold; text-decoration: none}
-    p.toc2 {margin: 4.0px 0.0px 4.0px 0.50in; font: 12.0px Times Bold; text-decoration: none}
-    p.toc3 {margin: 3.0px 0.0px 3.0px 0.75in; font: 10.0px Times Bold; text-decoration: none}
-    p.body {margin: 3.0px 0.0px 3.0px 0.0px; font: 14.0px Times; width: 7.5in}
-    p.code {margin: 10.0px 0.0px 10.0px 0.25in; font: 12.0px Courier New; color: #308030}
-    div.xml {margin: 10.0px 0.0px 10.0px 1.0in; font: 12.0px Courier New; color: #308030}
-    table.t1 {width: 8in; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #808080 #808080 #808080 #808080}
-    td.td1 {width: 2in; background-color: #b6d5ce; border-style: solid; border-width: 1.0px 1.0px 1.0px 1.0px; border-color: #648480 #648480
-    div.footnote {margin: 6.0px 0.0px 6.0px 0.0px; font: 8px Times; width: 7.5in}</style>
+  <link href="css/global.css" rel="stylesheet" type="text/css"/>  
 </head>
 
 <body>
@@ -55,7 +45,6 @@ form is created, and before the form is bound to its context. This means that th
 will have access to variables that are created in the <i>initialize</i> script.</p>
 
 <div class="xml">
-<pre>
 &lt;form&gt;
   &lt;initialize&gt;
     &lt;create assign="book"&gt;
@@ -86,7 +75,6 @@ will have access to variables that are created in the <i>initialize</i> script.<
     &lt;source&gt;$book/author&lt;/source&gt;
   &lt;/text&gt;  
 &lt;/form&gt;
-</pre>
 </div>
 
 <h4>Callback Scripts</h4>
@@ -94,14 +82,12 @@ will have access to variables that are created in the <i>initialize</i> script.<
 The following example shows a script that will be called whenever the button is pressed.</p>
 
 <div class="xml">
-<pre>
 &lt;button&gt;
   &lt;label&gt;'Press Me'&lt;/source&gt;
   &lt;onPress&gt;
     &lt;print&gt;'The button was pressed.'&lt;/print&gt;
   &lt;/onPress&gt;
 &lt;/button&gt;  
-</pre>
 </div>
 
 <p>
@@ -114,7 +100,6 @@ is bound after its <i>initialize</i> script is executed. The following example s
 whenever the value in a combo xidget changes.</p>
 
 <div class="xml">
-<pre>
 &lt;combo&gt;
   &lt;label&gt;'Options'&lt;/source&gt;  
   &lt;choices&gt;
@@ -127,7 +112,6 @@ whenever the value in a combo xidget changes.</p>
     &lt;print&gt;$value&lt;print&gt;
   &lt;/trigger&gt;  
 &lt;/button&gt;  
-</pre>
 </div>
 
 <h4>The Main Script</h4>

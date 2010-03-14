@@ -22,6 +22,13 @@ pre {
   color: #308030
 }
 
+div.xml {
+  margin: 10.0px 0.0px 10.0px 1.0in; 
+  font: 12.0px Courier New; 
+  color: #308030;
+  whitespace: pre;
+}
+
 table {
   border-width: 1px;
   border-spacing: 0px;
@@ -31,18 +38,37 @@ table {
   background-color: white;
   width: 7.5in;
 }
-table th {
+
+table.script th {
   border-width: 1px;
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(250, 240, 230);
+  background-color: rgb(240, 250, 230);
 }
-table td {
+
+table.script td {
   border-width: 1px;
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(250, 240, 230);
+  background-color: rgb(240, 250, 230);
+  font: 12.0px Courier New; 
+}
+
+table.xidget th {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: gray;
+  background-color: rgb(230, 240, 250);
+}
+
+table.xidget td {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: gray;
+  background-color: rgb(230, 240, 250);
   font: 12.0px Courier New; 
 }
