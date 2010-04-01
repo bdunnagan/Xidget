@@ -46,9 +46,9 @@ import org.xidget.binding.TitleBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
 import org.xidget.binding.VisibleBindingRule;
-import org.xidget.binding.slider.LogarithmicBindingRule;
 import org.xidget.binding.slider.MaximumBindingRule;
 import org.xidget.binding.slider.MinimumBindingRule;
+import org.xidget.binding.slider.PrecisionBindingRule;
 import org.xidget.binding.table.ColumnTitleBindingRule;
 import org.xidget.binding.table.RowSetBindingRule;
 import org.xidget.binding.table.ShowGridBindingRule;
@@ -117,12 +117,12 @@ public final class Creator
     processor.addHandler( "xout", new XoutTagHandler());
     
     // slider
-    processor.addHandler( "min", new BindingTagHandler( new MinimumBindingRule()));
-    processor.addHandler( "max", new BindingTagHandler( new MaximumBindingRule()));
-    processor.addHandler( "log", new BindingTagHandler( new LogarithmicBindingRule()));
-    processor.addAttributeHandler( "min", new BindingTagHandler( new MinimumBindingRule()));
-    processor.addAttributeHandler( "max", new BindingTagHandler( new MaximumBindingRule()));
-    processor.addAttributeHandler( "log", new BindingTagHandler( new LogarithmicBindingRule()));
+    processor.addHandler( "minimum", new BindingTagHandler( new MinimumBindingRule()));
+    processor.addHandler( "maximum", new BindingTagHandler( new MaximumBindingRule()));
+    processor.addHandler( "precision", new BindingTagHandler( new PrecisionBindingRule()));
+    processor.addAttributeHandler( "minimum", new BindingTagHandler( new MinimumBindingRule()));
+    processor.addAttributeHandler( "maximum", new BindingTagHandler( new MaximumBindingRule()));
+    processor.addAttributeHandler( "precision", new BindingTagHandler( new PrecisionBindingRule()));
     
     // tables
     processor.addHandler( "showGrid", new BindingTagHandler( new ShowGridBindingRule()));

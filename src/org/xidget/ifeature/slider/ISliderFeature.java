@@ -10,52 +10,44 @@ package org.xidget.ifeature.slider;
 public interface ISliderFeature
 {
   /**
-   * Specify whether the scale is linear or logarithmic. If the log argument is
-   * less than or equal to 1, the scale is linear. Otherwise, the scale is logarithmic
-   * with the specified base.
-   * @param log The logarithm base.
+   * Set the number of decimal points of precision.
+   * @param precision The precision.
    */
-  public void setLogarithmic( double log);
+  public void setPrecision( int precision);
   
   /**
-   * Returns the logarithmic scale where 1 means linear.
-   * @return Returns the logarithmic scale where 1 means linear.
+   * Set the value of the slider.
+   * @param value The value.
    */
-  public double getLogarithmic(); 
+  public void setValue( double value);
+  
+  /**
+   * Returns the value of the slider.
+   * @return Returns the value of the slider.
+   */
+  public double getValue();
   
   /**
    * Set the minimum value.
    * @param value The minimum value.
    */
-  public void setMinimum( int value);
+  public void setMinimum( double value);
   
   /**
    * Returns the minimum value.
    * @return Returns the minimum value.
    */
-  public int getMinimum();
+  public double getMinimum();
   
   /**
    * Set the maximum value.
    * @param value The maximum value.
    */
-  public void setMaximum( int value);
+  public void setMaximum( double value);
   
   /**
    * Returns the maximum value.
    * @return Returns the maximum value.
    */
-  public int getMaximum();
-  
-  /**
-   * Specify whether labels should be generated for the slider.
-   * @param auto True if labels should be generated.
-   */
-  public void setAutoLabel( boolean auto);
-  
-  /**
-   * Returns true if auto-labelling should be used.
-   * @return Returns true if auto-labelling should be used.
-   */
-  public boolean getAutoLabel();
+  public double getMaximum();
 }

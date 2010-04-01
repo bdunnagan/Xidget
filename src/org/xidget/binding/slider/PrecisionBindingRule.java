@@ -34,9 +34,9 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
- * An implementation of IBindingRule for ISliderFeature minimum.
+ * An implementation of IBindingRule for the ISliderFeature precision.
  */
-public class MinimumBindingRule implements IBindingRule
+public class PrecisionBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
@@ -65,14 +65,14 @@ public class MinimumBindingRule implements IBindingRule
     {
       node = nodes.get( 0);
       ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-      feature.setMinimum( Xlate.get( node, 0d));
+      feature.setPrecision( Xlate.get( node, 1));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
       ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-      feature.setMinimum( Xlate.get( node, 0d));
+      feature.setPrecision( Xlate.get( node, 1));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
@@ -80,7 +80,7 @@ public class MinimumBindingRule implements IBindingRule
       try
       {
         ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-        feature.setMinimum( Double.parseDouble( newValue));
+        feature.setPrecision( Integer.parseInt( newValue));
       }
       catch( Exception e)
       {
@@ -90,7 +90,7 @@ public class MinimumBindingRule implements IBindingRule
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
       ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-      feature.setMinimum( newValue);
+      feature.setPrecision( (int)newValue);
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
@@ -98,7 +98,7 @@ public class MinimumBindingRule implements IBindingRule
       if ( object == node) 
       {
         ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-        feature.setMinimum( Xlate.get( object, 0d));
+        feature.setPrecision( Xlate.get( object, 1));
       }
     }
 

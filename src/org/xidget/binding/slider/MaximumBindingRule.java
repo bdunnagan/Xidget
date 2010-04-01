@@ -34,7 +34,7 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
- * An implementation of IBindingRule for icons.
+ * An implementation of IBindingRule for ISliderFeature maximum.
  */
 public class MaximumBindingRule implements IBindingRule
 {
@@ -65,14 +65,14 @@ public class MaximumBindingRule implements IBindingRule
     {
       node = nodes.get( 0);
       ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-      feature.setMaximum( Xlate.get( node, 0));
+      feature.setMaximum( Xlate.get( node, 0d));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
       ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-      feature.setMaximum( Xlate.get( node, 0));
+      feature.setMaximum( Xlate.get( node, 0d));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
@@ -80,7 +80,7 @@ public class MaximumBindingRule implements IBindingRule
       try
       {
         ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-        feature.setMaximum( Integer.parseInt( newValue));
+        feature.setMaximum( Double.parseDouble( newValue));
       }
       catch( Exception e)
       {
@@ -90,7 +90,7 @@ public class MaximumBindingRule implements IBindingRule
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
       ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-      feature.setMaximum( (int)newValue);
+      feature.setMaximum( newValue);
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
@@ -98,7 +98,7 @@ public class MaximumBindingRule implements IBindingRule
       if ( object == node) 
       {
         ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
-        feature.setMaximum( Xlate.get( object, 0));
+        feature.setMaximum( Xlate.get( object, 0d));
       }
     }
 
