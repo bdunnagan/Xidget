@@ -64,6 +64,12 @@ public interface IWidgetFeature
   public void setVisible( boolean visible);
   
   /**
+   * Returns true if the widget is visible.
+   * @return Returns true if the widget is visible.
+   */
+  public boolean getVisible();
+  
+  /**
    * Set whether the widget is enabled.
    * @param enabled True if enabled.
    */

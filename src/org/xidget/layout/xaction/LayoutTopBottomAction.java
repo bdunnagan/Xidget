@@ -39,6 +39,7 @@ public class LayoutTopBottomAction extends AbstractLayoutAction
   protected void layout( IContext context, IXidget parent, List<IXidget> children, int spacing)
   {
     ILayoutFeature feature = parent.getFeature( ILayoutFeature.class);
+    if ( children.size() == 0) return;
     
     // attach the top side of the first xidget to the form
     feature.attachContainer( children.get( 0), Side.top, 0);

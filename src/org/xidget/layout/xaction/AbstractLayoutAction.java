@@ -21,8 +21,10 @@ package org.xidget.layout.xaction;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
+import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
@@ -61,8 +63,15 @@ public abstract class AbstractLayoutAction extends GuardedAction
     // layout
     if ( xidgetsExpr == null)
     {
+      List<IXidget> visibles = new ArrayList<IXidget>();
+      for( IXidget child: parent.getChildren())
+      {
+        IWidgetFeature widgetFeature = child.getFeature( IWidgetFeature.class);
+        if ( widgetFeature != null && widgetFeature.getVisible()) visibles.add( child);
+      }
+      
       if ( parent.getChildren().size() > 0)
-        layout( context, parent, parent.getChildren(), spacing);
+        layout( context, parent, visibles, spacing);
     }
     else
     {

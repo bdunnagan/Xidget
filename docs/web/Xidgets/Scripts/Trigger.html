@@ -1,0 +1,29 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Trigger Script</title>
+  <link href="../../css/global.css" rel="stylesheet" type="text/css"/>  
+</head>
+
+<body>
+<h2>Trigger Script</h2>
+
+<h4>Overview</h4>
+<p>
+The <i>trigger</i> script is a script which is executed when an event occurs in the datamodel. There
+are three types of triggers: condition triggers, node triggers and entity triggers. A condition trigger
+fires when its condition expression becomes true. A node trigger fires when any one of the nodes in
+the expression node-set is updated. Node triggers are shallow listeners. In contrast, an entity trigger
+is a deep listener and it fires whenever any part of the subtree of any node in the expression node-set
+changes.</p>
+<p>
+Before node or entity triggers execute their scripts, they define useful variables in the current context
+that tell the script what has changed. Node triggers set the <i>added</i> variable to the child that was
+added to the target element. The <i>removed</i> variable is set to the child that was removed from the
+target element.</p>
+
+  
+
+</body>
+</html>

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+
 import org.xidget.binding.BackgroundBindingRule;
 import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.ChildrenTagHandler;
@@ -45,6 +46,9 @@ import org.xidget.binding.TitleBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
 import org.xidget.binding.VisibleBindingRule;
+import org.xidget.binding.slider.LogarithmicBindingRule;
+import org.xidget.binding.slider.MaximumBindingRule;
+import org.xidget.binding.slider.MinimumBindingRule;
 import org.xidget.binding.table.ColumnTitleBindingRule;
 import org.xidget.binding.table.RowSetBindingRule;
 import org.xidget.binding.table.ShowGridBindingRule;
@@ -111,6 +115,14 @@ public final class Creator
     processor.addHandler( "visible", new BindingTagHandler( new VisibleBindingRule()));
     processor.addHandler( "xin", new XinTagHandler());
     processor.addHandler( "xout", new XoutTagHandler());
+    
+    // slider
+    processor.addHandler( "min", new BindingTagHandler( new MinimumBindingRule()));
+    processor.addHandler( "max", new BindingTagHandler( new MaximumBindingRule()));
+    processor.addHandler( "log", new BindingTagHandler( new LogarithmicBindingRule()));
+    processor.addAttributeHandler( "min", new BindingTagHandler( new MinimumBindingRule()));
+    processor.addAttributeHandler( "max", new BindingTagHandler( new MaximumBindingRule()));
+    processor.addAttributeHandler( "log", new BindingTagHandler( new LogarithmicBindingRule()));
     
     // tables
     processor.addHandler( "showGrid", new BindingTagHandler( new ShowGridBindingRule()));
