@@ -1,0 +1,331 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Common Xidget Parameters</title>
+  <link href="../css/global.css" rel="stylesheet" type="text/css"/>  
+</head>
+
+<body>
+<h2>Common Xidget Parameters</h2>
+
+<h4>Overview</h4>
+<p>
+The xidget schema includes some parameters that are common to most xidgets. The xidget reference lists the common parameters
+that are allowed for each xidget. Many of the common parameters specify xpath expressions. Each parameter supports a subset
+of the XPath 1.0 return types. String values may be specified with any of the four XPath 1.0 return types, the xpath
+will be evaluated as if it is enclosed in the <i>string()</i> function.</p>
+
+<h4>Parameters</h4>
+<p>
+The following table lists the common parameters.</p>
+
+<table class="xidget">
+  <thead>
+    <td>Node</td>
+    <td>Description</td>
+  </thead>
+  
+  <tr>
+    <td>label</td>
+    <td>An xpath that determines the label to show to the left of the xidget.</td>
+  </tr>
+  <tr>
+    <td>image</td>
+    <td>An xpath that determines the label to show to the left of the xidget.</td>
+  </tr>
+  <tr>
+    <td>source</td>
+    <td>An xpath whose first node stores the text of the xidget.</td>
+  </tr>
+  <tr>
+    <td>enable</td>
+    <td>A boolean xpath that determines when the xidget is enabled.</td>
+  </tr>
+  <tr>
+    <td>editable</td>
+    <td>A boolean xpath that determines when the xidget is editable.</td>
+  </tr>
+  <tr>
+    <td>visible</td>
+    <td>A boolean xpath that determines when the xidget is available.</td>
+  </tr>
+  <tr>
+    <td>foreground</td>
+    <td>An xpath whose string value contains the hexadecimal rgb foreground color.</td>
+  </tr>
+  <tr>
+    <td>background</td>
+    <td>An xpath whose string value contains the hexadecimal rgb background color.</td>
+  </tr>
+  <tr>
+    <td>font</td>
+    <td>An xpath whose string value gives the name of the font family.</td>
+  </tr>
+  <tr>
+    <td>fontStyle</td>
+    <td>
+      An xpath whose string value gives the name of the font style.<br/>
+      Syntax: (plain|italic|bold)
+    </td>
+  </tr>
+  <tr>
+    <td>fontSize</td>
+    <td>An xpath whose numeric value gives the font size in points.</td>
+  </tr>
+  <tr>
+    <td>tooltip</td>
+    <td>An xpath whose string value gives the tooltip text.</td>
+  </tr>
+  <tr>
+    <td>error</td>
+    <td>An xpath that returns a non-empty string when there is a validation error.</td>
+  </tr>
+  <tr>
+    <td>size</td>
+    <td>
+      An xpath whose string value determines the size.<br/>
+      Syntax: width(\s*),(\s*)height(\s*)(char|pixel)
+    </td>
+  </tr>
+</table>
+
+<h4>Usage</h4>
+<p>
+The following matrix shows which parameters are applicable to each xidget.</p>
+
+<table class="matrix">
+  <thead>
+    <td></td>
+    <td>button</td>
+    <td>combo</td>
+    <td>text</td>
+    <td>slider</td>
+    <td>menu</td>
+    <td>menuItem</td>
+    <td>table</td>
+    <td>tree</td>
+    <td>cell</td>
+    <td>form</td>
+    <td>window</td>
+  </thead>
+  
+  <tr class="even">
+    <td>label</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr class="odd">
+    <td>image</td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>1</td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr class="even">
+    <td>source</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr class="odd">
+    <td>error</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr class="even">
+    <td>enable</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td></td>
+    <td>X</td>
+    <td></td>
+  </tr>
+  <tr class="odd">
+    <td>editable</td>
+    <td></td>
+    <td>X</td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr class="even">
+    <td>visible</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td></td>
+    <td>X</td>
+    <td>X</td>
+  </tr>
+  <tr class="odd">
+    <td>foreground</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+  </tr>
+  <tr class="even">
+    <td>background</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+  </tr>
+  <tr class="odd">
+    <td>font</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+  </tr>
+  <tr class="even">
+    <td>fontStyle</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+  </tr>
+  <tr class="odd">
+    <td>fontSize</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+  </tr>
+  <tr class="even">
+    <td>tooltip</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td></td>
+  </tr>
+  <tr class="odd">
+    <td>title</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>X</td>
+    <td>X</td>
+  </tr>
+  <tr class="even">
+    <td>size</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+  </tr>
+  <tfoot>
+    <tr>
+      <td colspan="13"><sup>1</sup> Not applicable to popup menus.</td>
+    </tr>
+  </tfoot>
+</table>
+
+</body>
+</html>
