@@ -26,7 +26,7 @@ div.xml {
   margin: 10.0px 0.0px 10.0px 1.0in; 
   font: 12.0px Courier New; 
   color: #308030;
-  whitespace: pre;
+  white-space: pre;
 }
 
 table {

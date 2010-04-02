@@ -12,27 +12,40 @@
 <h4>Overview</h4>
 <p>
 The <i>menu</i> xidget will create either a menu within a menubar or a popup menu.  In either case, the schema
-is the same.  The menu xidget supports images via the <i>image</i> element.  Menus can be conditionally enabled
-using the <i>enable</i> element, and shown/hidden using the <i>visible</i> element.  Menus contain <i>menuItem</i>
-children which define the menu options.</p>
+is the same, and specifies the menu text and image (popup menus do not have images). Menus also support boolean 
+enable and visible expressions.</p>
+<p>
+A <i>menu</i> element is also used to define a sub-menu.</p>
+<p>
+Within a menu, the <i>separator</i> element creates a visual separation between menu items.</p> 
 
+<h4>Example</h4>
+<p>
+The following example shows a popup menu defined on a table.</p>
 
+<pre>
+&lt;table&gt;
+  &lt;selection parent="$selection"/&gt;
+  &lt;rows&gt;*&lt;/rows&gt;
+  &lt;cell&gt;
+    &lt;source&gt;name()&lt;/source&gt;
+  &lt;/cell&gt;
+  
+  &lt;menu&gt;
+    &lt;menuItem label="'Open Item'"&gt;
+      &lt;onPress&gt;
+        &lt;print&gt;printf( 'Open item: %s\n', name( $selection/*))&lt;/print&gt;  
+      &lt;/onPress&gt;
+    &lt;/menuItem&gt;
+  &lt;/menu&gt;
+&lt;/table&gt;
+</pre>
 
-<h4>Scripts</h4>
-<table>
-	<tr>
-	  <td><a href="Scripts/OnOpen.html">OnOpen</a></td>
-	  <td>Called before the form widget becomes visible.</td>
-	</tr>
-	<tr>
-	  <td><a href="Scripts/OnClose.html">OnClose</a></td>
-	  <td>Called after the form widget becomes invisible.</td>
-	</tr>
-	<tr>
-	  <td><a href="Scripts/Trigger.html">Trigger</a></td>
-	  <td>Called when an xpath condition is satisfied after the form is visible.</td>
-	</tr>
-</table>
+<h4>Common</h4>
+<ul>
+  <li><a href="Common Elements.html">Parameters</a></li>
+  <li><a href="Common Events.html">Events</a></li>
+</ul>
 
 </body>
 </html>
