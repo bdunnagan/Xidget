@@ -1,0 +1,192 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Layout Operations</title>
+  <link href="../../css/global.css" rel="stylesheet" type="text/css"/>  
+</head>
+
+<body>
+<h2><i>Layout Operations</i></h2>
+
+<h4>Overview</h4>
+<p>
+A <i>form</i> xidget has a layout script that is executed when the form needs to set the position and size
+of its children. Layouts are performed automatically when parameters that effect the position or size of
+children change (e.g. visibility). Unlike many widget platforms, there is only one type of layout algorithm
+used by xidgets.  The algorithm is based on the concept of attaching the sides of widgets to the sides of
+the other widgets, or to the containing form.  Any other type of layout can be created using this system,
+and it was designed from scratch for the xidget framework to insure a consistent result across different
+widget platforms. This type of algorithm makes it easy to create resizeable layouts.</p>
+<p>
+A layout scripting element is responsible for creating attachments. The general purpose scripting element
+is <i>layoutAttach</i>. This element explicitly creates a attachments for zero or more xidgets. There are
+a variety of other scripting elements that create common attachment policies.</p>
+
+<h4><i>layoutAttach</i></h4>
+<p>
+In the next example, the left and right sides of all xidgets in the form will be attached to the 
+container. The xidgets for attachments will be created are specified by the xpath expression in
+the <i>xidgets</i> attribute. The <i>xidgets</i> parameter xpath is evaluated in the context of
+the form configuration element. So the "*" xpath will apply to all configuration element children. 
+The <i>xid</i> attribute provides a simpler alternative when the target xidget has an <i>id</i> 
+attribute. The <i>xid</i> attribute is not an xpath expression.</p>
+
+<div class="xml">
+&lt;form&gt;
+  &lt;layout&gt;
+    &lt;layoutAttach xidgets="*"&gt;
+      &lt;left/&gt;
+      &lt;right/&gt;
+    &lt;/layoutAttach&gt;
+  &lt;/layout&gt;
+  ...
+&lt;/form&gt;
+</div>
+
+<p>
+The <i>layoutAttach</i> element has four children that describe how the four sides of the xidgets will be
+attached. By default, the specified side of the xidget will be attached to the same side of the form, and
+the offset will be 0. In the next example the <i>offset</i> attribute is specifies a pixel offset from the
+side of the form. Layout parameters are xpath expressions.  The <i>offset</i> parameter can be used to 
+specify an absolute position for a xidget in the form.</p>
+
+<div class="xml">
+&lt;form&gt;
+  &lt;layout&gt;
+    &lt;layoutAttach xidgets="*"&gt;
+      &lt;left offset="5"/&gt;
+      &lt;right offset="5"/&gt;
+    &lt;/layoutAttach&gt;
+  &lt;/layout&gt;
+  ...
+&lt;/form&gt;
+</div>
+
+<p>
+The <i>percent</i> parameter specifies the position of the side of the xidget relative to the width or
+height of the form. It is a value between 0 and 1, representing 0% to 100% of the dimension. In the
+following example, a tree is positioned on the left and child form is positioned on the right. The right
+side of the tree is attached so that the tree takes up 1/3rd of the width of the container. The left 
+side of the child form is attached to the right side of the tree.</p>
+
+<div class="xml">
+&lt;form&gt;
+  &lt;layout&gt;
+    &lt;layoutAttach xidgets="tree"&gt;
+      &lt;top/&gt;
+      &lt;left/&gt;
+      &lt;right percent="0.33" handle="true"/&gt;
+      &lt;bottom/&gt;
+    &lt;/layoutAttach&gt;
+    &lt;layoutAttach xidgets="form"&gt;
+      &lt;top/&gt;
+      &lt;left attach="tree" offset="5"/&gt;
+      &lt;right/&gt;
+      &lt;bottom/&gt;
+    &lt;/layoutAttach&gt;
+  &lt;/layout&gt;
+  ...
+&lt;/form&gt;
+</div>
+
+<p>
+The <i>handle</i> parameter specifies whether the side of xidget can be moved by the user. The cursor will
+change to an adjustment cursor when the user hovers over a side that has a handle.</p>
+
+<h4>Shortcut Elements</h4>
+
+<table class="xidget">
+  <thead>
+    <tr>
+      <td>Element</td>
+      <td>Description</td>
+    </tr>
+  </thead>
+  
+  <tr>
+    <td>layoutAlignLeft</td>
+    <td>Attach the left side of each xidget to the form.</td>
+  </tr>
+  <tr>
+    <td>layoutAlignRight</td>
+    <td>Attach the right side of each xidget to the form.</td>
+  </tr>
+  <tr>
+    <td>layoutAlignTop</td>
+    <td>Attach the top side of each xidget to the form.</td>
+  </tr>
+  <tr>
+    <td>layoutAlignBottom</td>
+    <td>Attach the bottom side of each xidget to the form.</td>
+  </tr>
+  
+  <tr>
+    <td>layoutTopBottom</td>
+    <td>
+      Attach the top of each xidget to the bottom of the preceding xidget.<br/>
+      Attach the top of the first xidget to the form.
+    </td>
+  </tr>
+  <tr>
+    <td>layoutBottomTop</td>
+    <td>
+      Attach the bottom of each xidget to the top of the following xidget.<br/>
+      Attach the bottom of the last xidget to the form.
+    </td>
+  </tr>
+  <tr>
+    <td>layoutLeftRight</td>
+    <td>
+      Attach the left of each xidget to the right of the preceding xidget.<br/>
+      Attach the left of the first xidget to the form.
+    </td>
+  </tr>
+  <tr>
+    <td>layoutRightLeft</td>
+    <td>
+      Attach the right of each xidget to the left of the following xidget.<br/>
+      Attach the right of the last xidget to the form.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>layoutFillX</td>
+    <td>Attach the left and right of each xidget to the form.</td>
+  </tr>
+  <tr>
+    <td>layoutFillY</td>
+    <td>Attach the top and bottom of each xidget to the form.</td>
+  </tr>
+  
+  <tr>
+    <td>layoutGridX</td>
+    <td>
+      Attach the right side of each xidget to the grid, offset by half the cell spacing.<br/>
+      Attach the left side of each xidget to the previous xidget, offset by the cell spacing.<br/>
+      Attach the left side of the first xidget to the form.<br/>
+      Attach the right side of the last xidget to the form.
+    </td>
+  </tr>
+  <tr>
+    <td>layoutGridY</td>
+    <td>
+      Attach the bottom side of each xidget to the grid, offset by half the cell spacing.<br/>
+      Attach the top side of each xidget to the previous xidget, offset by the cell spacing.<br/>
+      Attach the top side of the first xidget to the form.<br/>
+      Attach the bottom side of the last xidget to the form.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>layoutPackX</td>
+    <td>Attach the right side of the form to the last xidget.</td>
+  </tr>
+  <tr>
+    <td>layoutPackY</td>
+    <td>Attach the bottom side of the form to the last xidget.</td>
+  </tr>
+</table>
+
+</body>
+</html>
