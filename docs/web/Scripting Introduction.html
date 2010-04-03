@@ -18,7 +18,7 @@ a succinct expression of user-interface business logic. For example, the button 
 <p>
 Within the xidget schema there are three main places where scripts are called. First, each xidget has two scripts
 that are executed when the xidget is opened and closed, respectively. These are the <i>onOpen</i> and
-<i>onClose</i> scripts. Second, as mentioned above, each xidget schema is extended with scripts to implement
+<i>onClose</i> scripts. Second, as mentioned above, each xidget schema is extended with event scripts to implement
 the xidgets behavior. Third, each xidget schema may define triggers which conditionally execute a script.</p>
 <p style="color: #a00000;">
 Keep in mind that the xidget schema is a static <b>configuration</b> with specific elements that contain
@@ -27,8 +27,8 @@ not matter. In contrast, xidget script is executed from top to bottom. Within a 
 most scripts are identified by an element that begins with the prefix, "on", such as "onOpen". Triggers
 are an exception.</p>
 <p>
-The lifetime of a trigger is the same as the xidget that encloses it. When the enclosing xidget is destroyed,
-the trigger is deactivated and the trigger script will not run again for that specific xidget instance.</p>
+For more information about the <i>onOpen</i>, <i>onClose</i> and <i>trigger</i> events, see
+<a href="Xidgets/Lifecycle.html">The Xidget Lifecycle</a>.</p>
 <p>
 In addition to the scripts within the xidget schema, a xidget application is started with a main script that
 is passed to the JVM as an argument. The main script is responsible for creating the application data model
@@ -38,15 +38,15 @@ Reference documentation for the scripting elements is available <a href="Scripti
 <p>
 A discussion of the rationale for the xidget script schema can be found <a href="Schema Conventions.html">here</a>.</p>
 
-<h4>Initialize And Finalize Scripts</h4>
+<h4>The onOpen And onClose Scripts</h4>
 <p>
-The following example shows a form xidget with an <i>initialize</i> script. The script is executed when the
+The following example shows a form xidget with an <i>onOpen</i> script. The script is executed when the
 form is created, and before the form is bound to its context. This means that the text xidgets in the form
-will have access to variables that are created in the <i>initialize</i> script.</p>
+will have access to variables that are created in the <i>onOpen</i> script.</p>
 
 <div class="xml">
 &lt;form&gt;
-  &lt;initialize&gt;
+  &lt;onOpen&gt;
     &lt;create assign="book"&gt;
       &lt;template&gt;
         &lt;book id=""&gt;
@@ -56,7 +56,7 @@ will have access to variables that are created in the <i>initialize</i> script.<
       &lt;/template&gt;
       &lt;id&gt;@id&lt;/id&gt;
     &lt;/create&gt;
-  &lt;/initialize&gt;
+  &lt;/onOpen&gt;
 
   &lt;layout&gt;
     &lt;layoutGridY/&gt;
@@ -77,7 +77,7 @@ will have access to variables that are created in the <i>initialize</i> script.<
 &lt;/form&gt;
 </div>
 
-<h4>Callback Scripts</h4>
+<h4>Event Scripts</h4>
 <p>
 The following example shows a script that will be called whenever the button is pressed.</p>
 

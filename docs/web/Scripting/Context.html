@@ -24,20 +24,21 @@ possibility of accidentally executing the script multiple times.</p>
 <p>
 Variables assigned in a nested context are only visible in the nested
 context.</p>
+
 <h4>Executing A Script In A Nested Context</h4>
 <p>
 The following example executes a script in a nested context. Note that
 the variables that are assigned
 in the script are assigned in the nested context and are not visible
 outside the context.</p>
+
 <div class="xml">
-&lt;context source="collection('library')/books/book"&gt; <br>
-&nbsp; &lt;assign name="x"&gt;.&lt;/assign&gt; <br>
-&nbsp; &lt;print&gt;$x&lt;/print&gt;
-<br>
+&lt;context source="collection('library')/books/book"&gt;
+  &lt;assign name="x"&gt;.&lt;/assign&gt;
+  &lt;print&gt;$x&lt;/print&gt;
 &lt;/context&gt;
-<br>
 &lt;-- $x is not visible here --&gt;
 </div>
+
 </body>
 </html>

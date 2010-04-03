@@ -19,6 +19,7 @@ If the target xpath does not
 return any nodes, and the target xpath ends in one or more location
 steps then an element is created
 for each location step that does not return at least one node.</p>
+
 <p>
 The schema of many of the script elements is flexible, allowing the
 user to choose a convention that
@@ -28,21 +29,23 @@ case, the schema allows the source or target xpath to be defined in an
 attribute, in an element, or as
 the value of the script element. If the source xpath is defined as the
 value of a script element then
-the target must be defined as an attribute, and vice versa.
-</p>
+the target must be defined as an attribute, and vice versa.</p>
+
 <h4>Basic Assignment</h4>
 <p>
 The following example sets the <i>author</i> element of a book:</p>
+
 <div class="xml">
-&lt;set source="'Frank Wilzcek'"&gt;collection('library')/books/book[
-title='The Lightness of Being']/author&lt;/set&gt;
+&lt;set source="'Frank Wilzcek'"&gt;collection('library')/books/book[ title='The Lightness of Being']/author&lt;/set&gt;
 </div>
+
 <p>
 The following example sets the <i>id</i> attribute of an element.</p>
+
 <div class="xml">
-&lt;set source="$id"&gt;collection('library')/books/book[ title='The
-Lightness of Being']/@id&lt;/set&gt;
+&lt;set source="$id"&gt;collection('library')/books/book[ title='The Lightness of Being']/@id&lt;/set&gt;
 </div>
+
 <p><b>Note:</b><br>
 In general the <i>id</i> attribute should be assigned before an
 element is parented, so that the element has an identity
@@ -50,9 +53,10 @@ when it becomes accessible.</p>
 <p>
 The following example sets the <i>status</i> attribute of every book
 in the library collection.</p>
+
 <div class="xml">
-&lt;set
-source="'reserved'"&gt;collection('library')/books/book/@status&lt;/set&gt;
+&lt;set source="'reserved'"&gt;collection('library')/books/book/@status&lt;/set&gt;
 </div>
+
 </body>
 </html>

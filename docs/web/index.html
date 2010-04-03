@@ -7,16 +7,18 @@
 </head>
 
 <body>
-<img src="xidgets.png" alt="Xidget Logo"/>
+<div style="width: 8in; background-color: fff;">
+  <img style="width: 3in; background-color: fff;" src="xidgets.png" alt="Xidget Logo"/>
+</div>
 
 <h4>Introduction</h4>
 <p>
-The moniker, "xidget", refers to an xml schema for representing user-interfaces and associated business logic. A reference 
+The term, "xidget", refers to an xml schema for representing user-interfaces and associated business logic. A reference 
 implementation of the schema is provided in Java and Swing. Currently, I am weighing the relative importance of SWT
-versus C++/QT implementation. A xidget user-interface specification contains both the user-interface description and 
+versus a QT implementation. A xidget user-interface specification contains both the user-interface description and 
 business logic encoded in xml scripts. Xidgets rely heavily on XPath expressions. The xml scripting language is a succinct 
 means of coding the user-interface business logic. The scripting language is designed so that it is easy to extend the 
-language with native code. In many cases, all of the functionality of a user-interface component can be described in a single 
+language with Java code. In many cases, all of the functionality of a user-interface component can be described in a single 
 xml file, including the complete user-interface description, all business logic, as well as complex behaviors such as 
 drag-and-drop and undo/redo.</p>
 <p>
@@ -44,7 +46,7 @@ resident, while allowing the developer to make decisions about how data is loade
 to each entity. The problem of caching data into memory is completely separate from, and transparent to xidgets.</p>
 
 <h4>Documentation</h4>
-<table>
+<table class="xidget">
 <tr>
   <td><a href="Main Script.html">The Main Script</a></td>
 </tr>

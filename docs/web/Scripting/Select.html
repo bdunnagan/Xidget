@@ -19,17 +19,17 @@ of the source attribute or element is mapped to a case script by its <i>id</i>.<
 
 <h4>Basic Mapping</h4>
 <p>
-The following example will print "John Irving":
+The following example will print "John Irving":</p>
 
 <div class="xml">
-&lt;assign name="book"&gt;collection('library')/books/book[ title='The Cider House Rules']&lt;/assign&gt;<br/>
-&lt;select source="$book/author"&gt;<br/>
-&nbsp;&nbsp;&lt;case id="John Irving"&gt;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;print&gt;'John Irving'&lt;/print&gt;<br/>
-&nbsp;&nbsp;&lt;/case&gt;<br/>
-&nbsp;&nbsp;&lt;case id="Frank Wilzcek"&gt;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;print&gt;'Frank Wilzcek'&lt;/print&gt;<br/>
-&nbsp;&nbsp;&lt;/case&gt;<br/>
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The Cider House Rules']&lt;/assign&gt;
+&lt;select source="$book/author"&gt;
+  &lt;case id="John Irving"&gt;
+    &lt;print&gt;'John Irving'&lt;/print&gt;
+  &lt;/case&gt;
+  &lt;case id="Frank Wilzcek"&gt;
+    &lt;print&gt;'Frank Wilzcek'&lt;/print&gt;
+  &lt;/case&gt;
 &lt;/select&gt;
 </div>
 

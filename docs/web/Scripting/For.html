@@ -30,33 +30,36 @@ attribute contains a numeric xpath that
 gives the ending attribute (inclusive), and the <i>by</i>
 attribute
 contains a numeric attribute that gives the increment.</p>
+
 <h4>Iterating A Node-Set</h4>
 <p>
 The following example prints each node in the node-set given by the
 source xpath:</p>
+
 <div class="xml">
-&lt;for assign="node"
-source="collection('library')/books/book"&gt; <br>
-&nbsp; &lt;print&gt;$node&lt;/print&gt;
-<br>
+&lt;for assign="node" source="collection('library')/books/book"&gt; 
+  &lt;print&gt;$node&lt;/print&gt;
 &lt;/for&gt;
 </div>
+
 <h4>Numeric Iteration</h4>
 <p>
 The following example prints the numbers from 1 to 10:</p>
+
 <div class="xml">
-&lt;for assign="i" from="1" to="10"&gt; <br>
-&nbsp; &lt;print&gt;$i&lt;/print&gt;
-<br>
+&lt;for assign="i" from="1" to="10"&gt; 
+  &lt;print&gt;$i&lt;/print&gt;
 &lt;/for&gt;
 </div>
+
 <p>
 The following example prints the odd numbers from 1 to 10:</p>
+
 <div class="xml">
-&lt;for assign="i" from="1" to="10" by="2"&gt; <br>
-&nbsp; &lt;print&gt;$i&lt;/print&gt;
-<br>
+&lt;for assign="i" from="1" to="10" by="2"&gt; 
+  &lt;print&gt;$i&lt;/print&gt;
 &lt;/for&gt;
 </div>
+
 </body>
 </html>

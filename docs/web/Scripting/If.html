@@ -37,11 +37,9 @@ element when you need an <i>else</i> script, too.</p>
 <p>
 The following&nbsp;example will&nbsp;print the string "Frank Wilzcek":</p>
 <div class="xml">
-&lt;assign name="book"&gt;collection('library')/books/book[ title='The
-Lightness of Being']&lt;/assign&gt;
-<br>
-&lt;if test="$book/title = 'The Lightness of Being'"&gt;<br>
-&nbsp; &nbsp;&lt;print&gt;$book/author&lt;/print&gt;<br>
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The Lightness of Being']&lt;/assign&gt;
+&lt;if test="$book/title = 'The Lightness of Being'"&gt;
+  &lt;print&gt;$book/author&lt;/print&gt;
 &lt;/if&gt;
 </div>
 
@@ -49,9 +47,8 @@ Lightness of Being']&lt;/assign&gt;
 The following&nbsp;example will also &nbsp;print the string "Frank
 Wilzcek":</p>
 <div class="xml">
-&lt;if <span style="font-weight: bold;">true</span>="$book/title =
-'The Lightness of Being'"&gt;<br>
-&nbsp; &nbsp;&lt;print&gt;$book/author&lt;/print&gt;<br>
+&lt;if <span style="font-weight: bold;">true</span>="$book/title = 'The Lightness of Being'"&gt;
+  &lt;print&gt;$book/author&lt;/print&gt;
 &lt;/if&gt;
 </div>
 
@@ -66,29 +63,24 @@ These examples are equivalent to the following:</p>
 <p>
 The following example will print the string "John Irving":</p>
 <div class="xml">
-&lt;assign name="book"&gt;collection('library')/books/book[ title='The
-Cider House Rules']&lt;/assign&gt;
-<br>
-&lt;if test="$book/title = 'The Lightness of Being'"&gt;<br>
-&nbsp; &nbsp;&lt;print&gt;$book/author&lt;/print&gt;<br>
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The Cider House Rules']&lt;/assign&gt;
+&lt;if test="$book/title = 'The Lightness of Being'"&gt;
+  &lt;print&gt;$book/author&lt;/print&gt;
 &lt;/if&gt;
-<br>
 &lt;else&gt;
-&nbsp;<br>
-&nbsp; &nbsp;&lt;print&gt;$book/author&lt;/print&gt;<br>
+  &lt;print&gt;$book/author&lt;/print&gt;
 &lt;/else&gt;
 </div>
+
 <h4>Using Negation</h4>
 <p>
 The following example will not print anything:</p>
 <div class="xml">
-&lt;assign name="book"&gt;collection('library')/books/book[ title='The
-Lightness of Being']&lt;/assign&gt;
-<br>
-&lt;if <span style="font-weight: bold;">false</span>="$book/title =
-'The Lightness of Being'"&gt;<br>
-&nbsp;&nbsp; &lt;print&gt;$book/author&lt;/print&gt;<br>
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The Lightness of Being']&lt;/assign&gt;
+&lt;if <span style="font-weight: bold;">false</span>="$book/title = 'The Lightness of Being'"&gt;
+  &lt;print&gt;$book/author&lt;/print&gt;
 &lt;/if&gt;
 </div>
+
 </body>
 </html>

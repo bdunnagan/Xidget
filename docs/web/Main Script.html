@@ -21,15 +21,16 @@ The following example shows the main script for a "Hello, World!" application.</
 
 <div class="xml">
 &lt;script&gt;
-	&lt;assign name="message"&gt;'Hello, World!'&lt;/assign&gt;	&lt;print&gt;$message&lt;/print&gt;
+  &lt;assign name="message"&gt;'Hello, World!'&lt;/assign&gt;  &lt;print&gt;$message&lt;/print&gt;
 &lt;/script&gt;	</div>
 
 <p>
 This script would be executed by running the following command from the command line. The jar
 file, MyJar.xml, should be an executable jar containing all of the class files in the JAHM,
-Xidget and XidgetSwing projects. The argument to the org.xidget.swing.Main class is a path
-relative to the root of the jar file. So, the following example assumes that the main.xml
-script is at the root of the jar file.</p>
+Xidget and XidgetSwing projects with a manifest that specifies org.xidget.swing.Main as the
+entry point. The argument to the org.xidget.swing.Main class is a path relative to the root 
+of the jar file. So, the following example assumes that the main.xml script is at the root 
+of the jar file.</p>
 
 <div class="xml">
 java -jar MyJar.xml main.xml
