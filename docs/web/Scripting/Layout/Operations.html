@@ -7,7 +7,7 @@
 </head>
 
 <body>
-<h2><i>Layout Operations</i></h2>
+<h2>Layout Operations</h2>
 
 <h4>Overview</h4>
 <p>
@@ -22,8 +22,10 @@ widget platforms. This type of algorithm makes it easy to create resizeable layo
 A layout scripting element is responsible for creating attachments. The general purpose scripting element
 is <i>layoutAttach</i>. This element explicitly creates a attachments for zero or more xidgets. There are
 a variety of other scripting elements that create common attachment policies.</p>
+<p>
+See <a href="Layout Examples.html">Common Layouts</a> for examples of commonly used layouts.</p>
 
-<h4><i>layoutAttach</i></h4>
+<h4>The <i>layoutAttach</i> Element</h4>
 <p>
 In the next example, the left and right sides of all xidgets in the form will be attached to the 
 container. The xidgets for attachments will be created are specified by the xpath expression in
@@ -95,6 +97,9 @@ The <i>handle</i> parameter specifies whether the side of xidget can be moved by
 change to an adjustment cursor when the user hovers over a side that has a handle.</p>
 
 <h4>Shortcut Elements</h4>
+<p>
+The following table describes each of the shortcut scripting elements. All shortcut elements can define a 
+subset of xidgets to which they apply by specifying the <i>xidgets</i> parameter.</p>
 
 <table class="xidget">
   <thead>

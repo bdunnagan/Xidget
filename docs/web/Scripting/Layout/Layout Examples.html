@@ -1,0 +1,102 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Layout Examples</title>
+  <link href="../../css/global.css" rel="stylesheet" type="text/css"/>  
+</head>
+
+<body>
+<h2>Layout Examples</h2>
+
+<h4>Overview</h4>
+<p>
+When writing layout scripts it is essential to understand which xidgets have a preferred size. It is only 
+necessary to specify one side of a xidget if the corresponding dimension is defined. The <i>size</i> parameter
+specifies one or both dimensions of a xidget. A dimension is left unspecified by setting it to -1. A xidget
+may be invisible if its height is left unspecified and either its top or its bottom side does not have an
+attachment.</p>
+<p>
+Another important consideration is to decide whether the size of the containing form should be set to 
+accomodate the sizes of the xidgets it contains, or whether the xidgets should be sized to fit within the
+form. The former is called "packing" the form.</p>
+<p>
+In general, if a layout gets too complex, it can be simplified by dividing up the contents into smaller forms
+and using straight-forward layout scripts for those forms.</p>
+
+<h4>Vertical Layouts</h4>
+<p>
+In the following layout, the xidgets are positioned from top to bottom using the default spacing. The preferred
+width of each xidget is used and the xidgets are aligned on the left side of the form. The form height is set
+to accomodate the content of the form.</p> 
+
+<div class="xml">
+&lt;form&gt;
+  &lt;layout&gt;
+    &lt;layoutAlignLeft/&gt;
+    &lt;layoutTopBottom/&gt;
+    &lt;layoutPackY/&gt;
+  &lt;/layout&gt;
+&lt;/form&gt;
+</div>
+
+<p>
+In the following layout, the xidgets are positioned from top to bottom as before, but the left and right sides
+of the xidgets are attached to the form - the xidgets fill the form horizontally. As before, the form height is
+set to accomodate the content of the form.</p>
+
+<div class="xml">
+&lt;form&gt;
+  &lt;layout&gt;
+    &lt;layoutFillX/&gt;
+    &lt;layoutTopBottom/&gt;
+    &lt;layoutPackY/&gt;
+  &lt;/layout&gt;
+&lt;/form&gt;
+</div>
+
+<p>
+The next layout positions the xidgets on a vertical grid.</p>
+
+<div class="xml">
+&lt;form&gt;
+  &lt;layout&gt;
+    &lt;layoutFillX/&gt;
+    &lt;layoutGridY/&gt;
+  &lt;/layout&gt;
+&lt;/form&gt;
+</div>
+
+<h4>Horizontal Layouts</h4>
+<p>
+The following example 
+
+<div class="xml">
+&lt;form&gt;
+  &lt;layout&gt;
+    &lt;layoutTopBottom/&gt;
+    &lt;layoutFillX/&gt;
+    &lt;layoutPackY/&gt;
+  &lt;/layout&gt;
+  
+  &lt;!-- other xidgets here --&gt;
+  
+  &lt;form&gt;
+    &lt;layout&gt;
+      &lt;layoutRightLeft/&gt;
+      &lt;layoutAlignTop/&gt;
+      &lt;layoutPackY/&gt;
+    &lt;/layout&gt;
+    
+    &lt;button&gt;
+      &lt;label&gt;'Ok'&lt;/label&gt;
+    &lt;/button&gt;
+    &lt;button&gt;
+      &lt;label&gt;'Cancel'&lt;/label&gt;
+    &lt;/button&gt;
+  &lt;/form&gt;
+&lt;/form&gt;
+</div>
+
+</body>
+</html>
