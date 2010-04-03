@@ -1,0 +1,88 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Accessing Configuration Files</title>
+  <link href="css/global.css" rel="stylesheet" type="text/css"/>  
+</head>
+
+<body>
+<h2>Accessing Configuration Files</h2>
+<p>
+When the <i><a href="Main Script.html">main</a></i> script is executed, the context of the script is an 
+<a href="HowToUseExternalReferences.html">external reference</a> with a caching policy that provides access 
+to the root of the configuration file-system. If the application was executed from a jar file, then the 
+caching policy will be a ZipCachingPolicy. If the application was executed from a Java class file in the 
+local file-system, then the caching policy will be a FileSystemCachingPolicy. In either case, the external
+reference points to the root of the configuration. One of the first things that the main script should do
+is store the context in a variable so that it may be referenced later from different contexts.</p>
+<p>
+The FileSystemCachingPolicy and ZipCachingPolicy classes convert their respective hierarchical file-systems
+into virtual xml documents with the same hierarchical structure. This allows the file-system to be queried
+by xpath. There are limitations, however. The official xml DOM does not allow element names to contain spaces 
+or many other special characters that are allowed in the file-system - these constraints exist because of the
+lexical structure of XML. The xidget DOM does not place any restrictions on element names if they are generated
+programmatically (by a caching policy). Location steps involving these types of files must be handled with a 
+wildcard element name and a predicate.  The xpath language is sufficiently general to allow any name to be 
+identified by a predicate.</p>
+<p style="color: #a00000;">
+It is recommended that configuration files and folders use names that are supported by the official xml DOM
+(no spaces or special characters) so that they can easily be accessed via xpath. Periods are allowed.</p>
+<p>
+The following example shows a typical main script. The root of the application configuration contains
+two directories, <i>images</i> and <i>xml</i>, which contain the images, and the xidget configuration
+files and scripts, respectively. These two folders have been saved in variables so that they can be
+accessed later from different contexts.</p>
+
+<div class="xml">
+&lt;script name="The Main Script"&gt;
+  &lt;package&gt;org.xidget.xaction&lt;/package&gt;
+  
+  &lt;!-- initialize plugins --&gt;
+  &lt;plugin&gt;'org.xidget.builder.Plugin'&lt;/plugin&gt;
+  
+  &lt;!-- The environment. --&gt;
+  &lt;create assign="env"&gt;
+    &lt;template annotated="true"&gt;
+      &lt;env&gt;
+        &lt;extern:cache class="org.xmodel.external.caching.EnvironmentCachingPolicy"/&gt;
+      &lt;/env&gt;
+    &lt;/template&gt;
+  &lt;/create&gt;
+  
+  &lt;assign name="images"&gt;images&lt;/assign&gt;
+  &lt;assign name="xml"&gt;xml&lt;/assign&gt;
+  
+  &lt;!-- custom xpath library --&gt;
+  &lt;invoke&gt;$xml/xpath/functions.xml/*&lt;/invoke&gt;
+  
+  &lt;!-- start application --&gt;
+  &lt;createXidget assign="window"&gt;$xml/Application.xml/*&lt;/createXidget&gt;
+&lt;/script&gt;
+</div> 
+
+<h4>Using Images</h4>
+<p>
+When a ZipCachingPolicy or FileSystemCachingPolicy encounters a file, it creates an external reference with a caching
+policy appropriate for the file based on its extension. Image files are given a caching policy which embeds the image
+data into the virtual xml document. The semantics of this behavior are platform-specific, but the result is that 
+xidget parameters that require images can be supplied with an image external reference via an xpath that addresses
+an image file in the file-system.</p>
+<p>
+The following example shows a button xidget whose image comes from the images folder that was stored in the $images
+variable in the previous main script.</p>
+
+<div class="xml">
+&lt;button&gt;
+  &lt;image&gt;static( $images/undo.gif)&lt;/image&gt;
+  &lt;onPress&gt;
+    &lt;print&gt;'Undo'&lt;/print&gt;
+  &lt;/onPress&gt;
+&lt;/button&gt;
+</div>
+
+<p>
+The <i>static</i> xpath function is an optimization. It tells the framework that the result of the xpath will never
+change and avoids the overhead of binding the data-model to the expression argument.</p>
+</body>
+</html>
