@@ -10,8 +10,42 @@
 <h2>Slider</h2>
 
 <h4>Overview</h4>
+<p>
+The <i>slider</i> xidget is a linear, numerical selection widget. It can be oriented horizontally or vertically. The
+minimum and maximum values can be specified along with the decimal-point precision.</p>
+<p>
+The following example creates a slider which selects values between 0 and 10 with one decimal point precision:</p>
 
-<h4>Parametes and Events</h4>
+<div class="xml">
+&lt;slider&gt;
+  &lt;minimum&gt;0&lt;/minimum&gt;
+  &lt;maximum&gt;10&lt;/maximum&gt;
+  &lt;precision&gt;1&lt;/precision&gt;
+  &lt;source&gt;$value&lt;/source&gt;
+&lt;/slider&gt;
+</div>
+
+<h4>Parameters</h4>
+<table class="xidget">
+  <thead>
+    <td>Node</td>
+    <td>Description</td>
+  </thead>
+  <tr>
+    <td>minimum</td>
+    <td>The minimum value obtained with the slider fully to the left or top.</td>
+  </tr>
+  <tr>
+    <td>maximum</td>
+    <td>The maximum value obtained with the slider fully to the right or bottom.</td>
+  </tr>
+  <tr>
+    <td>precision</td>
+    <td>The number of decimal points of precision in the value.</td>
+  </tr>
+</table>
+
+<h4>Common Parametes and Events</h4>
 <a href="Parameters.html">Parameters</a><br/>
 <a href="Events.html">Events</a>
  

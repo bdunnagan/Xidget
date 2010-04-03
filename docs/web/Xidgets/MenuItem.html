@@ -10,8 +10,39 @@
 <h2>MenuItem</h2>
 
 <h4>Overview</h4>
+<p>
+The <i>menuItem</i> xidget creates an item in a <i>menu</i>. It behaves like a <i>button</i> xidget. 
+The following example shows a menu containing two menu items and a separator:</p>
 
-<h4>Parametes and Events</h4>
+<div class="xml">
+&lt;menu&gt;
+  &lt;menuItem label="'Save'"&gt;
+    &lt;onPress&gt;
+      &lt;print&gt;'Save'&lt;/print&gt;
+    &lt;/onPress&gt;
+  &lt;/menuItem&gt;
+  &lt;separator/&gt;
+  &lt;menuItem label="'Exit'"&gt;
+    &lt;onPress&gt;
+      &lt;destroyXidget&gt;$window&lt;/destroyXidget&gt;
+    &lt;/onPress&gt;
+  &lt;/menuItem&gt;
+&lt;/menu&gt;
+</div>
+
+<h4>Events</h4>
+<table class="script">
+  <thead>
+    <td>Event</td>
+    <td>Description</td>
+  </thead>
+  <tr>
+    <td>onPress</td>
+    <td>Called when the widget is selected.</td>
+  </tr>
+</table>
+
+<h4>Common Parametes and Events</h4>
 <a href="Parameters.html">Parameters</a><br/>
 <a href="Events.html">Events</a>
  

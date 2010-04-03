@@ -1,0 +1,87 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>Button Xidget</title>
+  <link href="../css/global.css" rel="stylesheet" type="text/css"/>  
+</head>
+
+<body>
+<h2>Button</h2>
+
+<h4>Overview</h4>
+<p>
+The <i>button</i> xidget creates one of several types of buttons: push-button, check-button, toggle-button or radio-button
+depending on the value of the <i>type</i> parameter.</p>
+
+<h4>Push Button</h4>
+<p>
+The following example shows a push-button:</p>
+
+<div class="xml">
+&lt;button&gt;
+  &lt;label&gt;'Push Me'&lt;/label&gt;
+  &lt;onPress&gt;
+    &lt;print&gt;'Button Pushed!'&lt;/print&gt;
+  &lt;/onPress&gt;
+&lt;/button&gt;
+</div> 
+
+<h4>Check Button</h4>
+<p>
+In the following example, a check-button is created and its state is stored in the $value variable. The state 
+will be one of the two strings: "true" or "false".</p>
+
+<div class="xml">
+&lt;button type="check"&gt;
+  &lt;label&gt;'Check Me'&lt;/label&gt;
+  &lt;source&gt;$value&lt;/source&gt;
+&lt;/button&gt;
+</div> 
+
+<h4>Toggle Button</h4>
+<p>
+In the following example, a toggle-button is created and its state is stored in the $value variable. The state 
+will be one of the two strings: "true" or "false".</p>
+
+<div class="xml">
+&lt;button type="toggle"&gt;
+  &lt;label&gt;'Toggle Me'&lt;/label&gt;
+  &lt;source&gt;$value&lt;/source&gt;
+&lt;/button&gt;
+</div> 
+
+<h4>Radio Button</h4>
+<p>
+Radio buttons are grouped together by proximity. All buttons of type "radio" that appear consequetively in the configuration
+will belong to the same group and will be mutually exclusive. To create consequetive groups of radio buttons, place each 
+group in a form. Giving each form a title is a simple way to identify the group.</p>
+<p>
+Radio buttons typically 
+
+<div class="xml">
+&lt;button type="radio"&gt;
+  &lt;label&gt;'Option 1'&lt;/label&gt;
+  &lt;source&gt;$value&lt;/source&gt;
+&lt;/button&gt;
+</div> 
+
+
+<h4>Events</h4>
+<table class="script">
+  <thead>
+    <td>Event</td>
+    <td>Description</td>
+  </thead>
+  <tr>
+    <td>onPress</td>
+    <td>Called when the widget is selected.</td>
+  </tr>
+</table>
+
+<h4>Common Parametes and Events</h4>
+<a href="Parameters.html">Parameters</a><br/>
+<a href="Events.html">Events</a>
+ 
+</body>
+</html>
