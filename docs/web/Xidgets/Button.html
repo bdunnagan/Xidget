@@ -57,15 +57,25 @@ Radio buttons are grouped together by proximity. All buttons of type "radio" tha
 will belong to the same group and will be mutually exclusive. To create consequetive groups of radio buttons, place each 
 group in a form. Giving each form a title is a simple way to identify the group.</p>
 <p>
-Radio buttons typically 
+Currently, the radio-button model is somewhat too manual. A simpler model will be supported in the future. The following
+example demonstrates two radio-buttons that operate correctly even when the selected option is set programmatically:</p>
 
 <div class="xml">
 &lt;button type="radio"&gt;
   &lt;label&gt;'Option 1'&lt;/label&gt;
-  &lt;source&gt;$value&lt;/source&gt;
+  &lt;source&gt;$value = 'Option 1'&lt;/source&gt;
+  &lt;onPress&gt;
+    &lt;set source="'Option 1'"&gt;$value&lt;/set&gt;
+  &lt;/onPress&gt;  
+&lt;/button&gt;
+&lt;button type="radio"&gt;
+  &lt;label&gt;'Option 2'&lt;/label&gt;
+  &lt;source&gt;$value = 'Option 2'&lt;/source&gt;
+  &lt;onPress&gt;
+    &lt;set source="'Option 2'"&gt;$value&lt;/set&gt;
+  &lt;/onPress&gt;  
 &lt;/button&gt;
 </div> 
-
 
 <h4>Events</h4>
 <table class="script">
