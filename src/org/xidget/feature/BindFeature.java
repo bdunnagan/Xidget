@@ -94,6 +94,9 @@ public class BindFeature implements IBindFeature
     // add context to list
     contexts.add( context);
     
+    // assign config variable
+    context.set( "this", xidget.getConfig());
+    
     // optionally assign xidget to variable
     String variable = Xlate.get( xidget.getConfig(), "assign", (String)null);
     if ( variable != null)

@@ -19,7 +19,6 @@
  */
 package org.xidget.xaction;
 
-import org.xidget.NamedContexts;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xaction.XAction;
@@ -27,7 +26,6 @@ import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
-import org.xmodel.xpath.expression.IExpression.ResultType;
 
 /**
  * An XAction similar to the existing ContextAction that also handles named contexts.
@@ -53,19 +51,11 @@ public class ContextAction extends XAction
   {
     if ( sourceExpr != null)
     {
-      if ( sourceExpr.getType( context) == ResultType.STRING)
+      IModelObject source = sourceExpr.queryFirst( context);
+      if ( source != null)
       {
-        StatefulContext named = NamedContexts.get( sourceExpr.evaluateString( context));
-        if ( named != null) return script.run( named);
-      }
-      else
-      {
-        IModelObject source = sourceExpr.queryFirst( context);
-        if ( source != null)
-        {
-          StatefulContext nested = new StatefulContext( context, source);
-          return script.run( nested);
-        }
+        StatefulContext nested = new StatefulContext( context, source);
+        return script.run( nested);
       }
     }
     else

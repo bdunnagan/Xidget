@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.xidget.IXidget;
-import org.xidget.NamedContexts;
 import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
@@ -114,13 +113,6 @@ public class ContextTagHandler extends AbstractTagHandler
 
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      IBindFeature feature = xidget.getFeature( IBindFeature.class);
-      
-      StatefulContext oldContext = NamedContexts.get( oldValue);
-      if ( oldContext != null) feature.unbind( oldContext);
-      
-      StatefulContext newContext = NamedContexts.get( newValue);
-      if ( newContext != null) feature.bind( newContext);
     }
 
     public boolean requiresValueNotification()

@@ -26,7 +26,6 @@ import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
-import org.xidget.ifeature.IDynamicContainerFeature;
 import org.xmodel.IModelObject;
 
 /**
@@ -54,13 +53,6 @@ public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeatu
     // get parent xidget (before pushing this xidget on the stack)
     IXidgetFeature xidgetFeature = (parent != null)? parent.getFeature( IXidgetFeature.class): null;
     IXidget xidgetParent = (xidgetFeature != null)? xidgetFeature.getXidget(): null;
-    
-    // ignore all switched xidgets within dynamic containers
-    if ( xidgetParent != null && xidgetParent.getFeature( IDynamicContainerFeature.class) != null)
-    {
-      if ( element.getAttribute( "when") != null || element.getFirstChild( "when") != null) 
-        return false;
-    }
     
     try
     {

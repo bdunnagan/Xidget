@@ -23,10 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
-
 import org.xidget.binding.BackgroundBindingRule;
 import org.xidget.binding.BindingTagHandler;
-import org.xidget.binding.ChildrenTagHandler;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.ContextTagHandler;
 import org.xidget.binding.EnableBindingRule;
@@ -93,7 +91,6 @@ public final class Creator
 
     // general
     processor.addHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
-    processor.addHandler( "children", new ChildrenTagHandler());
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "context", new ContextTagHandler());
     processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
@@ -129,7 +126,6 @@ public final class Creator
     
     // attributes
     processor.addAttributeHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
-    processor.addAttributeHandler( "children", new ChildrenTagHandler());
     processor.addAttributeHandler( "context", new ContextTagHandler());
     processor.addAttributeHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addAttributeHandler( "font", new BindingTagHandler( new FontBindingRule()));

@@ -20,6 +20,7 @@
 package org.xidget.xaction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.xidget.Creator;
 import org.xidget.IXidget;
@@ -68,8 +69,6 @@ public class CreateXidgetAction extends GuardedAction
     try
     {
       StatefulContext configContext = new StatefulContext( context, root);
-      initVariables( configContext);
-      
       StatefulContext bindContext = createBindContext( context, configContext);
       IModelObject parentNode = (parentExpr != null)? parentExpr.queryFirst( context): null;
       IXidget parent = Xlate.get( parentNode, "instance", (IXidget)null);
@@ -97,6 +96,14 @@ public class CreateXidgetAction extends GuardedAction
     }
     catch( TagException e)
     {
+      // assign the variable anyway
+      if ( variable != null)
+      {
+        IVariableScope scope = context.getScope();
+        if ( scope != null) scope.set( variable, Collections.<IModelObject>emptyList());
+      }
+      
+      // throw
       throw new XActionException( e);
     }
     
@@ -117,16 +124,6 @@ public class CreateXidgetAction extends GuardedAction
       if ( node != null) return new StatefulContext( configContext, node);
     }
     return configContext;
-  }
-  
-  /**
-   * Initialize global variables on the specified context.
-   * @param context The context.
-   */
-  private void initVariables( StatefulContext context)
-  {
-    if ( context.get( "org.xidget.ui") == null)
-      context.set( "org.xidget.ui", new ModelObject( "org.xidget.ui"));
   }
   
   private IExpression contextExpr;
