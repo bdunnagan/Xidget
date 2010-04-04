@@ -78,6 +78,23 @@ table.xidget td {
   font: 12.0px Courier New; 
 }
 
+table.download th {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: gray;
+  background-color: rgb(220, 220, 220);
+}
+
+table.download td {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: gray;
+  background-color: rgb(240, 240, 240);
+  font: 12.0px Arial; 
+}
+
 table.matrix thead {
   font: 12.0px Courier New; 
   border-width: 1px;

@@ -25,7 +25,7 @@ import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IWidgetFeature;
-import org.xidget.ifeature.slider.ISliderFeature;
+import org.xidget.ifeature.slider.ISliderWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -64,14 +64,14 @@ public class PrecisionBindingRule implements IBindingRule
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = nodes.get( 0);
-      ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
+      ISliderWidgetFeature feature = xidget.getFeature( ISliderWidgetFeature.class);
       feature.setPrecision( Xlate.get( node, 1));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
-      ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
+      ISliderWidgetFeature feature = xidget.getFeature( ISliderWidgetFeature.class);
       feature.setPrecision( Xlate.get( node, 1));
     }
     
@@ -79,7 +79,7 @@ public class PrecisionBindingRule implements IBindingRule
     {
       try
       {
-        ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
+        ISliderWidgetFeature feature = xidget.getFeature( ISliderWidgetFeature.class);
         feature.setPrecision( Integer.parseInt( newValue));
       }
       catch( Exception e)
@@ -89,7 +89,7 @@ public class PrecisionBindingRule implements IBindingRule
 
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
-      ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
+      ISliderWidgetFeature feature = xidget.getFeature( ISliderWidgetFeature.class);
       feature.setPrecision( (int)newValue);
     }
 
@@ -97,7 +97,7 @@ public class PrecisionBindingRule implements IBindingRule
     {
       if ( object == node) 
       {
-        ISliderFeature feature = xidget.getFeature( ISliderFeature.class);
+        ISliderWidgetFeature feature = xidget.getFeature( ISliderWidgetFeature.class);
         feature.setPrecision( Xlate.get( object, 1));
       }
     }

@@ -20,6 +20,7 @@
 package org.xidget.layout.xaction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
@@ -55,6 +56,8 @@ public class LayoutAttachAction extends GuardedAction
     // configure should only specify one of the following
     xidgetID = Xlate.get( root, "xid", (String)null);
     xidgetExpr = document.getExpression( "xidget", true);
+    if ( xidgetID == null && xidgetExpr == null) 
+      xidgetExpr = document.getExpression( "xidgets", true);
     
     attachments = new ArrayList<Attachment>();
     for( Side side: Side.values())
@@ -89,31 +92,38 @@ public class LayoutAttachAction extends GuardedAction
   protected Object[] doAction( IContext context)
   {
     // get container xidget
-    IModelObject element = context.getObject();
-    IXidget parent = (IXidget)element.getAttribute( "instance");
+    IModelObject parentElement = context.getObject();
+    IXidget parent = (IXidget)parentElement.getAttribute( "instance");
     
-    // evaluate child xidget
+    // evaluate child xidgets
+    List<IModelObject> elements = null;
     if ( xidgetID != null)
     {
-      for( IModelObject child: element.getChildren())
+      for( IModelObject child: parentElement.getChildren())
         if ( child.getID().equals( xidgetID))
-          element = child;
+        {
+          elements = Collections.singletonList( child);
+          break;
+        }
     }
     else if ( xidgetExpr != null) 
     {
-      element = xidgetExpr.queryFirst( context);
+      elements = xidgetExpr.query( context, null);
     }
     
     // no child xidget found
-    if ( element == null) return null;
-    
-    // get xidget for which attachments are being created
-    IXidget xidget = (IXidget)element.getAttribute( "instance");
-    if ( xidget == null) return null;
-    
-    // create nodes for attachments
-    for( Attachment attachment: attachments)
-      createNodes( attachment, context, parent, xidget);
+    if ( elements == null) return null;
+
+    for( IModelObject element: elements)
+    {
+      // get xidget for which attachments are being created
+      IXidget xidget = (IXidget)element.getAttribute( "instance");
+      if ( xidget == null) return null;
+      
+      // create nodes for attachments
+      for( Attachment attachment: attachments)
+        createNodes( attachment, context, parent, xidget);
+    }
     
     return null;
   }
