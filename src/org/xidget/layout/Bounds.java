@@ -39,27 +39,16 @@ public class Bounds
       String[] parts = string.split( "\\s*+,\\s*+");
       if ( parts.length == 2)
       {
-        float newWidth = Float.parseFloat( parts[ 0]);
-        if ( newWidth >= 0) width = newWidth;
-
-        float newHeight = Float.parseFloat( parts[ 1]);
-        if ( newHeight >= 0) height = newHeight;
-        
+        width = Float.parseFloat( parts[ 0]);
+        height = Float.parseFloat( parts[ 1]);
         return true;
       }
       else if ( parts.length == 4)
       {
-        float newX = Float.parseFloat( parts[ 0]);
-        if ( newX >= 0) x = newX;
-        
-        float newY = Float.parseFloat( parts[ 1]);
-        if ( newY >= 0) y = newY;
-        
-        float newWidth = Float.parseFloat( parts[ 2]);
-        if ( newWidth >= 0) width = newWidth;
-
-        float newHeight = Float.parseFloat( parts[ 3]);
-        if ( newHeight >= 0) height = newHeight;
+        x = Float.parseFloat( parts[ 0]);
+        y = Float.parseFloat( parts[ 1]);
+        width = Float.parseFloat( parts[ 2]);
+        height = Float.parseFloat( parts[ 3]);
         
         return true;
       }

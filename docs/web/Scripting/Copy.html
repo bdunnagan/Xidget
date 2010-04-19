@@ -11,8 +11,15 @@
 
 <h4>Overview</h4>
 <p>
-The <i>copy</i> script element copies information from one element to another using the customizable 
-differencing engine of JAHM.  
+The <i>copy</i> script element copies information from one sub-tree to another using
+a customizable differencing engine. The differencing engine insures that only the data
+that has changed is updated in the target sub-tree. When the user-interface has views
+onto the target data, removing the target sub-tree and replacing it with a copy of 
+the source sub-tree will often have visual side-effects.  For example, suppose the
+information in the target sub-tree is displayed in a tree xidget. If you remove the
+target sub-tree, the visual tree will disappear.  This is too coarse an update if
+only a few nodes in the tree have changed.</p>
+<p>
 
 </body>
 </html>
