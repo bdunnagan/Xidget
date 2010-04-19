@@ -22,6 +22,7 @@ package org.xidget.ifeature;
 import org.xidget.layout.Bounds;
 import org.xidget.layout.Margins;
 import org.xidget.layout.Size;
+import org.xmodel.IModelObject;
 
 /**
  * An interface for all widgets used by IXidget implementations. Instances of this interface
@@ -44,6 +45,18 @@ public interface IWidgetFeature
    * @param result The result.
    */
   public void getBounds( Bounds result);
+  
+  /**
+   * Set the node where the bounds of the widget are stored.
+   * @param node Null or the node where the bounds of the widget are stored.
+   */
+  public void setBoundsNode( IModelObject node);
+  
+  /**
+   * Returns the node where the bounds of the widget are stored.
+   * @return Returns null or the node where the bounds are stored.
+   */
+  public IModelObject getBoundsNode();
   
   /**
    * Returns the preferred size of the widget.

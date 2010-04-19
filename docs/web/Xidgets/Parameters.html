@@ -27,6 +27,13 @@ The following table lists the common parameters.</p>
   </thead>
   
   <tr>
+    <td>bounds</td>
+    <td>
+      An xpath that defines the size and position of a xidget.<br/>
+      Syntax: width, height | x, y, width, height
+    </td>
+  </tr>
+  <tr>
     <td>label</td>
     <td>An xpath that determines the label to show to the left of the xidget.</td>
   </tr>
@@ -65,7 +72,7 @@ The following table lists the common parameters.</p>
     <td>fontStyle</td>
     <td>
       An xpath whose string value gives the name of the font style.<br/>
-      Syntax: (plain|italic|bold)
+      Syntax: plain | italic | bold
     </td>
   </tr>
   <tr>
@@ -81,10 +88,10 @@ The following table lists the common parameters.</p>
     <td>An xpath that returns a non-empty string when there is a validation error.</td>
   </tr>
   <tr>
-    <td>size</td>
+    <td>textSize</td>
     <td>
       An xpath whose string value determines the size.<br/>
-      Syntax: width(\s*),(\s*)height(\s*)(char|pixel)
+      Syntax: width, height
     </td>
   </tr>
 </table>
@@ -111,6 +118,22 @@ The following matrix shows which parameters are applicable to each xidget.</p>
     <td>window</td>
   </thead>
   
+  <tr class="odd">
+    <td>bounds</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td></td>
+    <td></td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+    <td>X</td>
+  </tr>
   <tr class="even">
     <td>label</td>
     <td></td>
@@ -336,20 +359,20 @@ The following matrix shows which parameters are applicable to each xidget.</p>
     <td>X</td>
   </tr>
   <tr class="even">
-    <td>size</td>
-    <td>X</td>
-    <td>X</td>
-    <td>X</td>
-    <td>X</td>
-    <td>X</td>
+    <td>textSize</td>
+    <td></td>
     <td></td>
     <td></td>
     <td>X</td>
-    <td>X</td>
-    <td>X</td>
-    <td>X</td>
-    <td>X</td>
-    <td>X</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
   </tr>
   <tfoot>
     <tr>
