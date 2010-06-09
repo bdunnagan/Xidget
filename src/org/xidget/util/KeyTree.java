@@ -237,12 +237,23 @@ public class KeyTree<T>
   }
   
   /**
+   * Reset the key-tracking state.
+   */
+  public void reset()
+  {
+    System.out.println( "KeyTree.reset()");
+    node = root;
+  }
+  
+  /**
    * Tell the map that the specified key was pressed.
    * @param key The key.
    * @return Returns null or the binding.
    */
   public T keyDown( String key)
   {
+    System.out.println( "KeyTree.keyDown(): "+key);
+    
     TreeNode<T> next = null;
     if ( node.children != null)
     {
@@ -272,6 +283,8 @@ public class KeyTree<T>
    */
   public void keyUp( String key)
   {
+    System.out.println( "KeyTree.keyUp(): "+key);
+    
     // search sequence for key
     TreeNode<T> iter = node;
     while( iter != root && !iter.key.equals( key))
