@@ -1,0 +1,38 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-Style-Type" content="text/css"/>
+  <title>OnKey Script</title>
+  <link href="../../css/global.css" rel="stylesheet" type="text/css"/>  
+</head>
+
+<body>
+<h2>OnKey</h2>
+
+<h4>Overview</h4>
+<p>
+The <i>onKey</i> script can be added to any xidget. It is called when a specified key sequence is pressed.
+The key sequence is defined by an xpath expression that returns a string. The string consists of zero or
+more modifier keys followed by one or more non-modifier keys.  For example, the following key sequence
+will activate the script when the "control" and "c" keys are pressed.
+
+<div class="xml">
+&lt;onKey keys="'control,c'"&gt;
+  &lt;print&gt;'CONTROL C'&lt;/print&gt;
+&lt;/onKey&gt;
+</div>
+
+<p>
+Each modifier key is separated by a "+".  Non-modifier keys are separated from the last modifier and
+from each other by a ",".  The following list gives some examples:
+
+<div class="xml">
+shift+control,c
+control,a,b
+a
+f1
+enter
+</div>
+
+</body>
+</html>

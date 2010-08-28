@@ -152,7 +152,7 @@ public final class Creator
     processor.addHandler( "onDoubleClick", new ScriptTagHandler());
     
     // key bindings
-    processor.addHandler( "onKeyPress", new KeyTagHandler());
+    processor.addHandler( "onKey", new KeyTagHandler());
 
     // sub-tables and sub-trees
     processor.addHandler( "tree", new SubTreeTagHandler());
