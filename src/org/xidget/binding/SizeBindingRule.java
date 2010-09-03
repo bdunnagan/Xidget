@@ -5,11 +5,11 @@
 package org.xidget.binding;
 
 import java.util.List;
-
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.layout.Bounds;
+import org.xidget.layout.Size;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -18,10 +18,9 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
- * An implementation of IBindingRule that sets the bounds of a xidget. The bounds can be defined
- * in a node, in which case the node will be updated when the bounds are changed, or in a string.
+ * An implementation of IBindingRule that sets the size of a widget.
  */
-public class BoundsBindingRule implements IBindingRule
+public class SizeBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
    * @see org.xidget.binding.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
@@ -44,42 +43,32 @@ public class BoundsBindingRule implements IBindingRule
     Listener( IXidget xidget)
     {
       this.xidget = xidget;
+      this.bounds = new Bounds();
+      this.size = new Size();
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes = expression.query( context, null);
-      if ( node != nodes.get( 0))
-      {
-        node = nodes.get( 0);
-        setBounds( Xlate.get( node, ""));
-        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-        feature.setBoundsNode( node);
-      }
+      node = nodes.get( 0);
+      setSize( Xlate.get( node, ""));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      IModelObject node = expression.queryFirst( context);
-      if ( node != null && node != this.node)
-      {
-        this.node = node;
-        setBounds( Xlate.get( node, ""));
-        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-        feature.setBoundsNode( node);
-      }
+      node = expression.queryFirst( context);
+      setSize( Xlate.get( node, ""));
     }
 
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      setBounds( newValue);
+      setSize( newValue);
     }
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
       if ( object == node)
       {
-        setBounds( Xlate.get( node, ""));
+        setSize( Xlate.get( node, ""));
       }
     }
     
@@ -89,20 +78,23 @@ public class BoundsBindingRule implements IBindingRule
     }
     
     /**
-     * Set the bounds of the widget.
-     * @param string The bounds string.
+     * Set the size of the widget.
+     * @param size The size.
      */
-    private void setBounds( String string)
+    private void setSize( String size)
     {
-      Bounds bounds = new Bounds();
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      if ( bounds.parse( string))
-      {
-        feature.setDefaultBounds( bounds.x, bounds.y, bounds.width, bounds.height, false);
-      }
+      
+      this.size.parse( size);
+      bounds.width = this.size.width;
+      bounds.height = this.size.height;
+      
+      feature.setDefaultBounds( bounds.x, bounds.y, this.size.width, this.size.height, false);
     }
     
     private IXidget xidget;
     private IModelObject node;
+    private Bounds bounds;
+    private Size size;
   }
 }

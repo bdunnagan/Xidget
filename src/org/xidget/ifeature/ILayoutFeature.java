@@ -20,8 +20,10 @@
 package org.xidget.ifeature;
 
 import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.layout.Margins;
+import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -120,10 +122,11 @@ public interface ILayoutFeature
    * @param xidget The xidget.
    * @param side The side of the xidget to be attached.
    * @param percent The percentage of the dimension of the container.
+   * @param percentNode The node which will hold changes to the percentage when handle is moved.
    * @param offset The offset from the container.
    * @param handle True if the anchor point can be moved.
    */
-  public void attachContainer( IXidget xidget, Side side, float percent, int offset, boolean handle);
+  public void attachContainer( IXidget xidget, Side side, float percent, IModelObject percentNode, int offset, boolean handle);
   
   /**
    * Attach the right or bottom side of the container to all of the specified xidgets. The container

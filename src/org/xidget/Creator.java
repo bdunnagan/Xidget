@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+
 import org.xidget.binding.BackgroundBindingRule;
 import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.BoundsBindingRule;
@@ -379,7 +380,7 @@ public final class Creator
         stack.push( children.get( i));
     }
   }
-
+  
   /**
    * Returns the singleton.
    * @return Returns the singleton.

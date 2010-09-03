@@ -22,6 +22,7 @@ package org.xidget.layout.xaction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.ILayoutFeature.Side;
@@ -35,6 +36,7 @@ import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
+import org.xmodel.xpath.expression.IExpression.ResultType;
 
 /**
  * An XAction that creates one or more attachments of any type for one xidget. The target xidget
@@ -168,10 +170,13 @@ public class LayoutAttachAction extends GuardedAction
       if ( xidget2 != parent) throw new XActionException( "Proportional attachments must be specified relative to the container: "+XmlIO.toString( getDocument().getRoot()));
       
       float percent = (float)attachment.percentExpr.evaluateNumber( configContext, 0);
+      IModelObject percentNode = (attachment.percentExpr.getType( configContext) == ResultType.NODES)? 
+        attachment.percentExpr.queryFirst( configContext): null;
+      
       int offset = (attachment.offsetExpr != null)? (int)attachment.offsetExpr.evaluateNumber( configContext, 0): 0;
       boolean handle = (attachment.handleExpr != null)? attachment.handleExpr.evaluateBoolean( configContext): false;
       
-      layoutFeature.attachContainer( xidget1, attachment.side1, percent, offset, handle);
+      layoutFeature.attachContainer( xidget1, attachment.side1, percent, percentNode, offset, handle);
     }
     else
     {

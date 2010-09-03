@@ -171,7 +171,7 @@ public abstract class ComputeNode implements IComputeNode
     return sb.toString();
   }
 
-  private static int sid = 1000;
+  private static int sid = 0;
 
   private List<IComputeNode> dependencies;
   private boolean hasValue;

@@ -21,7 +21,6 @@ package org.xidget.ifeature;
 
 import org.xidget.layout.Bounds;
 import org.xidget.layout.Margins;
-import org.xidget.layout.Size;
 import org.xmodel.IModelObject;
 
 /**
@@ -32,19 +31,40 @@ import org.xmodel.IModelObject;
 public interface IWidgetFeature
 {
   /**
-   * Set the bounds of the widget.
+   * Set the default bounds of the widget. The default bounds become the computed
+   * bounds of the widget if not specified by the layout. If the clamp flag is false
+   * then the default bounds will be updated with the computed bounds after the layout
+   * is executed.
+   * @param x The x-coordinate.
+   * @param y The y-coordinate.
+   * @param width The width.
+   * @param height The height.
+   * @param clamp True if default bounds are static.
+   */
+  public void setDefaultBounds( float x, float y, float width, float height, boolean clamp);
+
+  /**
+   * Returns the default bounds of the widget.
+   * @return Returns the default bounds of the widget.
+   */
+  public Bounds getDefaultBounds();
+  
+  /**
+   * Set the computed bounds of the widget. This method should only be called by
+   * the layout algorithm since clients cannot know when the layout algorithm will
+   * execute.
    * @param x The left-side x-coordinate.
    * @param y The top-side y-coordinate.
    * @param width The width of the widget.
    * @param height The height of the widget.
    */
-  public void setBounds( float x, float y, float width, float height);
+  public void setComputedBounds( float x, float y, float width, float height);
   
   /**
-   * Returns the bounds of the widget.
-   * @param result The result.
+   * Returns the computed bounds of the widget.
+   * @return Returns the computed bounds of the widget.
    */
-  public void getBounds( Bounds result);
+  public Bounds getComputedBounds();
   
   /**
    * Set the node where the bounds of the widget are stored.
@@ -57,12 +77,6 @@ public interface IWidgetFeature
    * @return Returns null or the node where the bounds are stored.
    */
   public IModelObject getBoundsNode();
-  
-  /**
-   * Returns the preferred size of the widget.
-   * @param result The result.
-   */
-  public void getPreferredSize( Size result);
   
   /**
    * Returns the outside margins of the widget.

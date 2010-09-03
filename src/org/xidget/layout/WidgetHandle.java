@@ -36,7 +36,10 @@ public class WidgetHandle extends ComputeNode
    */
   public WidgetHandle( IXidget xidget, Side side, int offset)
   {
-    this.name = String.format( "%s#%s", xidget.getConfig().getID(), side.toString());
+    String id = xidget.getConfig().getID();
+    if ( id.length() == 0) id = xidget.getConfig().getType();
+    
+    this.name = String.format( "%s#%s", id, side.toString());
     this.offset = offset;
   }
 

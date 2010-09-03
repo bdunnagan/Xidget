@@ -155,8 +155,8 @@ public class BindFeature implements IBindFeature
   {
     Log.printf( "xidget", "unbind: %s with %s\n", xidget, context);
     
-    if ( !contexts.remove( context)) return;
-    
+    contexts.remove( context);
+        
     // call onClose script
     IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
     if ( scriptFeature != null) scriptFeature.runScript( "onClose", context);

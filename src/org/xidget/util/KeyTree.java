@@ -66,6 +66,10 @@ public class KeyTree<T>
       
       bind( modifiers, primaries, binding);
     }
+    else
+    {
+      throw new RuntimeException( "Unrecognized key sequence: "+keys);
+    }
   }
   
   /**
@@ -184,12 +188,9 @@ public class KeyTree<T>
    */
   private void bind( List<String> sequence, T binding)
   {
-    System.out.print( "sequence:");
     TreeNode<T> iter = root;
     for( String key: sequence)
     {
-      System.out.printf(  " %s", key);
-      
       if ( iter.children == null)
         iter.children = new HashMap<String, TreeNode<T>>();
       
@@ -206,7 +207,6 @@ public class KeyTree<T>
     }
     
     iter.binding = binding;
-    System.out.println( "");
   }
   
   /**
@@ -241,7 +241,6 @@ public class KeyTree<T>
    */
   public void reset()
   {
-    System.out.println( "KeyTree.reset()");
     node = root;
   }
   
@@ -252,8 +251,6 @@ public class KeyTree<T>
    */
   public T keyDown( String key)
   {
-    System.out.println( "KeyTree.keyDown(): "+key);
-    
     TreeNode<T> next = null;
     if ( node.children != null)
     {
@@ -283,8 +280,6 @@ public class KeyTree<T>
    */
   public void keyUp( String key)
   {
-    System.out.println( "KeyTree.keyUp(): "+key);
-    
     // search sequence for key
     TreeNode<T> iter = node;
     while( iter != root && !iter.key.equals( key))

@@ -38,10 +38,10 @@ import org.xidget.layout.AnchorNode;
 import org.xidget.layout.Bounds;
 import org.xidget.layout.ConstantNode;
 import org.xidget.layout.IComputeNode;
+import org.xidget.layout.InternalBrace;
 import org.xidget.layout.Margins;
 import org.xidget.layout.MaxNode;
 import org.xidget.layout.OffsetNode;
-import org.xidget.layout.Size;
 import org.xidget.layout.WidgetHandle;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -65,6 +65,12 @@ public class AnchorLayoutFeature implements ILayoutFeature
     invalidate();
   }
   
+  public AnchorLayoutFeature( IXidget container, ScriptAction script)
+  {
+    this( container);
+    this.script = script;
+  }
+  
   /* (non-Javadoc)
    * @see org.xidget.ifeature.ILayoutFeature#invalidate()
    */
@@ -79,6 +85,9 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void layout( StatefulContext context)
   {
+    // layout children
+    layoutChildren( context);
+    
     // initialize the container's inside nodes
     initContainerNodes();
 
@@ -107,14 +116,24 @@ public class AnchorLayoutFeature implements ILayoutFeature
   }
   
   /**
+   * Invoke the layout algorithm of each child.
+   * @param context The context.
+   */
+  private void layoutChildren( StatefulContext context)
+  {
+    for( IXidget child: xidget.getChildren())
+    {
+      ILayoutFeature layoutFeature = child.getFeature( ILayoutFeature.class);
+      if ( layoutFeature != null) layoutFeature.layout( context);
+    }
+  }
+  
+  /**
    * Initialize the container's inside nodes according to the margins.
    */
   private void initContainerNodes()
   {
     Margins margins = getCompositeMargins();
-    
-    IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
-    Bounds bounds = new Bounds(); widgetFeature.getBounds( bounds);
     
     IComputeNode top = getCreateNode( xidget, Side.top);
     top.clearDependencies();
@@ -124,14 +143,17 @@ public class AnchorLayoutFeature implements ILayoutFeature
     left.clearDependencies();
     left.addDependency( new ConstantNode( margins.x0));
     
-    if ( bounds.width > 0)
+    IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+    Bounds bounds = widgetFeature.getDefaultBounds();
+    
+    if ( bounds.width >= 0)
     {
       IComputeNode right = getCreateNode( xidget, Side.right);
       right.clearDependencies();
       right.addDependency( new ConstantNode( bounds.width - margins.x1));
     }
     
-    if ( bounds.height > 0)
+    if ( bounds.height >= 0)
     {
       IComputeNode bottom = getCreateNode( xidget, Side.bottom);
       bottom.clearDependencies();
@@ -169,7 +191,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void updateChildrenBounds()
   {
-    Bounds bounds = new Bounds();
     for( Map.Entry<IXidget, NodeGroup> entry: groups.entrySet())
     {
       IXidget xidget = entry.getKey();
@@ -177,12 +198,9 @@ public class AnchorLayoutFeature implements ILayoutFeature
       
       if ( xidget == this.xidget) continue;
       
-      bounds.x = 0;
-      bounds.y = 0;
-      bounds.width = 0;
-      bounds.height = 0;
-      
       IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+      Bounds bounds = widgetFeature.getDefaultBounds();
+      
       if ( group.top != null && group.top.hasValue()) bounds.y = group.top.getValue();
       if ( group.left != null && group.left.hasValue()) bounds.x = group.left.getValue();
       
@@ -198,7 +216,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
         bounds.height = group.bottom.getValue() - group.top.getValue();
       }
       
-      widgetFeature.setBounds( bounds.x, bounds.y, bounds.width, bounds.height);
+      widgetFeature.setComputedBounds( bounds.x, bounds.y, bounds.width, bounds.height);
     }
   }
   
@@ -208,7 +226,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
   private void updateContainerSize()
   {
     IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
-    Bounds bounds = new Bounds(); widgetFeature.getBounds( bounds);
+    Bounds bounds = widgetFeature.getDefaultBounds();
     
     IComputeNode right = getCreateNode( xidget, Side.right);
     IComputeNode bottom = getCreateNode( xidget, Side.bottom);
@@ -218,7 +236,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     if ( bottom.hasValue()) bounds.height = bottom.getValue() + margins.y1;
     
     // set widget size
-    widgetFeature.setBounds( bounds.x, bounds.y, bounds.width, bounds.height);
+    widgetFeature.setComputedBounds( bounds.x, bounds.y, bounds.width, bounds.height);
   }
   
   /* (non-Javadoc)
@@ -294,6 +312,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     if ( margins == null)
     {
+      if ( xidget.getParent() == null) return spacing;
       ILayoutFeature parentFeature = xidget.getParent().getFeature( ILayoutFeature.class);
       if ( parentFeature != null) return parentFeature.getSpacing();
     }
@@ -327,7 +346,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
       script.run( scriptContext);
     }
     
-    // add internal bracing nodes
+    // add internal bracing
     for( IXidget child: xidget.getChildren())
       addInternalBraces( child);
         
@@ -385,31 +404,28 @@ public class AnchorLayoutFeature implements ILayoutFeature
   }
   
   /**
-   * Add internal braces to the specified node if one of its sides is not defined.
+   * Add internal braces to the specified node if one of its sides is not constrained.
    * @param xidget The xidget.
    */
   private void addInternalBraces( IXidget child)
   {
-    IWidgetFeature widgetFeature = child.getFeature( IWidgetFeature.class);
-    Size size = new Size(); widgetFeature.getPreferredSize( size);
-    
     NodeGroup group = getNodeGroup( child);
     if ( isNodeFree( group.top))
     {
-      group.top.addDependency( new OffsetNode( "TBBrace", group.bottom, -size.height));
+      group.top.addDependency( new InternalBrace( "TBBrace", child, group.bottom, Side.top));
     }
     else if ( isNodeFree( group.bottom))
     {
-      group.bottom.addDependency( new OffsetNode( "BTBrace", group.top, size.height));
+      group.bottom.addDependency( new InternalBrace( "BTBrace", child, group.top, Side.bottom));
     }
     
     if ( isNodeFree( group.left))
     {
-      group.left.addDependency( new OffsetNode( "LRBrace", group.right, -size.width));
+      group.left.addDependency( new InternalBrace( "LRBrace", child, group.right, Side.left));
     }
     else if ( isNodeFree( group.right))
     {
-      group.right.addDependency( new OffsetNode( "RLBrace", group.left, size.width));
+      group.right.addDependency( new InternalBrace( "RLBrace", child, group.left, Side.right));
     }
   }
 
@@ -420,13 +436,14 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     IComputeNode node1 = getCreateNode( child, side);
     IComputeNode node2 = getCreateNode( xidget, side);
-    node1.addDependency( new OffsetNode( node2, offset));
+    if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
+    else node1.addDependency( node2);
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.ifeature.ILayoutFeature#attachContainer(org.xidget.IXidget, org.xidget.ifeature.ILayoutFeature.Side, float, int, boolean)
+   * @see org.xidget.ifeature.ILayoutFeature#attachContainer(org.xidget.IXidget, org.xidget.ifeature.ILayoutFeature.Side, float, org.xmodel.IModelObject, int, boolean)
    */
-  public void attachContainer( IXidget child, Side side, float percent, int offset, boolean handle)
+  public void attachContainer( IXidget child, Side side, float percent, IModelObject percentNode, int offset, boolean handle)
   {
     IComputeNode node1 = getCreateNode( child, side);
 
@@ -444,7 +461,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
       node3 = getCreateNode( xidget, Side.right);
     }
     
-    AnchorNode anchor = new AnchorNode( node2, node3, side, percent, offset);
+    AnchorNode anchor = new AnchorNode( node2, node3, side, percent, percentNode, offset);
     anchor.setHandle( handle);
     node1.addDependency( anchor);
   }
@@ -462,12 +479,14 @@ public class AnchorLayoutFeature implements ILayoutFeature
     {
       IComputeNode node2 = new MaxNode();
       for( IXidget child: children) node2.addDependency( getCreateNode( child, side));
-      node1.addDependency( new OffsetNode( node2, offset));
+      if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
+      else node1.addDependency( node2);
     }
     else
     {
       IComputeNode node2 = getCreateNode( children.get( 0), side);
-      node1.addDependency( new OffsetNode( node2, offset));
+      if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
+      else node1.addDependency( node2);
     }
   }
 
@@ -478,7 +497,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     IComputeNode node1 = getCreateNode( child, side);
     IComputeNode node2 = getCreateNode( peer, getOpposite( side));
-    node1.addDependency( new OffsetNode( node2, offset));
+    if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
+    else node1.addDependency( node2);
   }
 
   /* (non-Javadoc)
@@ -488,7 +508,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     IComputeNode node1 = getCreateNode( child, fromSide);
     IComputeNode node2 = getCreateNode( peer, toSide);
-    node1.addDependency( new OffsetNode( node2, offset));
+    if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
+    else node1.addDependency( node2);
   }
 
   /* (non-Javadoc)
@@ -645,7 +666,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     IComputeNode right;
     IComputeNode bottom;
   }
-
+  
   private IXidget xidget;
   private ScriptAction script;
   private Map<IXidget, NodeGroup> groups;

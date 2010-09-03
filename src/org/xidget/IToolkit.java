@@ -36,7 +36,7 @@ public interface IToolkit
    * @param processor The tag processor.
    */
   public void configure( TagProcessor processor);
-
+  
   /**
    * Returns the implementation of IFileAssociation for loading images in a platform-specific way.
    * @return Returns the implementation of IFileAssociation for loading images in a platform-specific way.

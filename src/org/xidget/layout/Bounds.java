@@ -24,6 +24,18 @@ package org.xidget.layout;
  */
 public class Bounds
 {
+  public Bounds()
+  {
+  }
+  
+  public Bounds( float x, float y, float width, float height)
+  {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+  
   /**
    * Parse the bounds from the specified string. Any bounds value which is less than zero
    * will be ignored and the corresponding bounds parameter will be left unchanged.

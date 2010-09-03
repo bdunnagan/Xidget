@@ -65,7 +65,7 @@ public class LayoutGridXAction extends AbstractLayoutAction
     for( int i=0; i < last; i++, x += dx)
     {
       IXidget child = children.get( i);
-      feature.attachContainer( child, Side.right, x, -halfSpacing, handle);
+      feature.attachContainer( child, Side.right, x, null, -halfSpacing, handle);
     }
     
     // attach the left side of each xidget to the previous xidget, offset by the interstice

@@ -22,6 +22,7 @@ package org.xidget.xaction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.config.TagException;
@@ -63,6 +64,8 @@ public class CreateXidgetAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
+    Creator creator = Creator.getInstance();
+    
     IModelObject root = xidgetExpr.queryFirst( context);
     if ( root == null) throw new XActionException( "Xidget not found at: "+xidgetExpr);
 
@@ -72,7 +75,7 @@ public class CreateXidgetAction extends GuardedAction
       StatefulContext bindContext = createBindContext( context, configContext);
       IModelObject parentNode = (parentExpr != null)? parentExpr.queryFirst( context): null;
       IXidget parent = Xlate.get( parentNode, "instance", (IXidget)null);
-      List<IXidget> xidgets = Creator.getInstance().create( parent, configContext, bindContext);
+      List<IXidget> xidgets = creator.create( parent, configContext, bindContext);
       
       if ( variable != null)
       {
@@ -88,7 +91,7 @@ public class CreateXidgetAction extends GuardedAction
         if ( scope != null) scope.set( variable, holders);
       }
       
-      for( IXidget xidget: xidgets)
+      for( IXidget xidget: xidgets) 
       {
         IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
         if ( widgetFeature != null) widgetFeature.setVisible( true);

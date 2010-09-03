@@ -20,6 +20,8 @@
 package org.xidget.layout;
 
 import org.xidget.ifeature.ILayoutFeature.Side;
+import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 
 /**
  * An implementation of IComputeNode that functions as an anchor within a container.
@@ -34,13 +36,15 @@ public class AnchorNode extends ComputeNode
    * @param node2 The right or bottom container node.
    * @param side The side identifying the dimension of the container.
    * @param fraction The fraction of the container width or height.
+   * @param fractionNode The node that holds the fraction when a handle is grabbed.
    * @param offset The offset from the fraction.
    */
-  public AnchorNode( IComputeNode node1, IComputeNode node2, Side side, float fraction, int offset)
+  public AnchorNode( IComputeNode node1, IComputeNode node2, Side side, float fraction, IModelObject fractionNode, int offset)
   {
     this.node1 = node1;
     this.node2 = node2;
     this.fraction = fraction;
+    this.fractionNode = fractionNode;
     this.offset = offset;
     this.side = side;
   }
@@ -99,6 +103,7 @@ public class AnchorNode extends ComputeNode
   public void setFraction( float fraction)
   {
     this.fraction = fraction;
+    if ( fractionNode != null) Xlate.set( fractionNode, fraction);
   }
   
   /**
@@ -133,6 +138,7 @@ public class AnchorNode extends ComputeNode
   private IComputeNode node2;
   private Side side;
   private float fraction;
+  private IModelObject fractionNode;
   private int offset;
   private boolean handle;
 }
