@@ -42,14 +42,14 @@ a:active {
 </style></head>
 
 <body>
-<table width="942" height="479" border="1" cellpadding="2" cellspacing="2">
+<table width="942" height="479" cellpadding="1" cellspacing="1">
   <tr>
     <th height="88" colspan="2" scope="col"><img src="../images/xidgets.png" width="800" height="174" /></th>
   </tr>
   <tr>
     <th width="147" height="356" valign="top" scope="row"><div align="left" class="style1">
       <p><br />
-        <span class="style3"><a href="../Index.html">Home Page</a> </span></p>
+        <span class="style3"><a href="../index.html">Home Page</a> </span></p>
       <p class="style3"><a href="../Downloads.html">Downloads</a></p>
       <p class="style3"><a href="../Introduction.html">Introduction</a></p>
       <p class="style3"><a href="../Documentation.html">Documentation</a></p>
