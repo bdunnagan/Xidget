@@ -13,9 +13,9 @@
    id="svg2610"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   sodipodi:docname="xidgets-3.svg"
+   sodipodi:docname="xidgets-4.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/Users/bdunnagan/Desktop/xidgets.png"
+   inkscape:export-filename="/Applications/eclipse342/workspace/Xidget/docs/web/xidgets.gif.png"
    inkscape:export-xdpi="414.16864"
    inkscape:export-ydpi="414.16864">
   <sodipodi:namedview
@@ -25,11 +25,11 @@
      borderopacity="0.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="0"
-     inkscape:zoom="1.4"
-     inkscape:cx="-1375.5183"
-     inkscape:cy="1454.4065"
+     inkscape:zoom="1.979899"
+     inkscape:cx="-1159.2611"
+     inkscape:cy="1525.6312"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1152"
@@ -66,63 +66,43 @@
      inkscape:label="Lines"
      style="display:inline">
     <path
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:0.714;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
-       d="M -1218.232,-484.26582 L -1343.9823,-484.26582"
-       id="path5830"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M -1315,-485.13781 L -1299.9107,-485.13781"
+       id="path3377" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M -1293.4657,-456.03067 L -1290,-456.03067"
+       id="path3379"
        sodipodi:nodetypes="cc" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:0.71399999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
-       d="M -1222.5581,-455.68246 L -1345.3762,-455.63782"
-       id="path5838"
+       style="fill:none;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M -1270.625,-456.11995 L -1260.8469,-456.11995"
+       id="path3383"
        sodipodi:nodetypes="cc" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer3"
-     inkscape:label="Whiteout"
-     style="display:inline">
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
-       id="rect3264"
-       width="70.623383"
-       height="5.8083773"
-       x="-1341.641"
-       y="-459.07855" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
-       id="rect3268"
-       width="27.288342"
-       height="6.8185296"
-       x="-1260.0153"
-       y="-459.07855" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3301"
-       width="5.9268937"
-       height="2.8571429"
-       x="-1322.1283"
-       y="-485.67352" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3303"
-       width="6.0804024"
-       height="2.6785715"
-       x="-1298.9591"
-       y="-485.67352" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3305"
-       width="3.9285715"
-       height="2.3214285"
-       x="-1245.5358"
-       y="-485.49496" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.71399999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3315"
-       width="21.56753"
-       height="7.0535712"
-       x="-1293.0088"
-       y="-487.90567" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M -1232.6212,-456.20924 L -1222.0536,-456.20924"
+       id="path3385"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M -1241,-485.13781 L -1211.6071,-485.13781"
+       id="path3387" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="M -1345.3789,-456.03082 L -1341.9132,-456.03082"
+       id="path2405"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="M -1292.3289,-485.13782 L -1288.8632,-485.13782"
+       id="path2407"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#bcbcbc;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="M -1249.2712,-485.13782 L -1245.8055,-485.13782"
+       id="path2411"
+       sodipodi:nodetypes="cc" />
   </g>
   <g
      inkscape:label="Top"
@@ -187,35 +167,46 @@
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#646464;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Hiragino Mincho Pro W6;-inkscape-font-specification:Hiragino Mincho Pro W6 Semi-Bold"
-       x="-1259.2817"
-       y="-453.82535"
+       x="-1259.7434"
+       y="-453.63782"
        id="text3248"><tspan
          sodipodi:role="line"
          id="tspan3250"
-         x="-1259.2817"
-         y="-453.82535"
+         x="-1259.7434"
+         y="-453.63782"
          style="font-size:7px;fill:#646464;fill-opacity:1">widgets</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#646464;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Hiragino Mincho Pro W6;-inkscape-font-specification:Hiragino Mincho Pro W6 Semi-Bold"
-       x="-1341.08"
-       y="-453.52783"
+       x="-1340.7321"
+       y="-453.70639"
        id="text3252"><tspan
          sodipodi:role="line"
          id="tspan3254"
-         x="-1341.08"
-         y="-453.52783"
-         style="font-size:7px;fill:#646464;fill-opacity:1">synchronized-</tspan></text>
+         x="-1340.7321"
+         y="-453.70639"
+         style="font-size:7px;fill:#646464;fill-opacity:1">synchronized</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#646464;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Hiragino Mincho Pro W6;-inkscape-font-specification:Hiragino Mincho Pro W6 Semi-Bold"
-       x="-1291.677"
-       y="-482.24664"
+       x="-1344"
+       y="-482.47681"
        id="text3256"><tspan
          sodipodi:role="line"
          id="tspan3258"
-         x="-1291.677"
-         y="-482.24664"
+         x="-1344"
+         y="-482.47681"
          style="font-size:7px;fill:#646464;fill-opacity:1">xpath</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#646464;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;font-family:Hiragino Mincho Pro W6;-inkscape-font-specification:Hiragino Mincho Pro W6 Semi-Bold"
+       x="-1288.3"
+       y="-482.53537"
+       id="text3353"><tspan
+         sodipodi:role="line"
+         id="tspan3355"
+         x="-1288.3"
+         y="-482.53537"
+         style="font-size:7px;fill:#646464;fill-opacity:1">virtual xml</tspan></text>
   </g>
 </svg>
