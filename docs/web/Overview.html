@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Style-Type" content="text/css"/>
+    <title>Xidgets</title>
+    <link href="css/global.css" rel="stylesheet" type="text/css"/>
+  </head>
+  
+  <body>
+    <img class="banner" src="images/xidgets.png" width="600"/>
+    
+    <table class="frames">
+      <tr>
+        <td class="leftpane">
+          <p class="menuitem" onclick="window.location='index.html';">Home</p>
+          <p class="menuitem" onclick="window.location='Downloads.html';">Download</a></p>
+          <p class="menuitem" onclick="window.location='Overview.html';">Overview</a></p>
+          <p class="menuitem" onclick="window.location='Reference.html';">Reference</a></p>
+          <p class="menuitem" onclick="window.location='About.html';">About</a></p></span>        
+        </td>
+        
+        <td class="rightpane">
+	      <div align="center" class="style6"></div>
+	        <h2 align="center">Introduction To Xidgets &amp; <a href="#scripting">Scripting</a> </h2>
+	        <p> <i>Xidget</i> is short for Xml Widget. A xidget is an xml element that defines the appearance and behavior of a widget. So
+	          why do we need another xml widget schema? The main difference between xidgets and other xml widget schemas is that xidgets
+	          leverage the Java Advanced Hierarchical Model (JAHM) framework. JAHM makes it possible for Java code to receive notification
+	          when the result of an arbitrary xpath expression changes. In the context of the xidget framework, JAHM makes it possible for
+	          the xidget schema to implement a bi-directional transform between the visual representation of data and the data-model. This
+	          technique is particularly powerful when defining complex widgets such as tables and trees.</p>
+	        <p> JAHM also provides an extensible framework for caching external data from the network, a database, the file-system, or any
+	          other external data source. A <i>caching policy</i> determines when, and how much, data is cached in memory. The <i>caching policy</i> also defines how data is transformed into xml so that xpath expressions can access the data. For
+	          more information on caching policies see <a href="HowToUseExternalReferences.html">How To Use External References</a>.</p>
+	        <p> The xidget schema also includes a simple, extensible scripting language which is designed for scripting the business logic
+	          in a xidget application. Each element in a xidget script corresponds to a Java class that implements the <i>IXAction</i> interface. Extending the scripting language is as simple as implementing this interface (or more often by extending the <i>GuardedAction</i> class), and including a <i>package</i> reference in your xidget configuration. The <i>package</i> reference contains the name of the Java package to which the implementation belongs.</p>
+	        <p> The simplest xidget application consists of two xml files. The first file is the main script. This name of this script
+	          is passed as an argument to the Main class which is part of the xidget toolkit for a particular widget platform. 
+	          See <a href="Main Script.html">The Main Script</a> for more information. The second xml file will contain a <i>window</i> xidget configuration. The last line of the main script will call the <a href="Scripting/CreateXidget.html"><i>createXidget</i></a> script element and supply the path of the <i>window</i> xidget configuration, as well as a context element to which the <i>window</i> xidget will be bound. For more information on binding and the xidget lifecycle see <a href="Xidgets/Lifecycle.html">The Xidget Lifecycle</a>.</p>
+	        <h4>Reference</h4>
+	        <p> Click <a href="Xidget Reference.html">here</a> for a complete reference of xidgets.</p>
+	        <h2 align="center">Introduction To Scripting</h2>
+	        <p> The xidget framework includes an xml scripting language which is designed to be embedded in the declarative
+	          syntax of the xidget schema. The scripting language makes extensive use of the xpath query language to provide
+	          a succinct expression of user-interface business logic. For example, the button xidget schema will execute its <i>onPress</i> script element when the button is pressed if that element is present.</p>
+	        <p> Within the xidget schema there are three main places where scripts are called. First, each xidget has two scripts
+	          that are executed when the xidget is opened and closed, respectively. These are the <i>onOpen</i> and <i>onClose</i> scripts. Second, as mentioned above, each xidget schema is extended with event scripts to implement
+	          the xidgets behavior. Third, each xidget schema may define triggers which conditionally execute a script.</p>
+	        <p> Keep in mind that the xidget schema is a static <b>configuration</b> with specific elements that contain <b>xidget script</b>. The xidget configuration is not executed and the order of the elements does
+	          not matter. In contrast, xidget script is executed from top to bottom. Within a xidget configuration,
+	          most scripts are identified by an element that begins with the prefix, &quot;on&quot;, such as &quot;onOpen&quot;. Triggers
+	          are an exception.</p>
+	        <p> For more information about the <i>onOpen</i>, <i>onClose</i> and <i>trigger</i> events, see <a href="Xidgets/Lifecycle.html">The Xidget Lifecycle</a>.</p>
+	        <p> In addition to the scripts within the xidget schema, a xidget application is started with a main script that
+	          is passed to the JVM as an argument. The main script is responsible for creating the application data model
+	          and instantiating a <i>window</i> xidget. For more information go <a href="Main Script.html">here</a>.</p>
+	        <p> Reference documentation for the scripting elements is available <a href="Scripting Reference.html">here</a>.</p>
+	        <p> A discussion of the rationale for the xidget script schema can be found <a href="Schema Conventions.html">here</a>.</p>
+	        <h4>The onOpen And onClose Scripts</h4>
+	        <p> The following example shows a form xidget with an <i>onOpen</i> script. The script is executed when the
+	          form is created, and before the form is bound to its context. This means that the text xidgets in the form
+	          will have access to variables that are created in the <i>onOpen</i> script.</p>
+	        <div class="xml"> 
+	          <blockquote>
+	            <p>&lt;form&gt;
+	              &lt;onOpen&gt;
+	              &lt;create assign=&quot;book&quot;&gt;
+	              &lt;template&gt;
+	              &lt;book id=&quot;&quot;&gt;
+	              &lt;author&gt;Frank Wilzcek&lt;/author&gt;
+	              &lt;title&gt;The Lightness of Being&lt;/title&gt;
+	              &lt;/book&gt;
+	              &lt;/template&gt;
+	              &lt;id&gt;@id&lt;/id&gt;
+	              &lt;/create&gt;
+	              &lt;/onOpen&gt;
+	              
+	              &lt;layout&gt;
+	              &lt;layoutGridY/&gt;
+	              &lt;layoutFillX/&gt;
+	              &lt;/text&gt;  
+	              
+	              &lt;/layout&gt;  
+	              
+	              &lt;text&gt;
+	              &lt;label&gt;'Title'&lt;/source&gt;
+	              &lt;source&gt;$book/title&lt;/source&gt;
+	              &lt;/text&gt;  
+	              
+	              &lt;text&gt;
+	              &lt;label&gt;'Author'&lt;/source&gt;
+	              &lt;source&gt;$book/author&lt;/source&gt;
+	              &lt;/text&gt;  
+	              &lt;/form&gt; </p>
+	          </blockquote>
+	        </div>
+	        <h4>Event Scripts</h4>
+	        <p> The following example shows a script that will be called whenever the button is pressed.</p>
+	        <div class="xml"> 
+	          <blockquote>
+	            <p>&lt;button&gt;
+	              &lt;label&gt;'Press Me'&lt;/source&gt;
+	              &lt;onPress&gt;
+	              &lt;print&gt;'The button was pressed.'&lt;/print&gt;
+	              &lt;/onPress&gt;
+	              &lt;/button&gt; </p>
+	          </blockquote>
+	        </div>
+	        <p> For more information about callback scripts, see the xidget schema reference.</p>
+	        <h4>Trigger Scripts</h4>
+	        <p> Triggers can be defined in any xidget. A trigger is bound after its xidget is bound. Recall that a xidget
+	          is bound after its <i>initialize</i> script is executed. The following example shows a trigger that fires
+	          whenever the value in a combo xidget changes.</p>
+	        <div class="xml"> 
+	          <blockquote>
+	            <p>&lt;combo&gt;
+	              &lt;label&gt;'Options'&lt;/source&gt;  
+	              &lt;choices&gt;
+	              &lt;choice&gt;Option 1&lt;/choice&gt;
+	              &lt;choice&gt;Option 2&lt;/choice&gt;
+	              &lt;choice&gt;Option 3&lt;/choice&gt;
+	              &lt;/choices&gt;
+	              &lt;source&gt;$value&lt;/source&gt;
+	              &lt;trigger source=&quot;$value&quot;&gt;
+	              &lt;print&gt;$value&lt;print&gt;
+	              &lt;/trigger&gt;  
+	              &lt;/button&gt; </p>
+	          </blockquote>
+	        </div>
+	        <h4>The Main Script</h4>
+	        <p> The execution entry point for a xidget application is the <i>main</i> script. See <a href="Main Script.html">The Main Script</a> for more information.</p>
+	        <p>&nbsp;</p>
+        </td>
+      </tr>
+      <tr>
+        <th height="25" colspan="2" scope="row"><span class="copyright">Created by Bob Dunnagan &copy;2011</span></th>
+      </tr>     
+    </table>
+  </body>
+</html>

@@ -1,55 +1,103 @@
 body {
-/*  background-image: url('../images/gradient.gif');*/
-  background-color: fff;
+  background-image: url('../images/pagegradient.png');
+  color: white;
+}
+
+span.copyright {
+	font-size: 12px;
+}
+
+img.banner {
+	margin-bottom: 20px;
+	margin-left: 60px;
+}
+
+a {
+	color: white;
+}
+
+a:hover {
+	color: rgb( 180, 180, 200);
 }
 
 p {
   margin: 3.0px 0.0px 12.0px 0.25in; 
-  font: 14.0px Times; 
-  width: 7.5in;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14.0px; 
 }
 
 p.body {
-  margin: 3.0px 0.0px 3.0px 0.0px; 
-  font: 14.0px Times; 
+  margin: 3.0px 0.0px 3.0px 0.0px;
   width: 7.5in;
 }
 
 p.code {
-  margin: 10.0px 0.0px 10.0px 0.25in; 
-  font: 12.0px Courier New; 
+  margin: 10.0px 0.0px 10.0px 0.25in;
+  font-family: monospaced; 
+  font-size: 12.0px; 
   color: #308030
 }
 
 pre {
   margin: 10.0px 0.0px 10.0px 1.0in; 
-  font: 12.0px Courier New; 
+  font-family: monospaced; 
+  font-size: 12.0px; 
   color: #308030
 }
 
 div.xml {
   margin: 10.0px 0.0px 10.0px 1.0in; 
-  font: 12.0px Courier New; 
+  font-family: monospaced; 
+  font-size: 12.0px; 
   color: #308030;
   white-space: pre;
 }
 
+p.menuitem {
+	cursor: default;
+	color: white;
+	margin: 5px;
+	padding: 2px;
+	text-align: center;
+	border-width: 0px;
+	border-radius: 7px;
+	background-image: url("../images/gradient_up.png");
+}
+
+p.menuitem:hover {
+  background-image: url("../images/gradient_down.png");	
+}
+
 table {
-  border-width: 1px;
+  border-width: 0px;
   border-spacing: 0px;
   border-style: outset;
   border-color: gray;
   border-collapse: collapse;
-  background-color: white;
-  width: 7.5in;
+  width: 6in;
+}
+
+table.frames {
+	width: 8in;
+}
+
+td.leftpane {
+	padding-top: 15px;
+	vertical-align: top;
+	width: 1.5in;
+}
+
+td.rightpane {
+	padding-left: 20px;
+	width: 6in;
 }
 
 table.script th {
+	font-style: bold;
   border-width: 1px;
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(240, 250, 230);
 }
 
 table.script td {
@@ -57,8 +105,6 @@ table.script td {
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(240, 250, 230);
-  font: 12.0px Courier New; 
 }
 
 table.xidget th {
@@ -66,7 +112,6 @@ table.xidget th {
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(230, 240, 250);
 }
 
 table.xidget td {
@@ -74,8 +119,6 @@ table.xidget td {
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(230, 240, 250);
-  font: 12.0px Courier New; 
 }
 
 table.download th {
@@ -83,7 +126,6 @@ table.download th {
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(220, 220, 220);
 }
 
 table.download td {
@@ -91,17 +133,13 @@ table.download td {
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(240, 240, 240);
-  font: 12.0px Arial; 
 }
 
 table.matrix thead {
-  font: 12.0px Courier New; 
   border-width: 1px;
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(250, 250, 250);
 }
 
 table.matrix td:first-child {
@@ -111,7 +149,6 @@ table.matrix td:first-child {
   border-style: solid;
   border-color: gray;
   text-align: right;
-  font: 12.0px Courier New; 
 }
 
 table.matrix td {
@@ -127,9 +164,7 @@ table.matrix tr.odd {
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(255, 255, 255);
   text-align: center;
-  font: 12.0px Courier New; 
 }
 
 table.matrix tr.even {
@@ -137,7 +172,5 @@ table.matrix tr.even {
   padding: 4px;
   border-style: solid;
   border-color: gray;
-  background-color: rgb(240, 250, 230);
   text-align: center;
-  font: 12.0px Courier New; 
 }
