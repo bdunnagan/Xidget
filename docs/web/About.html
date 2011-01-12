@@ -5,28 +5,36 @@
     <meta http-equiv="Content-Style-Type" content="text/css"/>
     <title>Xidgets</title>
     <link href="css/global.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="javascript/global.js"></script>
   </head>
   
   <body>
-    <img class="banner" src="images/xidgets.png" width="600"/>
-    
-    <table class="frames">
+    <table class="panes">
       <tr>
-        <td class="leftpane">
-          <p class="menuitem" onclick="window.location='index.html';">Home</p>
-          <p class="menuitem" onclick="window.location='Downloads.html';">Download</a></p>
-          <p class="menuitem" onclick="window.location='Overview.html';">Overview</a></p>
-          <p class="menuitem" onclick="window.location='Reference.html';">Reference</a></p>
-          <p class="menuitem" onclick="window.location='About.html';">About</a></p></span>        
+        <td class="toppane" colspan="2">
+          <img class="banner" src="images/xidgets.png" width="600"/>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="leftpane" valign="top">
+          <div class="menuitem" onclick="go('index.html');">Home</div>
+          <div class="menuitem" onclick="go('Downloads.html');">Download</div>
+          <div class="menuitem" onclick="go('Xidget Overview.html');">Overview</div>
+          <div class="menuitem" onclick="go('Reference.html');">Reference</div>
+          <div class="menuitem selected" onclick="go('About.html');">About</div>
         </td>
         
         <td class="rightpane">
           <p>Writte by Bob Dunnagan</p>
         </td>
       </tr>
+      
       <tr>
-        <th height="25" colspan="2" scope="row"><span class="copyright">Created by Bob Dunnagan &copy;2011</span></th>
-      </tr>     
+        <td class="bottompane" colspan="2" align="center">
+          <span class="copyright">Created by Bob Dunnagan &copy;2011</span>
+        </td>
+      </tr>
     </table>
   </body>
 </html>

@@ -1,0 +1,17 @@
+<script>
+  <create assign="html">
+    <template annotated="true">
+      <html path="docs/web">
+        <extern:cache class="org.xmodel.external.caching.FileSystemCachingPolicy"/>
+      </html>
+    </template>
+  </create>
+  
+  <for assign="file" source="$html//*[ not( starts-with( name(), 'docs/web/unused')) and matches( name(), '.html$')]">
+    <assign name="rpath">concat( 'docs\build', replace( string( $file/@path), '^docs\\web(.*)', '$1'))</assign>
+    <assign name="rdir">replace( $rpath, '^(.*)\\[^\\]+[.]html$', '$1')</assign>
+    <makeDir when="starts-with( $rdir, 'docs\build')">$rdir</makeDir>
+    
+    
+  </for>
+</script>

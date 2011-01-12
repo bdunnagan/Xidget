@@ -7,11 +7,6 @@ span.copyright {
 	font-size: 12px;
 }
 
-img.banner {
-	margin-bottom: 20px;
-	margin-left: 60px;
-}
-
 a {
 	color: white;
 }
@@ -53,43 +48,84 @@ div.xml {
   white-space: pre;
 }
 
-p.menuitem {
+div.menu {
+  color: white;
+  margin: 0px;
+  padding: 0px;
+  border-radius: 5px;
+  background-color: rgb( 100, 100, 100);
+}
+
+div.menuitem, div.menuitem2 {
 	cursor: default;
 	color: white;
-	margin: 5px;
-	padding: 5px;
+	margin: 0px 0px 5px 0px;
+	padding: 2px 2px 2px 5px;
 	text-align: left;
 	border-width: 0px;
 	border-radius: 5px;
+	background-color: rgb( 100, 100, 100);
 	background-image: url("../images/gradient_up.png");
 }
 
-p.menuitem:hover {
-  background-image: url("../images/gradient_down.png");	
+div.menuitem2 {
+  padding-left: 10px;
+  font-size: 10px;
 }
 
-table {
+div.menuitem:hover, div.menuitem2:hover {
+  background-color: rgb( 200, 200, 200);
+  background-image: url("../images/gradient_down.png");
+}
+
+div.menuitem.selected, div.menuitem2.selected {
+  background-color: rgb( 200, 200, 200);
+  background-image: none;
+}
+
+table.panes {
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  width: 8in;
+  border-spacing: 5px;
+}
+
+td.toppane {
+  padding: 5px;
+  border-width: 0px;
+  border-radius: 5px;
+  background-color: rgb( 80, 80, 80);
+}
+
+td.leftpane {
+  width: 100px;
+  padding: 5px;
+  border-width: 0px;
+  border-radius: 5px;
+  border-spacing: 5px;
+  background-color: rgb( 80, 80, 80);
+}
+
+td.rightpane {
+  padding: 5px;
+  border-width: 0px;
+  border-radius: 5px;
+  background-color: rgb( 80, 80, 80);
+}
+
+td.rightpane h4 {
+  padding: 5px;
+  margin: 0px;
+}
+
+table.script table.xidget table.matrix {
   border-width: 0px;
   border-spacing: 0px;
   border-style: outset;
   border-color: gray;
   border-collapse: collapse;
   width: 6in;
-}
-
-table.frames {
-	width: 8in;
-}
-
-td.leftpane {
-	padding-top: 15px;
-	vertical-align: top;
-	width: 1.5in;
-}
-
-td.rightpane {
-	padding-left: 20px;
-	width: 6in;
 }
 
 table.script th {
