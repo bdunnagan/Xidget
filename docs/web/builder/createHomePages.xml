@@ -10,8 +10,22 @@
     $web/About.html
   </assign>
   
+  <create assign="nav">
+    <template>
+      <nav>
+        <place title="Home" link="index.html"/>
+        <place title="Download" link="Downloads.html"/>
+        <place title="Xidget Overview" link="XidgetOverview.html"/>
+        <place title="Xidget Reference" link="XidgetReference.html"/>
+        <place title="Scripting Overview" link="ScriptingOverview.html"/>
+        <place title="Scripting Reference" link="ScriptingReference.html"/>
+        <place title="Aboute" link="About.html"/>
+      </nav>
+    </template>
+  </create>
+  
   <assign name="template">$web/HomeTemplate.html</assign>
-  <assign name="menu">$web/navigation/HomeMenu.html/td</assign>
+  <!--assign name="menu">$web/navigation/HomeMenu.html/td</assign-->
   
   <for assign="file" source="$files">
     <assign name="built" mode="copy">$template</assign>
@@ -20,11 +34,19 @@
     <assign name="path">replace( string( $file/@path), '\\', '/')</assign>
     <assign name="bpath">replace( $path, '^docs/web', 'docs/web/build')</assign>
     <assign name="bdir">replace( $bpath, '^(.*)/[^/]*[.]html$', '$1')</assign>
+    <assign name="bname">replace( $bpath, '^.*/([^/]*[.]html)$', '$1')</assign>
+
+    <!-- specify selected menuitem -->
+    <delete>$nav/place/@selected</delete>
+    <set source="'true'">$nav/place[ @link = $bname]/@selected</set>
     
     <!-- populate left pane -->
-    <assign name="src">$menu</assign>
     <assign name="dst">$built/html//td[ @class="leftpane"]</assign>
-    <invoke>$builder/replaceHtml.xml/*</invoke>
+    <invoke>$builder/createNavigation.xml/*</invoke>
+    <!--
+    <assign name="src">$menu</assign>
+    <invoke>$builder/replaceHtml.xml/*</invoke> 
+    -->
     
     <!-- populate right pane -->
     <assign name="src">$file/html/body</assign>

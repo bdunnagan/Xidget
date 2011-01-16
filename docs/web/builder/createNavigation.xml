@@ -1,0 +1,22 @@
+<!--
+  Generate navigation.
+  $nav - The navigation descriptor.
+  $dst - The destination for the navigation entries.
+-->
+<script>
+  <!-- calculate indentation from parent -->
+  <assign name="indent">printf( '%s  ', substring( string( $dst/..), 0, number( $dst/@meta:pos)))</assign>
+  <set source="''">$dst</set>
+  
+  <!-- generate nav entries -->
+  <for assign="place" source="$nav/place">
+    <set source="concat( string( $dst), $indent)">$dst</set>
+    <assign name="class">'menuitem'</assign>
+    <assign name="class" when="$place/@selected">concat( $class, ' selected')</assign>
+    <create parent="$dst">
+      <template>
+        <div meta:pos="{string-length( string( $dst))}" class="{$class}" onclick="go('{$place/@link}');">{$place/@title}</div>
+      </template>
+    </create>
+  </for>  
+</script>
