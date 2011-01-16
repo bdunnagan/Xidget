@@ -1,0 +1,26 @@
+<script>
+  <create assign="files" name="'files'"/>
+  <assign name="files">
+    $web/index.html |
+    $web/Downloads.html |
+    $web/Overview.html |
+    $web/XidgetOverview.html |
+    $web/ScriptingOverview.html
+  </assign>
+  
+  <assign name="menu">$web/navigation/HomeMenu.html/*</assign>
+  
+  <for assign="file" source="$files">
+    <assign name="built" mode="copy">$file</assign>
+    <assign name="leftpane">$built/html/body/table[ @class="panes"]/tr[ 2]/td[ @class="leftpane"]</assign>
+    <add target="$leftpane">$menu/td</add>
+    
+    <assign name="path">replace( string( $built/@path), '\\', '/')</assign>
+    <assign name="bpath">replace( $path, '^docs/web', 'docs/web/build')</assign>
+    <assign name="bdir">replace( $bpath, '^(.*)/[^/]*[.]html$', '$1')</assign>
+    
+    <makeDir>$bdir</makeDir>
+    <fileSave source="$built" file="$bpath"/>
+    <print>printf( '%s\n%s\n', $bdir, $bpath)</print>
+  </for>
+</script>

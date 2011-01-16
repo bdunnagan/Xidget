@@ -1,0 +1,19 @@
+<script>
+  <create assign="web">
+    <template annotated="true">
+      <web path="docs/web">
+        <extern:cache class="org.xmodel.external.caching.FileSystemCachingPolicy"/>
+      </web>
+    </template>
+  </create>
+
+  <create assign="builder">
+    <template annotated="true">
+      <web path="docs/web/builder">
+        <extern:cache class="org.xmodel.external.caching.FileSystemCachingPolicy"/>
+      </web>
+    </template>
+  </create>
+
+  <invoke>$builder/createHomePages.xml/*</invoke>
+</script>

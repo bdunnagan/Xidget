@@ -1,0 +1,10 @@
+<script>
+  <for assign="include" source=".//include">
+    <assign name="parent">$include/..</assign>
+    <assign name="path">string( $include)</assign>
+    <assign name="target" mode="copy">evaluate( $html, $path, null)</assign>
+    <set source="$include/@meta:pos">$target/@meta:pos</set>
+    <add source="$target" index="index-of( $parent/*, $include)">$parent</add>
+    <delete>$include</delete>
+  </for>  
+</script>
