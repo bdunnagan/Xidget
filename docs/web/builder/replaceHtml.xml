@@ -1,0 +1,13 @@
+<!--
+  Replace the children of one html element with the children of another and preserve internal spacing.
+  Variables:
+    $src The source html element.
+    $dst The target html element.
+-->
+<script>
+  <!-- copy text of source to target so that meta:pos attributes of source children are correct in context of target -->
+  <set source="string( $src)">$dst</set>
+  
+  <!-- copy children -->
+  <add source="$src/*" mode="copy">$dst</add>
+</script>

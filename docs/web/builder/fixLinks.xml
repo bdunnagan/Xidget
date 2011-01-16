@@ -1,0 +1,11 @@
+<!--
+  Fix links that reference resources not copied into the build directory.
+  Context: The root of the fragment where substitution will be performed.
+-->
+<script>
+  <for source="(.//@href | .//@src)">
+    <set target=".">replace( string( .), '^css', '../css')</set>
+    <set target=".">replace( string( .), '^images', '../images')</set>
+    <set target=".">replace( string( .), '^javascript', '../javascript')</set>
+  </for>
+</script>

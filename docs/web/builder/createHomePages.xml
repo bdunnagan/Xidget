@@ -3,24 +3,41 @@
   <assign name="files">
     $web/index.html |
     $web/Downloads.html |
-    $web/Overview.html |
     $web/XidgetOverview.html |
-    $web/ScriptingOverview.html
+    $web/XidgetReference.html |
+    $web/ScriptingOverview.html |
+    $web/ScriptingReference.html |
+    $web/About.html
   </assign>
   
-  <assign name="menu">$web/navigation/HomeMenu.html/*</assign>
+  <assign name="template">$web/HomeTemplate.html</assign>
+  <assign name="menu">$web/navigation/HomeMenu.html/td</assign>
   
   <for assign="file" source="$files">
-    <assign name="built" mode="copy">$file</assign>
-    <assign name="leftpane">$built/html/body/table[ @class="panes"]/tr[ 2]/td[ @class="leftpane"]</assign>
-    <add target="$leftpane">$menu/td</add>
-    
-    <assign name="path">replace( string( $built/@path), '\\', '/')</assign>
+    <assign name="built" mode="copy">$template</assign>
+
+    <!-- compute build path -->    
+    <assign name="path">replace( string( $file/@path), '\\', '/')</assign>
     <assign name="bpath">replace( $path, '^docs/web', 'docs/web/build')</assign>
     <assign name="bdir">replace( $bpath, '^(.*)/[^/]*[.]html$', '$1')</assign>
     
+    <!-- populate left pane -->
+    <assign name="src">$menu</assign>
+    <assign name="dst">$built/html//td[ @class="leftpane"]</assign>
+    <invoke>$builder/replaceHtml.xml/*</invoke>
+    
+    <!-- populate right pane -->
+    <assign name="src">$file/html/body</assign>
+    <assign name="dst">$built/html//td[ @class="rightpane"]</assign>
+    <invoke>$builder/replaceHtml.xml/*</invoke>
+        
+    <!-- fix links to point into build path -->
+    <invoke context="$built">$builder/fixLinks.xml/*</invoke>
+    
+    <!-- make build directories -->
     <makeDir>$bdir</makeDir>
-    <fileSave source="$built" file="$bpath"/>
-    <print>printf( '%s\n%s\n', $bdir, $bpath)</print>
+    
+    <!-- save built html -->
+    <fileSave mode="html" overwrite="true" source="$built" file="$bpath"/>
   </for>
 </script>
