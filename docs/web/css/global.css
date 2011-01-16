@@ -87,7 +87,7 @@ table.panes {
   position: fixed;
   top: 5px;
   left: 5px;
-  width: 8in;
+  width: 10in;
   border-spacing: 5px;
 }
 
@@ -99,7 +99,7 @@ td.toppane {
 }
 
 td.leftpane {
-  width: 150px;
+  width: 2in;
   padding: 5px;
   border-width: 0px;
   border-radius: 5px;
