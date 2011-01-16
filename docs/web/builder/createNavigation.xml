@@ -12,7 +12,7 @@
   <for assign="place" source="$nav/place">
     <set source="concat( string( $dst), $indent)">$dst</set>
     <assign name="class">'menuitem'</assign>
-    <assign name="class" when="$place/@selected">concat( $class, ' selected')</assign>
+    <assign name="class" when="$place/@selected = 'true'">concat( $class, ' selected')</assign>
     <create parent="$dst">
       <template>
         <div meta:pos="{string-length( string( $dst))}" class="{$class}" onclick="go('{$place/@link}');">{$place/@title}</div>

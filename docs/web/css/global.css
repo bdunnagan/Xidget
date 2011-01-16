@@ -75,7 +75,7 @@ div.menuitem2 {
 
 div.menuitem:hover, div.menuitem2:hover {
   background-color: rgb( 200, 200, 200);
-  background-image: url("../images/gradient_down.png");
+  background-image: none;
 }
 
 div.menuitem.selected, div.menuitem2.selected {
