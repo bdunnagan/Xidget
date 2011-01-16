@@ -1,11 +1,14 @@
 <!--
   Fix links that reference resources not copied into the build directory.
-  Context: The root of the fragment where substitution will be performed.
+  Context: A file whose links will be fixed.
 -->
 <script>
+  <assign name="prefix">''</assign>
+  <for assign="i" from="1" to="$depth" by="1">
+    <assign name="prefix">concat( $prefix, '../')</assign>
+  </for>
+
   <for source="(.//@href | .//@src)">
-    <set target=".">replace( string( .), '^css', '../css')</set>
-    <set target=".">replace( string( .), '^images', '../images')</set>
-    <set target=".">replace( string( .), '^javascript', '../javascript')</set>
+    <set target="." when="matches( string( .), '^(css)|(images)|(javascript)')">concat( $prefix, string( .))</set>
   </for>
 </script>
