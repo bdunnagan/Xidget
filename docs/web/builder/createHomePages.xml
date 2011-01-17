@@ -26,36 +26,5 @@
   
   <assign name="template">$web/HomeTemplate.html/html</assign>
   
-  <for assign="file" source="$files">
-    <assign name="depth">count( $file/ancestor::*)</assign>
-    <assign name="built" mode="copy">$template</assign>
-
-    <!-- compute build path -->    
-    <assign name="path">replace( string( $file/@path), '\\', '/')</assign>
-    <assign name="bpath">replace( $path, '^docs/web', 'docs/web/build')</assign>
-    <assign name="bdir">replace( $bpath, '^(.*)/[^/]*[.]html$', '$1')</assign>
-    <assign name="bname">name( $file)</assign>
-
-    <!-- specify selected menuitem -->
-    <delete>$nav/place/@selected</delete>
-    <set source="'true'">$nav/place[ @link = $bname]/@selected</set>
-    
-    <!-- populate left pane -->
-    <assign name="dst">$built//td[ @class="leftpane"]</assign>
-    <invoke>$builder/createNavigation.xml/*</invoke>
-    
-    <!-- populate right pane -->
-    <assign name="src">$file/html/body</assign>
-    <assign name="dst">$built//td[ @class="rightpane"]</assign>
-    <invoke>$builder/replaceHtml.xml/*</invoke>
-        
-    <!-- fix links to point into build path -->
-    <invoke context="$built">$builder/fixLinks.xml/*</invoke>
-    
-    <!-- make build directories -->
-    <makeDir recurse="true()">$bdir</makeDir>
-    
-    <!-- save built html -->
-    <fileSave mode="html" overwrite="true" source="$built" file="$bpath"/>
-  </for>
+  <invoke>$builder/createPages.xml/*</invoke>
 </script>

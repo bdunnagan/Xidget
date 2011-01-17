@@ -28,23 +28,24 @@ p.body {
 
 p.code {
   margin: 10.0px 0.0px 10.0px 0.25in;
-  font-family: monospaced; 
+  font-family: Courier; 
   font-size: 12.0px; 
-  color: #308030
+  /* color: #308030 */
+  color: #86ea86;
 }
 
 pre {
   margin: 10.0px 0.0px 10.0px 1.0in; 
-  font-family: monospaced; 
+  font-family: Courier; 
   font-size: 12.0px; 
-  color: #308030
+  color: #86ea86;
 }
 
 div.xml {
   margin: 10.0px 0.0px 10.0px 1.0in; 
-  font-family: monospaced; 
+  font-family: Courier; 
   font-size: 12.0px; 
-  color: #308030;
+  color: #86ea86;
   white-space: pre;
 }
 
@@ -84,10 +85,7 @@ div.menuitem.selected, div.menuitem2.selected {
 }
 
 table.panes {
-  position: fixed;
-  top: 5px;
-  left: 5px;
-  width: 10in;
+  margin: 5px;
   border-spacing: 5px;
 }
 
@@ -99,6 +97,8 @@ td.toppane {
 }
 
 td.leftpane {
+  height: 600px;
+  overflow: auto;
   width: 2in;
   padding: 5px;
   border-width: 0px;
@@ -108,7 +108,10 @@ td.leftpane {
 }
 
 td.rightpane {
+  height: 600px;
+  overflow: auto;
   padding: 5px;
+  vertical-align: top;
   border-width: 0px;
   border-radius: 5px;
   background-color: rgb( 80, 80, 80);
