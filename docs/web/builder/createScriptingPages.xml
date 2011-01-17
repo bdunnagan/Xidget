@@ -1,0 +1,23 @@
+<script>
+  <create assign="files" name="'files'"/>
+  <assign name="files">
+    $web/Scripting/*[ matches( name(), '.*[.]html$')] |
+    $web/Scripting/Layout/*[ matches( name(), '.*[.]html$')]
+  </assign>
+
+  <!-- create nav -->  
+  <create assign="nav" name="'nav'"/>
+  <for assign="file" source="$files">
+    <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
+    <print>$path</print>
+    <create parent="$nav">
+      <template>
+        <place title="{$file/html/head/title}" link="{replace( $path, '^docs/web/([^/]+)/(.*)$', '../$1/$2')}"/>
+      </template>
+    </create>
+  </for>
+  
+  <assign name="template">$web/HomeTemplate.html/html</assign>
+
+  <invoke>$builder/createPages.xml/*</invoke>  
+</script>

@@ -1,0 +1,239 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"></meta>
+    <meta content="text/css" http-equiv="Content-Style-Type"></meta>
+    <title>Xidgets</title>
+    <link rel="stylesheet" type="text/css" href="../../css/global.css"></link>
+    <script src="../../javascript/global.js" type="text/javascript"></script>
+  </head>
+  
+  <body>
+    <table class="panes">
+      <tr>
+        <td colspan="2" class="toppane">
+          <img width="600" class="banner" src="../../images/xidgets.png"></img>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="leftpane" valign="top">
+        
+          
+          <div class="menuitem" onclick="go('../Scripting/Add.html');">add
+        
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/Assign.html');">assign
+        
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/Context.html');">context
+        
+          
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/Copy.html');">copy
+        
+          
+          
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/Create.html');">create
+        
+          
+          
+          
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/CreateXidget.html');">createXidget
+        
+          
+          
+          
+          
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/Delete.html');">delete
+        
+          
+          
+          
+          
+          
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/For.html');">for
+        
+          
+          
+          
+          
+          
+          
+          
+          
+            </div>
+          <div class="menuitem selected" onclick="go('../Scripting/If.html');">if/else
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/Select.html');">select
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/Set.html');">set
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/Layout/Layout Examples.html');">Layout Examples
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+            </div>
+          <div class="menuitem" onclick="go('../Scripting/Layout/Operations.html');">Layout Operations
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+            </div></td>
+        
+        <td class="rightpane">
+<h2><i>if/else</i></h2>
+<h4>Overview</h4>
+<p>
+The <i>if</i> script element conditional executes a script. If the <i>if</i>
+condition is not
+met then the next <i>else</i> script element will be executed. An
+xpath defines the condition
+under which the script will be executed. The xpath is evaluated as if
+it were enclosed by the
+boolean() function, so any xpath return type is valid.</p>
+<p>
+There are three different attributes in which the xpath condition may
+be specified. If the
+condition is specified in the <i>test</i> or <i>true</i> attributes
+then the script will be
+executed if the boolean value of the xpath is true. If the condition is
+specified in the
+<i>false</i> attribute then the script will be executed if the boolean
+value of the xpath
+is false.</p>
+<p style="color: #a00000;">
+Keep in mind that almost all script elements may be made conditional by defining the
+<i>when</i> attribute. The <i>when</i> attribute contains an xpath which
+is evaluated as a boolean. Therefore, it is only necessary to use the <i>if</i> script
+element when you need an <i>else</i> script, too.</p>
+
+<h4>Using An If Statement</h4>
+<p>
+The following&nbsp;example will&nbsp;print the string "Frank Wilzcek":</p>
+<div class="xml">
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The Lightness of Being']&lt;/assign&gt;
+&lt;if test="$book/title = 'The Lightness of Being'"&gt;
+  &lt;print&gt;$book/author&lt;/print&gt;
+&lt;/if&gt;
+</div>
+
+<p>
+The following&nbsp;example will also &nbsp;print the string "Frank
+Wilzcek":</p>
+<div class="xml">
+&lt;if <span style="font-weight: bold;">true</span>="$book/title = 'The Lightness of Being'"&gt;
+  &lt;print&gt;$book/author&lt;/print&gt;
+&lt;/if&gt;
+</div>
+
+<p>
+These examples are equivalent to the following:</p>
+
+<div class="xml">
+&lt;print when="$book/title = 'The Lightness of Being'"&gt;$book/author&lt;/print&gt;
+</div>
+
+<h4>Using If/Else Statements</h4>
+<p>
+The following example will print the string "John Irving":</p>
+<div class="xml">
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The Cider House Rules']&lt;/assign&gt;
+&lt;if test="$book/title = 'The Lightness of Being'"&gt;
+  &lt;print&gt;$book/author&lt;/print&gt;
+&lt;/if&gt;
+&lt;else&gt;
+  &lt;print&gt;$book/author&lt;/print&gt;
+&lt;/else&gt;
+</div>
+
+<h4>Using Negation</h4>
+<p>
+The following example will not print anything:</p>
+<div class="xml">
+&lt;assign name="book"&gt;collection('library')/books/book[ title='The Lightness of Being']&lt;/assign&gt;
+&lt;if <span style="font-weight: bold;">false</span>="$book/title = 'The Lightness of Being'"&gt;
+  &lt;print&gt;$book/author&lt;/print&gt;
+&lt;/if&gt;
+</div>
+
+</td>
+      </tr>
+      
+      <tr>
+        <td colspan="2" align="center" class="bottompane">
+          <span class="copyright">Created by Bob Dunnagan &copy;2011</span>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

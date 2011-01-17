@@ -1,9 +1,25 @@
 <script>
   <create assign="files" name="'files'"/>
-  <assign name="files">$web/Xidgets/*[ matches( name(), '.*[.]html$')] | $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')]</assign>
+  <assign name="files">
+    $web/Xidgets/*[ matches( name(), '.*[.]html$')] | 
+    $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')]
+  </assign>
 
   <!-- create nav -->  
-  <create assign="nav" name="'nav'"/>
+  <create assign="nav">
+    <template>
+      <nav>
+        <place title="Home" link="index.html"/>
+        <place title="Download" link="Downloads.html"/>
+        <place title="Xidget Overview" link="XidgetOverview.html"/>
+        <place title="Xidget Reference" link="XidgetReference.html"/>
+        <place title="Scripting Overview" link="ScriptingOverview.html"/>
+        <place title="Scripting Reference" link="ScriptingReference.html"/>
+        <place title="About" link="About.html"/>
+      </nav>
+    </template>
+  </create>
+  
   <for assign="file" source="$files">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
     <print>$path</print>
