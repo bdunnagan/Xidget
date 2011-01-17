@@ -2,7 +2,7 @@
   Create pages by applying the specified template and navigation to the specified file-list.
   $template The template.
   $files The file list. 
-  $nav The navigation descriptor.
+  $anav The navigation descriptor with absolute links.
  -->
 <script>
   <for assign="file" source="$files">
@@ -14,6 +14,13 @@
     <assign name="bpath">replace( $path, '^docs/web', 'docs/web/build')</assign>
     <assign name="bdir">replace( $bpath, '^(.*)/[^/]*[.]html$', '$1')</assign>
     <assign name="bname">name( $file)</assign>
+
+    <!-- compute relative paths for navigation -->
+    <assign name="nav" mode="copy">$anav</assign>
+    <for assign="place" source="$nav//place">
+      <assign name="target">evaluate( $web, $place/@link, null)</assign>
+      <set target="$place/@link">create-path( $file/.., $target)</set>
+    </for> 
 
     <!-- specify selected menuitem -->
     <delete>$nav/place/@selected</delete>

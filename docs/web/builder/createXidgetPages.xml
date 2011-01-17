@@ -6,7 +6,7 @@
   </assign>
 
   <!-- create nav -->  
-  <create assign="nav">
+  <create assign="anav">
     <template>
       <nav>
         <place title="Home" link="index.html"/>
@@ -22,10 +22,10 @@
   
   <for assign="file" source="$files">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
-    <print>$path</print>
-    <create parent="$nav">
+    <assign name="path">replace( $path, '^docs/web/', '')</assign>
+    <create parent="$anav">
       <template>
-        <place title="{$file/html/head/title}" link="{replace( $path, '^docs/web/([^/]+)/(.*)$', '../$1/$2')}"/>
+        <place title="{$file/html/head/title}" link="{$path}"/>
       </template>
     </create>
   </for>

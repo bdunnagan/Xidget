@@ -10,7 +10,7 @@
     $web/About.html
   </assign>
   
-  <create assign="nav">
+  <create assign="anav">
     <template>
       <nav>
         <place title="Home" link="index.html"/>
