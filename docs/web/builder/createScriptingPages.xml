@@ -6,18 +6,28 @@
   </assign>
 
   <!-- create nav -->  
-  <create assign="anav" name="'nav'"/>
+  <create assign="anav">
+    <template>
+      <nav>
+        <place title="Home" link="index.html"/>
+        <place title="Download" link="Downloads.html"/>
+        <place title="Xidgets" link="XidgetOverview.html"/>
+        <place title="Scripting" link="ScriptingOverview.html"/>
+        <place title="About" link="About.html"/>
+      </nav>
+    </template>
+  </create>
+  
   <for assign="file" source="$files">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
     <assign name="path">replace( $path, '^docs/web/', '')</assign>
-    <create parent="$anav">
+    <create parent="$anav/place[ @title='Scripting']">
       <template>
         <place title="{$file/html/head/title}" link="{$path}"/>
       </template>
     </create>
   </for>
   
-  <assign name="template">$web/HomeTemplate.html/html</assign>
-
+  <assign name="template">$web/Master.html/html</assign>
   <invoke>$builder/createPages.xml/*</invoke>  
 </script>

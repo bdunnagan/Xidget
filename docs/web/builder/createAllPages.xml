@@ -1,11 +1,19 @@
 <script>
   <create assign="files" name="'files'"/>
   <assign name="files">
+    $web/index.html |
+    $web/Downloads.html |
+    $web/XidgetOverview.html |
+    $web/XidgetReference.html |
+    $web/ScriptingOverview.html |
+    $web/ScriptingReference.html |
+    $web/About.html |
     $web/Xidgets/*[ matches( name(), '.*[.]html$')] | 
-    $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')]
+    $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')] |
+    $web/Scripting/*[ matches( name(), '.*[.]html$')] |
+    $web/Scripting/Layout/*[ matches( name(), '.*[.]html$')]
   </assign>
-
-  <!-- create nav -->  
+  
   <create assign="anav">
     <template>
       <nav>
@@ -28,6 +36,16 @@
     </create>
   </for>
   
+  <for assign="file" source="$files">
+    <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
+    <assign name="path">replace( $path, '^docs/web/', '')</assign>
+    <create parent="$anav/place[ @title='Scripting']">
+      <template>
+        <place title="{$file/html/head/title}" link="{$path}"/>
+      </template>
+    </create>
+  </for>
+  
   <assign name="template">$web/Master.html/html</assign>
-  <invoke>$builder/createPages.xml/*</invoke>  
+  <invoke>$builder/createPages.xml/*</invoke>
 </script>

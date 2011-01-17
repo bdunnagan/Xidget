@@ -57,7 +57,7 @@ div.menu {
   background-color: rgb( 100, 100, 100);
 }
 
-div.menuitem, div.menuitem2 {
+div.menuitem {
 	cursor: default;
 	color: white;
 	margin: 0px 0px 5px 0px;
@@ -66,15 +66,15 @@ div.menuitem, div.menuitem2 {
 	border-width: 0px;
 	border-radius: 5px;
 	background-color: rgb( 100, 100, 100);
-	background-image: url("../images/gradient_up.png");
+	/* background-image: url("../images/gradient_up.png"); */
 }
 
-div.menuitem2 {
+div.menuitem > div.menuitem {
   padding-left: 10px;
   font-size: 10px;
 }
 
-div.menuitem:hover, div.menuitem2:hover {
+div.menuitem:hover {
   background-color: rgb( 200, 200, 200);
   background-image: none;
 }
