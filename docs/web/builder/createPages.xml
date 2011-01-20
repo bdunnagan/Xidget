@@ -22,6 +22,9 @@
       <set target="$place/@link">create-path( $file/.., $target)</set>
     </for> 
 
+    <!-- set title -->
+    <set target="$built/head/title">$bname</set>
+
     <!-- specify selected menuitem -->
     <delete>$nav/place/@selected</delete>
     <set source="'true'">$nav/place[ ends-with( string( @link), $bname)]/@selected</set>

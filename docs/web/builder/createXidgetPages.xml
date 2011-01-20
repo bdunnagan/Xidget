@@ -1,5 +1,4 @@
 <script>
-  <create assign="files" name="'files'"/>
   <assign name="files">
     $web/Xidgets/*[ matches( name(), '.*[.]html$')] | 
     $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')]
@@ -17,7 +16,15 @@
       </nav>
     </template>
   </create>
+
+  <!-- overview -->  
+  <create parent="$anav/place[ @title='Xidgets']">
+    <template>
+      <place title="Overview" link="XidgetOverview.html"/>
+    </template>
+  </create>
   
+  <!-- xidget elements -->
   <for assign="file" source="$files">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
     <assign name="path">replace( $path, '^docs/web/', '')</assign>

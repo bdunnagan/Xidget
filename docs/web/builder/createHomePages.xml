@@ -1,5 +1,4 @@
 <script>
-  <create assign="files" name="'files'"/>
   <assign name="files">
     $web/index.html |
     $web/Downloads.html |

@@ -17,6 +17,7 @@
       <template>
         <div meta:pos="{string-length( string( $dst))}" class="{$class}" onclick="go('{$place/@link}');">{$place/@title}</div>
       </template>
+      <delete when="$place/*">@onclick</delete>
     </create>
     
     <context>

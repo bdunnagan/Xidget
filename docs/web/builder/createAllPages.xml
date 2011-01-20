@@ -1,17 +1,22 @@
 <script>
-  <create assign="files" name="'files'"/>
+  <assign name="xidgetFiles">
+    $web/Xidgets/*[ matches( name(), '.*[.]html$')] | 
+    $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')]
+  </assign>
+
+  <assign name="scriptingFiles">
+    $web/Scripting/*[ matches( name(), '.*[.]html$')] |
+    $web/Scripting/Layout/*[ matches( name(), '.*[.]html$')]
+  </assign>
+
   <assign name="files">
     $web/index.html |
     $web/Downloads.html |
     $web/XidgetOverview.html |
-    $web/XidgetReference.html |
     $web/ScriptingOverview.html |
-    $web/ScriptingReference.html |
     $web/About.html |
-    $web/Xidgets/*[ matches( name(), '.*[.]html$')] | 
-    $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')] |
-    $web/Scripting/*[ matches( name(), '.*[.]html$')] |
-    $web/Scripting/Layout/*[ matches( name(), '.*[.]html$')]
+    $xidgetFiles |
+    $scriptingFiles
   </assign>
   
   <create assign="anav">
@@ -26,7 +31,7 @@
     </template>
   </create>
   
-  <for assign="file" source="$files">
+  <for assign="file" source="$xidgetFiles">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
     <assign name="path">replace( $path, '^docs/web/', '')</assign>
     <create parent="$anav/place[ @title='Xidgets']">
@@ -36,7 +41,7 @@
     </create>
   </for>
   
-  <for assign="file" source="$files">
+  <for assign="file" source="$scriptingFiles">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
     <assign name="path">replace( $path, '^docs/web/', '')</assign>
     <create parent="$anav/place[ @title='Scripting']">
