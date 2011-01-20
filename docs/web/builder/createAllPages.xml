@@ -31,6 +31,18 @@
     </template>
   </create>
   
+  <create parent="$anav/place[ @title='Xidgets']">
+    <template>
+      <place title="Overview" link="XidgetOverview.html"/>
+    </template>
+  </create>
+    
+  <create parent="$anav/place[ @title='Scripting']">
+    <template>
+      <place title="Overview" link="ScriptingOverview.html"/>
+    </template>
+  </create>
+    
   <for assign="file" source="$xidgetFiles">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
     <assign name="path">replace( $path, '^docs/web/', '')</assign>
