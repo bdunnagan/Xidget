@@ -5,17 +5,15 @@
 -->
 <script>
   <!-- calculate indentation from parent -->
-  <assign name="indent">printf( '%s  ', substring( string( $dst/..), 0, number( $dst/@meta:pos)))</assign>
-  <set source="concat( string( $dst), $indent)">$dst</set>
+  <assign name="pos">string-length( string( $dst))</assign>
   
   <!-- generate nav entries -->
   <for assign="place" source="$nav/place">
-    <set source="concat( string( $dst), $indent)">$dst</set>
     <assign name="class">'menuitem'</assign>
     <assign name="class" when="$place/@selected = 'true'">concat( $class, ' selected')</assign>
     <create assign="item" parent="$dst">
       <template>
-        <div meta:pos="{string-length( string( $dst))}" class="{$class}" onclick="go('{$place/@link}');">{$place/@title}</div>
+        <div meta:pos="{$pos}" class="{$class}" onclick="go('{$place/@link}');">{$place/@title}</div>
       </template>
       <delete when="$place/*">@onclick</delete>
     </create>
