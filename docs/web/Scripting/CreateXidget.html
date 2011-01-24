@@ -22,7 +22,7 @@ Any xidget can be created with the <i>createXidget</i> script element. If the xi
 attribute should contain the name of the variable that will store the instance so that it can be destroyed later.
 If the xidget configuration is not an <i>window</i> xidget then the <i>parent</i>
 attribute, or child element, determines the xidget container to which the newly create xidget will be parented.</p>
-<p style="color: #a00000;">
+<p class="warning">
 The event processing loop for the widget toolkit is entered after the main script completes. Thus, the main script
 can create more than one window xidget. The main script must complete, however, for the window(s) to become visible.</p>
 

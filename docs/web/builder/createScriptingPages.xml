@@ -1,0 +1,48 @@
+<script>
+  <assign name="xidgetFiles">
+    $web/Xidgets/*[ matches( name(), '.*[.]html$')] | 
+    $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')]
+  </assign>
+
+  <assign name="scriptingFiles">
+    $web/Scripting/*[ matches( name(), '.*[.]html$')] |
+    $web/Scripting/Layout/*[ matches( name(), '.*[.]html$')]
+  </assign>
+
+  <assign name="files">
+    $web/ScriptingOverview.html |
+    $scriptingFiles
+  </assign>
+  
+  <create assign="anav">
+    <template>
+      <nav>
+        <place title="Home" link="index.html"/>
+        <place title="Download" link="Downloads.html"/>
+        <place title="Getting Started" link="MainScript.html"/>
+        <place title="Xidgets" link="XidgetOverview.html"/>
+        <place title="Scripting" link="ScriptingOverview.html"/>
+        <place title="About" link="About.html"/>
+      </nav>
+    </template>
+  </create>
+  
+  <create parent="$anav/place[ @title='Scripting']">
+    <template>
+      <place title="Overview" link="ScriptingOverview.html"/>
+    </template>
+  </create>
+    
+  <for assign="file" source="$scriptingFiles">
+    <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
+    <assign name="path">replace( $path, '^docs/web/', '')</assign>
+    <create parent="$anav/place[ @title='Scripting']">
+      <template>
+        <place title="{$file/html/head/title}" link="{$path}"/>
+      </template>
+    </create>
+  </for>
+  
+  <assign name="template">$web/Master.html/html</assign>
+  <invoke>$builder/createPages.xml/*</invoke>
+</script>

@@ -26,8 +26,8 @@
     <set target="$built/head/title">$bname</set>
 
     <!-- specify selected menuitem -->
-    <delete>$nav/place/@selected</delete>
-    <set source="'true'">$nav/place[ ends-with( string( @link), $bname)]/@selected</set>
+    <delete>$nav//place/@selected</delete>
+    <set source="'true'">$nav//place[ ends-with( string( @link), $bname)]/ancestor-or-self::place/@selected</set>
     
     <!-- populate left pane -->
     <assign name="dst">$built//td[ @class="leftpane"]</assign>

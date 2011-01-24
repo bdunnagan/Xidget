@@ -1,0 +1,24 @@
+<script>
+  <assign name="files">
+    $web/index.html |
+    $web/Downloads.html |
+    $web/MainScript.html |
+    $web/About.html
+  </assign>
+  
+  <create assign="anav">
+    <template>
+      <nav>
+        <place title="Home" link="index.html"/>
+        <place title="Download" link="Downloads.html"/>
+        <place title="Getting Started" link="MainScript.html"/>
+        <place title="Xidgets" link="XidgetOverview.html"/>
+        <place title="Scripting" link="ScriptingOverview.html"/>
+        <place title="About" link="About.html"/>
+      </nav>
+    </template>
+  </create>
+    
+  <assign name="template">$web/Master.html/html</assign>
+  <invoke>$builder/createPages.xml/*</invoke>
+</script>

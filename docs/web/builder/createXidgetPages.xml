@@ -10,13 +10,8 @@
   </assign>
 
   <assign name="files">
-    $web/index.html |
-    $web/Downloads.html |
     $web/XidgetOverview.html |
-    $web/ScriptingOverview.html |
-    $web/About.html |
-    $xidgetFiles |
-    $scriptingFiles
+    $xidgetFiles
   </assign>
   
   <create assign="anav">
@@ -24,6 +19,7 @@
       <nav>
         <place title="Home" link="index.html"/>
         <place title="Download" link="Downloads.html"/>
+        <place title="Getting Started" link="MainScript.html"/>
         <place title="Xidgets" link="XidgetOverview.html"/>
         <place title="Scripting" link="ScriptingOverview.html"/>
         <place title="About" link="About.html"/>
@@ -37,26 +33,10 @@
     </template>
   </create>
     
-  <create parent="$anav/place[ @title='Scripting']">
-    <template>
-      <place title="Overview" link="ScriptingOverview.html"/>
-    </template>
-  </create>
-    
   <for assign="file" source="$xidgetFiles">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
     <assign name="path">replace( $path, '^docs/web/', '')</assign>
     <create parent="$anav/place[ @title='Xidgets']">
-      <template>
-        <place title="{$file/html/head/title}" link="{$path}"/>
-      </template>
-    </create>
-  </for>
-  
-  <for assign="file" source="$scriptingFiles">
-    <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
-    <assign name="path">replace( $path, '^docs/web/', '')</assign>
-    <create parent="$anav/place[ @title='Scripting']">
       <template>
         <place title="{$file/html/head/title}" link="{$path}"/>
       </template>

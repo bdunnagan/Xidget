@@ -1,116 +1,116 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-  <body>
-	  <h2>Introduction To Scripting</h2>
-	  
-	  <h4>Overview</h4>
-	  <p>
-	  The xidget framework includes an xml scripting language which is designed to be embedded in the declarative
-	  syntax of the xidget schema. The scripting language makes extensive use of the xpath query language to provide
-	  a succinct expression of user-interface business logic. For example, the button xidget schema will execute its
-	  <i>onPress</i> script element when the button is pressed if that element is present.</p>
-	  <p>
-	  Within the xidget schema there are three main places where scripts are called. First, each xidget has two scripts
-	  that are executed when the xidget is opened and closed, respectively. These are the <i>onOpen</i> and
-	  <i>onClose</i> scripts. Second, as mentioned above, each xidget schema is extended with event scripts to implement
-	  the xidgets behavior. Third, each xidget schema may define triggers which conditionally execute a script.</p>
-	  <p style="color: #a00000;">
-	  Keep in mind that the xidget schema is a static <b>configuration</b> with specific elements that contain
-	  <b>xidget script</b>. The xidget configuration is not executed and the order of the elements does
-	  not matter. In contrast, xidget script is executed from top to bottom. Within a xidget configuration,
-	  most scripts are identified by an element that begins with the prefix, "on", such as "onOpen". Triggers
-	  are an exception.</p>
-	  <p>
-	  For more information about the <i>onOpen</i>, <i>onClose</i> and <i>trigger</i> events, see
-	  <a href="Xidgets/Lifecycle.html">The Xidget Lifecycle</a>.</p>
-	  <p>
-	  In addition to the scripts within the xidget schema, a xidget application is started with a main script that
-	  is passed to the JVM as an argument. The main script is responsible for creating the application data model
-	  and instantiating a <i>window</i> xidget. For more information go <a href="MainScript.html">here</a>.</p>
-	  <p>
-	  Reference documentation for the scripting elements is available <a href="ScriptingReference.html">here</a>.</p>
-	  <p>
-	  A discussion of the rationale for the xidget script schema can be found <a href="Schema Conventions.html">here</a>.</p>
-	  
-	  <h4>The onOpen And onClose Scripts</h4>
-	  <p>
-	  The following example shows a form xidget with an <i>onOpen</i> script. The script is executed when the
-	  form is created, and before the form is bound to its context. This means that the text xidgets in the form
-	  will have access to variables that are created in the <i>onOpen</i> script.</p>
-	  
-	  <div class="xml">
-	  &lt;form&gt;
-	    &lt;onOpen&gt;
-	      &lt;create assign="book"&gt;
-	        &lt;template&gt;
-	          &lt;book id=""&gt;
-	            &lt;author&gt;Frank Wilzcek&lt;/author&gt;
-	            &lt;title&gt;The Lightness of Being&lt;/title&gt;
-	          &lt;/book&gt;
-	        &lt;/template&gt;
-	        &lt;id&gt;@id&lt;/id&gt;
-	      &lt;/create&gt;
-	    &lt;/onOpen&gt;
-	  
-	    &lt;layout&gt;
-	      &lt;layoutGridY/&gt;
-	      &lt;layoutFillX/&gt;
-	    &lt;/text&gt;  
-	  
-	    &lt;/layout&gt;  
-	  
-	    &lt;text&gt;
-	      &lt;label&gt;'Title'&lt;/source&gt;
-	      &lt;source&gt;$book/title&lt;/source&gt;
-	    &lt;/text&gt;  
-	  
-	    &lt;text&gt;
-	      &lt;label&gt;'Author'&lt;/source&gt;
-	      &lt;source&gt;$book/author&lt;/source&gt;
-	    &lt;/text&gt;  
-	  &lt;/form&gt;
-	  </div>
-	  
-	  <h4>Event Scripts</h4>
-	  <p>
-	  The following example shows a script that will be called whenever the button is pressed.</p>
-	  
-	  <div class="xml">
-	  &lt;button&gt;
-	    &lt;label&gt;'Press Me'&lt;/source&gt;
-	    &lt;onPress&gt;
-	      &lt;print&gt;'The button was pressed.'&lt;/print&gt;
-	    &lt;/onPress&gt;
-	  &lt;/button&gt;  
-	  </div>
-	  
-	  <p>
-	  For more information about callback scripts, see the xidget schema reference.</p>
-	  
-	  <h4>Trigger Scripts</h4>
-	  <p>
-	  Triggers can be defined in any xidget. A trigger is bound after its xidget is bound. Recall that a xidget
-	  is bound after its <i>initialize</i> script is executed. The following example shows a trigger that fires
-	  whenever the value in a combo xidget changes.</p>
-	  
-	  <div class="xml">
-	  &lt;combo&gt;
-	    &lt;label&gt;'Options'&lt;/source&gt;  
-	    &lt;choices&gt;
-	      &lt;choice&gt;Option 1&lt;/choice&gt;
-	      &lt;choice&gt;Option 2&lt;/choice&gt;
-	      &lt;choice&gt;Option 3&lt;/choice&gt;
-	    &lt;/choices&gt;
-	    &lt;source&gt;$value&lt;/source&gt;
-	    &lt;trigger source="$value"&gt;
-	      &lt;print&gt;$value&lt;print&gt;
-	    &lt;/trigger&gt;  
-	  &lt;/button&gt;  
-	  </div>
-	  
-	  <h4>The Main Script</h4>
-	  <p>
-	  The execution entry point for a xidget application is the <i>main</i> script. See <a href="MainScript.html">The Main Script</a>
-	  for more information.</p>
-  </body>
+<body>
+ <h2>Introduction To Scripting</h2>
+ 
+ <h4>Overview</h4>
+ <p>
+ The xidget framework includes an xml scripting language which is designed to be embedded in the declarative
+ syntax of the xidget schema. The scripting language makes extensive use of the xpath query language to provide
+ a succinct expression of user-interface business logic. For example, the button xidget schema will execute its
+ <i>onPress</i> script element when the button is pressed if that element is present.</p>
+ <p>
+ Within the xidget schema there are three main places where scripts are called. First, each xidget has two scripts
+ that are executed when the xidget is opened and closed, respectively. These are the <i>onOpen</i> and
+ <i>onClose</i> scripts. Second, as mentioned above, each xidget schema is extended with event scripts to implement
+ the xidgets behavior. Third, each xidget schema may define triggers which conditionally execute a script.</p>
+ <p class="warning">
+ Keep in mind that the xidget schema is a static <b>configuration</b> with specific elements that contain
+ <b>xidget script</b>. The xidget configuration is not executed and the order of the elements does
+ not matter. In contrast, xidget script is executed from top to bottom. Within a xidget configuration,
+ most scripts are identified by an element that begins with the prefix, "on", such as "onOpen". Triggers
+ are an exception.</p>
+ <p>
+ For more information about the <i>onOpen</i>, <i>onClose</i> and <i>trigger</i> events, see
+ <a href="Xidgets/Lifecycle.html">The Xidget Lifecycle</a>.</p>
+ <p>
+ In addition to the scripts within the xidget schema, a xidget application is started with a main script that
+ is passed to the JVM as an argument. The main script is responsible for creating the application data model
+ and instantiating a <i>window</i> xidget. For more information go <a href="MainScript.html">here</a>.</p>
+ <p>
+ Reference documentation for the scripting elements is available <a href="ScriptingReference.html">here</a>.</p>
+ <p>
+ A discussion of the rationale for the xidget script schema can be found <a href="Schema Conventions.html">here</a>.</p>
+ 
+ <h4>The onOpen And onClose Scripts</h4>
+ <p>
+ The following example shows a form xidget with an <i>onOpen</i> script. The script is executed when the
+ form is created, and before the form is bound to its context. This means that the text xidgets in the form
+ will have access to variables that are created in the <i>onOpen</i> script.</p>
+ 
+ <div class="xml">
+ &lt;form&gt;
+   &lt;onOpen&gt;
+     &lt;create assign="book"&gt;
+       &lt;template&gt;
+         &lt;book id=""&gt;
+           &lt;author&gt;Frank Wilzcek&lt;/author&gt;
+           &lt;title&gt;The Lightness of Being&lt;/title&gt;
+         &lt;/book&gt;
+       &lt;/template&gt;
+       &lt;id&gt;@id&lt;/id&gt;
+     &lt;/create&gt;
+   &lt;/onOpen&gt;
+ 
+   &lt;layout&gt;
+     &lt;layoutGridY/&gt;
+     &lt;layoutFillX/&gt;
+   &lt;/text&gt;  
+ 
+   &lt;/layout&gt;  
+ 
+   &lt;text&gt;
+     &lt;label&gt;'Title'&lt;/source&gt;
+     &lt;source&gt;$book/title&lt;/source&gt;
+   &lt;/text&gt;  
+ 
+   &lt;text&gt;
+     &lt;label&gt;'Author'&lt;/source&gt;
+     &lt;source&gt;$book/author&lt;/source&gt;
+   &lt;/text&gt;  
+ &lt;/form&gt;
+ </div>
+ 
+ <h4>Event Scripts</h4>
+ <p>
+ The following example shows a script that will be called whenever the button is pressed.</p>
+ 
+ <div class="xml">
+ &lt;button&gt;
+   &lt;label&gt;'Press Me'&lt;/source&gt;
+   &lt;onPress&gt;
+     &lt;print&gt;'The button was pressed.'&lt;/print&gt;
+   &lt;/onPress&gt;
+ &lt;/button&gt;  
+ </div>
+ 
+ <p>
+ For more information about callback scripts, see the xidget schema reference.</p>
+ 
+ <h4>Trigger Scripts</h4>
+ <p>
+ Triggers can be defined in any xidget. A trigger is bound after its xidget is bound. Recall that a xidget
+ is bound after its <i>initialize</i> script is executed. The following example shows a trigger that fires
+ whenever the value in a combo xidget changes.</p>
+ 
+ <div class="xml">
+ &lt;combo&gt;
+   &lt;label&gt;'Options'&lt;/source&gt;  
+   &lt;choices&gt;
+     &lt;choice&gt;Option 1&lt;/choice&gt;
+     &lt;choice&gt;Option 2&lt;/choice&gt;
+     &lt;choice&gt;Option 3&lt;/choice&gt;
+   &lt;/choices&gt;
+   &lt;source&gt;$value&lt;/source&gt;
+   &lt;trigger source="$value"&gt;
+     &lt;print&gt;$value&lt;print&gt;
+   &lt;/trigger&gt;  
+ &lt;/button&gt;  
+ </div>
+ 
+ <h4>The Main Script</h4>
+ <p>
+ The execution entry point for a xidget application is the <i>main</i> script. See <a href="MainScript.html">The Main Script</a>
+ for more information.</p>
+</body>
 </html>

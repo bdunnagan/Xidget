@@ -15,5 +15,7 @@
     </template>
   </create>
 
-  <invoke>$builder/createAllPages.xml/*</invoke>
+  <invoke>$builder/createRootPages.xml/*</invoke>
+  <invoke>$builder/createXidgetPages.xml/*</invoke>
+  <invoke>$builder/createScriptingPages.xml/*</invoke>
 </script>

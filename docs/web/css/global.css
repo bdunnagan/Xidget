@@ -23,7 +23,7 @@ p {
 
 p.body {
   margin: 3.0px 0.0px 3.0px 0.0px;
-  width: 7.5in;
+  width: 8in;
 }
 
 p.code {
@@ -34,6 +34,10 @@ p.code {
   color: #86ea86;
 }
 
+p.warning {
+	color: #ff5050;
+}
+
 pre {
   margin: 10.0px 0.0px 10.0px 1.0in; 
   font-family: Courier; 
@@ -42,10 +46,13 @@ pre {
 }
 
 div.xml {
-  margin: 10.0px 0.0px 10.0px 1.0in; 
+  margin: 10.0px 10.0px 10.0px 1.0in; 
   font-family: Courier; 
-  font-size: 12.0px; 
+  font-size: 12.0px;
+  border-radius: 5px;
+  background-color: #606060; 
   color: #86ea86;
+  width: 8in;
   white-space: pre;
 }
 
@@ -71,7 +78,7 @@ div.menuitem {
 
 div.menuitem > div.menuitem {
   padding-left: 10px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 div.menuitem:hover {
@@ -99,7 +106,7 @@ td.toppane {
 td.leftpane {
   height: 600px;
   overflow: auto;
-  width: 2in;
+  width: 1.75in;
   padding: 5px;
   border-width: 0px;
   border-radius: 5px;
@@ -108,6 +115,7 @@ td.leftpane {
 }
 
 td.rightpane {
+	width: 6in;
   height: 600px;
   overflow: auto;
   padding: 5px;
