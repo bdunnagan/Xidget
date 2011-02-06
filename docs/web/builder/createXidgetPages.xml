@@ -19,9 +19,10 @@
       <nav>
         <place title="Home" link="index.html"/>
         <place title="Download" link="Downloads.html"/>
-        <place title="Getting Started" link="MainScript.html"/>
-        <place title="Xidgets" link="XidgetOverview.html"/>
-        <place title="Scripting" link="ScriptingOverview.html"/>
+        <place title="Getting Started" link="GettingStarted.html"/>
+        <place title="Virtual XML" link="VirtualXml.html"/>
+        <place title="Xidgets Reference" link="XidgetOverview.html"/>
+        <place title="Scripting Reference" link="ScriptingOverview.html"/>
         <place title="About" link="About.html"/>
       </nav>
     </template>
@@ -36,7 +37,7 @@
   <for assign="file" source="$xidgetFiles">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
     <assign name="path">replace( $path, '^docs/web/', '')</assign>
-    <create parent="$anav/place[ @title='Xidgets']">
+    <create parent="$anav/place[ @title='Xidgets Reference']">
       <template>
         <place title="{$file/html/head/title}" link="{$path}"/>
       </template>
