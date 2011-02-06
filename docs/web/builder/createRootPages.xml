@@ -7,21 +7,9 @@
     $web/VirtualXml.html |
     $web/About.html
   </assign>
-  
-  <create assign="anav">
-    <template>
-      <nav>
-        <place title="Home" link="index.html"/>
-        <place title="Download" link="Downloads.html"/>
-        <place title="Getting Started" link="GettingStarted.html"/>
-        <place title="Virtual XML" link="VirtualXml.html"/>
-        <place title="Xidgets Reference" link="XidgetOverview.html"/>
-        <place title="Scripting Reference" link="ScriptingOverview.html"/>
-        <place title="About" link="About.html"/>
-      </nav>
-    </template>
-  </create>
+
+  <invoke>$builder/createRootNavigation.xml/*</invoke>  
     
   <assign name="template">$web/Master.html/html</assign>
-  <invoke>$builder/createPages.xml/*</invoke>
+  <invoke>$builder/util/createPages.xml/*</invoke>
 </script>

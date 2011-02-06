@@ -31,15 +31,15 @@
     
     <!-- populate left pane -->
     <assign name="dst">$built//td[ @class="leftpane"]</assign>
-    <invoke>$builder/createNavigation.xml/*</invoke>
+    <invoke>$builder/util/createNavigation.xml/*</invoke>
     
     <!-- populate right pane -->
     <assign name="src">$file/html/body</assign>
     <assign name="dst">$built//td[ @class="rightpane"]</assign>
-    <invoke>$builder/replaceHtml.xml/*</invoke>
+    <invoke>$builder/util/replaceHtml.xml/*</invoke>
         
     <!-- fix links to point into build path -->
-    <invoke context="$built">$builder/fixLinks.xml/*</invoke>
+    <invoke context="$built">$builder/util/fixLinks.xml/*</invoke>
     
     <!-- make build directories -->
     <makeDir recurse="true()">$bdir</makeDir>

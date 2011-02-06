@@ -1,0 +1,15 @@
+<script>
+  <create assign="anav">
+    <template>
+      <nav>
+        <place title="Home" link="index.html"/>
+        <place title="Download" link="Downloads.html"/>
+        <place title="Getting Started" link="GettingStarted.html"/>
+        <place title="Virtual XML" link="VirtualXml.html"/>
+        <place title="Xidgets Reference" link="XidgetOverview.html"/>
+        <place title="Scripting Reference" link="ScriptingOverview.html"/>
+        <place title="About" link="About.html"/>
+      </nav>
+    </template>
+  </create>
+</script>

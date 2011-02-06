@@ -1,32 +1,18 @@
 <script>
-  <assign name="xidgetFiles">
-    $web/Xidgets/*[ matches( name(), '.*[.]html$')] | 
-    $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')]
-  </assign>
-
-  <assign name="scriptingFiles">
-    $web/Scripting/*[ matches( name(), '.*[.]html$')] |
-    $web/Scripting/Layout/*[ matches( name(), '.*[.]html$')]
-  </assign>
-
   <assign name="files">
     $web/XidgetOverview.html |
-    $xidgetFiles
+    $web/Xidgets/Lifecycle.html |
+    $web/Xidgets/*[ name() != 'Parameters.html' and matches( name(), '.*[.]html$')] |
+    $web/Xidgets/Parameters.html |
+    $web/Xidgets/Scripts/*[ matches( name(), '.*[.]html$')]
   </assign>
   
-  <create assign="anav">
-    <template>
-      <nav>
-        <place title="Home" link="index.html"/>
-        <place title="Download" link="Downloads.html"/>
-        <place title="Getting Started" link="GettingStarted.html"/>
-        <place title="Virtual XML" link="VirtualXml.html"/>
-        <place title="Xidgets Reference" link="XidgetOverview.html"/>
-        <place title="Scripting Reference" link="ScriptingOverview.html"/>
-        <place title="About" link="About.html"/>
-      </nav>
-    </template>
-  </create>
+  <assign name="layoutFiles">
+    $web/Scripting/Layout/Operations.html |
+    $web/Scripting/Layout/LayoutExamples.html    
+  </assign>
+  
+  <invoke>$builder/createRootNavigation.xml/*</invoke>  
   
   <create parent="$anav/place[ @title='Xidgets']">
     <template>
@@ -34,7 +20,7 @@
     </template>
   </create>
     
-  <for assign="file" source="$xidgetFiles">
+  <for assign="file" source="$files">
     <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
     <assign name="path">replace( $path, '^docs/web/', '')</assign>
     <create parent="$anav/place[ @title='Xidgets Reference']">
@@ -44,6 +30,16 @@
     </create>
   </for>
   
+  <for assign="file" source="$layoutFiles">
+    <assign name="path">replace( string( $file/@path), '[\\]', '/')</assign>
+    <assign name="path">replace( $path, '^docs/web/', '')</assign>
+    <create parent="$anav/place[ @title='Xidgets Reference']">
+      <template>
+        <place title="{$file/html/head/title}" link="{$path}"/>
+      </template>
+    </create>  
+  </for>
+  
   <assign name="template">$web/Master.html/html</assign>
-  <invoke>$builder/createPages.xml/*</invoke>
+  <invoke>$builder/util/createPages.xml/*</invoke>
 </script>

@@ -21,7 +21,7 @@
     <context>
       <assign name="dst">$item</assign>
       <assign name="nav">$place</assign>
-      <invoke>$builder/createNavigation.xml/*</invoke>
+      <invoke>$builder/util/createNavigation.xml/*</invoke>
     </context>
   </for>  
 </script>
