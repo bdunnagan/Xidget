@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
 import org.xidget.IXidget;
 import org.xidget.Log;
 import org.xidget.ifeature.ILabelFeature;
@@ -91,7 +90,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     // initialize the container's inside nodes
     initContainerNodes();
 
-    // calculate the preferred size of labelled xidgets
+    // calculate the preferred size of labeled xidgets
     initLabels();
     
     // compile layout
@@ -344,6 +343,11 @@ public class AnchorLayoutFeature implements ILayoutFeature
     {
       StatefulContext scriptContext = new StatefulContext( context, xidget.getConfig());
       script.run( scriptContext);
+    }
+    else
+    {
+      // create default script
+      createDefaultLayout();
     }
     
     // add internal bracing
@@ -649,6 +653,46 @@ public class AnchorLayoutFeature implements ILayoutFeature
     }
 
     return sorted;
+  }
+
+  /**
+   * Create a default layout.
+   */
+  private void createDefaultLayout()
+  {
+	  List<IXidget> children = xidget.getChildren();
+	  if ( children.size() == 0) return;
+
+    int halfSpacing = spacing / 2;
+    float dy = 1f / children.size();
+    float y = dy;
+    int last = children.size() - 1;
+    
+    // attach the left and right side of each xidget to the form
+    for( IXidget child: children)
+    {
+      attachContainer( child, Side.left, spacing);
+      attachContainer( child, Side.right, spacing);
+    }
+    
+    // attach the bottom side of each xidget to the grid, offset by half the interstice
+    for( int i=0; i < last; i++, y += dy)
+    {
+      IXidget child = children.get( i);
+      attachContainer( child, Side.bottom, y, null, -halfSpacing, true);
+    }
+    
+    // attach the top side of each xidget to the previous xidget, offset by the interstice
+    for( int i=1; i <= last; i++)
+    {
+      attachPeer( children.get( i), Side.top, children.get( i-1), Side.bottom, spacing);
+    }
+    
+    // attach the top side of the first xidget to the form
+    attachContainer( children.get( 0), Side.top, 0);
+    
+    // attach the bottom side of the last xidget to the form
+    attachContainer( children.get( last), Side.bottom, 0);
   }
   
   private class NodeGroup
