@@ -40,6 +40,7 @@
     </create>  
   </for>
   
+  <assign name="files">$files | $layoutFiles</assign>
   <assign name="template">$web/Master.html/html</assign>
   <invoke>$builder/util/createPages.xml/*</invoke>
 </script>
