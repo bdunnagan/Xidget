@@ -3,7 +3,7 @@
     $web/index.html |
     $web/Downloads.html |
     $web/MainScript.html |
-    $web/GettingStarted.html |
+    $web/TheBasics.html |
     $web/VirtualXml.html |
     $web/About.html
   </assign>
