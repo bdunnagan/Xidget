@@ -23,7 +23,7 @@ package org.xidget.ifeature.canvas;
  * An interface for xidgets that paint themselves on their parent xidget. The parent xidget exports
  * an instance of ICanvasFeature.
  */
-public interface IPaintFeature
+public interface IPaintFeature<T>
 {
   /**
    * Set the layer on which the associated xidget will be painted.
@@ -43,5 +43,5 @@ public interface IPaintFeature
    * Paint the xidget to which this feature belongs using the specified graphics context.
    * @param graphics The graphics context.
    */
-  public void paint( Object graphics); 
+  public void paint( T graphics); 
 }
