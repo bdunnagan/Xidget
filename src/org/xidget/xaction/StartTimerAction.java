@@ -19,14 +19,18 @@
  */
 package org.xidget.xaction;
 
+import org.xidget.Creator;
+import org.xidget.ifeature.IAsyncFeature;
 import org.xmodel.xaction.GuardedAction;
+import org.xmodel.xaction.IXAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xpath.expression.IContext;
+import org.xmodel.xpath.expression.IExpression;
 
 /**
  * An XAction which executes another action periodically with a specified delay.
  */
-public class TimerAction extends GuardedAction
+public class StartTimerAction extends GuardedAction
 {
   /* (non-Javadoc)
    * @see org.xmodel.xaction.GuardedAction#configure(org.xmodel.xaction.XActionDocument)
@@ -36,8 +40,10 @@ public class TimerAction extends GuardedAction
   {
     super.configure( document);
     
-    // need to figure out how xidget context is preserved for xactions to access even
-    // when they appear in different files
+    idExpr = document.getExpression( "id", true);
+    delayExpr = document.getExpression( "delay", true);
+    repeatExpr = document.getExpression( "repeat", true);
+    script = document.createScript( "delay", "repeat");
   }
 
   /* (non-Javadoc)
@@ -46,6 +52,41 @@ public class TimerAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
+    String id = idExpr.evaluateString( context);
+    int period = (int)((delayExpr != null)? delayExpr.evaluateNumber( context): -1);
+    boolean repeat = (repeatExpr != null)? repeatExpr.evaluateBoolean( context): false;
+    
+    IAsyncFeature feature = Creator.getInstance().getToolkit().getFeature( IAsyncFeature.class);
+    if ( feature != null)
+    {
+      Task task = new Task( context);
+      feature.schedule( id, period, repeat, task);
+    }
+      
     return null;
   }
+  
+  private class Task implements Runnable
+  {
+    public Task( IContext context)
+    {
+      this.context = context;
+    }
+    
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
+    @Override
+    public void run()
+    {
+      script.run( context);
+    }
+    
+    private IContext context;
+  }
+
+  private IExpression idExpr;
+  private IExpression delayExpr;
+  private IExpression repeatExpr;
+  private IXAction script;
 }

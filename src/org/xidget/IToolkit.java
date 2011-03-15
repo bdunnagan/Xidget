@@ -27,7 +27,7 @@ import org.xmodel.xpath.expression.StatefulContext;
 /**
  * An interface for platform-specific behavior.
  */
-public interface IToolkit
+public interface IToolkit extends IFeatured
 {
   /**
    * Configure the specified tag processor for parsing a xidget configuration file for a specific platform.
