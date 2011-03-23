@@ -21,12 +21,12 @@ package org.xidget.feature;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.xidget.IXidget;
 import org.xidget.ifeature.IScriptFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelObject;
 import org.xmodel.xaction.ScriptAction;
-import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -65,7 +65,7 @@ public class ScriptFeature implements IScriptFeature
       ScriptAction script = scripts.get( name);
       if ( script != null) script.run( context);
     }
-    catch( XActionException e)
+    catch( Exception e)
     {
       // TODO: need a way to report this error
       e.printStackTrace( System.err);

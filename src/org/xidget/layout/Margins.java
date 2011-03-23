@@ -93,10 +93,10 @@ public class Margins
       {
         x0 = Integer.parseInt( string.substring( start, end).trim());
         
-        start = end + 1; end = string.indexOf( ',');
+        start = end + 1; end = string.indexOf( ',', start);
         y0 = Integer.parseInt( string.substring( start, end).trim());
         
-        start = end + 1; end = string.indexOf( ',');
+        start = end + 1; end = string.indexOf( ',', start);
         x1 = Integer.parseInt( string.substring( start, end).trim());
         
         start = end + 1;
