@@ -151,6 +151,8 @@ public final class Creator
     processor.addHandler( "onDrag", new ScriptTagHandler());
     processor.addHandler( "onDrop", new ScriptTagHandler());
     processor.addHandler( "onDoubleClick", new ScriptTagHandler());
+    processor.addHandler( "onFocusGain", new ScriptTagHandler());
+    processor.addHandler( "onFocusLost", new ScriptTagHandler());
     
     // key bindings
     processor.addHandler( "onKey", new KeyTagHandler());

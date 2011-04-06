@@ -34,7 +34,7 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
- * An implementation of IModelTextAdapter which supports a variable number of channels.
+ * An implementation of ITextModelAdapter which supports a variable number of channels.
  */
 public class TextModelFeature implements ITextModelFeature
 {  
