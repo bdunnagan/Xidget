@@ -19,11 +19,12 @@
  */
 package org.xidget.binding;
 
+import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IErrorFeature;
 import org.xmodel.IModelObject;
-import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -47,30 +48,42 @@ public class ErrorBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( TagProcessor processor, IXidget xidget, IModelObject element)
   {
-    return new Listener( xidget, Xlate.get( element, "structure", false));
+    return new Listener( xidget, element);
   }
   
   private class Listener extends ExpressionListener
   {
-    public Listener( IXidget xidget, boolean structure)
+    public Listener( IXidget xidget, IModelObject element)
     {
       this.xidget = xidget;
-      this.structure = structure;
+      this.element = element;
     }
     
     /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, java.lang.String, java.lang.String)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyAdd(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.util.List)
      */
     @Override
-    public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
+    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes) 
     {
-      // BUG: multiple error validators stomp on each other.  Need to take any error message if present.
-      IErrorFeature feature = xidget.getFeature( IErrorFeature.class);
-      if ( structure) feature.structureError( newValue); else feature.valueError( newValue);
     }
-    
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyRemove(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes) 
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, boolean)
+     */
+    @Override
+    public void notifyChange( IExpression expression, IContext context, boolean newValue) 
+    {
+    }
+
     private IXidget xidget;
-    private boolean structure;
+    private IModelObject element;
   }
 }
