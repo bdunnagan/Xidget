@@ -7,7 +7,6 @@ package org.xidget.util;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
@@ -156,6 +155,7 @@ public class DateUtil
   public long parse( String format, String date)
   {
     Calendar cal = Calendar.getInstance();
+    cal.clear();
 
     formatIndex = 0;
     parseIndex = 0;
@@ -166,6 +166,7 @@ public class DateUtil
     {
       String stuff = date.substring( parseIndex, parseIndex + sb.length());
       if ( !stuff.equals( sb.toString())) return Long.MIN_VALUE;
+      parseIndex += sb.length();
       
       switch( field)
       {
@@ -174,11 +175,11 @@ public class DateUtil
         
         case M:
         case MM:
-          if ( !parseNumber( date, cal, Calendar.MONTH, 0)) return Long.MIN_VALUE; 
+          if ( !parseNumber( date, cal, Calendar.MONTH, -1)) return Long.MIN_VALUE; 
           break;
         
         case MON:    if ( !parseString( date, cal, Calendar.MONTH, Calendar.SHORT, 3)) return Long.MIN_VALUE; break;
-        case MONTH:  if ( !parseString( date, cal, Calendar.MONTH, Calendar.SHORT)) return Long.MIN_VALUE; break;
+        case MONTH:  if ( !parseString( date, cal, Calendar.MONTH, Calendar.LONG)) return Long.MIN_VALUE; break;
         
         case YW:     if ( !parseNumber( date, cal, Calendar.WEEK_OF_MONTH, 0)) return Long.MIN_VALUE; break;
         
@@ -216,7 +217,7 @@ public class DateUtil
         
         case Z:
           parseIndex += 3;
-          if ( parseIndex >= date.length()) return Long.MIN_VALUE;
+          if ( parseIndex > date.length()) return Long.MIN_VALUE;
           Calendar zoneCal = Calendar.getInstance();
           try
           {
@@ -342,9 +343,9 @@ public class DateUtil
   {
     int start = parseIndex;
     
-    char c = date.charAt( parseIndex++);
+    char c = date.charAt( parseIndex);
     while( Character.isDigit( c))
-      c = date.charAt( parseIndex++);
+      c = date.charAt( ++parseIndex);
     
     try
     {
@@ -417,14 +418,14 @@ public class DateUtil
   {
     int start = parseIndex;
     
-    char c = date.charAt( parseIndex++);
+    char c = date.charAt( parseIndex);
     while( Character.isDigit( c))
-      c = date.charAt( parseIndex++);
+      c = date.charAt( ++parseIndex);
     
     try
     {
       int value = Integer.parseInt( date.substring( start, parseIndex));
-      calendar.set( Calendar.YEAR, (value < 71)? (value + 1900): (value + 2000));
+      calendar.set( Calendar.YEAR, (value < 71)? (value + 2000): (value + 1900));
       return true;
     }
     catch( NumberFormatException e)
@@ -440,15 +441,15 @@ public class DateUtil
 
   public static void main( String[] args) throws Exception
   {
-//    DateUtil util = new DateUtil();
-//    String s = util.format( "{YEAR}/{MONTH}/{DAYDAY} {hh}:{mm}:{ss} {Z}", System.currentTimeMillis());
-//    long t = util.parse( "{YEAR}/{MONTH}/{DAYDAY} {hh}:{mm}:{ss} {Z}", s);
-//    System.out.println( s);
+    DateUtil util = new DateUtil();
+    String f = "{YY}/{M}/{DAYDAY} {h}:{mm}:{ss}.{SSS} {AM} {Z}";
+    String s = util.format( f, System.currentTimeMillis());
+    System.out.println( s);
     
-    DateFormat format = new SimpleDateFormat( "z");
-    Date d = format.parse( "EST");
-    Calendar cal = Calendar.getInstance();
-    cal.setTime( d);
-    System.out.println( cal.getTimeZone().getDisplayName());
+    long t = util.parse( f, s);
+    
+    String f2 = "{YY}/{M}/{DD} {h}:{mm}:{ss}.{SSS} {AM} {Z}";
+    s = util.format( f2, t);
+    System.out.println( s);
    }
 }
