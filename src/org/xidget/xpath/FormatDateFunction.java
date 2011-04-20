@@ -20,7 +20,7 @@ import org.xmodel.xpath.function.Function;
  */
 public class FormatDateFunction extends Function
 {
-  public final static String name = "format-date";
+  public final static String name = "xi:format-date";
   
   /* (non-Javadoc)
    * @see org.xmodel.xpath.expression.IExpression#getName()

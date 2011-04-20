@@ -18,7 +18,7 @@ import org.xmodel.xpath.function.Function;
  */
 public class ParseDateFunction extends Function
 {
-  public final static String name = "parse-date";
+  public final static String name = "xi:parse-date";
   
   /* (non-Javadoc)
    * @see org.xmodel.xpath.expression.IExpression#getName()
