@@ -121,7 +121,7 @@ public class FormatDateFunction extends Function
       double oldDouble = parseDouble( oldValue);
       String oldResult = (oldDouble == Double.MIN_VALUE)? "": util.format( format, (long)oldDouble);
       
-      double newDouble = parseDouble( oldValue);
+      double newDouble = parseDouble( newValue);
       String newResult = (newDouble == Double.MIN_VALUE)? "": util.format( format, (long)newDouble);
       
       getParent().notifyChange( this, context, newResult, oldResult);
