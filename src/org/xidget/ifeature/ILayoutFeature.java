@@ -22,7 +22,6 @@ package org.xidget.ifeature;
 import java.util.List;
 
 import org.xidget.IXidget;
-import org.xidget.layout.Margins;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -45,31 +44,7 @@ public interface ILayoutFeature
    * @param context The widget context.
    */
   public void layout( StatefulContext context);
-  
-  /**
-   * Set the margins.
-   * @param margins The margins.
-   */
-  public void setMargins( Margins margins);
-  
-  /**
-   * Returns the margins.
-   * @return Returns the margins.
-   */
-  public Margins getMargins(); 
-  
-  /**
-   * Set the spacing.
-   * @param spacing The spacing.
-   */
-  public void setSpacing( int spacing);
-  
-  /**
-   * Returns the spacing.
-   * @return Returns the spacing.
-   */
-  public int getSpacing();
-  
+    
   /**
    * Attach the specified xidget to its previous peer.
    * @param xidget The xidget.

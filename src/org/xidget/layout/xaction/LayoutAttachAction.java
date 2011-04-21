@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
+import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xidget.ifeature.ILayoutFeature.Side;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -160,8 +161,9 @@ public class LayoutAttachAction extends GuardedAction
     // validation
     if ( xidget1 == xidget2) throw new XActionException( "Cannot make attachment to self: "+XmlIO.toString( getDocument().getRoot()));
 
-    // get margins and spacing
+    // get features
     ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
+    IWidgetContainerFeature containerFeature = parent.getFeature( IWidgetContainerFeature.class);
     
     // cases
     if ( attachment.percentExpr != null)
@@ -188,7 +190,7 @@ public class LayoutAttachAction extends GuardedAction
       }
       else 
       {
-        int offset = layoutFeature.getSpacing();
+        int offset = containerFeature.getSpacing();
         if ( attachment.side1 == Side.right && attachment.side2 == Side.left) offset = -offset;
         if ( attachment.side1 == Side.bottom && attachment.side2 == Side.top) offset = -offset;
         if ( attachment.offsetExpr != null) offset = (int)attachment.offsetExpr.evaluateNumber( configContext, 0);

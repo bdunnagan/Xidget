@@ -133,7 +133,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void initContainerNodes()
   {
-    Margins margins = getCompositeMargins();
+    IWidgetContainerFeature containerFeature = xidget.getFeature( IWidgetContainerFeature.class);
+    Margins margins = containerFeature.getInsideMargins();
     
     IComputeNode top = getCreateNode( xidget, Side.top);
     top.clearDependencies();
@@ -231,7 +232,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
     IComputeNode right = getCreateNode( xidget, Side.right);
     IComputeNode bottom = getCreateNode( xidget, Side.bottom);
 
-    Margins margins = getCompositeMargins();
+    IWidgetContainerFeature containerFeature = xidget.getFeature( IWidgetContainerFeature.class);
+    Margins margins = containerFeature.getInsideMargins();
     if ( right.hasValue()) bounds.width = right.getValue() + margins.x1;
     if ( bottom.hasValue()) bounds.height = bottom.getValue() + margins.y1;
     
@@ -239,87 +241,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
     widgetFeature.setComputedBounds( bounds.x, bounds.y, bounds.width, bounds.height);
   }
   
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.ILayoutFeature#setMargins(org.xidget.layout.Margins)
-   */
-  public void setMargins( Margins margins)
-  {
-    this.margins = margins;
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.ILayoutFeature#getMargins()
-   */
-  public Margins getMargins()
-  {
-    if ( margins == null)
-    {
-      if ( xidget.getParent() != null)
-      {
-        ILayoutFeature parentFeature = xidget.getParent().getFeature( ILayoutFeature.class);
-        if ( parentFeature != null) margins = parentFeature.getMargins();
-      }
-    }
-    
-    if ( margins == null) margins = new Margins( 0, 0, 0, 0);
-    
-    return margins;
-  }
-  
-  /**
-   * Returns the inside margins requested by the container widget.
-   * @return Returns the inside margins requested by the container widget.
-   */
-  private Margins getContainerMargins()
-  {
-    IWidgetContainerFeature containerFeature = xidget.getFeature( IWidgetContainerFeature.class);
-    if ( containerFeature != null) return containerFeature.getInsideMargins();
-    return null;
-  }
-  
-  /**
-   * Returns the client margins plus the container margins.
-   * @return Returns the client margins plus the container margins.
-   */
-  private Margins getCompositeMargins()
-  {
-    if ( compositeMargins == null)
-    {
-      Margins clientMargins = getMargins();
-      Margins containerMargins = getContainerMargins();
-      compositeMargins = new Margins(
-        clientMargins.x0 + containerMargins.x0,
-        clientMargins.y0 + containerMargins.y0,
-        clientMargins.x1 + containerMargins.x1,
-        clientMargins.y1 + containerMargins.y1);
-    }
-    
-    return compositeMargins;
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.ILayoutFeature#setSpacing(int)
-   */
-  public void setSpacing( int spacing)
-  {
-    this.spacing = spacing;
-  }
-
-  /* (non-Javadoc)
-   * @see org.xidget.ifeature.ILayoutFeature#getSpacing()
-   */
-  public int getSpacing()
-  {
-    if ( margins == null)
-    {
-      if ( xidget.getParent() == null) return spacing;
-      ILayoutFeature parentFeature = xidget.getParent().getFeature( ILayoutFeature.class);
-      if ( parentFeature != null) return parentFeature.getSpacing();
-    }
-    
-    return spacing;
-  }
-
   /**
    * Returns all nodes including dependencies.
    * @return Returns all nodes including dependencies.
@@ -729,7 +650,5 @@ public class AnchorLayoutFeature implements ILayoutFeature
   private ScriptAction script;
   private Map<IXidget, NodeGroup> groups;
   private List<IComputeNode> sorted;
-  private Margins margins;
-  private Margins compositeMargins;
   private int spacing;
 }

@@ -28,6 +28,14 @@ public class Margins
   {
   }
   
+  public Margins( int all)
+  {
+    x0 = all;
+    y0 = all;
+    x1 = all;
+    y1 = all;
+  }
+  
   public Margins( int x0, int y0, int x1, int y1)
   {
     this.x0 = x0;

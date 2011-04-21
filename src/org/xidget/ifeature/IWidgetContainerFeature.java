@@ -58,8 +58,26 @@ public interface IWidgetContainerFeature
   public void relayout();
   
   /**
+   * Set the inside margins of this container.
+   * @param margins The margins.
+   */
+  public void setInsideMargins( Margins margins);
+  
+  /**
    * Returns the inside margins of the container.
    * @return Returns the inside margins of the container.
    */
   public Margins getInsideMargins();
+  
+  /**
+   * Set the spacing between children within this container.
+   * @param spacing The spacing.
+   */
+  public void setSpacing( int spacing);
+  
+  /**
+   * Returns the spacing between children of the container.
+   * @return Returns the spacing between children of the container.
+   */
+  public int getSpacing();
 }

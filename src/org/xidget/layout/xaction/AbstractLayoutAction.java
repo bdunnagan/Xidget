@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.xidget.IXidget;
-import org.xidget.ifeature.ILayoutFeature;
+import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
@@ -57,8 +57,8 @@ public abstract class AbstractLayoutAction extends GuardedAction
     IXidget parent = (IXidget)element.getAttribute( "instance");
     
     // get parameters
-    ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
-    int spacing = layoutFeature.getSpacing();
+    IWidgetContainerFeature containerFeature = parent.getFeature( IWidgetContainerFeature.class);
+    int spacing = containerFeature.getSpacing();
     
     // layout
     if ( xidgetsExpr == null)

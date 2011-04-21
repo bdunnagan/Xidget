@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
-import org.xidget.ifeature.IWidgetFeature;
-import org.xidget.layout.Bounds;
+import org.xidget.ifeature.IWidgetContainerFeature;
+import org.xidget.layout.Margins;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -18,17 +18,17 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
- * An implementation of IBindingRule that sets the bounds of a xidget.
+ * An implementation of IBindingRule that sets the margins of a xidget. 
  * The margins can be defined in a node or in a string.
  */
-public class BoundsBindingRule implements IBindingRule
+public class MarginsBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
    * @see org.xidget.binding.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( IWidgetFeature.class) != null;
+    return xidget.getFeature( IWidgetContainerFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -52,9 +52,7 @@ public class BoundsBindingRule implements IBindingRule
       if ( node != nodes.get( 0))
       {
         node = nodes.get( 0);
-        setBounds( Xlate.get( node, ""));
-        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-        feature.setBoundsNode( node);
+        setMargins( Xlate.get( node, "0"));
       }
     }
 
@@ -64,22 +62,27 @@ public class BoundsBindingRule implements IBindingRule
       if ( node != null && node != this.node)
       {
         this.node = node;
-        setBounds( Xlate.get( node, ""));
-        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-        feature.setBoundsNode( node);
+        setMargins( Xlate.get( node, "0"));
       }
+    }
+
+    public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
+    {
+      Margins margins = new Margins( (int)newValue);
+      IWidgetContainerFeature feature = xidget.getFeature( IWidgetContainerFeature.class);
+      feature.setInsideMargins( margins);
     }
 
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      setBounds( newValue);
+      setMargins( newValue);
     }
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
       if ( object == node)
       {
-        setBounds( Xlate.get( node, ""));
+        setMargins( Xlate.get( node, "0"));
       }
     }
     
@@ -89,17 +92,14 @@ public class BoundsBindingRule implements IBindingRule
     }
     
     /**
-     * Set the bounds of the widget.
-     * @param string The bounds string.
+     * Set the margins of the widget.
+     * @param string The margins string.
      */
-    private void setBounds( String string)
+    private void setMargins( String string)
     {
-      Bounds bounds = new Bounds();
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      if ( bounds.parse( string))
-      {
-        feature.setDefaultBounds( bounds.x, bounds.y, bounds.width, bounds.height, false);
-      }
+      Margins margins = new Margins( string);
+      IWidgetContainerFeature feature = xidget.getFeature( IWidgetContainerFeature.class);
+      feature.setInsideMargins( margins);
     }
     
     private IXidget xidget;
