@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
-import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.layout.Margins;
 import org.xmodel.IModelObject;
@@ -29,7 +28,7 @@ public class PaddingBindingRule implements IBindingRule
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( IWidgetContainerFeature.class) != null;
+    return xidget.getFeature( IWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)

@@ -83,13 +83,7 @@ public interface IWidgetFeature
    * @param margins The outside margins of the widget.
    */
   public void setOutsideMargins( Margins margins);
-  
-  /**
-   * Returns the outside margins of the widget.
-   * @return Returns the outside margins of the widget.
-   */
-  public Margins getOutsideMargins();
-  
+    
   /**
    * Set whether the widget is visible.
    * @param visible True if the widget is visible.
