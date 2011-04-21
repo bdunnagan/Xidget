@@ -5,6 +5,7 @@
 package org.xidget.util;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -152,7 +153,7 @@ public class DateUtil
    * @param date The formatted date string.
    * @return Returns the number of milliseconds since January 1, 1970.
    */
-  public long parse( String format, String date)
+  public long parse( String format, String date) throws ParseException
   {
     Calendar cal = Calendar.getInstance();
     cal.clear();
@@ -165,59 +166,59 @@ public class DateUtil
     while( field != Field.NONE)
     {
       String stuff = date.substring( parseIndex, parseIndex + sb.length());
-      if ( !stuff.equals( sb.toString())) return Long.MIN_VALUE;
+      if ( !stuff.equals( sb.toString())) throw new ParseException( date, parseIndex);
       parseIndex += sb.length();
       
       switch( field)
       {
-        case YY:     if ( !parseYY( date, cal)) return Long.MIN_VALUE; break;
-        case YEAR:   if ( !parseNumber( date, cal, Calendar.YEAR, 0)) return Long.MIN_VALUE; break;
+        case YY:     parseYY( date, cal); break;
+        case YEAR:   parseNumber( date, cal, Calendar.YEAR, 0); break;
         
         case M:
         case MM:
-          if ( !parseNumber( date, cal, Calendar.MONTH, -1)) return Long.MIN_VALUE; 
+          parseNumber( date, cal, Calendar.MONTH, -1); 
           break;
         
-        case MON:    if ( !parseString( date, cal, Calendar.MONTH, Calendar.SHORT, 3)) return Long.MIN_VALUE; break;
-        case MONTH:  if ( !parseString( date, cal, Calendar.MONTH, Calendar.LONG)) return Long.MIN_VALUE; break;
+        case MON:    parseString( date, cal, Calendar.MONTH, Calendar.SHORT, 3); break;
+        case MONTH:  parseString( date, cal, Calendar.MONTH, Calendar.LONG); break;
         
-        case YW:     if ( !parseNumber( date, cal, Calendar.WEEK_OF_MONTH, 0)) return Long.MIN_VALUE; break;
+        case YW:     parseNumber( date, cal, Calendar.WEEK_OF_MONTH, 0); break;
         
         case D:      
         case DD:
-          if ( !parseNumber( date, cal, Calendar.DAY_OF_MONTH, 0)) return Long.MIN_VALUE; 
+          parseNumber( date, cal, Calendar.DAY_OF_MONTH, 0); 
           break;
           
-        case DAY:    if ( !parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.SHORT, 3)) return Long.MIN_VALUE; break;
-        case DAYDAY: if ( !parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.LONG)) return Long.MIN_VALUE; break;
-        case DDD:    if ( !parseNumber( date, cal, Calendar.DAY_OF_YEAR, 0)) return Long.MIN_VALUE; break;
+        case DAY:    parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.SHORT, 3); break;
+        case DAYDAY: parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.LONG); break;
+        case DDD:    parseNumber( date, cal, Calendar.DAY_OF_YEAR, 0); break;
         
         case h:
-          if ( !parseNumber( date, cal, Calendar.HOUR, -1)) return Long.MIN_VALUE; 
+          parseNumber( date, cal, Calendar.HOUR, -1); 
           break;
           
         case hh:
-          if ( !parseNumber( date, cal, Calendar.HOUR, 0)) return Long.MIN_VALUE; 
+          parseNumber( date, cal, Calendar.HOUR, 0); 
           break;
           
         case m:
         case mm:
-          if ( !parseNumber( date, cal, Calendar.MINUTE, 0)) return Long.MIN_VALUE; 
+          parseNumber( date, cal, Calendar.MINUTE, 0); 
           break;
         
         case s:
         case ss:
-          if ( !parseNumber( date, cal, Calendar.SECOND, 0)) return Long.MIN_VALUE; 
+          parseNumber( date, cal, Calendar.SECOND, 0); 
           break;
           
         case S:
         case SSS:
-          if ( !parseNumber( date, cal, Calendar.MILLISECOND, 0)) return Long.MIN_VALUE; 
+          parseNumber( date, cal, Calendar.MILLISECOND, 0); 
           break;
         
         case Z:
           parseIndex += 3;
-          if ( parseIndex > date.length()) return Long.MIN_VALUE;
+          if ( parseIndex > date.length()) throw new ParseException( date, parseIndex);
           Calendar zoneCal = Calendar.getInstance();
           try
           {
@@ -231,18 +232,21 @@ public class DateUtil
           
         case AM:
           parseIndex += 2;
-          if ( parseIndex >= date.length()) return Long.MIN_VALUE;
+          if ( parseIndex > date.length()) throw new ParseException( date, parseIndex);
           String am = date.substring( parseIndex-2, parseIndex);
           cal.set( Calendar.AM_PM, am.equals( "AM")? Calendar.AM: Calendar.PM);
           break;
           
         case AD:
           parseIndex += 2;
-          if ( parseIndex >= date.length()) return Long.MIN_VALUE;
+          if ( parseIndex > date.length()) throw new ParseException( date, parseIndex);
           String ad = date.substring( parseIndex-2, parseIndex);
           cal.set( Calendar.ERA, ad.equals( "AD")? GregorianCalendar.AD: GregorianCalendar.BC);
           break;
       }
+      
+//      DateFormat f = new SimpleDateFormat( "yyyy/MM/dd");
+//      System.out.println( f.format( cal.getTime()));
       
       sb.setLength( 0);
       field = nextField( format, sb);
@@ -337,25 +341,25 @@ public class DateUtil
    * @param calendar The calendar.
    * @param field The calendar field.
    * @param delta The amount to add (subtract) from the parsed number.
-   * @return Returns true if the parse was successful.
    */
-  private boolean parseNumber( String date, Calendar calendar, int field, int delta)
+  private void parseNumber( String date, Calendar calendar, int field, int delta) throws ParseException
   {
     int start = parseIndex;
     
-    char c = date.charAt( parseIndex);
-    while( Character.isDigit( c))
-      c = date.charAt( ++parseIndex);
+    while( parseIndex < date.length())
+    {
+      if ( !Character.isDigit( date.charAt( parseIndex))) break;
+      parseIndex++;
+    }
     
     try
     {
       int value = Integer.parseInt( date.substring( start, parseIndex));
       calendar.set( field, value + delta);
-      return true;
     }
     catch( NumberFormatException e)
     {
-      return false;
+      throw new ParseException( date, parseIndex);    
     }
   }
     
@@ -367,9 +371,8 @@ public class DateUtil
    * @param style The calendar field style.
    * @param length The length of the string to parse.
    * @param delta The amount to add (subtract) from the parsed number.
-   * @return Returns true if the parse was successful.
    */
-  private boolean parseString( String date, Calendar calendar, int field, int style, int length)
+  private void parseString( String date, Calendar calendar, int field, int style, int length) throws ParseException
   {
     Map<String, Integer> map = calendar.getDisplayNames( field, style, Locale.getDefault());
     String s = date.substring( parseIndex, parseIndex + length);
@@ -377,9 +380,9 @@ public class DateUtil
     if ( value != null)
     {
       calendar.set( field, value);
-      return true;
+      return;
     }
-    return false;
+    throw new ParseException( date, parseIndex);
   }
     
   /**
@@ -388,9 +391,8 @@ public class DateUtil
    * @param calendar The calendar.
    * @param field The calendar field.
    * @param style The calendar field style.
-   * @return Returns true if the parse was successful.
    */
-  private boolean parseString( String date, Calendar calendar, int field, int style)
+  private void parseString( String date, Calendar calendar, int field, int style) throws ParseException
   {
     Map<String, Integer> map = calendar.getDisplayNames( field, style, Locale.getDefault());
     int start = parseIndex;
@@ -401,10 +403,10 @@ public class DateUtil
       if ( value != null)
       {
         calendar.set( field, value);
-        return true;
+        return;
       }
     }
-    return false;
+    throw new ParseException( date, parseIndex);
   }
     
   /**
@@ -412,9 +414,8 @@ public class DateUtil
    * @param date The date string.
    * @param calendar The calendar.
    * @param field The calendar field.
-   * @return Returns true if the parse was successful.
    */
-  private boolean parseYY( String date, Calendar calendar)
+  private void parseYY( String date, Calendar calendar) throws ParseException
   {
     int start = parseIndex;
     
@@ -426,11 +427,10 @@ public class DateUtil
     {
       int value = Integer.parseInt( date.substring( start, parseIndex));
       calendar.set( Calendar.YEAR, (value < 71)? (value + 2000): (value + 1900));
-      return true;
     }
     catch( NumberFormatException e)
     {
-      return false;
+      throw new ParseException( date, parseIndex);
     }
   }
 
@@ -442,14 +442,13 @@ public class DateUtil
   public static void main( String[] args) throws Exception
   {
     DateUtil util = new DateUtil();
-    String f = "{YY}/{M}/{DAYDAY} {h}:{mm}:{ss}.{SSS} {AM} {Z}";
+    String f = "{YY}/{M}/{DD}";
     String s = util.format( f, System.currentTimeMillis());
     System.out.println( s);
     
     long t = util.parse( f, s);
     
-    String f2 = "{YY}/{M}/{DD} {h}:{mm}:{ss}.{SSS} {AM} {Z}";
-    s = util.format( f2, t);
+    s = util.format( f, t);
     System.out.println( s);
    }
 }

@@ -189,6 +189,8 @@ public class LayoutAttachAction extends GuardedAction
       else 
       {
         int offset = layoutFeature.getSpacing();
+        if ( attachment.side1 == Side.right && attachment.side2 == Side.left) offset = -offset;
+        if ( attachment.side1 == Side.bottom && attachment.side2 == Side.top) offset = -offset;
         if ( attachment.offsetExpr != null) offset = (int)attachment.offsetExpr.evaluateNumber( configContext, 0);
         layoutFeature.attachPeer( xidget1, attachment.side1, xidget2, attachment.side2, offset);
       }

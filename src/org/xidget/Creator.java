@@ -66,7 +66,9 @@ import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xidget.xpath.CapitalizeFunction;
 import org.xidget.xpath.FileExistsFunction;
+import org.xidget.xpath.FormatDateFunction;
 import org.xidget.xpath.IsFolderFunction;
+import org.xidget.xpath.ParseDateFunction;
 import org.xidget.xpath.ValidateXPathFunction;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -203,6 +205,8 @@ public final class Creator
     FunctionFactory.getInstance().register( FileExistsFunction.name, FileExistsFunction.class);
     FunctionFactory.getInstance().register( IsFolderFunction.name, IsFolderFunction.class);
     FunctionFactory.getInstance().register( ValidateXPathFunction.name, ValidateXPathFunction.class);
+    FunctionFactory.getInstance().register( FormatDateFunction.name, FormatDateFunction.class);
+    FunctionFactory.getInstance().register( ParseDateFunction.name, ParseDateFunction.class);
   }
   
   /**

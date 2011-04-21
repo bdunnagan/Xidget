@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+
 import org.xidget.IXidget;
 import org.xidget.Log;
 import org.xidget.ifeature.ILabelFeature;
@@ -672,7 +673,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     for( IXidget child: children)
     {
       attachContainer( child, Side.left, spacing);
-      attachContainer( child, Side.right, spacing);
+      attachContainer( child, Side.right, -spacing);
     }
     
     // attach the bottom side of each xidget to the grid, offset by half the interstice
@@ -691,8 +692,21 @@ public class AnchorLayoutFeature implements ILayoutFeature
     // attach the top side of the first xidget to the form
     attachContainer( children.get( 0), Side.top, 0);
     
-    // attach the bottom side of the last xidget to the form
-    attachContainer( children.get( last), Side.bottom, 0);
+    // attach the bottom side of the last xidget to the form if height is defined
+    NodeGroup group = getNodeGroup( xidget);
+    IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+    Bounds bounds = widgetFeature.getDefaultBounds();
+    if ( bounds.height >= 0)
+    {
+      attachContainer( children.get( last), Side.bottom, 0);
+    }
+    
+    // attach the container to the bottom side of the last xidget
+    else
+    {
+      NodeGroup lastChildGroup = getNodeGroup( children.get( last));
+      group.bottom.addDependency( new OffsetNode( lastChildGroup.bottom, 2));
+    }
   }
   
   private class NodeGroup

@@ -4,6 +4,7 @@
  */
 package org.xidget.xpath;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.xidget.util.DateUtil;
@@ -49,8 +50,15 @@ public class ParseDateFunction extends Function
     IExpression format = getArgument( 0);
     IExpression value = getArgument( 1);
     
-    DateUtil util = new DateUtil();
-    return util.parse( format.evaluateString( context), value.evaluateString( context));
+    try
+    {
+      DateUtil util = new DateUtil();
+      return util.parse( format.evaluateString( context), value.evaluateString( context));
+    }
+    catch( ParseException e)
+    {
+      throw new ExpressionException( this, "Error parsing formatted date string.", e);
+    }
   }
 
   /* (non-Javadoc)
@@ -87,20 +95,32 @@ public class ParseDateFunction extends Function
       DateUtil util = new DateUtil();
       String value = valueExpr.evaluateString( context);
       
-      long oldResult = util.parse( oldValue, value);
-      long newResult = util.parse( newValue, value);
-      
-      getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
+      try
+      {
+        long oldResult = util.parse( oldValue, value);
+        long newResult = util.parse( newValue, value);
+        getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
+      }
+      catch( ParseException e)
+      {
+        handleException( this, context, e);
+      }
     }
     else
     {
       DateUtil util = new DateUtil();
       String format = formatExpr.evaluateString( context);
-      
-      long oldResult = util.parse( format, oldValue);
-      long newResult = util.parse( format, newValue);
-      
-      getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
+
+      try
+      {
+        long oldResult = util.parse( format, oldValue);
+        long newResult = util.parse( format, newValue);
+        getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
+      }
+      catch( ParseException e)
+      {
+        handleException( this, context, e);
+      }
     }
   }
 
