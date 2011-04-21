@@ -6,6 +6,8 @@
  -->
 <script>
   <for assign="file" source="$files">
+    <print>name( $file)</print>
+  
     <assign name="depth">count( $file/ancestor::*)</assign>
     <assign name="built" mode="copy">$template</assign>
 
@@ -19,7 +21,7 @@
     <assign name="nav" mode="copy">$anav</assign>
     <for assign="place" source="$nav//place">
       <assign name="target">evaluate( $web, $place/@link, null)</assign>
-      <set target="$place/@link">create-path( $file/.., $target)</set>
+      <set when="$target" target="$place/@link">create-path( $file/.., $target)</set>
     </for> 
 
     <!-- set title -->
@@ -27,7 +29,8 @@
 
     <!-- specify selected menuitem -->
     <delete>$nav//place/@selected</delete>
-    <set source="'true'">$nav//place[ ends-with( string( @link), $bname)]/ancestor-or-self::place/@selected</set>
+    <assign name="bnameregex">printf( '.*%s$', $bname)</assign>
+    <set source="'true'">$nav//place[ matches( string( @link), $bnameregex)]/ancestor-or-self::place/@selected</set>
     
     <!-- populate left pane -->
     <assign name="dst">$built//td[ @class="leftpane"]</assign>

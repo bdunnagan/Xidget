@@ -4,7 +4,6 @@
  */
 package org.xidget.xpath;
 
-import java.text.ParseException;
 import java.util.List;
 
 import org.xidget.util.DateUtil;
@@ -15,7 +14,9 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.function.Function;
 
 /**
- * XPath function to parse a formatted date string.
+ * XPath function to parse a formatted date string. This function takes two arguments: a format string
+ * as defined by the org.xidget.util.DateUtil class, and the date string to be parsed. If the date 
+ * cannot be parsed then 0 is returned.
  */
 public class ParseDateFunction extends Function
 {
@@ -55,9 +56,9 @@ public class ParseDateFunction extends Function
       DateUtil util = new DateUtil();
       return util.parse( format.evaluateString( context), value.evaluateString( context));
     }
-    catch( ParseException e)
+    catch( Exception e)
     {
-      throw new ExpressionException( this, "Error parsing formatted date string.", e);
+      return 0;
     }
   }
 
@@ -95,32 +96,20 @@ public class ParseDateFunction extends Function
       DateUtil util = new DateUtil();
       String value = valueExpr.evaluateString( context);
       
-      try
-      {
-        long oldResult = util.parse( oldValue, value);
-        long newResult = util.parse( newValue, value);
-        getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
-      }
-      catch( ParseException e)
-      {
-        handleException( this, context, e);
-      }
+      long oldResult = util.parse( oldValue, value);
+      long newResult = util.parse( newValue, value);
+      
+      getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
     }
     else
     {
       DateUtil util = new DateUtil();
       String format = formatExpr.evaluateString( context);
-
-      try
-      {
-        long oldResult = util.parse( format, oldValue);
-        long newResult = util.parse( format, newValue);
-        getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
-      }
-      catch( ParseException e)
-      {
-        handleException( this, context, e);
-      }
+      
+      long oldResult = util.parse( format, oldValue);
+      long newResult = util.parse( format, newValue);
+      
+      getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
     }
   }
 

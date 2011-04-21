@@ -8,6 +8,7 @@
         <place title="Virtual XML" link="VirtualXml.html"/>
         <place title="Xidgets Reference" link="XidgetOverview.html"/>
         <place title="Scripting Reference" link="ScriptingOverview.html"/>
+        <place title="API" link="api/index.html"/>
         <place title="About" link="About.html"/>
       </nav>
     </template>
