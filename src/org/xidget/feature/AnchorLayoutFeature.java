@@ -165,7 +165,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
   /**
    * Find the longest label among the labelled components and initialize
    * the size of all peer labels to the same size to provide a nice 
-   * alignment. This algorithm may employ a tolerance for alignment.
+   * alignment. This algorithm is only applied if every peer has a label.
    */
   private void initLabels()
   {
@@ -175,12 +175,13 @@ public class AnchorLayoutFeature implements ILayoutFeature
     for( IXidget child: xidget.getChildren())
     {
       ILabelFeature labelFeature = child.getFeature( ILabelFeature.class);
-      if ( labelFeature != null)
-      {
-        int labelWidth = labelFeature.getLabelWidth();
-        if ( labelWidth > maxWidth) maxWidth = labelWidth;
-        labelFeatures.add( labelFeature);
-      }
+      if ( labelFeature == null) return;
+      
+      int labelWidth = labelFeature.getLabelWidth();
+      if ( labelWidth == 0) return;
+      
+      if ( labelWidth > maxWidth) maxWidth = labelWidth;
+      labelFeatures.add( labelFeature);
     }
     
     for( ILabelFeature labelFeature: labelFeatures)
