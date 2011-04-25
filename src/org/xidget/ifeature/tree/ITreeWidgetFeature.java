@@ -90,6 +90,13 @@ public interface ITreeWidgetFeature
    * @param title The title.
    */
   public void setTitle( int columnIndex, String title);
+  
+  /**
+   * Set the width of the specified column.
+   * @param columnIndex The index of the column.
+   * @param width The width in pixels.
+   */
+  public void setColumnWidth( int columnIndex, int width);
 
   /**
    * Update the specified cell.
