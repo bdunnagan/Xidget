@@ -37,7 +37,7 @@ public final class Scale
     this.divisors = divisors;
     delta = getResolution( count-1, min, max);
     tick = Math.floor( min / delta) * delta - delta;
-    range = Math.pow( 10.0, Math.floor( Math.log10( max - min)));
+    range = Math.pow( 10.0, Math.floor( Math.log10( max - min)) + 1);
   }
   
   /**
@@ -53,22 +53,16 @@ public final class Scale
    * by the nextTick() method. The result is in the range [1, 4] where 1 is the 
    * most course and 4 is the finest.
    */
-  public final double tickLevel()
+  public final int tickLevel()
   {
-    double level = tick / range;
-    double frac = 1.0 / Math.abs( level - Math.floor( level));
+    double a = tick / range;
     for( int i=0; i<divisors.length; i++)
     {
-      double x = tick * divisors[ i];
-      //System.out.println( x);
+      double v = a * divisors[ i];
+      double f = v - Math.floor( v);
+      if ( f == 0) return (i+1);
     }
-    
-    
-    return x;
-//    if ( frac == 0) return 1;
-//    if ( frac == 0.5) return 2;
-//    if ( frac == 0.25 || frac == 0.75) return 3;
-//    return 0;
+    return 0;
   }
   
   /**
@@ -85,8 +79,8 @@ public final class Scale
     double power = Math.pow( 10.0, Math.ceil( log));
     double norm = delta / power;
     
-    //System.out.printf( "res=%f, log=%f, power=%f, norm=%f, range=%f, ", 
-    //  delta, log, power, norm, Math.floor( Math.log10( max - min)));
+    System.out.printf( "res=%f, log=%f, power=%f, norm=%f, range=%f, ", 
+      delta, log, power, norm, Math.floor( Math.log10( max - min)));
     
     for( int i=0; i<divisors.length; i++)
     {
@@ -105,17 +99,16 @@ public final class Scale
   private double delta;
   private double tick;
   private double range;
-  private double x;
   
   public static void main( String[] args) throws Exception
   {
     double min = 19.3;
-    double max = 33.4;
-    Scale scale = new Scale( min, max, 30);
+    double max = 90.4;
+    Scale scale = new Scale( min, max, 10);
     double tick = scale.nextTick();
     for( int i=0; i<30; i++)
     {
-      System.out.printf( "%f | %f\n", scale.tickLevel(), tick);
+      System.out.printf( "%d | %f\n", scale.tickLevel(), tick);
       tick = scale.nextTick();
     }
   }
