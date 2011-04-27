@@ -23,14 +23,53 @@ public class Scale
     public int depth;
   }
   
-  public Scale( double min, double max, int count)
+  /**
+   * Create a scale over the specified range with at most the specified number of ticks.
+   * @param min The minimum value in the range.
+   * @param max The maximum value in the range.
+   * @param count The maximum number of ticks in the scale.
+   * @param log 0 or the log base for logarithmic scales.
+   */
+  public Scale( double min, double max, int count, double log)
   {
+    this.log = log;
+    
+    if ( log != 0)
+    {
+      logq = Math.log( log);
+      if ( min != 0) min = Math.log( min) / logq;
+      if ( max != 0) max = Math.log( max) / logq;
+    }
+    
     ticks = computeMajorTicks( min, max);
     for( int i=0; i<divisions.length; i++)
     {
       if ( ticks.size() * (divisions[ i] + 1) > count) break;
       subdivide( ticks, divisions[ i]);
     }
+    
+    // convert tick values
+    if ( log > 0)
+    {
+      for( Tick tick: ticks)
+      {
+        tick.value = Math.pow( log, tick.value);
+      }
+    }
+  }
+  
+  /**
+   * Returns the location of the specified value relative to the scale where
+   * a value of 0 is the minimum tick value and a value of 1 is the maximum
+   * tick value.  
+   * @param value The value to be converted.
+   * @return Returns the location of the specified value in the scale space.
+   */
+  public double plot( double value)
+  {
+    if ( log != 0 && value != 0)
+      value = Math.log( value) / logq;
+    return (value - scaleMin) / scaleRange;
   }
   
   /**
@@ -41,21 +80,16 @@ public class Scale
    */
   private List<Tick> computeMajorTicks( double min, double max)
   {
-    //double minExpFloor = Math.floor( Math.log10( min));
     double maxExpFloor = Math.floor( Math.log10( max));
-    
-    //double minPow = Math.pow( 10, minExpFloor);
     double maxPow = Math.pow( 10, maxExpFloor);
-    //double minNorm = min / minPow;
-    //double maxNorm = max / maxPow;
-    //double scaleMin = Math.floor( minNorm) * minPow;
-    //double scaleMax = Math.ceil( maxNorm) * maxPow;
-
-    double v0 = Math.floor( min / maxPow) * maxPow;
-    double v1 = Math.ceil( max / maxPow) * maxPow;
+    
+    // note that scale min and max are exponents for logarithmic scales
+    scaleMin = Math.floor( min / maxPow) * maxPow;
+    scaleMax = Math.ceil( max / maxPow) * maxPow;
+    scaleRange = (scaleMax - scaleMin);
     
     List<Tick> ticks = new ArrayList<Tick>();
-    for( double value = v0; value <= v1; value += maxPow)
+    for( double value = scaleMin; value <= scaleMax; value += maxPow)
     {
       Tick tick = new Tick();
       tick.value = value;
@@ -94,17 +128,28 @@ public class Scale
   
   private int[] divisions = { 1, 1, 1, 1, 1};
   private List<Tick> ticks;
+  private double scaleMin;
+  private double scaleMax;
+  private double scaleRange;
+  private double log;
+  private double logq;
   
   public static void main( String[] args) throws Exception
   {
-    int count = 20;
-    double min = .25; double max = .28;
-    Scale scale = new Scale( min, max, count);
+    int count = 100;
+    double min = 3.5; double max = 8.4;
+    Scale scale = new Scale( min, max, count, 0);
     for( Tick tick: scale.ticks)
     {
       for( int j=0; j<tick.depth; j++)
         System.out.printf( "    ");
-      System.out.printf( "%e\n", tick.value);
+      System.out.printf( "%f\n", tick.value);
+    }
+    
+    for( double i=min; i<=max; i += 1)
+    {
+      System.out.printf( "%f -> %f\n", i, scale.plot( i));
+      //if ( i == 0) i = 10; else i *= 10;
     }
   }
 }
