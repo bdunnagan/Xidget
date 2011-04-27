@@ -8,12 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @par A class for calculating the values of tick marks on a scale. The values are
- * calculated so that the tick values are multiples of a user-specified set of
- * divisors.
- * @par Additional instances of this class may be used to create tick sub-divisions.
- * The finest sub-divisions are calculated with the most number of divisors. Each 
- * successively gross sub-division can be calculated by removing one divisor.
+ * A class that calculates tick marks over a user-specified range of values. The scale is
+ * guaranteed to generate tick marks that encompass all values in the range.  Tick marks
+ * may be calculated for a linear or logarithmic scale.  This class also provides a method
+ * to translate coordinates into scale space.
  */
 public class Scale
 {
@@ -24,13 +22,39 @@ public class Scale
   }
   
   /**
+   * Create a linear scale over the specified range with at most the specified number 
+   * of ticks and the default division levels {1, 1, 1, 1, 1}.
+   * @param min The minimum value in the range.
+   * @param max The maximum value in the range.
+   * @param count The maximum number of ticks in the scale.
+   */
+  public Scale( double min, double max, int count)
+  {
+    this( min, max, count, 0, new int[] { 1, 1, 1, 1, 1});
+  }
+  
+  /**
+   * Create a logarithmic scale over the specified range with at most the specified number 
+   * of ticks and the default division levels {1, 1, 1, 1, 1}.
+   * @param min The minimum value in the range.
+   * @param max The maximum value in the range.
+   * @param count The maximum number of ticks in the scale.
+   * @param log The log base.
+   */
+  public Scale( double min, double max, int count, int log)
+  {
+    this( min, max, count, log, new int[] { 1, 1, 1, 1, 1});
+  }
+  
+  /**
    * Create a scale over the specified range with at most the specified number of ticks.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
    * @param log 0 or the log base for logarithmic scales.
+   * @param divisions An array containing the number of divisions at each tick depth.
    */
-  public Scale( double min, double max, int count, double log)
+  public Scale( double min, double max, int count, double log, int[] divisions)
   {
     this.log = log;
     
@@ -126,7 +150,6 @@ public class Scale
     }
   }
   
-  private int[] divisions = { 1, 1, 1, 1, 1};
   private List<Tick> ticks;
   private double scaleMin;
   private double scaleMax;
