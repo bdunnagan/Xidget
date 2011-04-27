@@ -19,6 +19,7 @@ public class Scale
   {
     public int depth;
     public double value;
+    public double normed;
     public double scale; 
   }
   
@@ -93,6 +94,14 @@ public class Scale
   }
   
   /**
+   * @return Returns the order of magnitude of the maximum value.
+   */
+  public double getExponent()
+  {
+    return maxPow;
+  }
+  
+  /**
    * @return Returns the tick marks.
    */
   public List<Tick> getTicks()
@@ -123,7 +132,7 @@ public class Scale
   private List<Tick> computeMajorTicks( double min, double max)
   {
     double maxExpFloor = Math.floor( Math.log10( max));
-    double maxPow = Math.pow( 10, maxExpFloor);
+    maxPow = Math.pow( 10, maxExpFloor);
     
     // note that scale min and max are exponents for logarithmic scales
     scaleMin = Math.floor( min / maxPow) * maxPow;
@@ -136,6 +145,7 @@ public class Scale
       Tick tick = new Tick();
       tick.depth = 0;
       tick.value = value;
+      tick.normed = value / maxPow;
       tick.scale = plot( value);
       ticks.add( tick);
     }
@@ -164,6 +174,7 @@ public class Scale
         Tick tick = new Tick();
         tick.depth = depth;
         tick.value = value;
+        tick.normed = value / maxPow;
         tick.scale = plot( value);
         i++; ticks.add( i, tick);
       }
@@ -172,6 +183,7 @@ public class Scale
   
   private int[] divisions;
   private List<Tick> ticks;
+  private double maxPow;
   private double scaleMin;
   private double scaleMax;
   private double scaleRange;
