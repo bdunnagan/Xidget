@@ -17,33 +17,34 @@ public class Scale
 {
   public static class Tick
   {
-    public double value;
     public int depth;
+    public double value;
+    public double scale; 
   }
   
   /**
    * Create a linear scale over the specified range with at most the specified number 
-   * of ticks and the default division levels {1, 1, 1, 1, 1}.
+   * of ticks and the default division levels {1, 1, 1, 1, 1, 1, 1}.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
    */
   public Scale( double min, double max, int count)
   {
-    this( min, max, count, 0, new int[] { 1, 1, 1, 1, 1});
+    this( min, max, count, 0);
   }
   
   /**
    * Create a logarithmic scale over the specified range with at most the specified number 
-   * of ticks and the default division levels {1, 1, 1, 1, 1}.
+   * of ticks and the default division levels {1, 1, 1, 1, 1, 1, 1}.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
    * @param log The log base.
    */
-  public Scale( double min, double max, int count, int log)
+  public Scale( double min, double max, int count, double log)
   {
-    this( min, max, count, log, new int[] { 1, 1, 1, 1, 1});
+    this( min, max, count, log, new int[] { 1, 1, 1, 1, 1, 1, 1});
   }
   
   /**
@@ -56,6 +57,7 @@ public class Scale
    */
   public Scale( double min, double max, int count, double log, int[] divisions)
   {
+    this.divisions = divisions;
     this.log = log;
     
     if ( log != 0)
@@ -80,6 +82,22 @@ public class Scale
         tick.value = Math.pow( log, tick.value);
       }
     }
+  }
+  
+  /**
+   * @return Returns the maximum number of divisions.
+   */
+  public int getDivisions()
+  {
+    return divisions.length;
+  }
+  
+  /**
+   * @return Returns the tick marks.
+   */
+  public List<Tick> getTicks()
+  {
+    return ticks;
   }
   
   /**
@@ -116,8 +134,9 @@ public class Scale
     for( double value = scaleMin; value <= scaleMax; value += maxPow)
     {
       Tick tick = new Tick();
-      tick.value = value;
       tick.depth = 0;
+      tick.value = value;
+      tick.scale = plot( value);
       ticks.add( tick);
     }
     
@@ -138,18 +157,20 @@ public class Scale
     int depth = ticks.get( 1).depth + 1;
     for( int i=0; i<ticks.size()-1; i++)
     {
-      double v = ticks.get( i).value;
+      double value = ticks.get( i).value;
       for( int j=0; j<subdivisions; j++)
       {
-        v += dt;
+        value += dt;
         Tick tick = new Tick();
-        tick.value = v;
         tick.depth = depth;
+        tick.value = value;
+        tick.scale = plot( value);
         i++; ticks.add( i, tick);
       }
     }
   }
   
+  private int[] divisions;
   private List<Tick> ticks;
   private double scaleMin;
   private double scaleMax;
