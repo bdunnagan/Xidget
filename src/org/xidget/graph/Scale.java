@@ -21,6 +21,7 @@ public class Scale
     public double value;
     public double normed;
     public double scale; 
+    public String text;
   }
   
   /**

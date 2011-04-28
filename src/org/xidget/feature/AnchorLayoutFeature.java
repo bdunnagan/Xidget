@@ -61,7 +61,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     this.xidget = container;
     this.groups = new HashMap<IXidget, NodeGroup>();
-    this.spacing = 2;
     invalidate();
   }
   
@@ -583,6 +582,9 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void createDefaultLayout()
   {
+    IWidgetContainerFeature containerFeature = xidget.getFeature( IWidgetContainerFeature.class);
+    int spacing = containerFeature.getSpacing();
+    
 	  List<IXidget> children = xidget.getChildren();
 	  if ( children.size() == 0) return;
 
@@ -651,5 +653,4 @@ public class AnchorLayoutFeature implements ILayoutFeature
   private ScriptAction script;
   private Map<IXidget, NodeGroup> groups;
   private List<IComputeNode> sorted;
-  private int spacing;
 }
