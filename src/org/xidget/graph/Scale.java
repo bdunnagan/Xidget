@@ -26,7 +26,7 @@ public class Scale
   
   /**
    * Create a linear scale over the specified range with at most the specified number 
-   * of ticks and the default division levels {1, 1, 1, 1, 1, 1, 1}.
+   * of ticks and the default division levels {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
@@ -37,29 +37,14 @@ public class Scale
   }
   
   /**
-   * Create a logarithmic scale over the specified range with at most the specified number 
-   * of ticks and the default division levels {1, 1, 1, 1, 1, 1, 1}.
-   * @param min The minimum value in the range.
-   * @param max The maximum value in the range.
-   * @param count The maximum number of ticks in the scale.
-   * @param log The log base.
-   */
-  public Scale( double min, double max, int count, double log)
-  {
-    this( min, max, count, log, new int[] { 1, 1, 1, 1, 1, 1, 1});
-  }
-  
-  /**
    * Create a scale over the specified range with at most the specified number of ticks.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
    * @param log 0 or the log base for logarithmic scales.
-   * @param divisions An array containing the number of divisions at each tick depth.
    */
-  public Scale( double min, double max, int count, double log, int[] divisions)
+  public Scale( double min, double max, int count, double log)
   {
-    this.divisions = divisions;
     this.log = log;
     
     if ( log != 0)
@@ -70,11 +55,7 @@ public class Scale
     }
     
     ticks = computeMajorTicks( min, max);
-    for( int i=0; i<divisions.length; i++)
-    {
-      if ( ticks.size() * (divisions[ i] + 1) > count) break;
-      subdivide( ticks, divisions[ i]);
-    }
+    smartDivide( ticks, count);
     
     // convert tick values
     if ( log > 0)
@@ -87,11 +68,56 @@ public class Scale
   }
   
   /**
-   * @return Returns the maximum number of divisions.
+   * Smartly subdivide the specified ticks to create nicely rounded tick values.
+   * This method assumes that major ticks have already been created.
+   * @param ticks The ticks to be subdivided.
+   * @param count The maximum number of ticks to create.
    */
-  public int getDivisions()
+  private void smartDivide( List<Tick> ticks, int count)
   {
-    return divisions.length;
+    while( true)
+    {
+      double range = ticks.get( 1).value - ticks.get( 0).value;
+      int msd = msd( range, 10);
+      if ( count > 5 && msd == 1)
+      {
+        subdivide( ticks, 1);
+        count /= 2;
+      }
+      else if ( msd == 5)
+      {
+        subdivide( ticks, 4);
+        count /= 5;
+      }
+      else
+      {
+        subdivide( ticks, 9);
+        count /= 10;
+      }
+      
+      System.out.printf( "%d %3.1f\n", count, range);
+      if ( count < 5) break;
+    }
+  }
+  
+  /**
+   * Returns the most significant digit of the specified base.
+   * @param value The value.
+   * @param base The base (e.g. 10).
+   * @return Returns the most significant digit.
+   */
+  private int msd( double value, int base)
+  {
+    if ( value >= base)
+    {
+      while( value >= base) value /= base;
+      return (int)value;
+    }
+    else
+    {
+      while( value < base) value *= base;
+      return (int)(value / base);
+    }
   }
   
   /**
@@ -182,7 +208,6 @@ public class Scale
     }
   }
   
-  private int[] divisions;
   private List<Tick> ticks;
   private double maxPow;
   private double scaleMin;

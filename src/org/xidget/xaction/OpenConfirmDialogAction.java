@@ -26,6 +26,7 @@ import org.xidget.IToolkit.Confirmation;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
+import org.xmodel.xaction.IXAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.expression.IContext;
@@ -53,6 +54,7 @@ public class OpenConfirmDialogAction extends GuardedAction
     imageExpr = document.getExpression( "image", true);
     messageExpr = document.getExpression( "message", true);
     if ( messageExpr == null) messageExpr = document.getExpression();
+    onClose = document.createChildScript( "onClose");
   }
 
   /* (non-Javadoc)
@@ -88,6 +90,8 @@ public class OpenConfirmDialogAction extends GuardedAction
       if ( scope != null) scope.set( variable, confirmation.name());
     }
     
+    if ( onClose != null && confirmation == Confirmation.yes) return onClose.run( context);
+    
     return null;
   }
 
@@ -98,4 +102,5 @@ public class OpenConfirmDialogAction extends GuardedAction
   private IExpression messageExpr;
   private IExpression allowCancelExpr;
   private String variable;
+  private IXAction onClose;
 }
