@@ -40,6 +40,7 @@ import org.xidget.binding.KeyTagHandler;
 import org.xidget.binding.LabelBindingRule;
 import org.xidget.binding.MarginsBindingRule;
 import org.xidget.binding.PaddingBindingRule;
+import org.xidget.binding.PointsTagHandler;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
 import org.xidget.binding.SkipTagHandler;
@@ -113,6 +114,7 @@ public final class Creator
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "margins", new BindingTagHandler( new MarginsBindingRule()));
     processor.addHandler( "padding", new BindingTagHandler( new PaddingBindingRule()));
+    processor.addHandler( "points", new PointsTagHandler());
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new SelectionTagHandler());
     processor.addHandler( "source", new SourceTagHandler());
