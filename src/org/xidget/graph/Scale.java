@@ -25,8 +25,7 @@ public class Scale
   }
   
   /**
-   * Create a linear scale over the specified range with at most the specified number 
-   * of ticks and the default division levels {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}.
+   * Create a linear scale over the specified range with at most the specified number of ticks.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
@@ -75,28 +74,35 @@ public class Scale
    */
   private void smartDivide( List<Tick> ticks, int count)
   {
-    while( true)
+    while( count >= 2)
     {
       double range = ticks.get( 1).value - ticks.get( 0).value;
       int msd = msd( range, 10);
-      if ( count > 5 && msd == 1)
+      //System.out.printf( "msd=%d, count=%d\n", msd, count);
+      if ( msd == 1 && count >= 10)
       {
         subdivide( ticks, 1);
         count /= 2;
       }
-      else if ( msd == 5)
+      else if ( msd == 5 && count >= 5)
       {
         subdivide( ticks, 4);
         count /= 5;
       }
-      else
+      else if ( count >= 10)
       {
         subdivide( ticks, 9);
         count /= 10;
       }
-      
-      System.out.printf( "%d %3.1f\n", count, range);
-      if ( count < 5) break;
+      else if ( count >= 2)
+      {
+        subdivide( ticks, 1);
+        count /= 2;
+      }
+      else
+      {
+        break;
+      }
     }
   }
   
