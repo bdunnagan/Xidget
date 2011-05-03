@@ -45,6 +45,7 @@ public class Scale
   public Scale( double min, double max, int count, double log)
   {
     this.log = log;
+    this.count = count;
     
     if ( log != 0)
     {
@@ -54,7 +55,9 @@ public class Scale
     }
     
     ticks = computeMajorTicks( min, max);
-    smartDivide( ticks, count);
+    counts = new ArrayList<Integer>();
+    counts.add( ticks.size());
+    subdivide();
     
     // convert tick values
     if ( log > 0)
@@ -62,46 +65,6 @@ public class Scale
       for( Tick tick: ticks)
       {
         tick.value = Math.pow( log, tick.value);
-      }
-    }
-  }
-  
-  /**
-   * Smartly subdivide the specified ticks to create nicely rounded tick values.
-   * This method assumes that major ticks have already been created.
-   * @param ticks The ticks to be subdivided.
-   * @param count The maximum number of ticks to create.
-   */
-  private void smartDivide( List<Tick> ticks, int count)
-  {
-    while( count >= 2)
-    {
-      double range = ticks.get( 1).value - ticks.get( 0).value;
-      int msd = msd( range, 10);
-      //System.out.printf( "msd=%d, count=%d\n", msd, count);
-      if ( msd == 1 && count >= 10)
-      {
-        subdivide( ticks, 1);
-        count /= 2;
-      }
-      else if ( msd == 5 && count >= 5)
-      {
-        subdivide( ticks, 4);
-        count /= 5;
-      }
-      else if ( count >= 10)
-      {
-        subdivide( ticks, 9);
-        count /= 10;
-      }
-      else if ( count >= 2)
-      {
-        subdivide( ticks, 1);
-        count /= 2;
-      }
-      else
-      {
-        break;
       }
     }
   }
@@ -140,6 +103,14 @@ public class Scale
   public List<Tick> getTicks()
   {
     return ticks;
+  }
+  
+  /**
+   * @return Returns the tick counts by depth.
+   */
+  public List<Integer> getTickCounts()
+  {
+    return counts;
   }
   
   /**
@@ -187,12 +158,13 @@ public class Scale
   }
   
   /**
-   * Subdivide the specified list of tick marks.
-   * @param ticks The list of tick marks.
+   * Subdivide the ticks.
    * @param subdivisions The number of subdivisions.
    */
-  private void subdivide( List<Tick> ticks, int subdivisions)
+  private void subdivide( int subdivisions)
   {
+    counts.add( ticks.size() + (ticks.size() - 1) * subdivisions);
+    
     double v0 = ticks.get( 0).value;
     double v1 = ticks.get( 1).value;
     double dt = (v1 - v0) / (subdivisions + 1);
@@ -214,7 +186,46 @@ public class Scale
     }
   }
   
+  /**
+   * Smartly subdivide the ticks to create nicely rounded tick values.
+   * This method assumes that major ticks have already been created.
+   */
+  private void subdivide()
+  {
+    while( count >= 2)
+    {
+      double range = ticks.get( 1).value - ticks.get( 0).value;
+      int msd = msd( range, 10);
+      if ( msd == 1 && count >= 10)
+      {
+        subdivide( 1);
+        count /= 2;
+      }
+      else if ( msd == 5 && count >= 5)
+      {
+        subdivide( 4);
+        count /= 5;
+      }
+      else if ( count >= 10)
+      {
+        subdivide( 9);
+        count /= 10;
+      }
+      else if ( count >= 2)
+      {
+        subdivide( 1);
+        count /= 2;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+  
   private List<Tick> ticks;
+  private List<Integer> counts;
+  private int count;
   private double maxPow;
   private double scaleMin;
   private double scaleMax;
