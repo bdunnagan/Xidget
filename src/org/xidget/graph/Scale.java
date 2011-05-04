@@ -4,6 +4,8 @@
  */
 package org.xidget.graph;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,20 +21,22 @@ public class Scale
   {
     public int depth;
     public double value;
-    public double normed;
     public double scale; 
-    public String text;
+    public String label;
   }
+  
+  public enum Format { decimal, normalized, scientific, engineering};
   
   /**
    * Create a linear scale over the specified range with at most the specified number of ticks.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
+   * @param format The formatting style.
    */
-  public Scale( double min, double max, int count)
+  public Scale( double min, double max, int count, Format format)
   {
-    this( min, max, count, 0);
+    this( min, max, count, 0, format);
   }
   
   /**
@@ -41,9 +45,11 @@ public class Scale
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
    * @param log 0 or the log base for logarithmic scales.
+   * @param format The formatting style.
    */
-  public Scale( double min, double max, int count, double log)
+  public Scale( double min, double max, int count, double log, Format format)
   {
+    this.format = format;
     this.log = log;
     this.count = count;
     
@@ -67,26 +73,27 @@ public class Scale
         tick.value = Math.pow( log, tick.value);
       }
     }
+    
+    // create labels
+    for( Tick tick: ticks)
+    {
+      createLabel( tick);
+    }
   }
   
   /**
-   * Returns the most significant digit of the specified base.
+   * Returns the most significant digit (base10).
    * @param value The value.
-   * @param base The base (e.g. 10).
    * @return Returns the most significant digit.
    */
-  private int msd( double value, int base)
+  private int msd( double value)
   {
-    if ( value >= base)
-    {
-      while( value >= base) value /= base;
-      return (int)value;
-    }
-    else
-    {
-      while( value < base) value *= base;
-      return (int)(value / base);
-    }
+    double e = Math.floor( Math.log10( value));
+    double p = Math.pow( 10, e);
+    double norm = value / p;
+    
+    // will only be 1, 2, 4, 5, 6, or 8
+    return (int)Math.round( norm);
   }
   
   /**
@@ -135,12 +142,18 @@ public class Scale
    */
   private List<Tick> computeMajorTicks( double min, double max)
   {
-    double maxExpFloor = Math.floor( Math.log10( max));
+    double maxExpFloor = Math.floor( Math.log10( Math.abs( max)));
     maxPow = Math.pow( 10, maxExpFloor);
     
     // note that scale min and max are exponents for logarithmic scales
-    scaleMin = Math.floor( min / maxPow) * maxPow;
-    scaleMax = Math.ceil( max / maxPow) * maxPow;
+    scaleMin = roundTowardZero( min / maxPow) * maxPow;
+    scaleMax = roundAwayFromZero( max / maxPow) * maxPow;
+    if ( scaleMax < scaleMin)
+    {
+      double t = scaleMin;
+      scaleMin = scaleMax;
+      scaleMax = t;
+    }
     scaleRange = (scaleMax - scaleMin);
     
     List<Tick> ticks = new ArrayList<Tick>();
@@ -149,7 +162,6 @@ public class Scale
       Tick tick = new Tick();
       tick.depth = 0;
       tick.value = value;
-      tick.normed = value / maxPow;
       tick.scale = plot( value);
       ticks.add( tick);
     }
@@ -158,29 +170,64 @@ public class Scale
   }
   
   /**
+   * Round the specified value toward zero.
+   * @param value The value.
+   * @return Returns the rounded value.
+   */
+  private static double roundTowardZero( double value)
+  {
+    if ( value < 0)
+    {
+      return Math.ceil( value);
+    }
+    else
+    {
+      return Math.floor( value);
+    }
+  }
+  
+  /**
+   * Round the specified value away from zero.
+   * @param value The value.
+   * @return Returns the rounded value.
+   */
+  private static double roundAwayFromZero( double value)
+  {
+    if ( value < 0)
+    {
+      return Math.floor( value);
+    }
+    else
+    {
+      return Math.ceil( value);
+    }
+  }
+  
+  /**
    * Subdivide the ticks.
    * @param subdivisions The number of subdivisions.
    */
   private void subdivide( int subdivisions)
   {
+    //System.out.printf( "count=%d, q=%d, t=%g\n", ticks.size(), subdivisions+1, ticks.get( 1).value);
+    
     counts.add( ticks.size() + (ticks.size() - 1) * subdivisions);
     
-    double v0 = ticks.get( 0).value;
-    double v1 = ticks.get( 1).value;
-    double dt = (v1 - v0) / (subdivisions + 1);
+    BigDecimal v0 = BigDecimal.valueOf( ticks.get( 0).value);
+    BigDecimal v1 = BigDecimal.valueOf( ticks.get( 1).value);
+    BigDecimal q = BigDecimal.valueOf( subdivisions + 1);
+    double dt = v1.subtract( v0).divide( q).doubleValue();
     
     int depth = ticks.get( 1).depth + 1;
     for( int i=0; i<ticks.size()-1; i++)
     {
       double value = ticks.get( i).value;
-      for( int j=0; j<subdivisions; j++)
+      for( int j=1; j<=subdivisions; j++)
       {
-        value += dt;
         Tick tick = new Tick();
         tick.depth = depth;
-        tick.value = value;
-        tick.normed = value / maxPow;
-        tick.scale = plot( value);
+        tick.value = value + (dt * j);
+        tick.scale = plot( tick.value);
         i++; ticks.add( i, tick);
       }
     }
@@ -192,29 +239,29 @@ public class Scale
    */
   private void subdivide()
   {
-    while( count >= 2)
+    while( true)
     {
+      int n = count / ticks.size();
       double range = ticks.get( 1).value - ticks.get( 0).value;
-      int msd = msd( range, 10);
-      if ( msd == 1 && count >= 10)
+      int msd = msd( range);
+      
+      //System.out.printf( "n=%d, r=%g, msd=%d, ", n, range, msd);
+      
+      if ( msd == 1 && n >= 10)
       {
         subdivide( 1);
-        count /= 2;
       }
-      else if ( msd == 5 && count >= 5)
+      else if ( msd == 5 && n >= 5)
       {
         subdivide( 4);
-        count /= 5;
       }
-      else if ( count >= 10)
+      else if ( n >= 10)
       {
         subdivide( 9);
-        count /= 10;
       }
-      else if ( count >= 2)
+      else if ( n >= 2)
       {
         subdivide( 1);
-        count /= 2;
       }
       else
       {
@@ -223,6 +270,122 @@ public class Scale
     }
   }
   
+  /**
+   * Creete a label for the specified tick.
+   * @param tick The tick.
+   */
+  private void createLabel( Tick tick)
+  {
+    double norm = normalize( tick.value);
+    
+    switch( format)
+    {
+      case decimal:
+      {
+        tick.label = String.format( "%1.2f", tick.value);
+        tick.label = trimZeros( tick.label);
+      }
+      break;
+      
+      case normalized:
+      {
+        tick.label = String.format( "%1.2f", norm);
+        tick.label = trimZeros( tick.label);
+      }
+      break;
+      
+      case scientific:
+      {
+        tick.label = String.format( "%1.2e", tick.value);
+        tick.label = trimZeros( tick.label);
+      }
+      break;
+      
+      case engineering:
+      {
+        if ( tick.value == 0) 
+        {
+          tick.label = "0";
+          return;
+        }
+        
+        int e = (int)Math.floor( Math.log10( tick.value));
+        
+        String label = String.format( "%1.2f", norm);
+        label = trimZeros( label);
+        
+        if ( e < -2)
+        {
+          int i = (-e / 3) - 1;
+          if ( i < negativeExponentSymbols.length())
+          {
+            tick.label = label + negativeExponentSymbols.charAt( i);
+          }
+          else
+          {
+            tick.label = norm + "10E-" + i;
+          }
+        }
+        else if ( e > 2)
+        {
+          int i = (e / 3) - 1;
+          if ( i < positiveExponentSymbols.length())
+          {
+            tick.label = label + positiveExponentSymbols.charAt( i);
+          }
+          else
+          {
+            tick.label = label + "10E" + i;
+          }
+        }
+        else
+        {
+          tick.label = label;
+        }
+      }
+      break;
+    }
+  }
+  
+  /**
+   * Trim the trailing zeros in the fraction.
+   * @param label The label.
+   * @return Returns the trimmed label.
+   */
+  private String trimZeros( String label)
+  {
+    if ( symbols == null) symbols = new DecimalFormatSymbols();
+    
+    int index = label.indexOf( symbols.getDecimalSeparator());
+    for( int i=label.length() - 1; i >= index; i--)
+    {
+      if ( label.charAt( i) != '0') 
+      {
+        if ( label.charAt( i) != symbols.getDecimalSeparator()) i++; 
+        return label.substring( 0, i);
+      }
+    }
+    
+    return label.substring( 0, index);
+  }
+  
+  /**
+   * Normalize the specified value.
+   * @param value The value.
+   * @return Returns a value less than 10 and greater than -10.
+   */
+  private double normalize( double value)
+  {
+    int e = (int)Math.floor( Math.log10( Math.abs( value)));
+    double p = Math.pow( 10, e);
+    return value / p;
+  }
+  
+  private final static String negativeExponentSymbols = "munpfazy";
+  private final static String positiveExponentSymbols = "kMGTPEZY";
+  private static DecimalFormatSymbols symbols;
+  
+  private Format format;
   private List<Tick> ticks;
   private List<Integer> counts;
   private int count;
@@ -233,22 +396,31 @@ public class Scale
   private double log;
   private double logq;
   
+  @SuppressWarnings("unused")
   public static void main( String[] args) throws Exception
   {
-    int count = 100;
-    double min = 3.5; double max = 8.4;
-    Scale scale = new Scale( min, max, count, 0);
-    for( Tick tick: scale.ticks)
+    for( int i=0; i<1; i++)
     {
-      for( int j=0; j<tick.depth; j++)
-        System.out.printf( "    ");
-      System.out.printf( "%f\n", tick.value);
+      long t0 = System.nanoTime();
+      
+      int count = 100000;
+      Scale scale = new Scale( -3.9329, -4.359, count, 0, Format.engineering);
+      
+      long t1 = System.nanoTime();
+      System.out.printf( "%gms\n", (t1 - t0) / 1e6);
     }
     
-    for( double i=min; i<=max; i += 1)
-    {
-      System.out.printf( "%f -> %f\n", i, scale.plot( i));
-      //if ( i == 0) i = 10; else i *= 10;
-    }
+//    for( Tick tick: scale.ticks)
+//    {
+//      for( int j=0; j<tick.depth; j++)
+//        System.out.printf( "    ");
+//      System.out.printf( "%f\n", tick.value);
+//    }
+//    
+//    for( double i=min; i<=max; i += 1)
+//    {
+//      System.out.printf( "%f -> %f\n", i, scale.plot( i));
+//      //if ( i == 0) i = 10; else i *= 10;
+//    }
   }
 }

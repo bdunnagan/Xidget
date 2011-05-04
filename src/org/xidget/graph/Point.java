@@ -5,9 +5,13 @@
 package org.xidget.graph;
 
 /**
- * A class that stores a point of arbitrary dimension.
+ * A class that stores a point of arbitrary dimension. This class provides
+ * references to the previous and next points in a linked-list to support
+ * line drawing.
  */
 public class Point
 {
   public double[] coords;
+  public Point prev;
+  public Point next;
 }
