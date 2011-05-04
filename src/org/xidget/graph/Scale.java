@@ -310,13 +310,13 @@ public class Scale
         }
         
         int e = (int)Math.floor( Math.log10( tick.value));
-        
-        String label = String.format( "%1.2f", norm);
-        label = trimZeros( label);
-        
         if ( e < -2)
         {
           int i = (-e / 3) - 1;
+          int r = -e % 3;
+          if ( r == 1) norm *= 10;
+          if ( r == 2) norm *= 100;
+          String label = trimZeros( String.format( "%1.2f", norm));
           if ( i < negativeExponentSymbols.length())
           {
             tick.label = label + negativeExponentSymbols.charAt( i);
@@ -329,6 +329,10 @@ public class Scale
         else if ( e > 2)
         {
           int i = (e / 3) - 1;
+          int r = e % 3;
+          if ( r == 1) norm *= 10;
+          if ( r == 2) norm *= 100;
+          String label = trimZeros( String.format( "%1.2f", norm));
           if ( i < positiveExponentSymbols.length())
           {
             tick.label = label + positiveExponentSymbols.charAt( i);
@@ -340,7 +344,7 @@ public class Scale
         }
         else
         {
-          tick.label = label;
+          tick.label = trimZeros( String.format( "%1.2f", tick.value));
         }
       }
       break;
@@ -382,7 +386,7 @@ public class Scale
   }
   
   private final static String negativeExponentSymbols = "munpfazy";
-  private final static String positiveExponentSymbols = "kMGTPEZY";
+  private final static String positiveExponentSymbols = "KMGTPEZY";
   private static DecimalFormatSymbols symbols;
   
   private Format format;
