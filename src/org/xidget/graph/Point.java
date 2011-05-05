@@ -11,7 +11,27 @@ package org.xidget.graph;
  */
 public class Point
 {
+  public enum Style 
+  { 
+    circleBig, 
+    squareBig, 
+    triangleBig, 
+    diamondBig, 
+    plusBig, 
+    exBig,
+    squareSmall, 
+    triangleSmall, 
+    diamondSmall, 
+    plusSmall, 
+    exSmall,
+    dot
+  };
+  
   public double[] coords;
+  public Style style;
+  public String color;
+  public String label;
+  
   public Point prev;
   public Point next;
 }

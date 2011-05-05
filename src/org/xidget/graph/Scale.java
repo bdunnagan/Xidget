@@ -135,6 +135,38 @@ public class Scale
   }
   
   /**
+   * Returns the value of the specified position on the scale. This method is
+   * the inverse of the plot( double) method.
+   * @param scale A value between 0 and 1, inclusive.
+   * @return Returns the value of the specified position on the scale.
+   */
+  public double value( double scale)
+  {
+    double value = scaleRange * scale + scaleMin;    
+    if ( log != 0) value = Math.pow( value, log);
+    return value;
+  }
+  
+  /**
+   * Returns the dealiased value of the specified index within a grid of equally
+   * spaced points on which this scale has been projected.
+   * @param index A value between 0 (inclusive), and size (exclusive).
+   * @param size The size of the grid.
+   * @return Returns the nearest dealiased/interpolated value.
+   */
+  public double value( int index, int size)
+  {
+    double s = (double)index / size * ticks.size();
+    
+    int k = (int)s;
+    Tick t0 = ticks.get( k);
+    if ( k == ticks.size() - 1) return t0.value;
+    
+    Tick t1 = ticks.get( k+1);
+    return (t1.value - t0.value) * (s - k) + t0.value;
+  }
+  
+  /**
    * Compute the major tick marks.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
@@ -156,9 +188,20 @@ public class Scale
     }
     scaleRange = (scaleMax - scaleMin);
     
-    List<Tick> ticks = new ArrayList<Tick>();
-    for( double value = scaleMin; value <= scaleMax; value += maxPow)
+    int divs = 0;
+    int msd = msd( scaleRange);
+    switch( msd)
     {
+      case 1:  divs = 10; break;
+      case 2:  divs = 4; break;
+      case 3:  divs = 6; break;
+      default: divs = msd; break;
+    }
+    
+    List<Tick> ticks = new ArrayList<Tick>();
+    for( int i=0; i<=divs; i++)
+    {
+      double value = scaleMin + (scaleRange * i / divs);
       Tick tick = new Tick();
       tick.depth = 0;
       tick.value = value;
