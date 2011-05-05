@@ -282,14 +282,14 @@ public class Scale
     {
       case decimal:
       {
-        tick.label = String.format( "%1.2f", tick.value);
+        tick.label = String.format( "%f", tick.value);
         tick.label = trimZeros( tick.label);
       }
       break;
       
       case normalized:
       {
-        tick.label = String.format( "%1.2f", norm);
+        tick.label = String.format( "%f", norm);
         tick.label = trimZeros( tick.label);
       }
       break;
