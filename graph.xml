@@ -1,0 +1,34 @@
+<create assign="minx" name="'minx'"/>
+
+<hscale assign="hscale">
+  <min>$minx</min>
+  <max>optional</max>
+  <log>optional</log>
+</hscale>
+
+<vscale assign="vscale">
+  <min>optional</min>
+  <max>optional</max>
+  <log>optional</log>
+</vscale>
+
+<graph>
+  <points>
+    <list>path-to-point-nodes</list>
+    <x>path-to-x</x>
+    <y>path-to-y</y>
+  </points>
+  
+  <points>
+    <list>path-to-point-nodes</list>
+    <a>path-to-a</a>
+    <b>path-to-b</b>
+  </points>
+  
+  <cursor>
+    <x>$x</x>
+    <y>$y</y>
+  </cursor>
+  
+</graph>
+
