@@ -58,12 +58,11 @@ public class PointsTagHandler implements ITagHandler
    */
   private IExpression[] createCoordinateExpressions( IModelObject element)
   {
-    List<IModelObject> children = element.getChildren();
+    List<IModelObject> children = element.getChildren( "coord");
     IExpression[] result = new IExpression[ children.size() - 1];
     int i=0;
     for( IModelObject child: children)
     {
-      if ( child.isType( "list")) continue;
       result[ i++] = Xlate.get( child, (IExpression)null);
     }
     return result;
