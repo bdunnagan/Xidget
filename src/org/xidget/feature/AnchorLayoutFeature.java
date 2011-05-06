@@ -174,13 +174,23 @@ public class AnchorLayoutFeature implements ILayoutFeature
     for( IXidget child: xidget.getChildren())
     {
       ILabelFeature labelFeature = child.getFeature( ILabelFeature.class);
-      if ( labelFeature == null) return;
       
-      int labelWidth = labelFeature.getLabelWidth();
-      if ( labelWidth == 0) return;
+      int labelWidth = 0;
+      if ( labelFeature != null) 
+      {
+        labelWidth = labelFeature.getLabelWidth();
+      }
       
-      if ( labelWidth > maxWidth) maxWidth = labelWidth;
-      labelFeatures.add( labelFeature);
+      if ( labelWidth == 0)
+      {
+        // flow may begin or end with unlabeled widgets
+        if ( maxWidth > 0) break;
+      }
+      else
+      {
+        if ( labelWidth > maxWidth) maxWidth = labelWidth;
+        labelFeatures.add( labelFeature);
+      }
     }
     
     for( ILabelFeature labelFeature: labelFeatures)
