@@ -148,8 +148,9 @@ public class Scale
   }
   
   /**
-   * Returns the dealiased value of the specified index within a grid of equally
-   * spaced points on which this scale has been projected.
+   * Interpolates the value represented by the specified index on a grid of 
+   * size equally spaced points.  This method compensates for aliasing that
+   * is caused by rounding tick values to the grid.  
    * @param index A value between 0 (inclusive), and size (exclusive).
    * @param size The size of the grid.
    * @return Returns the nearest dealiased/interpolated value.
@@ -163,7 +164,13 @@ public class Scale
     if ( k == ticks.size() - 1) return t0.value;
     
     Tick t1 = ticks.get( k+1);
-    return (t1.value - t0.value) * (s - k) + t0.value;
+    
+    int p0 = (int)Math.round( t0.scale * size);
+    int p1 = (int)Math.round( t1.scale * size);
+    if ( p0 == p1) return t0.value;
+    
+    double m = (t1.value - t0.value) / (p1 - p0);
+    return m * (index - p0) + t0.value;
   }
   
   /**
