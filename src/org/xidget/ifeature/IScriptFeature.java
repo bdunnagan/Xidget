@@ -31,6 +31,13 @@ import org.xmodel.xpath.expression.StatefulContext;
 public interface IScriptFeature
 {
   /**
+   * Returns true if the specified script is defined.
+   * @param name The name of the script.
+   * @return Returns true if the specified script is defined.
+   */
+  public boolean hasScript( String name);
+  
+  /**
    * Set the script with the specified name.
    * @param name The name of the script.
    * @param script The script.

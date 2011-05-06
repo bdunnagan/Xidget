@@ -43,6 +43,16 @@ public class ScriptFeature implements IScriptFeature
   }
 
   /* (non-Javadoc)
+   * @see org.xidget.ifeature.IScriptFeature#hasScript(java.lang.String)
+   */
+  @Override
+  public boolean hasScript( String name)
+  {
+    if ( scripts == null) return false;
+    return scripts.get( name) != null;
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.ifeature.IScriptFeature#setScript(java.lang.String, org.xmodel.xaction.ScriptAction)
    */
   public void setScript( String name, ScriptAction script)
