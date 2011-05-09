@@ -95,7 +95,7 @@ public class FontSizeBindingRule implements IBindingRule
       if ( object == node) 
       {
         IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-        feature.setFontStyle( Xlate.get( object, ""));
+        feature.setFontSize( Xlate.get( node, 10.0));
       }
     }
 
