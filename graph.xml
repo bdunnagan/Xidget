@@ -1,21 +1,16 @@
-<create assign="hscale" name="'scale'"/>
-<create assign="vscale" name="'scale'"/>
-
-<hscale>
+<xaxis name="x">
   <min>$minx</min>
   <max>optional</max>
   <log>optional</log>
   <cursor>$x</cursor>
-  <scale>$hscale</scale>
-</hscale>
+</xaxis>
 
-<vscale>
+<yaxis name="y">
   <min>optional</min>
   <max>optional</max>
   <log>optional</log>
   <cursor>$y</cursor>
-  <scale>$vscale</scale>
-</vscale>
+</yaxis>
 
 <graph>
   <points>
@@ -29,11 +24,4 @@
     <coord name="t">rel-path-to-value</coord>
     <coord name="v">rel-path-to-value</coord>
   </points>
-  
-  <hcursor>$x</hcursor>
-  <vcursor>$y</vcursor>
-
-  <hscale>$hscale</hscale>
-  <vscale>$vscale</vscale>
 </graph>
-

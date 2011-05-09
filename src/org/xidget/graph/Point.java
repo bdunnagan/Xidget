@@ -27,6 +27,11 @@ public class Point
     dot
   };
   
+  public Point()
+  {
+    style = Style.circleBig;
+  }
+  
   public double[] coords;
   public Style style;
   public String color;

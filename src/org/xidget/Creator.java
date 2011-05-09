@@ -41,7 +41,6 @@ import org.xidget.binding.LabelBindingRule;
 import org.xidget.binding.MarginsBindingRule;
 import org.xidget.binding.PaddingBindingRule;
 import org.xidget.binding.PointsTagHandler;
-import org.xidget.binding.ScaleBindingRule;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
 import org.xidget.binding.SkipTagHandler;
@@ -118,7 +117,6 @@ public final class Creator
     processor.addHandler( "points", new PointsTagHandler());
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new SelectionTagHandler());
-    processor.addHandler( "scale", new BindingTagHandler( new ScaleBindingRule()));
     processor.addHandler( "source", new SourceTagHandler());
     processor.addHandler( "spacing", new BindingTagHandler( new SpacingBindingRule()));
     processor.addHandler( "title", new BindingTagHandler( new TitleBindingRule()));

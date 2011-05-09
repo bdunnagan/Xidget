@@ -4,6 +4,7 @@
  */
 package org.xidget.binding;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,11 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public class PointsTagHandler implements ITagHandler
 {
+  public PointsTagHandler()
+  {
+    map = new HashMap<IModelObject, Point>();
+  }
+  
   /* (non-Javadoc)
    * @see org.xidget.config.ITagHandler#enter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
@@ -41,8 +47,7 @@ public class PointsTagHandler implements ITagHandler
     IExpression expression = Xlate.childGet( element, "list", (IExpression)null);
     if ( expression != null)
     {
-      IPointsFeature feature = xidget.getFeature( IPointsFeature.class);
-      PointNodeListener listener = new PointNodeListener( feature, createCoordinateExpressions( element));
+      PointNodeListener listener = new PointNodeListener( xidget, createCoordinateExpressions( element));
       XidgetBinding binding = new XidgetBinding( expression, listener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
@@ -59,7 +64,7 @@ public class PointsTagHandler implements ITagHandler
   private IExpression[] createCoordinateExpressions( IModelObject element)
   {
     List<IModelObject> children = element.getChildren( "coord");
-    IExpression[] result = new IExpression[ children.size() - 1];
+    IExpression[] result = new IExpression[ children.size()];
     int i=0;
     for( IModelObject child: children)
     {
@@ -98,15 +103,15 @@ public class PointsTagHandler implements ITagHandler
   
   private class PointNodeListener extends ExactExpressionListener
   {
-    public PointNodeListener( IPointsFeature feature, IExpression[] coordExprs)
+    public PointNodeListener( IXidget xidget, IExpression[] coordExprs)
     {
-      this.feature = feature;
+      this.xidget = xidget;
       this.coordExprs = coordExprs;
       
       listeners = new PointCoordListener[ coordExprs.length];
       for( int i=0; i<listeners.length; i++)
       {
-        listeners[ i] = new PointCoordListener( feature, i);
+        listeners[ i] = new PointCoordListener( xidget, i);
       }
     }
 
@@ -117,6 +122,7 @@ public class PointsTagHandler implements ITagHandler
     @Override
     public void notifyInsert( IExpression expression, IContext context, List<IModelObject> nodes, int start, int count)
     {
+      IPointsFeature feature = xidget.getFeature( IPointsFeature.class);
       for( int i=0; i<count; i++) 
       {
         IModelObject node = nodes.get( start + i);
@@ -144,20 +150,21 @@ public class PointsTagHandler implements ITagHandler
     @Override
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes, int start, int count)
     {
+      IPointsFeature feature = xidget.getFeature( IPointsFeature.class);
       for( int i=0; i<count; i++)
         feature.remove( start);
     }
     
-    private IPointsFeature feature;
+    private IXidget xidget;
     private IExpression[] coordExprs;
     private PointCoordListener[] listeners;
   }
   
   private class PointCoordListener extends ExpressionListener
   {
-    public PointCoordListener( IPointsFeature feature, int coordinate)
+    public PointCoordListener( IXidget xidget, int coordinate)
     {
-      this.feature = feature;
+      this.xidget = xidget;
       this.coordinate = coordinate;
     }
     
@@ -249,12 +256,14 @@ public class PointsTagHandler implements ITagHandler
      */
     private void update( IContext context, double value)
     {
+      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
       Point point = map.get( context.getObject());
       if ( point == null) return;
       point.coords[ coordinate] = value;
       feature.update( point);
     }
 
+    private IXidget xidget;
     private IPointsFeature feature;
     private int coordinate;
   }
