@@ -29,7 +29,7 @@ public class Point
   
   public Point()
   {
-    style = Style.circleBig;
+    style = Style.diamondBig;
   }
   
   public double[] coords;
