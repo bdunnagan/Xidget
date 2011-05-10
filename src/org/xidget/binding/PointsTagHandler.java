@@ -259,8 +259,7 @@ public class PointsTagHandler implements ITagHandler
       if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
       Point point = map.get( context.getObject());
       if ( point == null) return;
-      point.coords[ coordinate] = value;
-      feature.update( point);
+      feature.update( point, coordinate, value);
     }
 
     private IXidget xidget;

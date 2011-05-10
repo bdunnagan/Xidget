@@ -27,8 +27,10 @@ public interface IPointsFeature
   /**
    * Update the specified point.
    * @param point The point.
+   * @param coordinate The coordinate.
+   * @param value The new value.
    */
-  public void update( Point point);
+  public void update( Point point, int coordinate, double value);
   
   /**
    * Remove the point at the specified index.

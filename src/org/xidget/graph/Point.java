@@ -13,23 +13,19 @@ public class Point
 {
   public enum Style 
   { 
-    circleBig, 
-    squareBig, 
-    triangleBig, 
-    diamondBig, 
-    plusBig, 
-    exBig,
-    squareSmall, 
-    triangleSmall, 
-    diamondSmall, 
-    plusSmall, 
-    exSmall,
+    circle, 
+    square, 
+    triangle, 
+    diamond, 
+    plus, 
+    ex,
+    bar,
     dot
   };
   
   public Point()
   {
-    style = Style.diamondBig;
+    style = Style.dot;
   }
   
   public double[] coords;
