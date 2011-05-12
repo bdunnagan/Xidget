@@ -30,7 +30,6 @@ import org.xidget.binding.BoundsBindingRule;
 import org.xidget.binding.ChoicesTagHandler;
 import org.xidget.binding.ContextTagHandler;
 import org.xidget.binding.EnableBindingRule;
-import org.xidget.binding.ErrorBindingRule;
 import org.xidget.binding.FontBindingRule;
 import org.xidget.binding.FontSizeBindingRule;
 import org.xidget.binding.FontStyleBindingRule;
@@ -58,8 +57,6 @@ import org.xidget.binding.table.RowSetBindingRule;
 import org.xidget.binding.table.ShowGridBindingRule;
 import org.xidget.binding.table.SubTableTagHandler;
 import org.xidget.binding.text.EditableBindingRule;
-import org.xidget.binding.text.XinTagHandler;
-import org.xidget.binding.text.XoutTagHandler;
 import org.xidget.binding.tree.SubTreeTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
@@ -105,7 +102,6 @@ public final class Creator
     processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
-    processor.addHandler( "error", new BindingTagHandler( new ErrorBindingRule()));
     processor.addHandler( "font", new BindingTagHandler( new FontBindingRule()));
     processor.addHandler( "fontStyle", new BindingTagHandler( new FontStyleBindingRule()));
     processor.addHandler( "fontSize", new BindingTagHandler( new FontSizeBindingRule()));
@@ -123,8 +119,6 @@ public final class Creator
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
     processor.addHandler( "visible", new BindingTagHandler( new VisibleBindingRule()));
-    processor.addHandler( "xin", new XinTagHandler());
-    processor.addHandler( "xout", new XoutTagHandler());
     
     // slider
     processor.addHandler( "minimum", new BindingTagHandler( new MinimumBindingRule()));
@@ -167,6 +161,9 @@ public final class Creator
     processor.addHandler( "onDoubleClick", new ScriptTagHandler());
     processor.addHandler( "onFocusGain", new ScriptTagHandler());
     processor.addHandler( "onFocusLost", new ScriptTagHandler());
+    processor.addHandler( "onDisplay", new ScriptTagHandler());
+    processor.addHandler( "onCommit", new ScriptTagHandler());
+    processor.addHandler( "onValidate", new ScriptTagHandler());
     
     // key bindings
     processor.addHandler( "onKey", new KeyTagHandler());

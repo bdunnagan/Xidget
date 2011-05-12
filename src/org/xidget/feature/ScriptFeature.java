@@ -64,22 +64,24 @@ public class ScriptFeature implements IScriptFeature
   /* (non-Javadoc)
    * @see org.xidget.ifeature.IScriptFeature#runScript(java.lang.String, org.xmodel.xpath.expression.StatefulContext)
    */
-  public void runScript( String name, StatefulContext context)
+  public Object[] runScript( String name, StatefulContext context)
   {
-    if ( scripts == null) return;
+    if ( scripts == null) return null;
 
     context.set( "xidget", holder);
     
     try
     {
       ScriptAction script = scripts.get( name);
-      if ( script != null) script.run( context);
+      if ( script != null) return script.run( context);
     }
     catch( Exception e)
     {
       // TODO: need a way to report this error
       e.printStackTrace( System.err);
     }
+    
+    return null;
   }
 
   private IModelObject holder;

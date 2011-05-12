@@ -49,6 +49,7 @@ public interface IScriptFeature
    * This method does nothing if the script does not exist.
    * @param name The name of the script.
    * @param context The context in which to execute the script.
+   * @return Returns the return value of the script.
    */
-  public void runScript( String name, StatefulContext context);
+  public Object[] runScript( String name, StatefulContext context);
 }

@@ -20,20 +20,19 @@
 package org.xidget.binding.text;
 
 import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
 import org.xidget.config.TagProcessor;
-import org.xidget.feature.text.TextModelFeature;
 import org.xidget.ifeature.text.ITextWidgetFeature;
 import org.xmodel.IModelObject;
-import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
- * The binding rule for the <i>enable</i> configuration element.
+ * The binding rule for the <i>editable</i> configuration element.
  */
 public class EditableBindingRule implements IBindingRule
 {
@@ -50,12 +49,12 @@ public class EditableBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( TagProcessor processor, IXidget xidget, IModelObject element)
   {
-    return new Listener( xidget, Xlate.get( element, "channel", TextModelFeature.allChannel));
+    return new Listener( xidget);
   }
   
   private final static class Listener extends ExpressionListener
   {
-    Listener( IXidget xidget, String channel)
+    Listener( IXidget xidget)
     {
       this.xidget = xidget;
     }

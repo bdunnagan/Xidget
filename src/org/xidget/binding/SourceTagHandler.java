@@ -20,26 +20,22 @@
 package org.xidget.binding;
 
 import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
-import org.xidget.feature.text.TextModelFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.IOptionalNodeFeature;
 import org.xidget.ifeature.ISourceFeature;
-import org.xidget.ifeature.button.IButtonWidgetFeature;
-import org.xidget.ifeature.text.ITextWidgetFeature;
+import org.xidget.ifeature.IValueFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
-import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
-import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An implementation of ITagHandler for the <i>source</i> element.
@@ -65,23 +61,12 @@ public class SourceTagHandler extends AbstractTagHandler
   {
     IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
     IXidget xidget = xidgetFeature.getXidget();
+        
+    // create source expression
+    IExpression expression = Xlate.get( element, (IExpression)null);
     
-    String channel = Xlate.get( element, "channel", TextModelFeature.allChannel);
-    
-    // create expression
-    String xpath = Xlate.get( element, "");
-    if ( xpath.length() == 0) throw new TagException( "Empty expression in binding.");
-    IExpression expression = XPath.createExpression( xpath);
-    
-    // configure optional node feature
-    if ( Xlate.get( element, "optional", true))
-    {
-      IOptionalNodeFeature optionalNodeFeature = xidget.getFeature( IOptionalNodeFeature.class);
-      if ( optionalNodeFeature != null) optionalNodeFeature.setSourceExpression( channel, expression);
-    }
-
     // create binding
-    IExpressionListener listener = new Listener( xidget, channel);
+    IExpressionListener listener = new Listener( xidget);
     XidgetBinding binding = new XidgetBinding( expression, listener);
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
     bindFeature.addBindingAfterChildren( binding);
@@ -91,103 +76,45 @@ public class SourceTagHandler extends AbstractTagHandler
   
   private final static class Listener extends ExpressionListener
   {
-    Listener( IXidget xidget, String channel)
+    Listener( IXidget xidget)
     {
       this.xidget = xidget;
-      this.channel = channel;
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      ISourceFeature sourceFeature = xidget.getFeature( ISourceFeature.class);
-      IModelObject source = expression.queryFirst( context);
-      if ( source == sourceFeature.getSource( channel)) return;      
-      
-      sourceFeature.setSource( (StatefulContext)context, channel, source);
-      
-      ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, Xlate.get( source, ""));
-      
-      IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
-      if ( buttonWidgetFeature != null) buttonWidgetFeature.setState( Xlate.get( source, false));
+      ISourceFeature feature = xidget.getFeature( ISourceFeature.class);
+      if ( feature != null) feature.setSource( expression.queryFirst( context));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      ISourceFeature sourceFeature = xidget.getFeature( ISourceFeature.class);
-      IModelObject source = expression.queryFirst( context);
-      if ( source == sourceFeature.getSource( channel)) return;      
-      
-      sourceFeature.setSource( (StatefulContext)context, channel, source);
-      
-      ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, Xlate.get( source, ""));
-      
-      IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
-      if ( buttonWidgetFeature != null) buttonWidgetFeature.setState( Xlate.get( source, false));
+      ISourceFeature feature = xidget.getFeature( ISourceFeature.class);
+      if ( feature != null) feature.setSource( expression.queryFirst( context));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
-      ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, Boolean.toString( newValue));
-      
-      IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
-      if ( buttonWidgetFeature != null) buttonWidgetFeature.setState( newValue);
+      IValueFeature feature = xidget.getFeature( IValueFeature.class);
+      if ( feature != null) feature.display( newValue);
     }
 
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
-      ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, Double.toString( newValue));
-      
-      IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
-      if ( buttonWidgetFeature != null)
-      {
-        boolean newState = (newValue != 0);
-        boolean oldState = (oldValue != 0);
-        if ( newState != oldState) buttonWidgetFeature.setState( newState);
-      }
+      IValueFeature feature = xidget.getFeature( IValueFeature.class);
+      if ( feature != null) feature.display( newValue);
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)context, channel, newValue);
-      
-      try
-      {
-        IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
-        if ( buttonWidgetFeature != null)
-        {
-          boolean newState = Boolean.parseBoolean( newValue);
-          boolean oldState = Boolean.parseBoolean( oldValue);
-          if ( newState != oldState) buttonWidgetFeature.setState( newState);
-        }
-      }
-      catch( Exception e)
-      {
-      }
+      IValueFeature feature = xidget.getFeature( IValueFeature.class);
+      if ( feature != null) feature.display( newValue);
     }
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
-      ITextWidgetFeature textWidgetFeature = xidget.getFeature( ITextWidgetFeature.class);
-      if ( textWidgetFeature != null) textWidgetFeature.setText( (StatefulContext)contexts[ 0], channel, Xlate.get( object, ""));
-      
-      try
-      {
-        IButtonWidgetFeature buttonWidgetFeature = xidget.getFeature( IButtonWidgetFeature.class);
-        if ( buttonWidgetFeature != null)
-        {
-          boolean newState = Boolean.parseBoolean( newValue.toString());
-          boolean oldState = Boolean.parseBoolean( oldValue.toString());
-          if ( newState != oldState) buttonWidgetFeature.setState( newState);
-        }
-      }
-      catch( Exception e)
-      {
-      }
+      IValueFeature feature = xidget.getFeature( IValueFeature.class);
+      if ( feature != null) feature.display( newValue);
     }
     
     public boolean requiresValueNotification()
@@ -195,7 +122,6 @@ public class SourceTagHandler extends AbstractTagHandler
       return true;
     }
 
-    private String channel;
     private IXidget xidget;
   }
 }

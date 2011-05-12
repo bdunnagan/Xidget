@@ -108,7 +108,7 @@ public class ChoicesTagHandler extends AbstractTagHandler
       differ.diff( lhs, rhs);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     private class ListDiffer extends AbstractListDiffer
     {
       /* (non-Javadoc)
