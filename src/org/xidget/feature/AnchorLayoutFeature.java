@@ -592,55 +592,80 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void createDefaultLayout()
   {
+    IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+    Bounds bounds = widgetFeature.getDefaultBounds();
+
+    List<IXidget> children = xidget.getChildren();
+    if ( children.size() == 0) return;
+
+    // assign default width
+    if ( bounds.width < 0) bounds.width = 300;
+
+    // assign default height
+    if ( bounds.height < 0 && !defaultHeightDefined( children)) bounds.height = 300;
+    
     IWidgetContainerFeature containerFeature = xidget.getFeature( IWidgetContainerFeature.class);
     int spacing = containerFeature.getSpacing();
     
-	  List<IXidget> children = xidget.getChildren();
-	  if ( children.size() == 0) return;
-
     int halfSpacing = spacing / 2;
     float dy = 1f / children.size();
     float y = dy;
     int last = children.size() - 1;
-    
-    // attach the left and right side of each xidget to the form
-    for( IXidget child: children)
+
+    if ( bounds.height >= 0)
     {
-      attachContainer( child, Side.left, spacing);
-      attachContainer( child, Side.right, -spacing);
+      // attach the left and right side of each xidget to the form
+      for( IXidget child: children)
+      {
+        attachContainer( child, Side.left, 0);
+        attachContainer( child, Side.right, 0);
+      }
+      
+      // attach the bottom side of each xidget to the grid, offset by half the interstice
+      for( int i=0; i < last; i++, y += dy)
+      {
+        IXidget child = children.get( i);
+        attachContainer( child, Side.bottom, y, null, -halfSpacing, true);
+      }
+      
+      // attach the top side of the first xidget to the form
+      attachContainer( children.get( 0), Side.top, 0);
+      
+      // attach the bottom side of the last xidget to the form
+      attachContainer( children.get( last), Side.bottom, 0);
+    }
+    else
+    {
+      // attach the top of the first widget to the container
+      attachContainer( children.get( 0), Side.top, 0);
+      
+      // attach the container to the bottom of the last widget
+      NodeGroup group = getNodeGroup( xidget);
+      NodeGroup lastChildGroup = getNodeGroup( children.get( last));
+      group.bottom.addDependency( new OffsetNode( lastChildGroup.bottom, 0));
     }
     
-    // attach the bottom side of each xidget to the grid, offset by half the interstice
-    for( int i=0; i < last; i++, y += dy)
-    {
-      IXidget child = children.get( i);
-      attachContainer( child, Side.bottom, y, null, -halfSpacing, true);
-    }
-    
-    // attach the top side of each xidget to the previous xidget, offset by the interstice
-    for( int i=1; i <= last; i++)
+    // attach the top of other widgets to previous widget
+    for( int i=1; i<=last; i++)
     {
       attachPeer( children.get( i), Side.top, children.get( i-1), Side.bottom, spacing);
     }
-    
-    // attach the top side of the first xidget to the form
-    attachContainer( children.get( 0), Side.top, 0);
-    
-    // attach the bottom side of the last xidget to the form if height is defined
-    NodeGroup group = getNodeGroup( xidget);
-    IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
-    Bounds bounds = widgetFeature.getDefaultBounds();
-    if ( bounds.height >= 0)
+  }
+  
+  /**
+   * Returns true if all of the specified children have a default height.
+   * @param children The children.
+   * @return Returns true if all of the specified children have a default height.
+   */
+  private boolean defaultHeightDefined( List<IXidget> children)
+  {
+    for( IXidget child: children)
     {
-      attachContainer( children.get( last), Side.bottom, 0);
+      IWidgetFeature widgetFeature = child.getFeature( IWidgetFeature.class);
+      Bounds bounds = widgetFeature.getDefaultBounds();
+      if ( bounds.height < 0) return false;
     }
-    
-    // attach the container to the bottom side of the last xidget
-    else
-    {
-      NodeGroup lastChildGroup = getNodeGroup( children.get( last));
-      group.bottom.addDependency( new OffsetNode( lastChildGroup.bottom, 2));
-    }
+    return true;
   }
   
   private class NodeGroup
