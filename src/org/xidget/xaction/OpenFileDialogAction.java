@@ -59,8 +59,9 @@ public class OpenFileDialogAction extends GuardedAction
     if ( typeExpr == null) typeExpr = XPath.createExpression( "'openOne'");
     
     windowExpr = document.getExpression( "window", true);
+    folderExpr = document.getExpression( "folder", true);
     filterExpr = document.getExpression( "filter", true);
-    descriptionExpr = document.getExpression( "description", true);
+    descExpr = document.getExpression( "description", true);
     targetExpr = document.getExpression( "target", true);
   }
 
@@ -76,7 +77,7 @@ public class OpenFileDialogAction extends GuardedAction
     if ( xidget == null) throw new XActionException( "Window is undefined: "+windowExpr);
 
     FileDialogType type = FileDialogType.valueOf( typeExpr.evaluateString( context));
-    String description = (descriptionExpr != null)? descriptionExpr.evaluateString( context): "";
+    String desc = (descExpr != null)? descExpr.evaluateString( context): "";
 
     // initialize the variable
     if ( variable != null)
@@ -87,7 +88,7 @@ public class OpenFileDialogAction extends GuardedAction
     
     // open dialog
     IToolkit toolkit = Creator.getInstance().getToolkit();
-    String[] paths = toolkit.openFileDialog( xidget, (StatefulContext)context, filterExpr, description, type);
+    String[] paths = toolkit.openFileDialog( xidget, (StatefulContext)context, folderExpr, filterExpr, desc, type);
     
     if ( type == FileDialogType.openMany)
     {
@@ -137,8 +138,9 @@ public class OpenFileDialogAction extends GuardedAction
 
   private IExpression windowExpr;
   private IExpression targetExpr;
+  private IExpression folderExpr;
   private IExpression filterExpr;
-  private IExpression descriptionExpr;
+  private IExpression descExpr;
   private IExpression typeExpr;
   private String variable;
 }

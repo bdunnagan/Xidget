@@ -74,10 +74,11 @@ public interface IToolkit extends IFeatured
    * Open a file dialog.
    * @param xidget The parent xidget.
    * @param context The context.
+   * @param dir The current directory.
    * @param filter An expression that filters the files that can be selected.
-   * @param description A description of the file filter.
+   * @param desc A description of the file filter.
    * @param type The type of file chooser.
    * @return Returns an array containing the paths of the selected files.
    */
-  public String[] openFileDialog( IXidget xidget, StatefulContext context, IExpression filter, String description, FileDialogType type);
+  public String[] openFileDialog( IXidget xidget, StatefulContext context, IExpression dir, IExpression filter, String desc, FileDialogType type);
 }
