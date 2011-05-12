@@ -86,18 +86,21 @@ public abstract class AbstractValueFeature implements IValueFeature
         if ( result == null)
         {
           // use raw value or new value of $v
-          setValue( context.get( "v"));
+          node.setValue( context.get( "v"));
+          return true;
         }
         else
         {
           // use returned value
-          setValue( result[ 0]);
+          node.setValue( result[ 0]);
+          return true;
         }
       }
     }
     else
     {
       node.setValue( value);
+      return true;
     }
     
     return false;
