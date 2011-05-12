@@ -614,13 +614,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
 
     if ( bounds.height >= 0)
     {
-      // attach the left and right side of each xidget to the form
-      for( IXidget child: children)
-      {
-        attachContainer( child, Side.left, 0);
-        attachContainer( child, Side.right, 0);
-      }
-      
       // attach the bottom side of each xidget to the grid, offset by half the interstice
       for( int i=0; i < last; i++, y += dy)
       {
@@ -643,6 +636,13 @@ public class AnchorLayoutFeature implements ILayoutFeature
       NodeGroup group = getNodeGroup( xidget);
       NodeGroup lastChildGroup = getNodeGroup( children.get( last));
       group.bottom.addDependency( new OffsetNode( lastChildGroup.bottom, 0));
+    }
+    
+    // attach the left and right side of each xidget to the form
+    for( IXidget child: children)
+    {
+      attachContainer( child, Side.left, 0);
+      attachContainer( child, Side.right, 0);
     }
     
     // attach the top of other widgets to previous widget

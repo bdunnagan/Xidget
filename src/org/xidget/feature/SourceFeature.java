@@ -26,7 +26,7 @@ public class SourceFeature implements ISourceFeature
   @Override
   public void setSource( IModelObject node)
   {
-    boolean changed = this.node == node;
+    boolean changed = this.node != node;
     
     this.node = node;
     
