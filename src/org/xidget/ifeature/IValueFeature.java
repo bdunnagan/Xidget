@@ -17,11 +17,10 @@ public interface IValueFeature
   public void display( Object value);
   
   /**
-   * Store the specified value taken from the xidget in the source node.
-   * @param value The value currently displayed in the xidget.
+   * Store the value taken from the xidget in the source node.
    * @return Returns true if the value was stored.
    */
-  public boolean commit( Object value);
+  public boolean commit();
   
   /**
    * Validate the specified value. This is the value as it should appear in the model,
@@ -30,4 +29,9 @@ public interface IValueFeature
    * @return Returns true if the value is valid.
    */
   public boolean validate( Object value);
+  
+  /**
+   * @return Returns the value displayed in the xidget.
+   */
+  public Object getValue();
 }

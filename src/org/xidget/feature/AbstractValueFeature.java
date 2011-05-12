@@ -59,16 +59,18 @@ public abstract class AbstractValueFeature implements IValueFeature
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.ifeature.IValueFeature#commit(java.lang.Object)
+   * @see org.xidget.ifeature.IValueFeature#commit()
    */
   @Override
-  public boolean commit( Object value)
+  public boolean commit()
   {
     ISourceFeature sourceFeature = xidget.getFeature( ISourceFeature.class);
     if ( sourceFeature == null) return false;
 
     IModelObject node = sourceFeature.getSource();
     if ( node == null) return false;
+    
+    Object value = getValue();
     
     IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
     if ( scriptFeature != null)
@@ -141,5 +143,5 @@ public abstract class AbstractValueFeature implements IValueFeature
     return context;
   }
   
-  private IXidget xidget;
+  protected IXidget xidget;
 }
