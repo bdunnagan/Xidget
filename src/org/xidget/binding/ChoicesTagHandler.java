@@ -73,7 +73,7 @@ public class ChoicesTagHandler extends AbstractTagHandler
       IExpressionListener listener = new Listener( xidget);
       XidgetBinding binding = new XidgetBinding( expression, listener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-      if ( bindFeature != null) bindFeature.addBindingAfterChildren( binding);
+      if ( bindFeature != null) bindFeature.addBindingBeforeChildren( binding);
     }
     return false;
   }

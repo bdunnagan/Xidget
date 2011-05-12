@@ -36,27 +36,39 @@ public abstract class AbstractValueFeature implements IValueFeature
   @Override
   public void display( Object value)
   {
-    IScriptFeature feature = xidget.getFeature( IScriptFeature.class);
-    if ( feature != null)
+    if ( updating) return;
+    updating = true;
+
+    System.out.printf( "%s display %s\n", xidget, value);
+    
+    try
     {
-      StatefulContext context = getValueContext( value);
-      if ( context == null) return;
-      
-      Object[] result = feature.runScript( "onDisplay", context);
-      if ( result == null)
+      IScriptFeature feature = xidget.getFeature( IScriptFeature.class);
+      if ( feature != null)
       {
-        // use raw value or new value of $v
-        setValue( context.get( "v"));
+        StatefulContext context = getValueContext( value);
+        if ( context == null) return;
+        
+        Object[] result = feature.runScript( "onDisplay", context);
+        if ( result == null)
+        {
+          // use raw value or new value of $v
+          setValue( context.get( "v"));
+        }
+        else
+        {
+          // use returned value
+          setValue( result[ 0]);
+        }
       }
       else
       {
-        // use returned value
-        setValue( result[ 0]);
+        setValue( value);
       }
     }
-    else
+    finally
     {
-      setValue( value);
+      updating = false;
     }
   }
 
@@ -66,47 +78,58 @@ public abstract class AbstractValueFeature implements IValueFeature
   @Override
   public boolean commit()
   {
-    ISourceFeature sourceFeature = xidget.getFeature( ISourceFeature.class);
-    if ( sourceFeature == null) return false;
-
-    IModelObject node = sourceFeature.getSource();
-    if ( node == null) return false;
+    if ( updating) return true;
+    updating = true;
     
-    Object value = getValue();
-    
-    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
-    if ( scriptFeature != null)
+    try
     {
-      StatefulContext context = getValueContext( value);
-      if ( context == null) return false;
+      ISourceFeature sourceFeature = xidget.getFeature( ISourceFeature.class);
+      if ( sourceFeature == null) return false;
+  
+      IModelObject node = sourceFeature.getSource();
+      if ( node == null) return false;
       
-      // validate
-      Object[] result = scriptFeature.runScript( "onValidate", context);
-      if ( result == null || ((Boolean)result[ 0]))
+      Object value = getValue();
+      System.out.printf( "%s commit %s\n", xidget, value);      
+      
+      IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
+      if ( scriptFeature != null)
       {
-        // commit
-        result = scriptFeature.runScript( "onCommit", context);
-        if ( result == null)
+        StatefulContext context = getValueContext( value);
+        if ( context == null) return false;
+        
+        // validate
+        Object[] result = scriptFeature.runScript( "onValidate", context);
+        if ( result == null || ((Boolean)result[ 0]))
         {
-          // use raw value or new value of $v
-          node.setValue( context.get( "v"));
-          return true;
-        }
-        else
-        {
-          // use returned value
-          node.setValue( result[ 0]);
-          return true;
+          // commit
+          result = scriptFeature.runScript( "onCommit", context);
+          if ( result == null)
+          {
+            // use raw value or new value of $v
+            node.setValue( context.get( "v"));
+            return true;
+          }
+          else
+          {
+            // use returned value
+            node.setValue( result[ 0]);
+            return true;
+          }
         }
       }
+      else
+      {
+        node.setValue( value);
+        return true;
+      }
+      
+      return false;
     }
-    else
+    finally
     {
-      node.setValue( value);
-      return true;
+      updating = false;
     }
-    
-    return false;
   }
 
   /* (non-Javadoc)
@@ -156,4 +179,5 @@ public abstract class AbstractValueFeature implements IValueFeature
   }
   
   protected IXidget xidget;
+  private boolean updating;
 }
