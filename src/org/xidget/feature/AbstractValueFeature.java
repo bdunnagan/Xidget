@@ -40,6 +40,8 @@ public abstract class AbstractValueFeature implements IValueFeature
     if ( feature != null)
     {
       StatefulContext context = getValueContext( value);
+      if ( context == null) return;
+      
       Object[] result = feature.runScript( "onDisplay", context);
       if ( result == null)
       {
@@ -76,6 +78,7 @@ public abstract class AbstractValueFeature implements IValueFeature
     if ( scriptFeature != null)
     {
       StatefulContext context = getValueContext( value);
+      if ( context == null) return false;
       
       // validate
       Object[] result = scriptFeature.runScript( "onValidate", context);
@@ -116,6 +119,8 @@ public abstract class AbstractValueFeature implements IValueFeature
     if ( scriptFeature != null)
     {
       StatefulContext context = getValueContext( value);
+      if ( context == null) return false;
+      
       Object[] result = scriptFeature.runScript( "onValidate", context);
       if ( result == null) return true;
       if ( !((Boolean)result[ 0])) return false;
@@ -139,10 +144,14 @@ public abstract class AbstractValueFeature implements IValueFeature
    */
   private StatefulContext getValueContext( Object value)
   {
-    StatefulContext context = new StatefulContext( getContext());
+    StatefulContext parent = getContext();
+    if ( parent == null) return null;
+    
+    StatefulContext context = new StatefulContext( parent);
     if ( value instanceof Number) context.set( "v", (Number)value);
     else if ( value instanceof Boolean) context.set( "v", (Boolean)value);
     else context.set( "v", (value != null)? value.toString(): "");
+    
     return context;
   }
   
