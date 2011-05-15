@@ -6,7 +6,7 @@ package org.xidget.xpath;
 
 import java.util.List;
 
-import org.xidget.util.DateUtil;
+import org.xidget.util.DateFormat;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionException;
 import org.xmodel.xpath.expression.IContext;
@@ -51,7 +51,7 @@ public class FormatDateFunction extends Function
     IExpression format = getArgument( 0);
     IExpression value = getArgument( 1);
     
-    DateUtil util = new DateUtil();
+    DateFormat util = new DateFormat();
     return util.format( format.evaluateString( context), (long)value.evaluateNumber( context));
   }
 
@@ -86,7 +86,7 @@ public class FormatDateFunction extends Function
     IExpression valueExpr = getArgument( 1);
     if ( expression == valueExpr)
     {
-      DateUtil util = new DateUtil();
+      DateFormat util = new DateFormat();
       String format = formatExpr.evaluateString( context);
       String oldResult = util.format( format, (long)oldValue);
       String newResult = util.format( format, (long)newValue);
@@ -105,7 +105,7 @@ public class FormatDateFunction extends Function
     IExpression valueExpr = getArgument( 1);
     if ( expression == formatExpr)
     {
-      DateUtil util = new DateUtil();
+      DateFormat util = new DateFormat();
       long value = (long)valueExpr.evaluateNumber( context);
       
       String oldResult = util.format( oldValue, value);
@@ -115,7 +115,7 @@ public class FormatDateFunction extends Function
     }
     else
     {
-      DateUtil util = new DateUtil();
+      DateFormat util = new DateFormat();
       String format = formatExpr.evaluateString( context);
       
       double oldDouble = parseDouble( oldValue);
