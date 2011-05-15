@@ -4,7 +4,6 @@
  */
 package org.xidget.util;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -64,7 +63,7 @@ import java.util.TimeZone;
  * AD/BC
  *   AD
  */
-public class DateUtil
+public class DateFormat
 {
   public enum Field
   {
@@ -434,14 +433,14 @@ public class DateUtil
     }
   }
 
-  private final static DateFormat timeZoneFormat = new SimpleDateFormat( "z");
+  private final static java.text.DateFormat timeZoneFormat = new SimpleDateFormat( "z");
   
   private int formatIndex;
   private int parseIndex;
 
   public static void main( String[] args) throws Exception
   {
-    DateUtil util = new DateUtil();
+    DateFormat util = new DateFormat();
     String f = "{YY}/{M}/{DD}";
     String s = util.format( f, System.currentTimeMillis());
     System.out.println( s);
