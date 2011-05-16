@@ -181,7 +181,9 @@ public class Scale
    */
   private List<Tick> computeMajorTicks( double min, double max)
   {
-    double maxExpFloor = Math.floor( Math.log10( Math.abs( max)));
+    double minAbs = Math.abs( min);
+    double maxAbs = Math.abs( max);
+    double maxExpFloor = Math.floor( Math.log10( (maxAbs > minAbs)? maxAbs: minAbs));
     maxPow = Math.pow( 10, maxExpFloor);
     
     // note that scale min and max are exponents for logarithmic scales
