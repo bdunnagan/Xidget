@@ -11,25 +11,13 @@ package org.xidget.graph;
  */
 public class Point
 {
-  public enum Style 
-  { 
-    circle, 
-    square, 
-    triangle, 
-    diamond, 
-    plus, 
-    ex,
-    bar,
-    dot
-  };
-  
   public Point()
   {
-    style = Style.dot;
+    shape = PointStyles.getLineSegments( PointStyles.Style.ex);
   }
   
   public double[] coords;
-  public Style style;
+  public int[][] shape;
   public String color;
   public String label;
   

@@ -33,7 +33,7 @@ public class SourceFeature implements ISourceFeature
     if ( changed)
     {
       IValueFeature feature = xidget.getFeature( IValueFeature.class);
-      if ( feature != null) feature.display( node.getValue());
+      if ( feature != null) feature.display( (node != null)? node.getValue(): "");
     }
   }
 

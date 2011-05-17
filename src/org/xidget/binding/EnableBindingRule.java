@@ -19,6 +19,8 @@
  */
 package org.xidget.binding;
 
+import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IWidgetFeature;
@@ -57,14 +59,85 @@ public class EnableBindingRule implements IBindingRule
     }
     
     /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, boolean)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyAdd(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      setEnabled( true);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyRemove(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      setEnabled( expression.query( context, null));
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext, double, double)
+     */
+    @Override
+    public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
+    {
+      setEnabled( newValue);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
+    {
+      setEnabled( newValue);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext, boolean)
      */
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setEnabled( newValue);
+      setEnabled( newValue);
     }
 
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#requiresValueNotification()
+     */
+    @Override
+    public boolean requiresValueNotification()
+    {
+      return false;
+    }
+
+    private void setEnabled( List<IModelObject> nodes)
+    {
+      setEnabled( nodes.size() > 0);
+    }
+    
+    private void setEnabled( String string)
+    {
+      if ( string.equals( "true")) setEnabled( true);
+      else if ( string.equals( "false")) setEnabled( false);
+    }
+    
+    private void setEnabled( double value)
+    {
+      setEnabled( value != 0);
+    }
+    
+    private void setEnabled( boolean value)
+    {
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setEnabled( value);
+    }
+    
     private IXidget xidget;
   }
 }
