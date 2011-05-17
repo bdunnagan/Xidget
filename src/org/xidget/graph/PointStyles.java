@@ -120,6 +120,7 @@ public class PointStyles
       case plus:       return plus5x5;
       case dash:       return dash5x5;
       case ex:         return ex5x5;
+      case dot:        return dot;
     }
     return null;
   }
@@ -161,5 +162,10 @@ public class PointStyles
   private final static int[][] ex5x5 = 
   {
     {-2, -2}, {2, 2}, {-2, 2}, {2, -2}  
+  };
+  
+  private final static int[][] dot = 
+  {
+    {0, 0}, {0, 0}
   };
 }
