@@ -53,6 +53,13 @@ public class Scale
     this.log = log;
     this.count = count;
     
+    if ( min > max)
+    {
+      double tmp = min; 
+      min = max;
+      max = tmp;
+    }
+    
     if ( log != 0)
     {
       logq = Math.log( log);
@@ -60,7 +67,9 @@ public class Scale
       if ( max != 0) max = Math.log( max) / logq;
     }
     
-    ticks = computeMajorTicks( min, max);
+    ticks = new ArrayList<Tick>();
+    computeMajorTicks( min, max, ticks);
+    
     counts = new ArrayList<Integer>();
     counts.add( ticks.size());
     subdivide();
@@ -177,37 +186,29 @@ public class Scale
    * Compute the major tick marks.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
-   * @return Returns the list of major tick marks.
+   * @param ticks Returns the list of major tick marks.
    */
-  private List<Tick> computeMajorTicks( double min, double max)
+  private void computeMajorTicks( double min, double max, List<Tick> ticks)
   {
-    double minAbs = Math.abs( min);
-    double maxAbs = Math.abs( max);
-    double maxExpFloor = Math.floor( Math.log10( (maxAbs > minAbs)? maxAbs: minAbs));
+    double maxExpFloor = findExponent( min, max);
     maxPow = Math.pow( 10, maxExpFloor);
     
     // note that scale min and max are exponents for logarithmic scales
-    scaleMin = roundTowardZero( min / maxPow) * maxPow;
-    scaleMax = roundAwayFromZero( max / maxPow) * maxPow;
+    if ( min > 0) scaleMin = roundTowardZero( min / maxPow) * maxPow;
+    else scaleMin = roundAwayFromZero( min / maxPow) * maxPow;
+    if ( max > 0) scaleMax = roundAwayFromZero( max / maxPow) * maxPow;
+    else scaleMax = roundTowardZero( max / maxPow) * maxPow;
+    
     if ( scaleMax < scaleMin)
     {
       double t = scaleMin;
       scaleMin = scaleMax;
       scaleMax = t;
     }
+    
     scaleRange = (scaleMax - scaleMin);
-    
-    int divs = 0;
-    int msd = msd( scaleRange);
-    switch( msd)
-    {
-      case 1:  divs = 10; break;
-      case 2:  divs = 4; break;
-      case 3:  divs = 6; break;
-      default: divs = msd; break;
-    }
-    
-    List<Tick> ticks = new ArrayList<Tick>();
+
+    int divs = getMajorDivisions( scaleRange);
     for( int i=0; i<=divs; i++)
     {
       double value = scaleMin + (scaleRange * i / divs);
@@ -217,8 +218,40 @@ public class Scale
       tick.scale = plot( value);
       ticks.add( tick);
     }
+  }
+  
+  /**
+   * Returns the maximum number of digits represented by the specified range.
+   * @param min The minimum value.
+   * @param max The maximum value.
+   * @return Returns the maximum number of digits represented by the specified range.
+   */
+  private double findExponent( double min, double max)
+  {
+    double absMin = Math.abs( min);
+    double absMax = Math.abs( max);
+    double abs = (absMin < absMax)? absMax: absMin;
+    return Math.floor( Math.log10( abs));
+  }
+  
+  /**
+   * Calculate major divisions within the specified range.
+   * @param range The range.
+   * @return Returns the number of major divisions.
+   */
+  private int getMajorDivisions( double range)
+  {
+    double norm = range / maxPow;
+    if ( norm > 10) return (int)norm; 
     
-    return ticks;
+    int msd = msd( range);
+    switch( msd)
+    {
+      case 1:  return 10;
+      case 2:  return 4;
+      case 3:  return 6;
+      default: return msd;
+    }
   }
   
   /**
@@ -455,24 +488,27 @@ public class Scale
   @SuppressWarnings("unused")
   public static void main( String[] args) throws Exception
   {
-    for( int i=0; i<1; i++)
+//    for( int i=0; i<1; i++)
+//    {
+//      long t0 = System.nanoTime();
+//      
+//      int count = 100;
+//      Scale scale = new Scale( -900, -121, count, 0, Format.engineering);
+//      
+//      long t1 = System.nanoTime();
+//      System.out.printf( "%gms\n", (t1 - t0) / 1e6);
+//    }
+    
+    double min = -919;
+    double max = 102.45;
+    Scale scale = new Scale( min, max, 67, 0, Format.engineering);
+    for( Tick tick: scale.ticks)
     {
-      long t0 = System.nanoTime();
-      
-      int count = 100000;
-      Scale scale = new Scale( -3.9329, -4.359, count, 0, Format.engineering);
-      
-      long t1 = System.nanoTime();
-      System.out.printf( "%gms\n", (t1 - t0) / 1e6);
+      for( int j=0; j<tick.depth; j++)
+        System.out.printf( "    ");
+      System.out.printf( "%f | %f\n", tick.value, tick.scale);
     }
     
-//    for( Tick tick: scale.ticks)
-//    {
-//      for( int j=0; j<tick.depth; j++)
-//        System.out.printf( "    ");
-//      System.out.printf( "%f\n", tick.value);
-//    }
-//    
 //    for( double i=min; i<=max; i += 1)
 //    {
 //      System.out.printf( "%f -> %f\n", i, scale.plot( i));
