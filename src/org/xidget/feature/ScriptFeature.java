@@ -22,10 +22,14 @@ package org.xidget.feature;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.xidget.Creator;
+import org.xidget.IToolkit;
 import org.xidget.IXidget;
+import org.xidget.IToolkit.MessageType;
 import org.xidget.ifeature.IScriptFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelObject;
+import org.xmodel.log.Log;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -77,13 +81,18 @@ public class ScriptFeature implements IScriptFeature
     }
     catch( Exception e)
     {
-      // TODO: need a way to report this error
-      e.printStackTrace( System.err);
+      log.exception( e);
+      
+      IXidget xidget = (IXidget)holder.getValue();
+      IToolkit toolkit = Creator.getInstance().getToolkit();
+      toolkit.openMessageDialog( xidget, context, "Exception", null, e.getMessage(), MessageType.error);
     }
     
     return null;
   }
 
+  private static Log log = Log.getLog( "org.xidget.feature");
+  
   private IModelObject holder;
   private Map<String, ScriptAction> scripts;
 }

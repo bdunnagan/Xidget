@@ -444,7 +444,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     IComputeNode node1 = getCreateNode( child, fromSide);
     IComputeNode node2 = getCreateNode( peer, toSide);
-    if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
+    if ( offset != 0 && fromSide != toSide) node1.addDependency( new OffsetNode( node2, offset));
     else node1.addDependency( node2);
   }
 
