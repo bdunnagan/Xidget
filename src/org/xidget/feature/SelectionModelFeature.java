@@ -148,7 +148,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
         else
         {
           for( int i=0; i<change.count; i++)
-            parent.removeChild( change.lIndex);
+            parent.removeChild( children.get( change.lIndex));
         }
       }
     }
