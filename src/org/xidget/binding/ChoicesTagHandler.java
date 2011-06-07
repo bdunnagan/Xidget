@@ -104,7 +104,7 @@ public class ChoicesTagHandler extends AbstractTagHandler
       for( IModelObject node: nodes) rhs.add( Xlate.get( node, ""));
       
       // update choices
-      List<String> lhs = feature.getChoices();
+      List<Object> lhs = feature.getChoices();
       differ.diff( lhs, rhs);
     }
 

@@ -1,0 +1,4 @@
+Troubleshooting XAction Scripts
+
+. Non-boolean expressions used where boolean expressions required.
+. Un-quoted string literals used where expressions expected resulting in empty node-set.

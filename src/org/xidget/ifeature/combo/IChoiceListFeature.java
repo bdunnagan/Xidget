@@ -31,26 +31,26 @@ public interface IChoiceListFeature
    * Returns a copy of the list of choices.
    * @return Returns a copy of the list of choices.
    */
-  public List<String> getChoices();
+  public List<Object> getChoices();
 
   /**
    * Add a choice to the end of the list.
    * @param choice The choice.
    */
-  public void addChoice( String choice);
+  public void addChoice( Object choice);
   
   /**
    * Insert a choice in the middle of the list.
    * @param index The insert index.
    * @param choice The choice.
    */
-  public void insertChoice( int index, String choice);
+  public void insertChoice( int index, Object choice);
   
   /**
    * Remove a choice.
    * @param choice The choice.
    */
-  public void removeChoice( String choice);
+  public void removeChoice( Object choice);
   
   /**
    * Remove the choice at the specified index.

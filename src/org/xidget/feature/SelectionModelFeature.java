@@ -132,9 +132,10 @@ public class SelectionModelFeature implements ISelectionModelFeature
     {
       // filter
       nodes = applyFilter( context, nodes);
+      List<IModelObject> children = applyFilter( context, parent.getChildren());
       
       // diff
-      differ.diff( parent.getChildren(), nodes);
+      differ.diff( children, nodes);
       List<Change> changes = differ.getChanges();
       for( Change change: changes)
       {
