@@ -98,6 +98,12 @@ public class ChoicesTagHandler extends AbstractTagHandler
       updateChoices( nodes);
     }
     
+    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
+    {
+      List<IModelObject> nodes = expression.query( contexts[ 0], null);
+      updateChoices( nodes);
+    }
+
     private void updateChoices( List<IModelObject> nodes)
     {
       List<String> rhs = new ArrayList<String>();
