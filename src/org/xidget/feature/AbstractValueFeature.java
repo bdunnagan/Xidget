@@ -4,6 +4,8 @@
  */
 package org.xidget.feature;
 
+import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IScriptFeature;
@@ -33,13 +35,14 @@ public abstract class AbstractValueFeature implements IValueFeature
   /* (non-Javadoc)
    * @see org.xidget.ifeature.IValueFeature#setValue(java.lang.Object)
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void display( Object value)
   {
     if ( updating) return;
     updating = true;
 
-    System.out.printf( "%s display %s\n", xidget, value);
+    //System.out.printf( "%s display %s\n", xidget, value);
     
     try
     {
@@ -58,7 +61,23 @@ public abstract class AbstractValueFeature implements IValueFeature
         else
         {
           // use returned value
-          setValue( result[ 0]);
+          Object object = result[ 0];
+          if ( object instanceof List)
+          {
+            List<IModelObject> list = (List<IModelObject>)object;
+            if ( list.size() > 0)
+            {
+              setValue( list.get( 0).getValue());
+            }
+            else
+            {
+              setValue( "");
+            }
+          }
+          else
+          {
+            setValue( object);
+          }
         }
       }
       else
@@ -90,7 +109,7 @@ public abstract class AbstractValueFeature implements IValueFeature
       if ( node == null) return false;
       
       Object value = getValue();
-      System.out.printf( "%s commit %s\n", xidget, value);      
+      //System.out.printf( "%s commit %s\n", xidget, value);      
       
       IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
       if ( scriptFeature != null)
