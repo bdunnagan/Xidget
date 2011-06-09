@@ -94,6 +94,7 @@ public abstract class AbstractValueFeature implements IValueFeature
   /* (non-Javadoc)
    * @see org.xidget.ifeature.IValueFeature#commit()
    */
+  @SuppressWarnings("unchecked")
   @Override
   public boolean commit()
   {
@@ -132,7 +133,23 @@ public abstract class AbstractValueFeature implements IValueFeature
           else
           {
             // use returned value
-            node.setValue( result[ 0]);
+            Object object = result[ 0];
+            if ( object instanceof List)
+            {
+              List<IModelObject> list = (List<IModelObject>)object;
+              if ( list.size() > 0)
+              {
+                setValue( list.get( 0).getValue());
+              }
+              else
+              {
+                setValue( "");
+              }
+            }
+            else
+            {
+              setValue( object);
+            }
             return true;
           }
         }
