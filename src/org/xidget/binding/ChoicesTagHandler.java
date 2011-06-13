@@ -19,8 +19,8 @@
  */
 package org.xidget.binding;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
@@ -82,35 +82,31 @@ public class ChoicesTagHandler extends AbstractTagHandler
   {
     Listener( IXidget xidget)
     {
-      this.feature = xidget.getFeature( IChoiceListFeature.class);
       this.differ = new ListDiffer();
+      this.choiceListFeature = xidget.getFeature( IChoiceListFeature.class);
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       nodes = expression.query( context, null);
-      updateChoices( nodes);
+      updateChoices( context, nodes);
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       nodes = expression.query( context, null);
-      updateChoices( nodes);
+      updateChoices( context, nodes);
     }
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
       List<IModelObject> nodes = expression.query( contexts[ 0], null);
-      updateChoices( nodes);
+      updateChoices( contexts[ 0], nodes);
     }
 
-    private void updateChoices( List<IModelObject> nodes)
+    private void updateChoices( IContext parent, List<IModelObject> rhs)
     {
-      List<String> rhs = new ArrayList<String>();
-      for( IModelObject node: nodes) rhs.add( Xlate.get( node, ""));
-      
-      // update choices
-      List<Object> lhs = feature.getChoices();
+      List<Object> lhs = choiceListFeature.getChoices();
       differ.diff( lhs, rhs);
     }
 
@@ -123,7 +119,7 @@ public class ChoicesTagHandler extends AbstractTagHandler
       public void notifyInsert( List lhs, int lIndex, int lAdjust, List rhs, int rIndex, int rCount)
       {
         int index = lIndex + lAdjust;
-        for( int i=0; i<rCount; i++, index++) feature.insertChoice( index, rhs.get( rIndex + i).toString());
+        for( int i=0; i<rCount; i++, index++) choiceListFeature.insertChoice( index, rhs.get( rIndex + i));
       }
 
       /* (non-Javadoc)
@@ -131,11 +127,11 @@ public class ChoicesTagHandler extends AbstractTagHandler
        */
       public void notifyRemove( List lhs, int lIndex, int lAdjust, List rhs, int rCount)
       {
-        for( int i=0; i<rCount; i++) feature.removeChoice( lIndex + lAdjust);
+        for( int i=0; i<rCount; i++) choiceListFeature.removeChoice( lIndex + lAdjust);
       }
     }
     
     private ListDiffer differ;
-    private IChoiceListFeature feature;
+    private IChoiceListFeature choiceListFeature;
   }
 }

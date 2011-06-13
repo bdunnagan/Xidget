@@ -23,6 +23,20 @@ public interface IValueFeature
   public boolean commit();
   
   /**
+   * Convert the specified model value to its display value. 
+   * @param value The model value.
+   * @return Returns the display value.
+   */
+  public Object toDisplay( Object value);
+  
+  /**
+   * Convert the specified display value to its model value. 
+   * @param value The display value.
+   * @return Returns the model value.
+   */
+  public Object toModel( Object value);
+  
+  /**
    * Validate the specified value. This is the value as it should appear in the model,
    * that is, without any transformation performed by the setValue( Object) method.
    * @param value The value.

@@ -35,7 +35,6 @@ public abstract class AbstractValueFeature implements IValueFeature
   /* (non-Javadoc)
    * @see org.xidget.ifeature.IValueFeature#setValue(java.lang.Object)
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void display( Object value)
   {
@@ -46,44 +45,8 @@ public abstract class AbstractValueFeature implements IValueFeature
     
     try
     {
-      IScriptFeature feature = xidget.getFeature( IScriptFeature.class);
-      if ( feature != null)
-      {
-        StatefulContext context = getValueContext( value);
-        if ( context == null) return;
-        
-        Object[] result = feature.runScript( "onDisplay", context);
-        if ( result == null)
-        {
-          // use raw value or new value of $v
-          setValue( context.get( "v"));
-        }
-        else
-        {
-          // use returned value
-          Object object = result[ 0];
-          if ( object instanceof List)
-          {
-            List<IModelObject> list = (List<IModelObject>)object;
-            if ( list.size() > 0)
-            {
-              setValue( list.get( 0).getValue());
-            }
-            else
-            {
-              setValue( "");
-            }
-          }
-          else
-          {
-            setValue( object);
-          }
-        }
-      }
-      else
-      {
-        setValue( value);
-      }
+      value = toDisplay( value);
+      if ( value != null) setValue( value);
     }
     finally
     {
@@ -94,7 +57,6 @@ public abstract class AbstractValueFeature implements IValueFeature
   /* (non-Javadoc)
    * @see org.xidget.ifeature.IValueFeature#commit()
    */
-  @SuppressWarnings("unchecked")
   @Override
   public boolean commit()
   {
@@ -109,62 +71,118 @@ public abstract class AbstractValueFeature implements IValueFeature
       IModelObject node = sourceFeature.getSource();
       if ( node == null) return false;
       
-      Object value = getValue();
-      //System.out.printf( "%s commit %s\n", xidget, value);      
+      Object value = toModel( getValue());
+      if ( value == null) return false;
       
-      IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
-      if ( scriptFeature != null)
-      {
-        StatefulContext context = getValueContext( value);
-        if ( context == null) return false;
-        
-        // validate
-        Object[] result = scriptFeature.runScript( "onValidate", context);
-        if ( result == null || ((Boolean)result[ 0]))
-        {
-          // commit
-          result = scriptFeature.runScript( "onCommit", context);
-          if ( result == null)
-          {
-            // use raw value or new value of $v
-            node.setValue( context.get( "v"));
-            return true;
-          }
-          else
-          {
-            // use returned value
-            Object object = result[ 0];
-            if ( object instanceof List)
-            {
-              List<IModelObject> list = (List<IModelObject>)object;
-              if ( list.size() > 0)
-              {
-                setValue( list.get( 0).getValue());
-              }
-              else
-              {
-                setValue( "");
-              }
-            }
-            else
-            {
-              setValue( object);
-            }
-            return true;
-          }
-        }
-      }
-      else
-      {
-        node.setValue( value);
-        return true;
-      }
-      
-      return false;
+      node.setValue( value);
+      return true;
     }
     finally
     {
       updating = false;
+    }
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.IValueFeature#toDisplay(java.lang.Object)
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public Object toDisplay( Object value)
+  {
+    IScriptFeature feature = xidget.getFeature( IScriptFeature.class);
+    if ( feature != null)
+    {
+      StatefulContext context = getValueContext( value);
+      if ( context == null) return null;
+      
+      Object[] result = feature.runScript( "onDisplay", context);
+      if ( result == null)
+      {
+        // use raw value or new value of $v
+        return context.get( "v");
+      }
+      else
+      {
+        // use returned value
+        Object object = result[ 0];
+        if ( object instanceof List)
+        {
+          List<IModelObject> list = (List<IModelObject>)object;
+          if ( list.size() > 0)
+          {
+            return list.get( 0).getValue();
+          }
+          else
+          {
+            return "";
+          }
+        }
+        else
+        {
+          return object;
+        }
+      }
+    }
+    else
+    {
+      return value;
+    }
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.IValueFeature#toModel(java.lang.Object)
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public Object toModel( Object value)
+  {
+    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
+    if ( scriptFeature != null)
+    {
+      StatefulContext context = getValueContext( value);
+      if ( context == null) return false;
+      
+      // validate
+      Object[] result = scriptFeature.runScript( "onValidate", context);
+      if ( result == null || ((Boolean)result[ 0]))
+      {
+        // commit
+        result = scriptFeature.runScript( "onCommit", context);
+        if ( result == null)
+        {
+          // use raw value or new value of $v
+          return context.get( "v");
+        }
+        else
+        {
+          // use returned value
+          Object object = result[ 0];
+          if ( object instanceof List)
+          {
+            List<IModelObject> list = (List<IModelObject>)object;
+            if ( list.size() > 0)
+            {
+              return list.get( 0).getValue();
+            }
+            else
+            {
+              return "";
+            }
+          }
+          else
+          {
+            return object;
+          }
+        }
+      }
+      
+      // failed validation
+      return null;
+    }
+    else
+    {
+      return value;
     }
   }
 
