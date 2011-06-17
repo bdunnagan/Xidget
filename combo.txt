@@ -1,0 +1,6 @@
+<combo>
+  <label></label>
+  <selection var="item"/>
+  <choices>$items</choices>
+  <display>@name</display>
+</combo>
