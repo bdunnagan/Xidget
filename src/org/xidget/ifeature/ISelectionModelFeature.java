@@ -42,39 +42,48 @@ public interface ISelectionModelFeature
   public void setParent( StatefulContext context, IModelObject element);
   
   /**
-   * Insert the selected element into the selection model.
+   * Set the variable that stores the selection.
    * @param context The parent context.
-   * @param index The index of the insertion.
-   * @param element The element.
+   * @param variable The variable name.
    */
-  public void insertSelected( StatefulContext context, int index, IModelObject element);
+  public void setVariable( StatefulContext context, String variable);
   
   /**
-   * Remove the selected element from the selection model.
+   * Insert the selected object into the selection model.
+   * @param context The parent context.
+   * @param index The index of the insertion.
+   * @param object The object.
+   */
+  public void insertSelected( StatefulContext context, int index, Object object);
+  
+  /**
+   * Remove the selected object from the selection model.
    * @param context The parent context.
    * @param index The index of the removals.
-   * @param element The element.
+   * @param object The object.
    */
-  public void removeSelected( StatefulContext context, int index, IModelObject element);
+  public void removeSelected( StatefulContext context, int index, Object object);
   
   /**
    * Set the selection corresponding to the specified nodes.
    * @param context The parent context.
    * @param nodes The selected nodes.
    */
-  public void setSelection( StatefulContext context, List<IModelObject> nodes);
+  public void setSelection( StatefulContext context, List<? extends Object> nodes);
   
   /**
    * Returns the currently selected nodes.
    * @param context The parent context.
    * @return Returns the currently selected nodes.
    */
-  public List<IModelObject> getSelection( StatefulContext context);
+  public List<? extends Object> getSelection( StatefulContext context);
   
   /**
-   * Returns a unique identity for the node. 
-   * @param node The node.
-   * @return Returns a unique identity for the node.
+   * Returns an identify for the object that may be different from the object. The selection model defines
+   * an identity based on the type of object reference requested. This is only applicable for IModelObject
+   * references stored under a selection parent.
+   * @param object The object.
+   * @return Returns a unique identity for the object.
    */
-  public Object getIdentity( IModelObject node);
+  public Object getIdentity( Object object);
 }

@@ -20,6 +20,7 @@
 package org.xidget.binding;
 
 import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
@@ -63,18 +64,27 @@ public class SelectionTagHandler implements ITagHandler
 
     IXidget xidget = xidgetFeature.getXidget();
     
-    // get parent expression
-    IExpression expression = Xlate.childGet( element, "parent", Xlate.get( element, "parent", (IExpression)null));
-    if ( expression == null) throw new TagException( "Error in parent expression.");
-    
     // configure selection model
     ISelectionModelFeature selectionModelFeature = xidget.getFeature( ISelectionModelFeature.class);
     selectionModelFeature.configure( element);
     
-    // create binding
-    XidgetBinding binding = new XidgetBinding( expression, new Listener( xidget));
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    bindFeature.addBindingAfterChildren( binding);
+    // get parent expression
+    IExpression expression = Xlate.childGet( element, "parent", Xlate.get( element, "parent", (IExpression)null));
+    if ( expression != null)
+    {
+      XidgetBinding binding = new XidgetBinding( expression, new ParentListener( xidget));
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      bindFeature.addBindingAfterChildren( binding);
+    }
+    
+    // get variable
+    String variable = Xlate.get( element, "variable", (String)null);
+    if ( variable != null)
+    {
+      VariableBinding binding = new VariableBinding( xidget, variable);
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      bindFeature.addBindingAfterChildren( binding);
+    }
     
     return false;
   }
@@ -94,9 +104,9 @@ public class SelectionTagHandler implements ITagHandler
     return null;
   }
   
-  private final static class Listener extends ExpressionListener
+  private final static class ParentListener extends ExpressionListener
   {
-    Listener( IXidget xidget)
+    ParentListener( IXidget xidget)
     {
       this.xidget = xidget;
     }
@@ -121,5 +131,27 @@ public class SelectionTagHandler implements ITagHandler
     }
 
     private IXidget xidget;
+  }
+  
+  private final static class VariableBinding implements IXidgetBinding
+  {
+    public VariableBinding( IXidget xidget, String variable)
+    {
+      this.xidget = xidget;
+      this.variable = variable;
+    }
+
+    public void bind( StatefulContext context)
+    {
+      ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
+      feature.setVariable( context, variable);
+    }
+
+    public void unbind( StatefulContext context)
+    {
+    }
+
+    private IXidget xidget;
+    private String variable;
   }
 }
