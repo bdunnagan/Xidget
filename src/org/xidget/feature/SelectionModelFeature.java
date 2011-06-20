@@ -350,7 +350,6 @@ public class SelectionModelFeature implements ISelectionModelFeature
    * @param context The context of the selection update.
    * @param object The object.
    */
-  @SuppressWarnings("unchecked")
   private void removeSelected( StatefulContext context, Object object)
   {
     if ( updating) return;
@@ -358,12 +357,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
     try
     {
       ISelectionWidgetFeature feature = xidget.getFeature( ISelectionWidgetFeature.class);
-      if ( feature != null)
-      {
-        List<? extends Object> list = (parent != null)? parent.getChildren(): (List<? extends Object>)context.get( variable);
-        int filterIndex = findFilterIndex( context, list, object);
-        if ( filterIndex >= 0) feature.removeSelected( filterIndex, object);
-      }
+      if ( feature != null) feature.removeSelected( object);
     }
     finally
     {

@@ -62,4 +62,11 @@ public interface IChoiceListFeature
    * Remove all the choices.
    */
   public void removeAllChoices();
+
+  /**
+   * Update the specified choice.
+   * @param index The index of the choice.
+   * @param choice The updated choice.
+   */
+  public void updateChoice( int index, Object choice);
 }

@@ -35,10 +35,9 @@ public interface ISelectionWidgetFeature
   
   /**
    * Remove the selected object from the selection.
-   * @param index The index.
    * @param object The object.
    */
-  public void removeSelected( int index, Object object);
+  public void removeSelected( Object object);
   
   /**
    * Set the selection corresponding to the specified objects.

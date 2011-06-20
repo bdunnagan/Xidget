@@ -98,19 +98,29 @@ public class ChoicesTagHandler extends AbstractTagHandler
       updateChoices( context, nodes);
     }
     
-    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#requiresValueNotification()
+     */
+    @Override
+    public boolean requiresValueNotification()
     {
-      List<IModelObject> nodes = expression.query( contexts[ 0], null);
-      updateChoices( contexts[ 0], nodes);
+      return false;
     }
+
+//    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
+//    {
+//      List<IModelObject> nodes = expression.query( contexts[ 0], null);
+//      int index = nodes.indexOf( object);
+//      if ( index >= 0) choiceListFeature.updateChoice( index, object);
+//    }
 
     private void updateChoices( IContext parent, List<IModelObject> rhs)
     {
       List<Object> lhs = choiceListFeature.getChoices();
       differ.diff( lhs, rhs);
     }
-
-    @SuppressWarnings("unchecked")
+    
+    @SuppressWarnings("rawtypes")
     private class ListDiffer extends AbstractListDiffer
     {
       /* (non-Javadoc)
