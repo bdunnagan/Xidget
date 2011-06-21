@@ -25,34 +25,41 @@ public interface IColumnWidthFeature
    * Specify an absolute (fixed) width for the specified column.
    * @param column The column to be set.
    * @param width The absolute width of the column.
+   * @param padding The additional padding to add.
    * @param chars True if width is specified in characters.
    */
-  public void setAbsoluteWidth( int column, int width, boolean chars);
+  public void setAbsoluteWidth( int column, int width, int padding, boolean chars);
   
   /**
    * Specify that the given column size be assigned.
    * @param column The column to be set.
+   * @param minimum TODO
+   * @param maximum TODO
+   * @param padding The additional padding to add.
    */
-  public void setFreeWidth( int column);
+  public void setFreeWidth( int column, int minimum, int maximum, int padding);
   
   /**
    * Specify a relative width for the specified column.
    * @param column The column to be set.
-   * @param mode The column resize mode.
+   * @param minimum TODO
    * @param maximum The maximum column width.
    * @param relative The percentage of the total width (for relative mode only).
+   * @param padding The additional padding to add.
    * @param chars True if width is specified in characters.
+   * @param mode The column resize mode.
    */
-  public void setRelativeWidth( int column, int maximum, double relative, boolean chars);
+  public void setRelativeWidth( int column, int minimum, int maximum, double relative, int padding, boolean chars);
   
   /**
    * Specify automatic width for the specified column.
    * @param column The column.
    * @param minimum The minimum column width.
    * @param maximum The maximum column width.
+   * @param padding The additional padding to add.
    * @param chars True if width is specified in characters.
    */
-  public void setAutoWidth( int column, int minimum, int maximum, boolean chars);
+  public void setAutoWidth( int column, int minimum, int maximum, int padding, boolean chars);
   
   /**
    * Set the total width.

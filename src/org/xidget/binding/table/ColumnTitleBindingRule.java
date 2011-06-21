@@ -41,7 +41,7 @@ public class ColumnTitleBindingRule implements IBindingRule
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( ITreeWidgetFeature.class) != null;
+    return element.getParent().isType( "column") && xidget.getFeature( ITreeWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)

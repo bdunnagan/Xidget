@@ -99,7 +99,6 @@ public final class Creator
     processor.addHandler( "bounds", new BindingTagHandler( new BoundsBindingRule()));
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "context", new ContextTagHandler());
-    processor.addHandler( "column", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "font", new BindingTagHandler( new FontBindingRule()));
@@ -116,16 +115,17 @@ public final class Creator
     processor.addHandler( "source", new SourceTagHandler());
     processor.addHandler( "spacing", new BindingTagHandler( new SpacingBindingRule()));
     processor.addHandler( "title", new BindingTagHandler( new TitleBindingRule()));
+    processor.addHandler( "title", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
     processor.addHandler( "visible", new BindingTagHandler( new VisibleBindingRule()));
     
     // slider
-    processor.addHandler( "minimum", new BindingTagHandler( new MinimumBindingRule()));
-    processor.addHandler( "maximum", new BindingTagHandler( new MaximumBindingRule()));
+    processor.addHandler( "min", new BindingTagHandler( new MinimumBindingRule()));
+    processor.addHandler( "max", new BindingTagHandler( new MaximumBindingRule()));
     processor.addHandler( "precision", new BindingTagHandler( new PrecisionBindingRule()));
-    processor.addAttributeHandler( "minimum", new BindingTagHandler( new MinimumBindingRule()));
-    processor.addAttributeHandler( "maximum", new BindingTagHandler( new MaximumBindingRule()));
+    processor.addAttributeHandler( "min", new BindingTagHandler( new MinimumBindingRule()));
+    processor.addAttributeHandler( "max", new BindingTagHandler( new MaximumBindingRule()));
     processor.addAttributeHandler( "precision", new BindingTagHandler( new PrecisionBindingRule()));
     
     // tables

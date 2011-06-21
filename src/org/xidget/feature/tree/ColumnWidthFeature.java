@@ -4,12 +4,16 @@
  */
 package org.xidget.feature.tree;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.xidget.IXidget;
 import org.xidget.ifeature.tree.IColumnWidthFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
+import org.xmodel.BreadthFirstIterator;
+import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 
 /**
  * An implementation of IColumnWidthFeature that provides a very fast and flexible
@@ -19,14 +23,143 @@ import org.xidget.ifeature.tree.ITreeWidgetFeature;
 @SuppressWarnings("unchecked")
 public abstract class ColumnWidthFeature implements IColumnWidthFeature
 {
-  protected ColumnWidthFeature( IXidget xidget, int columns)
+  protected ColumnWidthFeature( IXidget xidget)
   {
     this.xidget = xidget;
-    styles = new ColumnStyle[ columns];
-    sorted = new List[ columns];
-    widest = new int[ columns];
-    sizes = new int[ columns];
-    padding = 3;
+    this.rows = new ArrayList<Integer[]>();
+  }
+
+  /**
+   * Extract the column children of the specified xidget configuration and configure
+   * this feature from the width child of each column. The content of the width child
+   * is one of the following:
+   * <ul>
+   * <li>A positive integer for absolute width.
+   * <li>A positive real followed by a "%" sign for relative width.
+   * <li>The word "auto" for automatic sizing.
+   * </ul>
+   * <p>
+   * The presence of a "c" on the end of a value indicates that the value is specified
+   * in characters as opposed to pixels.
+   * <p>
+   * Automatic sizing supports a minimium and maximum width, which are specified in 
+   * the "min" and "max" attributes of the width element.
+   * <p>
+   * Relative sizing supports a maximum width, which is specified in the "max" attribute.
+   * <p>
+   * Finally, extra space may be added to a column using the "pad" attribute. 
+   * @param xidget The xidget.
+   */
+  public void configure( IXidget xidget)
+  {
+    IModelObject config = xidget.getConfig();
+
+    int count = findNumberOfColumns( xidget);
+    styles = new ColumnStyle[ count];
+    widest = new int[ count];
+    sizes = new int[ count];
+    sorted = new List[ count];
+    for( int i=0; i<count; i++) sorted[ i] = new ArrayList<Integer>();
+    
+    int charWidth = getWidth( "X");
+    
+    List<IModelObject> columns = config.getChildren( "column");
+    for( int i=0; i<columns.size(); i++)
+    {
+      IModelObject column = columns.get( i);
+      String spec = Xlate.childGet( column, "width", (String)null);
+      if ( spec == null)
+      {
+        setFreeWidth( i, 0, 0, 0);
+      }
+      else
+      {
+        IModelObject width = column.getFirstChild( "width");
+        
+        String padSpec = Xlate.get( width, "pad", (String)null);
+        int pad = (padSpec != null)? parseConstraint( padSpec, charWidth): 0;
+        
+        String minSpec = Xlate.get( width, "min", (String)null);
+        int min = (minSpec != null)? parseConstraint( minSpec, charWidth): 0;
+        
+        String maxSpec = Xlate.get( width, "max", (String)null);
+        int max = (maxSpec != null)? parseConstraint( maxSpec, charWidth): Integer.MAX_VALUE;
+        
+        if ( spec.equals( "free"))
+        {
+          setFreeWidth( i, min, max, pad);
+        }
+        else if ( spec.equals( "auto"))
+        {
+          setAutoWidth( i, min, max, pad, false);
+        }
+        else if ( spec.endsWith( "%"))
+        {
+          double relative = Double.parseDouble( spec.substring( 0, spec.length() - 1)) / 100;
+          setRelativeWidth( i, min, max, relative, pad, false);
+        }
+        else
+        {
+          int absolute = parseConstraint( spec, charWidth);
+          setAbsoluteWidth( i, absolute, pad, false);
+        }
+      }
+    }
+    
+    for( int i=columns.size(); i<count; i++)
+    {
+      setFreeWidth( i, 0, 0, 0);
+    }
+  }
+  
+  /**
+   * It is not required that a xidget declare a column.  Columns are automatically created for sub-tables
+   * that define additional cells.  This method calculates the number of columns from the sub-table with
+   * the most cell declarations.
+   * @param xidget The xidget.
+   * @return Returns the number of maximum number of cells defined in any table of the specified xidget.
+   */
+  private static int findNumberOfColumns( IXidget xidget)
+  {
+    int columns = 0;
+    IModelObject config = xidget.getConfig();
+    BreadthFirstIterator iter = new BreadthFirstIterator( config);
+    while( iter.hasNext())
+    {
+      IModelObject node = iter.next();
+      if ( node.isType( "table"))
+      {
+        int cells = node.getNumberOfChildren( "cell");
+        if ( cells > columns) columns = cells;
+      }
+    }
+    return columns;
+  }
+  
+  /**
+   * Parse a minimum or maximum constraint with optional suffix "c" indicating that the
+   * constraint is measured in characters instead of pixels. Contraints may also end with
+   * the suffix "p" even though pixels measurements are the default.
+   * @param constraint The constraint specification.
+   * @return Returns the constraint in pixels.
+   */
+  private static int parseConstraint( String constraint, int charWidth)
+  {
+    char c = constraint.charAt( constraint.length() - 1);
+    if ( c == 'c' || c == 'C')
+    {
+      constraint = constraint.substring( 0, constraint.length() - 1);
+      return Integer.parseInt( constraint) * charWidth;
+    }
+    else if ( c == 'p' || c == 'P')
+    {
+      constraint = constraint.substring( 0, constraint.length() - 1);
+      return Integer.parseInt( constraint);
+    }
+    else
+    {
+      return Integer.parseInt( constraint);
+    }
   }
 
   /* (non-Javadoc)
@@ -34,25 +167,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
    */
   public final void insertColumn( int column)
   {
-    ColumnStyle[] newStyles = new ColumnStyle[ styles.length + 1];
-    if ( column > 0) System.arraycopy( styles, 0, newStyles, 0, column);
-    if ( column < styles.length) System.arraycopy( styles, column, newStyles, column+1, styles.length - column);
-    styles = newStyles;
-    
-    int[] newWidest = new int[ widest.length + 1];
-    if ( column > 0) System.arraycopy( widest, 0, newWidest, 0, column);
-    if ( column < widest.length) System.arraycopy( widest, column, newWidest, column+1, widest.length - column);
-    widest = newWidest;
-    
-    List<Integer>[] newSorted = new List[ sorted.length + 1];
-    if ( column > 0) System.arraycopy( sorted, 0, newSorted, 0, column);
-    if ( column < sorted.length) System.arraycopy( sorted, column, newSorted, column+1, sorted.length - column);
-    sorted = newSorted;
-    
-    int[] newSizes = new int[ sizes.length + 1];
-    if ( column > 0) System.arraycopy( sizes, 0, newSizes, 0, column);
-    if ( column < sizes.length) System.arraycopy( sizes, column, newSizes, column+1, sizes.length - column);
-    sizes = newSizes;
+    update();
   }
   
   /* (non-Javadoc)
@@ -60,34 +175,17 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
    */
   public final void removeColumn( int column)
   {
-    ColumnStyle[] newStyles = new ColumnStyle[ styles.length - 1];
-    if ( column > 0) System.arraycopy( styles, 0, newStyles, 0, column);
-    if ( column < styles.length) System.arraycopy( styles, column+1, newStyles, column, styles.length - 1 - column);
-    styles = newStyles;
-    
-    int[] newWidest = new int[ widest.length - 1];
-    if ( column > 0) System.arraycopy( widest, 0, newWidest, 0, column);
-    if ( column < widest.length) System.arraycopy( widest, column+1, newWidest, column, widest.length - 1 - column);
-    widest = newWidest;
-    
-    List<Integer>[] newSorted = new List[ sorted.length - 1];
-    if ( column > 0) System.arraycopy( sorted, 0, newSorted, 0, column);
-    if ( column < sorted.length) System.arraycopy( sorted, column+1, newSorted, column, sorted.length - 1 - column);
-    sorted = newSorted;
-    
-    int[] newSizes = new int[ sizes.length - 1];
-    if ( column > 0) System.arraycopy( sizes, 0, newSizes, 0, column);
-    if ( column < sizes.length) System.arraycopy( sizes, column+1, newSizes, column, sizes.length - 1 - column);
-    sizes = newSizes;
+    update();
   }
   
   /* (non-Javadoc)
    * @see org.xidget.ifeature.tree.IColumnWidthFeature#setAbsoluteWidth(int, int, boolean)
    */
-  public final void setAbsoluteWidth( int column, int width, boolean chars)
+  public final void setAbsoluteWidth( int column, int width, int padding, boolean chars)
   {
     ColumnStyle style = new ColumnStyle();
     style.mode = Mode.absolute;
+    style.padding = padding;
     
     style.minimum = width;
     if ( chars)
@@ -99,47 +197,54 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     style.maximum = style.minimum;
     styles[ column] = style;
     
-    update();
+    //update();
   }
   
   /* (non-Javadoc)
    * @see org.xidget.ifeature.tree.IColumnWidthFeature#setFreeWidth(int)
    */
-  public final void setFreeWidth( int column)
+  public final void setFreeWidth( int column, int minimum, int maximum, int padding)
   {
     ColumnStyle style = new ColumnStyle();
     style.mode = Mode.free;
+    style.minimum = minimum;
+    style.maximum = maximum;    
+    style.padding = padding;
     styles[ column] = style;
     
-    update();
+    //update();
   }
   
   /* (non-Javadoc)
-   * @see org.xidget.ifeature.tree.IColumnWidthFeature#setRelativeWidth(int, int, double, boolean)
+   * @see org.xidget.ifeature.tree.IColumnWidthFeature#setRelativeWidth(int, int, int, double, int, boolean)
    */
-  public final void setRelativeWidth( int column, int maximum, double relative, boolean chars)
+  public final void setRelativeWidth( int column, int minimum, int maximum, double relative, int padding, boolean chars)
   {
     ColumnStyle style = new ColumnStyle();
     style.mode = Mode.relative;
+    style.padding = padding;
+    style.minimum = minimum;
     style.maximum = maximum;
     if ( chars)
     {
       int charWidth = getWidth( "X");
+      style.minimum *= charWidth;
       style.maximum *= charWidth;
     }
     style.relative = relative;
     styles[ column] = style;
     
-    update();
+    //update();
   }
   
   /* (non-Javadoc)
    * @see org.xidget.ifeature.tree.IColumnWidthFeature#setAutoWidth(int, int, int, boolean)
    */
-  public final void setAutoWidth( int column, int minimum, int maximum, boolean chars)
+  public final void setAutoWidth( int column, int minimum, int maximum, int padding, boolean chars)
   {
     ColumnStyle style = new ColumnStyle();
     style.mode = Mode.auto;
+    style.padding = padding;
     style.minimum = minimum;
     style.maximum = maximum;
     if ( chars)
@@ -150,7 +255,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     }
     styles[ column] = style;
     
-    update();
+    //update();
   }
   
   /* (non-Javadoc)
@@ -172,9 +277,12 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     int width = getWidth( text);
     Integer[] widths = rows.get( row);
     widths[ column] = width;
+
+    if ( widest[ column] < width) widest[ column] = width;
     
     int index = Collections.binarySearch( sorted[ column], width);
-    sorted[ column].add( index, row);
+    if ( index < 0) index = -(index + 1);
+    sorted[ column].add( index, width);
     
     update();
   }
@@ -221,10 +329,9 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   /**
    * Compute the width of each column.
    * @param width Returns the computed width of each column.
-   * @param padding The amount of additional space added to each computed width.
    * @return Returns the width of each column.
    */
-  private final void compute( int[] widths, int padding)
+  private final void compute( int[] widths)
   {
     double total = width;
     int columns = styles.length;
@@ -234,22 +341,14 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     {
       if ( styles[ i].mode == Mode.absolute)
       {
-        widths[ i] = styles[ i].minimum;
-        total -= widths[ i] + padding;
+        widths[ i] = styles[ i].minimum + styles[ i].padding;
+        total -= widths[ i];
         columns--;
       }
       else if ( styles[ i].mode == Mode.auto)
       {
-        widths[ i] = widest[ i];
-        if ( styles[ i].minimum >= 0 && widths[ i] < styles[ i].minimum) 
-        {
-          widths[ i] = styles[ i].minimum;
-        }
-        else if ( styles[ i].maximum >= 0 && widths[ i] > styles[ i].maximum) 
-        {
-          widths[ i] = styles[ i].maximum;
-        }
-        total -= widths[ i] + padding;
+        widths[ i] = constrain( styles[ i], widest[ i] + styles[ i].padding);
+        total -= widths[ i];
         columns--;
       }
     }
@@ -260,26 +359,51 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     {
       if ( styles[ i].mode == Mode.relative)
       {
-        double width = basis * styles[ i].relative;
-        widths[ i] = (int)Math.round( width);
-        if ( styles[ i].maximum >= 0 && widths[ i] > styles[ i].maximum) 
-        {
-          widths[ i] = styles[ i].maximum;
-        }
-        total -= width + padding;
+        widths[ i] = constrain( styles[ i], basis * styles[ i].relative + styles[ i].padding);
+        if ( widths[ i] > total) widths[ i] = (int)total;
+        total -= widths[ i];
         columns--;
       }
     }
-      
-    // distribute remaining space
-    int width = (int)Math.floor( total / columns);
+    
+    // sum remaining padding
+    int padding = 0;
     for( int i=0; i<widths.length; i++)
     {
       if ( styles[ i].mode == Mode.free)
       {
-        widths[ i] = width;
+        padding += styles[ i].padding;
       }
     }
+    
+    // distribute remaining space
+    int width = (int)Math.floor( total / columns) - padding;
+    for( int i=0; i<widths.length; i++)
+    {
+      if ( styles[ i].mode == Mode.free)
+      {
+        widths[ i] = constrain( styles[ i], width + styles[ i].padding);
+      }
+    }
+  }
+  
+  /**
+   * Applies the constraints of the specified style.
+   * @param style The column sizing style.
+   * @param width The raw column width.
+   * @return Returns the constrained column width.
+   */
+  private static int constrain( ColumnStyle style, double width)
+  {
+    if ( style.minimum >= 0 && width < style.minimum) 
+    {
+      return style.minimum;
+    }
+    else if ( style.maximum >= 0 && width > style.maximum) 
+    {
+      return style.maximum;
+    }
+    return (int)Math.round( width);
   }
   
   /**
@@ -288,18 +412,18 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   private void update()
   {
     int[] newSizes = new int[ sizes.length];
-    compute( newSizes, padding);
+    compute( newSizes);
     
     ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     for( int i=0; i<newSizes.length; i++)
     {
-      if ( newSizes[ i] != sizes[ i])
+      //if ( newSizes[ i] != sizes[ i])
         feature.setColumnWidth( i, newSizes[ i]);
     }
     
     sizes = newSizes;
   }
-  
+
   private enum Mode { absolute, relative, free, auto};
   
   private final static class ColumnStyle
@@ -308,8 +432,9 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     public int minimum;
     public int maximum;
     public double relative;
+    public int padding;
   }
-
+  
   protected IXidget xidget;
   private ColumnStyle[] styles;
   private List<Integer[]> rows;
@@ -317,5 +442,4 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   private int[] widest;
   private int[] sizes;
   private int width;
-  private int padding;
 }

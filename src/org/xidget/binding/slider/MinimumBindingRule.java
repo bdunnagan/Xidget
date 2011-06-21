@@ -24,7 +24,6 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.binding.IBindingRule;
 import org.xidget.config.TagProcessor;
-import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.slider.ISliderWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -34,7 +33,7 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
- * An implementation of IBindingRule for ISliderFeature minimum.
+ * An implementation of IBindingRule for ISliderWidgetFeature minimum.
  */
 public class MinimumBindingRule implements IBindingRule
 {
@@ -43,7 +42,7 @@ public class MinimumBindingRule implements IBindingRule
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( IWidgetFeature.class) != null;
+    return xidget.getFeature( ISliderWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
