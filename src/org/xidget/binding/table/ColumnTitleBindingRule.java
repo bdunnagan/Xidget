@@ -41,7 +41,8 @@ public class ColumnTitleBindingRule implements IBindingRule
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return element.getParent().isType( "column") && xidget.getFeature( ITreeWidgetFeature.class) != null;
+    return (element.getParent().isType( "column") || element.getParent().isType( "cell")) &&
+      xidget.getFeature( ITreeWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -49,16 +50,15 @@ public class ColumnTitleBindingRule implements IBindingRule
    */
   public IExpressionListener getListener( TagProcessor processor, IXidget xidget, IModelObject element)
   {
-    int column = element.getParent().getChildren( element.getType()).indexOf( element);
-    return new Listener( xidget, column);
+    return new Listener( xidget, element);
   }
 
   private final static class Listener extends ExpressionListener
   {
-    Listener( IXidget xidget, int column)
+    Listener( IXidget xidget, IModelObject element)
     {
       this.xidget = xidget;
-      this.column = column;
+      this.element = element;
     }
     
     /* (non-Javadoc)
@@ -68,6 +68,7 @@ public class ColumnTitleBindingRule implements IBindingRule
     @Override
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
+      int column = getColumnIndex();
       ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
       feature.setTitle( column, Boolean.toString( newValue));
     }
@@ -79,6 +80,7 @@ public class ColumnTitleBindingRule implements IBindingRule
     @Override
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
+      int column = getColumnIndex();
       ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
       feature.setTitle( column, Double.toString( newValue));
     }
@@ -90,6 +92,7 @@ public class ColumnTitleBindingRule implements IBindingRule
     @Override
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
+      int column = getColumnIndex();
       ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
       feature.setTitle( column, newValue);
     }
@@ -101,9 +104,10 @@ public class ColumnTitleBindingRule implements IBindingRule
     @Override
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes = expression.query( context, null);
+      IModelObject node = expression.queryFirst( context);
+      int column = getColumnIndex();
       ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
-      feature.setTitle( column, Xlate.get( nodes.get( 0), ""));
+      feature.setTitle( column, Xlate.get( node, ""));
     }
     
     /* (non-Javadoc)
@@ -113,8 +117,8 @@ public class ColumnTitleBindingRule implements IBindingRule
     @Override
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes = expression.query( context, null);
-      IModelObject node = (nodes.size() > 0)? nodes.get( 0): null;
+      IModelObject node = expression.queryFirst( context);
+      int column = getColumnIndex();
       ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
       feature.setTitle( column, Xlate.get( node, ""));
     }
@@ -126,6 +130,7 @@ public class ColumnTitleBindingRule implements IBindingRule
     @Override
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
+      int column = getColumnIndex();
       ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
       feature.setTitle( column, (newValue != null)? newValue.toString(): "");
     }
@@ -139,7 +144,23 @@ public class ColumnTitleBindingRule implements IBindingRule
       return true;
     }
 
+    /**
+     * @return Returns the column index of the specified column parameter.
+     */
+    private int getColumnIndex()
+    {
+      IModelObject parent = element.getParent();
+      if ( parent.isType( "column") || parent.isType( "cell"))
+      {
+        element = parent;
+        parent = parent.getParent();
+        
+      }
+      List<IModelObject> columns = parent.getChildren( element.getType());
+      return columns.indexOf( element);
+    }
+    
     private IXidget xidget;
-    private int column;
+    private IModelObject element;
   }
 }

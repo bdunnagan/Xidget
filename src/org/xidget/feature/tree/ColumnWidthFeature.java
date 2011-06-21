@@ -52,8 +52,6 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
    */
   public void configure( IXidget xidget)
   {
-    IModelObject config = xidget.getConfig();
-
     int count = findNumberOfColumns( xidget);
     styles = new ColumnStyle[ count];
     widest = new int[ count];
@@ -63,28 +61,27 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     
     int charWidth = getWidth( "X");
     
-    List<IModelObject> columns = config.getChildren( "column");
+    List<IModelObject> columns = getColumnDeclarations( xidget);
     for( int i=0; i<columns.size(); i++)
     {
       IModelObject column = columns.get( i);
-      String spec = Xlate.childGet( column, "width", (String)null);
-      if ( spec == null)
+      IModelObject width = column.getFirstChild( "width");
+      if ( width == null)
       {
-        setFreeWidth( i, 0, 0, 0);
+        setFreeWidth( i, -1, -1, 0);
       }
       else
       {
-        IModelObject width = column.getFirstChild( "width");
-        
         String padSpec = Xlate.get( width, "pad", (String)null);
         int pad = (padSpec != null)? parseConstraint( padSpec, charWidth): 0;
         
         String minSpec = Xlate.get( width, "min", (String)null);
-        int min = (minSpec != null)? parseConstraint( minSpec, charWidth): 0;
+        int min = (minSpec != null)? parseConstraint( minSpec, charWidth): -1;
         
         String maxSpec = Xlate.get( width, "max", (String)null);
-        int max = (maxSpec != null)? parseConstraint( maxSpec, charWidth): Integer.MAX_VALUE;
-        
+        int max = (maxSpec != null)? parseConstraint( maxSpec, charWidth): -1;
+
+        String spec = Xlate.get( width, "free");
         if ( spec.equals( "free"))
         {
           setFreeWidth( i, min, max, pad);
@@ -108,8 +105,27 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     
     for( int i=columns.size(); i<count; i++)
     {
-      setFreeWidth( i, 0, 0, 0);
+      setFreeWidth( i, -1, -1, 0);
     }
+  }
+  
+  private static List<IModelObject> getColumnDeclarations( IXidget xidget)
+  {
+    IModelObject config = xidget.getConfig();
+
+    // add column declarations
+    List<IModelObject> result = new ArrayList<IModelObject>();
+    result.addAll( config.getChildren( "column"));
+    
+    // add cell declarations if they define a title or a width
+    List<IModelObject> cells = config.getChildren( "cell");
+    for( int i=0; i<cells.size(); i++)
+    {
+      IModelObject cell = cells.get( i);
+      if ( i == result.size()) result.add( cell);
+    }
+    
+    return result;
   }
   
   /**
