@@ -33,8 +33,8 @@ public interface IColumnWidthFeature
   /**
    * Specify that the given column size be assigned.
    * @param column The column to be set.
-   * @param minimum TODO
-   * @param maximum TODO
+   * @param minimum The minimum column width.
+   * @param maximum The maximum column width.
    * @param padding The additional padding to add.
    */
   public void setFreeWidth( int column, int minimum, int maximum, int padding);
@@ -42,7 +42,7 @@ public interface IColumnWidthFeature
   /**
    * Specify a relative width for the specified column.
    * @param column The column to be set.
-   * @param minimum TODO
+   * @param minimum The minimum column width.
    * @param maximum The maximum column width.
    * @param relative The percentage of the total width (for relative mode only).
    * @param padding The additional padding to add.
@@ -62,10 +62,24 @@ public interface IColumnWidthFeature
   public void setAutoWidth( int column, int minimum, int maximum, int padding, boolean chars);
   
   /**
+   * Returns the computed width of the specified column.
+   * @param column The column index.
+   * @return Returns the computed width of the specified column.
+   */
+  public int getWidth( int column);
+  
+  /**
+   * Returns true if the specified column can be resized.
+   * @param column The column index.
+   * @return Returns true if the specified column can be resized.
+   */
+  public boolean isResizeable( int column);
+  
+  /**
    * Set the total width.
    * @param width The width.
    */
-  public void setWidth( int width);
+  public void setTotalWidth( int width);
   
   /**
    * Notify the algorithm that the specified text has been added.

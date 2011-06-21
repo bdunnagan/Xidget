@@ -59,7 +59,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     sorted = new List[ count];
     for( int i=0; i<count; i++) sorted[ i] = new ArrayList<Integer>();
     
-    int charWidth = getWidth( "X");
+    int charWidth = getTextWidth( "X");
     
     List<IModelObject> columns = getColumnDeclarations( xidget);
     for( int i=0; i<columns.size(); i++)
@@ -206,7 +206,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     style.minimum = width;
     if ( chars)
     {
-      int charWidth = getWidth( "X");
+      int charWidth = getTextWidth( "X");
       style.minimum *= charWidth;
     }
     
@@ -243,7 +243,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     style.maximum = maximum;
     if ( chars)
     {
-      int charWidth = getWidth( "X");
+      int charWidth = getTextWidth( "X");
       style.minimum *= charWidth;
       style.maximum *= charWidth;
     }
@@ -265,7 +265,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     style.maximum = maximum;
     if ( chars)
     {
-      int charWidth = getWidth( "X");
+      int charWidth = getTextWidth( "X");
       style.minimum *= charWidth;
       style.maximum *= charWidth;
     }
@@ -275,9 +275,28 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   }
   
   /* (non-Javadoc)
+   * @see org.xidget.ifeature.tree.IColumnWidthFeature#getColumnWidth(int)
+   */
+  @Override
+  public int getWidth( int column)
+  {
+    return sizes[ column];
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.tree.IColumnWidthFeature#isResizeable(int)
+   */
+  @Override
+  public boolean isResizeable( int column)
+  {
+    Mode mode = styles[ column].mode; 
+    return mode == Mode.free || mode == Mode.absolute;
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.ifeature.tree.IColumnWidthFeature#setWidth(int)
    */
-  public final void setWidth( int width)
+  public final void setTotalWidth( int width)
   {
     this.width = width;
     update();
@@ -290,7 +309,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   {
     if ( row > rows.size()) insertRow( row);
     
-    int width = getWidth( text);
+    int width = getTextWidth( text);
     Integer[] widths = rows.get( row);
     widths[ column] = width;
 
@@ -340,7 +359,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
    * @param text The text.
    * @return Returns the width of the specified text.
    */
-  protected abstract int getWidth( String text);
+  protected abstract int getTextWidth( String text);
   
   /**
    * Compute the width of each column.
@@ -349,6 +368,8 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
    */
   private final void compute( int[] widths)
   {
+    if ( width == 0) return;
+    
     double total = width;
     int columns = styles.length;
     
@@ -382,23 +403,14 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
       }
     }
     
-    // sum remaining padding
-    int padding = 0;
-    for( int i=0; i<widths.length; i++)
-    {
-      if ( styles[ i].mode == Mode.free)
-      {
-        padding += styles[ i].padding;
-      }
-    }
-    
     // distribute remaining space
-    int width = (int)Math.floor( total / columns) - padding;
     for( int i=0; i<widths.length; i++)
     {
       if ( styles[ i].mode == Mode.free)
       {
+        int width = (int)Math.floor( total / columns--);
         widths[ i] = constrain( styles[ i], width + styles[ i].padding);
+        total -= width;
       }
     }
   }
@@ -425,7 +437,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   /**
    * Update column sizes and notify subclass.
    */
-  private void update()
+  public void update()
   {
     int[] newSizes = new int[ sizes.length];
     compute( newSizes);
