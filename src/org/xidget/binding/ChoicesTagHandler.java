@@ -32,7 +32,6 @@ import org.xidget.ifeature.IChoiceListFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.diff.AbstractListDiffer;
-import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -59,22 +58,24 @@ public class ChoicesTagHandler extends AbstractTagHandler
     // element has children (static choices).  Static choices are handled in the IWidgetCreationFeature.
     //
     IXidget xidget = xidgetFeature.getXidget();
-    if ( element.getNumberOfChildren() == 0)
+    if ( element.getNumberOfChildren( "choice") == 0)
     {
-      // create expression
-      String xpath = Xlate.get( element, "");
-      if ( xpath.length() == 0)
-        throw new TagException(
-          "Empty expression in binding.");
-      
-      IExpression expression = XPath.createExpression( xpath);
-      
-      // create binding
+      // handle choice display transform
+      IExpression transform = Xlate.childGet( element, "show", (IExpression)null);
+      if ( transform != null)
+      {
+        IChoiceListFeature choiceListFeature = xidget.getFeature( IChoiceListFeature.class);
+        choiceListFeature.setTransform( transform);
+      }
+
+      // handle choices expression
+      IExpression expression = Xlate.get( element, Xlate.childGet( element, "list", (IExpression)null));
       IExpressionListener listener = new Listener( xidget);
       XidgetBinding binding = new XidgetBinding( expression, listener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       if ( bindFeature != null) bindFeature.addBindingBeforeChildren( binding);
     }
+    
     return false;
   }
 

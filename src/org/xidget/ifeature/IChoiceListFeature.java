@@ -21,6 +21,8 @@ package org.xidget.ifeature;
 
 import java.util.List;
 
+import org.xmodel.xpath.expression.IExpression;
+
 /**
  * An interface for xidgets which provide a list of choices from which the
  * client can choose (i.e. a combo box).
@@ -28,7 +30,20 @@ import java.util.List;
 public interface IChoiceListFeature
 {
   /**
-   * Returns a copy of the list of choices.
+   * Set the transform used to convert a choice into the value displayed in a widget.
+   * @param transform The transform.
+   */
+  public void setTransform( IExpression transform);
+  
+  /**
+   * Transform the specified choice.
+   * @param choice The raw choice.
+   * @return Returns the transformed choice.
+   */
+  public Object transform( Object choice);
+  
+  /**
+   * Returns a copy of the list of untransformed choices.
    * @return Returns a copy of the list of choices.
    */
   public List<Object> getChoices();

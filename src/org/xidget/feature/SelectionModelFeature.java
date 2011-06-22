@@ -215,6 +215,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
       // filter
       objects = applyFilter( context, objects);
       List<? extends Object> children = applyFilter( context, (parent != null)? parent.getChildren(): (List<Object>)context.get( variable));
+      if ( children == null) return;
       
       // diff
       differ.diff( children, objects);
