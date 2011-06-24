@@ -19,6 +19,7 @@
  */
 package org.xidget.binding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xidget.IXidget;
@@ -117,8 +118,9 @@ public class ChoicesTagHandler extends AbstractTagHandler
 
     private void updateChoices( IContext parent, List<IModelObject> rhs)
     {
-      List<Object> lhs = choiceListFeature.getChoices();
-      differ.diff( lhs, rhs);
+      List<Object> lhsCopy = new ArrayList<Object>( choiceListFeature.getChoices());
+      List<Object> rhsCopy = new ArrayList<Object>( rhs);
+      differ.diff( lhsCopy, rhsCopy);
     }
     
     @SuppressWarnings("rawtypes")
