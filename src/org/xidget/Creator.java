@@ -122,10 +122,14 @@ public final class Creator
     
     // slider
     processor.addHandler( "min", new BindingTagHandler( new MinimumBindingRule()));
+    processor.addHandler( "minimum", new BindingTagHandler( new MinimumBindingRule()));
     processor.addHandler( "max", new BindingTagHandler( new MaximumBindingRule()));
+    processor.addHandler( "maximum", new BindingTagHandler( new MaximumBindingRule()));
     processor.addHandler( "precision", new BindingTagHandler( new PrecisionBindingRule()));
     processor.addAttributeHandler( "min", new BindingTagHandler( new MinimumBindingRule()));
+    processor.addAttributeHandler( "minimum", new BindingTagHandler( new MinimumBindingRule()));
     processor.addAttributeHandler( "max", new BindingTagHandler( new MaximumBindingRule()));
+    processor.addAttributeHandler( "maximum", new BindingTagHandler( new MaximumBindingRule()));
     processor.addAttributeHandler( "precision", new BindingTagHandler( new PrecisionBindingRule()));
     
     // tables

@@ -4,6 +4,7 @@
  */
 package org.xidget.xpath;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.xidget.util.DateFormat;
@@ -58,7 +59,7 @@ public class ParseDateFunction extends Function
     }
     catch( Exception e)
     {
-      return 0;
+      throw new ExpressionException( this, "Unable to parse date.", e);
     }
   }
 
@@ -96,20 +97,30 @@ public class ParseDateFunction extends Function
       DateFormat util = new DateFormat();
       String value = valueExpr.evaluateString( context);
       
-      long oldResult = util.parse( oldValue, value);
-      long newResult = util.parse( newValue, value);
-      
-      getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
+      try
+      {
+        long oldResult = util.parse( oldValue, value);
+        long newResult = util.parse( newValue, value);
+        getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
+      }
+      catch( ParseException e)
+      {
+      }
     }
     else
     {
       DateFormat util = new DateFormat();
       String format = formatExpr.evaluateString( context);
       
-      long oldResult = util.parse( format, oldValue);
-      long newResult = util.parse( format, newValue);
-      
-      getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
+      try
+      {
+        long oldResult = util.parse( format, oldValue);
+        long newResult = util.parse( format, newValue);
+        getParent().notifyChange( this, context, (double)newResult, (double)oldResult);
+      }
+      catch( ParseException e)
+      {
+      }
     }
   }
 

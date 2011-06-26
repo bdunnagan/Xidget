@@ -59,7 +59,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     sorted = new List[ count];
     for( int i=0; i<count; i++) sorted[ i] = new ArrayList<Integer>();
     
-    int charWidth = getTextWidth( "X");
+    int charWidth = getMaxWidth();
     
     List<IModelObject> columns = getColumnDeclarations( xidget);
     for( int i=0; i<columns.size(); i++)
@@ -206,7 +206,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     style.minimum = width;
     if ( chars)
     {
-      int charWidth = getTextWidth( "X");
+      int charWidth = getMaxWidth();
       style.minimum *= charWidth;
     }
     
@@ -243,7 +243,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     style.maximum = maximum;
     if ( chars)
     {
-      int charWidth = getTextWidth( "X");
+      int charWidth = getMaxWidth();
       style.minimum *= charWidth;
       style.maximum *= charWidth;
     }
@@ -265,7 +265,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     style.maximum = maximum;
     if ( chars)
     {
-      int charWidth = getTextWidth( "X");
+      int charWidth = getMaxWidth();
       style.minimum *= charWidth;
       style.maximum *= charWidth;
     }
@@ -303,13 +303,24 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   }
   
   /* (non-Javadoc)
+   * @see org.xidget.ifeature.tree.IColumnWidthFeature#setColumnTitle(int, java.lang.String)
+   */
+  @Override
+  public void setColumnTitle( int column, String title)
+  {
+    setColumnText( -1, column, title);
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.ifeature.tree.IColumnWidthFeature#setColumnText(int, int, java.lang.String)
    */
   public final void setColumnText( int row, int column, String text)
   {
-    if ( row > rows.size()) insertRow( row);
+    row++;
     
-    int width = getTextWidth( text);
+    if ( row >= rows.size()) insertRow( row - 1);
+    
+    int width = getTextWidth( text, row == 0);
     Integer[] widths = rows.get( row);
     widths[ column] = width;
 
@@ -327,11 +338,14 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
    */
   public final void insertRow( int row)
   {
-    for( int i=rows.size(); i<=row; i++)
+    row++;
+    
+    for( int i=rows.size(); i<row; i++)
     {
-      Integer[] widths = new Integer[ styles.length];
-      rows.add( row, widths);
+      rows.add( row, new Integer[ styles.length]);
     }
+    
+    rows.add( row, new Integer[ styles.length]);
   }
   
   /* (non-Javadoc)
@@ -339,6 +353,8 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
    */
   public final void removeRow( int row)
   {
+    row++;
+    
     Integer[] widths = rows.get( row);
     for( int i=0; i<styles.length; i++)
     {
@@ -355,11 +371,17 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   }
 
   /**
+   * @return Returns the width of the widest character.
+   */
+  protected abstract int getMaxWidth();
+  
+  /**
    * Returns the width of the specified text.
    * @param text The text.
+   * @param header True if the text is a column title.
    * @return Returns the width of the specified text.
    */
-  protected abstract int getTextWidth( String text);
+  protected abstract int getTextWidth( String text, boolean header);
   
   /**
    * Compute the width of each column.

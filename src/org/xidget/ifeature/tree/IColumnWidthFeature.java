@@ -82,6 +82,13 @@ public interface IColumnWidthFeature
   public void setTotalWidth( int width);
   
   /**
+   * Notify the algorithm that the specified title has been set.
+   * @param column The column index.
+   * @param title The title of the column.
+   */
+  public void setColumnTitle( int column, String title);
+  
+  /**
    * Notify the algorithm that the specified text has been added.
    * @param row The row where the text was added.
    * @param column The column where the text was added.
