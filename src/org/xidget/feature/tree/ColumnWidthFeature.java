@@ -358,12 +358,21 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     Integer[] widths = rows.get( row);
     for( int i=0; i<styles.length; i++)
     {
-      if ( widths[ i] == widest[ i])
+      int width = widths[ i];
+      int index = Collections.binarySearch( sorted[ i], width);
+      if ( width == widest[ i])
       {
-        int shorter = sorted[ i].get( row);
-        widest[ i] = shorter;
-        sorted[ i].remove( row);
+        if ( index > 0)
+        {
+          int shorter = sorted[ i].get( index-1);
+          widest[ i] = shorter;
+        }
+        else
+        {
+          widest[ i] = 0;
+        }
       }
+      sorted[ i].remove( index);
     }
     rows.remove( row);
     
