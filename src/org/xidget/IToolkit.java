@@ -19,6 +19,8 @@
  */
 package org.xidget;
 
+import java.util.List;
+
 import org.xidget.config.TagProcessor;
 import org.xmodel.external.caching.IFileAssociation;
 import org.xmodel.xpath.expression.IExpression;
@@ -36,6 +38,11 @@ public interface IToolkit extends IFeatured
    * @param processor The tag processor.
    */
   public void configure( TagProcessor processor);
+  
+  /**
+   * @return Returns the names of all the available font families.
+   */
+  public List<String> getFonts();
   
   /**
    * Returns the implementation of IFileAssociation for loading images in a platform-specific way.
