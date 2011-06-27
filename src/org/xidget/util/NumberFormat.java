@@ -42,6 +42,9 @@ import java.text.ParseException;
  *
  *  Fractional part uses the following:
  *    - Number of decimal points
+ *    - At least N, no padding {N}
+ *    - At least N, space padding {N }
+ *    - At least N, zero padding {N0}
  *    - Round down 
  *    - Round up
  *    - Round half
@@ -94,11 +97,58 @@ public final class NumberFormat
    */
   public String format( double number)
   {
+    String limit = "";
+    
+    // min
+    if ( format.min != Long.MIN_VALUE)
+    {
+      if ( format.minInclusive)
+      {
+        if ( number < format.min)
+        {
+          limit = "-";
+          number = format.min;
+        }
+      }
+      else
+      {
+        if ( number <= format.min)
+        {
+          limit = "-";
+          number = format.min;
+        }
+      }
+    }
+    
+    // max
+    if ( format.max != Long.MAX_VALUE)
+    {
+      if ( format.maxInclusive)
+      {
+        if ( number > format.max)
+        {
+          limit = "+";
+          number = format.max;
+        }
+      }
+      else
+      {
+        if ( number >= format.max)
+        {
+          limit = "+";
+          number = format.max;
+        }
+      }
+    }
+    
     long integer = (long)number;
     double fraction = number - integer;
+    
     StringBuilder sb = new StringBuilder();
     formatInteger( integer, sb);
     formatFraction( fraction, sb);
+    sb.append( limit);
+    
     return sb.toString();
   }
 
@@ -109,18 +159,6 @@ public final class NumberFormat
    */
   private void formatInteger( long integer, StringBuilder sb)
   {
-    // min
-    if ( format.integer.min != Long.MIN_VALUE && integer < format.integer.min)
-    {
-      integer = format.integer.min;
-    }
-    
-    // max
-    if ( format.integer.max != Long.MAX_VALUE && integer > format.integer.max)
-    {
-      integer = format.integer.max;
-    }
-    
     // convert to string
     String raw = Long.toString( integer, format.integer.base);
     if ( raw.charAt( 0) == '-')
@@ -146,6 +184,19 @@ public final class NumberFormat
    */
   private void formatFraction( double fraction, StringBuilder sb)
   {
+    double log10 = Math.log10( fraction);
+    long normalized = (long)(fraction * Math.pow( 10, -log10));
+    
+    // convert to string
+    String raw = Long.toString( normalized, format.fraction.base);
+    sb.append( raw);
+    
+    // pad
+    if ( format.fraction.fill != 0)
+    {
+      for( int i=raw.length(); i<format.fraction.length; i++)
+        sb.append( format.fraction.fill);
+    }
   }
   
   /**
@@ -168,40 +219,83 @@ public final class NumberFormat
     Format format = new Format();
     format.integer = new IntegerFormat();
 
+    // parse integer fill char
+    parseIndex = 0;
+    char c = spec.charAt( parseIndex);
+    if ( c == '0' || c == ' ') { format.integer.fill = c; parseIndex++;}
+    
+    // + prefix
+    if ( spec.charAt( parseIndex) == '+')
+    {
+      format.integer.plusPrefix = true;
+      parseIndex++;
+    }
+    
     // parse integer common format
     parseCommonFormat( spec, format.integer);
     
-    // integer min
-    if ( parseIndex >= spec.length()) return format;
-    if ( spec.charAt( parseIndex) == '>')
-    {
-      parseIndex++;
-      format.integer.min = parseInteger( spec) + 1;
-    }
+    // try to parse limits here
+    parseLimits( spec, format);
     
-    // integer max
-    if ( parseIndex >= spec.length()) return format;
-    if ( spec.charAt( parseIndex) == '<')
-    {
-      parseIndex++;
-      format.integer.max = parseInteger( spec) - 1;
-    }
-
     // no fraction formatting
     if ( parseIndex >= spec.length()) return format;
     format.fraction = new FractionFormat();
     
+    // by default, fraction uses same base as integer
+    format.fraction.base = format.integer.base;
+    
     // fraction separator char
-    char c = spec.charAt( parseIndex);
+    c = spec.charAt( parseIndex);
     if ( c != '.' && c != ',') throw new ParseException( spec, parseIndex);
     format.fraction.separator = c;
     
     // parse fraction common format
     parseCommonFormat( spec, format.fraction);
     
+    // parse fraction fill char
+    c = spec.charAt( parseIndex);
+    if ( c == '0' || c == ' ') { format.fraction.fill = c; parseIndex++;}
+    
+    // try to parse limits here, too
+    parseLimits( spec, format);
+    
     return format;
   }
 
+  /**
+   * Try to parse limits from the specified specification.
+   * @param spec The format specification.
+   * @param format The format to be populated with limits.
+   */
+  private void parseLimits( String spec, Format format) throws ParseException
+  {
+    // integer min
+    if ( parseIndex >= spec.length()) return;
+    if ( spec.charAt( parseIndex) == '>')
+    {
+      parseIndex++;
+      if ( parseIndex < spec.length() && spec.charAt( parseIndex) == '=')
+      {
+        parseIndex++;
+        format.minInclusive = true;
+      }
+      format.min = parseInteger( spec);
+    }
+    
+    // integer max
+    if ( parseIndex >= spec.length()) return;
+    if ( spec.charAt( parseIndex) == '<')
+    {
+      parseIndex++;
+      if ( parseIndex < spec.length() && spec.charAt( parseIndex) == '=')
+      {
+        parseIndex++;
+        format.maxInclusive = true;
+      }
+      format.max = parseInteger( spec);
+    }
+  }
+  
   /**
    * Parse the next CommonFormat from the specification.
    * @param spec The format specification.
@@ -209,11 +303,6 @@ public final class NumberFormat
    */
   private void parseCommonFormat( String spec, CommonFormat format) throws ParseException
   {
-    // fill char
-    parseIndex = 0;
-    char c = spec.charAt( parseIndex);
-    if ( c == '0' || c == ' ') { format.fill = c; parseIndex++;}
-    
     // length
     if ( spec.charAt( parseIndex) == '*')
     {
@@ -227,7 +316,7 @@ public final class NumberFormat
     
     // base (or possibly style)
     if ( parseIndex >= spec.length()) return;
-    c = spec.charAt( parseIndex);
+    char c = spec.charAt( parseIndex);
     if ( Character.isLetter(  c))
     {
       format.base = parseBase( c);
@@ -313,14 +402,18 @@ public final class NumberFormat
   {
     public IntegerFormat integer;
     public FractionFormat fraction;
+    public long min = Long.MIN_VALUE;
+    public long max = Long.MAX_VALUE;
+    public boolean minInclusive;
+    public boolean maxInclusive;
   }
   
   public static enum Style { floating, scientific, engineering};
   
   private static class CommonFormat
   {
-    public int length;
     public char fill;
+    public int length;
     public int base = 10;
     public char round;
     public Style style = Style.floating;
@@ -328,8 +421,7 @@ public final class NumberFormat
   
   private final static class IntegerFormat extends CommonFormat
   {
-    public long min = Long.MIN_VALUE;
-    public long max = Long.MAX_VALUE;
+    public boolean plusPrefix;
   }
   
   public final static class FractionFormat extends CommonFormat
@@ -339,8 +431,8 @@ public final class NumberFormat
   
   public static void main( String[] args) throws Exception
   {
-    NumberFormat format = new NumberFormat( "*x");
-    double[] tests = new double[] { 1, 36, 999, 1e-10, 1e+10};
+    NumberFormat format = new NumberFormat( " 4>=0<=100");
+    double[] tests = new double[] { -1, 0, 1, 36, 100, 101, 1e-10, 1e+10};
     for( double test: tests)
     {
       System.out.printf( "|%s| %f\n", format.format( test), test);
