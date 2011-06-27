@@ -61,20 +61,23 @@ public class ChoicesTagHandler extends AbstractTagHandler
     IXidget xidget = xidgetFeature.getXidget();
     if ( element.getNumberOfChildren( "choice") == 0)
     {
-      // handle choice display transform
+      // choice list expression
+      IExpression expression = Xlate.get( element, Xlate.childGet( element, "list", (IExpression)null));
+      if ( expression == null) throw new TagException( "Choice list expression not defined.");
+      
+      // bind choices expression
+      IExpressionListener listener = new Listener( xidget);
+      XidgetBinding binding = new XidgetBinding( expression, listener);
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      if ( bindFeature != null) bindFeature.addBindingBeforeChildren( binding);
+      
+      // choice display transform
       IExpression transform = Xlate.childGet( element, "show", (IExpression)null);
       if ( transform != null)
       {
         IChoiceListFeature choiceListFeature = xidget.getFeature( IChoiceListFeature.class);
         choiceListFeature.setTransform( transform);
       }
-
-      // handle choices expression
-      IExpression expression = Xlate.get( element, Xlate.childGet( element, "list", (IExpression)null));
-      IExpressionListener listener = new Listener( xidget);
-      XidgetBinding binding = new XidgetBinding( expression, listener);
-      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-      if ( bindFeature != null) bindFeature.addBindingBeforeChildren( binding);
     }
     
     return false;

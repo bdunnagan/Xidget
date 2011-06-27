@@ -44,7 +44,7 @@ public class XidgetBinding implements IXidgetBinding
    */
   public void bind( StatefulContext context)
   {
-    expression.addNotifyListener( context, listener);
+    if ( expression != null) expression.addNotifyListener( context, listener);
   }
 
   /* (non-Javadoc)
@@ -52,7 +52,7 @@ public class XidgetBinding implements IXidgetBinding
    */
   public void unbind( StatefulContext context)
   {
-    expression.removeListener( context, listener);
+    if ( expression != null) expression.removeListener( context, listener);
   }
   
   private IExpression expression;
