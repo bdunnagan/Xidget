@@ -21,7 +21,7 @@ import java.text.ParseException;
  * Integer Formatting
  *  - Zero or more {*}
  *  - At least N, no padding {N}
- *  - At least N, space padding { N}
+ *  - At least N, space padding {_N}
  *  - At least N, zero padding {0N}
  *  - Hex {Nx}
  *  - Oct {No}
@@ -43,8 +43,8 @@ import java.text.ParseException;
  *  Fractional part uses the following:
  *    - Number of decimal points
  *    - At least N, no padding {N}
- *    - At least N, space padding {N }
- *    - At least N, zero padding {N0}
+ *    - At least N, space padding {_N}
+ *    - At least N, zero padding {0N}
  *    - Round down 
  *    - Round up
  *    - Round half
@@ -100,7 +100,7 @@ public final class NumberFormat
     String limit = "";
     
     // min
-    if ( format.min != Long.MIN_VALUE)
+    if ( format.min != Double.MIN_VALUE)
     {
       if ( format.minInclusive)
       {
@@ -121,7 +121,7 @@ public final class NumberFormat
     }
     
     // max
-    if ( format.max != Long.MAX_VALUE)
+    if ( format.max != Double.MAX_VALUE)
     {
       if ( format.maxInclusive)
       {
@@ -145,9 +145,30 @@ public final class NumberFormat
     double fraction = number - integer;
     
     StringBuilder sb = new StringBuilder();
-    formatInteger( integer, sb);
-    formatFraction( fraction, sb);
+    if ( format.integer != null) 
+    {
+      formatInteger( integer, sb);
+    }
+    
+    if ( format.fraction != null)
+    {
+      sb.append( format.fraction.separator);
+      formatFraction( fraction, sb);
+    }
+    
     sb.append( limit);
+    
+    // fraction/trailing pad
+    if ( format.fraction.fill != 0)
+    {
+      int index = sb.indexOf( format.fraction.separator);
+      if ( index >= 0)
+      {
+        index = sb.length() - index - 1;
+        for( int i=index; i<format.fraction.length; i++)
+          sb.append( format.fraction.fill);
+      }
+    }
     
     return sb.toString();
   }
@@ -161,10 +182,10 @@ public final class NumberFormat
   {
     // convert to string
     String raw = Long.toString( integer, format.integer.base);
-    if ( raw.charAt( 0) == '-')
+    if ( format.integer.fill != ' ' && raw.charAt( 0) == '-')
     {
       sb.append( '-');
-      raw.substring( 1);
+      raw = raw.substring( 1);
     }
     
     // pad
@@ -184,19 +205,29 @@ public final class NumberFormat
    */
   private void formatFraction( double fraction, StringBuilder sb)
   {
-    double log10 = Math.log10( fraction);
-    long normalized = (long)(fraction * Math.pow( 10, -log10));
+    double normalized = Math.abs( fraction * format.fraction.normalizer);
+    
+    // round
+    char round = format.fraction.round;
+    switch( round)
+    {
+      case '+': normalized = Math.ceil( normalized);
+      case '-': normalized = Math.floor( normalized);
+      default: normalized = Math.round( normalized);
+    }
     
     // convert to string
-    String raw = Long.toString( normalized, format.fraction.base);
-    sb.append( raw);
+    String raw = Long.toString( (long)normalized, format.fraction.base);
     
-    // pad
-    if ( format.fraction.fill != 0)
+    // remove trailing zeros if fill is not 0
+    if ( format.fraction.fill != '0')
     {
-      for( int i=raw.length(); i<format.fraction.length; i++)
-        sb.append( format.fraction.fill);
+      int end = raw.length() - 1;
+      while( end >= 0 && raw.charAt( end) == '0') end--;
+      raw = raw.substring( 0, end + 1);
     }
+    
+    sb.append( raw);
   }
   
   /**
@@ -221,8 +252,7 @@ public final class NumberFormat
 
     // parse integer fill char
     parseIndex = 0;
-    char c = spec.charAt( parseIndex);
-    if ( c == '0' || c == ' ') { format.integer.fill = c; parseIndex++;}
+    parseFill( spec, format.integer);
     
     // + prefix
     if ( spec.charAt( parseIndex) == '+')
@@ -245,16 +275,19 @@ public final class NumberFormat
     format.fraction.base = format.integer.base;
     
     // fraction separator char
-    c = spec.charAt( parseIndex);
+    char c = spec.charAt( parseIndex);
     if ( c != '.' && c != ',') throw new ParseException( spec, parseIndex);
-    format.fraction.separator = c;
+    format.fraction.separator = ""+c;
+    parseIndex++;
+    
+    // parse fraction fill char
+    parseFill( spec, format.fraction);
     
     // parse fraction common format
     parseCommonFormat( spec, format.fraction);
     
-    // parse fraction fill char
-    c = spec.charAt( parseIndex);
-    if ( c == '0' || c == ' ') { format.fraction.fill = c; parseIndex++;}
+    // precompute normalizer
+    format.fraction.normalizer = Math.pow( format.fraction.base, format.fraction.length);
     
     // try to parse limits here, too
     parseLimits( spec, format);
@@ -263,25 +296,28 @@ public final class NumberFormat
   }
 
   /**
+   * Parse the fill character from the specification.
+   * @param spec The format specification.
+   * @param format The common format.
+   */
+  private void parseFill( String spec, CommonFormat format)
+  {
+    if ( parseIndex >= spec.length()) return;
+    char c = spec.charAt( parseIndex);
+    if ( c == '0' || c == ' ') 
+    { 
+      format.fill = c; 
+      parseIndex++;
+    }
+  }
+  
+  /**
    * Try to parse limits from the specified specification.
    * @param spec The format specification.
    * @param format The format to be populated with limits.
    */
   private void parseLimits( String spec, Format format) throws ParseException
   {
-    // integer min
-    if ( parseIndex >= spec.length()) return;
-    if ( spec.charAt( parseIndex) == '>')
-    {
-      parseIndex++;
-      if ( parseIndex < spec.length() && spec.charAt( parseIndex) == '=')
-      {
-        parseIndex++;
-        format.minInclusive = true;
-      }
-      format.min = parseInteger( spec);
-    }
-    
     // integer max
     if ( parseIndex >= spec.length()) return;
     if ( spec.charAt( parseIndex) == '<')
@@ -292,7 +328,20 @@ public final class NumberFormat
         parseIndex++;
         format.maxInclusive = true;
       }
-      format.max = parseInteger( spec);
+      format.max = nextDouble( spec);
+    }
+    
+    // integer min
+    if ( parseIndex >= spec.length()) return;
+    if ( spec.charAt( parseIndex) == '>')
+    {
+      parseIndex++;
+      if ( parseIndex < spec.length() && spec.charAt( parseIndex) == '=')
+      {
+        parseIndex++;
+        format.minInclusive = true;
+      }
+      format.min = nextDouble( spec);
     }
   }
   
@@ -311,7 +360,7 @@ public final class NumberFormat
     }
     else
     {
-      format.length = parseInteger( spec);
+      format.length = nextInteger( spec);
     }
     
     // base (or possibly style)
@@ -348,13 +397,36 @@ public final class NumberFormat
    * @param s The string.
    * @return Returns the integer.
    */
-  private int parseInteger( String s) throws ParseException
+  private int nextInteger( String s) throws ParseException
   {
     try 
     { 
       int start = parseIndex;
       for( ; parseIndex < s.length() && Character.isDigit( s.charAt( parseIndex)); parseIndex++);
       return Integer.parseInt( s.substring( start, parseIndex));
+    } 
+    catch( NumberFormatException e) 
+    {
+      throw new ParseException( s, parseIndex);
+    }
+  }
+  
+  /**
+   * Parse the next number from the specified string.
+   * @param s The string.
+   * @return Returns the number.
+   */
+  private double nextDouble( String s) throws ParseException
+  {
+    try 
+    { 
+      int start = parseIndex;
+      for( ; parseIndex < s.length(); parseIndex++)
+      {
+        char c = s.charAt( parseIndex);
+        if ( c != '-' && c != '.' && !Character.isDigit( c)) break;
+      }
+      return Double.parseDouble( s.substring( start, parseIndex));
     } 
     catch( NumberFormatException e) 
     {
@@ -402,8 +474,8 @@ public final class NumberFormat
   {
     public IntegerFormat integer;
     public FractionFormat fraction;
-    public long min = Long.MIN_VALUE;
-    public long max = Long.MAX_VALUE;
+    public double min = Double.MIN_VALUE;
+    public double max = Double.MAX_VALUE;
     public boolean minInclusive;
     public boolean maxInclusive;
   }
@@ -415,7 +487,7 @@ public final class NumberFormat
     public char fill;
     public int length;
     public int base = 10;
-    public char round;
+    public char round = 0;
     public Style style = Style.floating;
   }
   
@@ -426,16 +498,30 @@ public final class NumberFormat
   
   public final static class FractionFormat extends CommonFormat
   {
-    public char separator;
+    public String separator;
+    public double normalizer;
   }
   
   public static void main( String[] args) throws Exception
   {
-    NumberFormat format = new NumberFormat( " 4>=0<=100");
-    double[] tests = new double[] { -1, 0, 1, 36, 100, 101, 1e-10, 1e+10};
-    for( double test: tests)
+    // TEST 1
     {
-      System.out.printf( "|%s| %f\n", format.format( test), test);
+//      NumberFormat format = new NumberFormat( " 4>=0<=100");
+//      double[] tests = new double[] { -1, 0, 1, 36, 100, 101, 1e-10, 1e+10};
+//      for( double test: tests)
+//      {
+//        System.out.printf( "|%s| %f\n", format.format( test), test);
+//      }
+    }
+    
+    // TEST 2
+    {
+      NumberFormat format = new NumberFormat( " 4. 2");
+      double[] tests = new double[] { -12.34, 12.34, 1.2, 12.3, 1.23};
+      for( double test: tests)
+      {
+        System.out.printf( "|%s| %f\n", format.format( test), test);
+      }
     }
   }
 }
