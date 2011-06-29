@@ -4,8 +4,9 @@
  */
 package org.xidget.ifeature.model;
 
+import java.util.List;
+
 import org.xmodel.IModelObject;
-import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An interface for getting and setting a single value in a model. This interface
@@ -16,30 +17,37 @@ public interface ISelectionModelFeature
 {
   /**
    * Set the element where selection will be stored.
-   * @param context The current evaluation context.
    * @param element The element.
    */
-  public void setElementStorage( StatefulContext context, IModelObject element);
+  public void setElementStorage( IModelObject element);
   
   /**
    * Set the name of the variable where the selection will be stored.
-   * @param context The current evaluation context.
    * @param name The name of the variable.
    */
-  public void setVariableStorage( StatefulContext context, String name);
+  public void setVariableStorage( String name);
   
   /**
-   * Set the value in the storage location. This method has no effect if the 
-   * storage location has not yet been defiend.
-   * @param context The current evaluation context.
-   * @param value The value.
-   * @return Returns the previous value.
+   * Insert the selected object at the specified index in the selection.
+   * @param index The index.
+   * @param object The object.
    */
-  public Object setSelection( StatefulContext context, Object value);
+  public void insertSelected( int index, Object object);
   
   /**
-   * @param context The current evaluation context.
-   * @return Returns null or the value in the storage location.
+   * Remove the selected object from the selection.
+   * @param object The object.
    */
-  public Object getValue( StatefulContext context);
+  public void removeSelected( Object object);
+  
+  /**
+   * Set the list of selected objects.
+   * @param list The list of selected objects.
+   */
+  public void setSelection( List<? extends Object> list);
+  
+  /**
+   * @return Returns the list of selected objects.
+   */
+  public List<? extends Object> getSelection();
 }

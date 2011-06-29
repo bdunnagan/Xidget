@@ -22,16 +22,16 @@ public interface ISingleValueUpdateFeature
    * @param origin The object that originated the update.
    * @param value The value taken from the model.
    */
-  public void display( Object origin, Object value);
+  public void setValueInWidget( Object origin, Object value);
   
   /**
-   * Tranform, validate and commit the specified value to the model. The origin
+   * Tranform, validate and commit the specified value in the model. The origin
    * parameter allows the originater of the update to pass through the pipeline to
    * prevent update loops.
    * @param origin The object that originated the update.
    * @param value The value taken from the widget.
    */
-  public void commit( Object origin, Object value);
+  public void setValueInModel( Object origin, Object value);
   
   /**
    * The expression used to transform a model value.
