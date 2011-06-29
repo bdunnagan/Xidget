@@ -342,7 +342,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     
     for( int i=rows.size(); i<row; i++)
     {
-      rows.add( row, new Integer[ styles.length]);
+      rows.add( i, new Integer[ styles.length]);
     }
     
     rows.add( row, new Integer[ styles.length]);
