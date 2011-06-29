@@ -109,15 +109,15 @@ public class ChoicesTagHandler extends AbstractTagHandler
     @Override
     public boolean requiresValueNotification()
     {
-      return false;
+      return true;
     }
 
-//    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
-//    {
-//      List<IModelObject> nodes = expression.query( contexts[ 0], null);
-//      int index = nodes.indexOf( object);
-//      if ( index >= 0) choiceListFeature.updateChoice( index, object);
-//    }
+    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
+    {
+      List<IModelObject> nodes = expression.query( contexts[ 0], null);
+      int index = nodes.indexOf( object);
+      if ( index >= 0) choiceListFeature.updateChoice( index, object);
+    }
 
     private void updateChoices( IContext parent, List<IModelObject> rhs)
     {
