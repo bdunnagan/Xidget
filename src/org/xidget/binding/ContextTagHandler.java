@@ -47,7 +47,14 @@ public class ContextTagHandler extends AbstractTagHandler
   @Override
   public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
   {
-    return parent.getFeature( IXidgetFeature.class) != null;
+    IXidgetFeature feature = parent.getFeature( IXidgetFeature.class);
+    if ( feature == null) return false;
+    
+    IXidget xidget = feature.getXidget();
+    if ( xidget == null) return false;
+    
+    IModelObject config = xidget.getConfig();
+    return element.getParent() == config;
   }
 
   /* (non-Javadoc)

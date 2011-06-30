@@ -103,6 +103,12 @@ public interface IWidgetFeature
   public void setEnabled( boolean enabled);
   
   /**
+   * Set whether the text is editable.
+   * @param editable True if editable.
+   */
+  public void setEditable( boolean editable);
+  
+  /**
    * Set the tooltip of the widget.
    * @param tooltip The tooltip.
    */

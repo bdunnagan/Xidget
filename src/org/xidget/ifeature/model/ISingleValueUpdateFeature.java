@@ -16,22 +16,33 @@ import org.xmodel.xpath.expression.IExpression;
 public interface ISingleValueUpdateFeature
 {
   /**
-   * Transform, validate and display the specified value in the widget. The origin
-   * parameter allows the originater of the update to pass through the pipeline to
-   * prevent update loops.
-   * @param origin The object that originated the update.
-   * @param value The value taken from the model.
+   * @return Returns true if an update is in progress.
    */
-  public void setValueInWidget( Object origin, Object value);
+  public boolean isUpdating();
   
   /**
-   * Tranform, validate and commit the specified value in the model. The origin
-   * parameter allows the originater of the update to pass through the pipeline to
-   * prevent update loops.
-   * @param origin The object that originated the update.
+   * Read the value from the model and send it through the transformation and
+   * validation pipe to the widget.
+   */
+  public void updateWidget();
+  
+  /**
+   * Read the value from the widget and send it through the transformation and
+   * validation pipe to the model.
+   */
+  public void updateModel();
+  
+  /**
+   * Transform, validate and display the specified value in the widget.
+   * @param value The value taken from the model.
+   */
+  public void display( Object value);
+  
+  /**
+   * Tranform, validate and commit the specified value in the model.
    * @param value The value taken from the widget.
    */
-  public void setValueInModel( Object origin, Object value);
+  public void commit( Object value);
   
   /**
    * The expression used to transform a model value.

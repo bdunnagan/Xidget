@@ -20,17 +20,11 @@ public interface ISingleValueModelFeature
   public void setStorageLocation( IModelObject node);
   
   /**
-   * @return Returns the node that stores the value.
-   */
-  public IModelObject getStorageLocation();
-  
-  /**
    * Set the value in the storage location. This method has no effect if the 
    * storage location has not yet been defiend.
    * @param value The value.
-   * @return Returns the previous value.
    */
-  public Object setValue( Object value);
+  public void setValue( Object value);
   
   /**
    * @return Returns null or the value in the storage location.

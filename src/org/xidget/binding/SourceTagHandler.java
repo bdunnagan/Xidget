@@ -28,8 +28,8 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.ISourceFeature;
-import org.xidget.ifeature.IValueFeature;
+import org.xidget.ifeature.model.ISingleValueModelFeature;
+import org.xidget.ifeature.model.ISingleValueUpdateFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -51,7 +51,7 @@ public class SourceTagHandler extends AbstractTagHandler
     if ( feature == null) return false;
     
     IXidget xidget = feature.getXidget();
-    return xidget != null && xidget.getFeature( ISourceFeature.class) != null;
+    return xidget != null && xidget.getFeature( ISingleValueModelFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -83,37 +83,37 @@ public class SourceTagHandler extends AbstractTagHandler
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      ISourceFeature feature = xidget.getFeature( ISourceFeature.class);
-      if ( feature != null) feature.setSource( expression.queryFirst( context));
+      ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
+      if ( feature != null) feature.setStorageLocation( expression.queryFirst( context));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      ISourceFeature feature = xidget.getFeature( ISourceFeature.class);
-      if ( feature != null) feature.setSource( expression.queryFirst( context));
+      ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
+      if ( feature != null) feature.setStorageLocation( expression.queryFirst( context));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
-      IValueFeature feature = xidget.getFeature( IValueFeature.class);
+      ISingleValueUpdateFeature feature = xidget.getFeature( ISingleValueUpdateFeature.class);
       if ( feature != null) feature.display( newValue);
     }
 
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
-      IValueFeature feature = xidget.getFeature( IValueFeature.class);
+      ISingleValueUpdateFeature feature = xidget.getFeature( ISingleValueUpdateFeature.class);
       if ( feature != null) feature.display( newValue);
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      IValueFeature feature = xidget.getFeature( IValueFeature.class);
+      ISingleValueUpdateFeature feature = xidget.getFeature( ISingleValueUpdateFeature.class);
       if ( feature != null) feature.display( newValue);
     }
     
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
-      IValueFeature feature = xidget.getFeature( IValueFeature.class);
+      ISingleValueUpdateFeature feature = xidget.getFeature( ISingleValueUpdateFeature.class);
       if ( feature != null) feature.display( newValue);
     }
     

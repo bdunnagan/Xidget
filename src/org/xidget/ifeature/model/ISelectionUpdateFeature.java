@@ -18,56 +18,43 @@ import org.xmodel.xpath.expression.IExpression;
 public interface ISelectionUpdateFeature
 {
   /**
-   * Transform, validate and display the specified selection in the widget. The origin
-   * parameter allows the originater of the update to pass through the pipeline to
-   * prevent update loops.
-   * @param origin The object that originated the update.
+   * Transform, validate and display the specified selection in the widget.
    * @param list The list of selected values.
    */
-  public void setSelectionInWidget( Object origin, List<? extends Object> list);
+  public void setSelectionInWidget( List<? extends Object> list);
   
   /**
    * Transform, validate and insert the specified value into the selection in the widget.
-   * The origin parameter allows the originater of the update to pass through the pipeline 
-   * to prevent update loops.
-   * @param origin The object that originated the update.
    * @param index The index where the value is to be inserted.
    * @param value The value.
    */
-  public void insertSelectedInWidget( Object origin, int index, Object value);
+  public void insertSelectedInWidget( int index, Object value);
   
   /**
    * Remove the specified value from the selection in the widget.
-   * @param origin The object that originated the update.
    * @param index The index of the value to be removed.
    */
-  public void removeSelectedInWidget( Object origin, int index);
+  public void removeSelectedInWidget( int index);
   
   /**
-   * Transform, validate and display the specified selection in the model. The origin
-   * parameter allows the originater of the update to pass through the pipeline to
-   * prevent update loops.
+   * Transform, validate and display the specified selection in the model.
    * @param origin The object that originated the update.
    * @param list The list of selected values.
    */
-  public void setSelectionInModel( Object origin, List<? extends Object> list);
+  public void setSelectionInModel( List<? extends Object> list);
   
   /**
    * Transform, validate and insert the specified value into the selection in the model.
-   * The origin parameter allows the originater of the update to pass through the pipeline 
-   * to prevent update loops.
-   * @param origin The object that originated the update.
    * @param index The index where the value is to be inserted.
    * @param value The value.
    */
-  public void insertSelectedInModel( Object origin, int index, Object value);
+  public void insertSelectedInModel( int index, Object value);
   
   /**
    * Remove the specified value from the selection in the model.
-   * @param origin The object that originated the update.
    * @param index The index of the value to be removed.
    */
-  public void removeSelectedInModel( Object origin, int index);
+  public void removeSelectedInModel( int index);
   
   /**
    * The expression used to transform a model value.

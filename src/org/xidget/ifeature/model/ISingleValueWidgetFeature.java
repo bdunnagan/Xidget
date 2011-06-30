@@ -12,9 +12,8 @@ public interface ISingleValueWidgetFeature
   /**
    * Set the value in the widget.
    * @param value The value.
-   * @return Returns the previous value.
    */
-  public Object setValue( Object value);
+  public void setValue( Object value);
   
   /**
    * @return Returns the value shown in the widget.
