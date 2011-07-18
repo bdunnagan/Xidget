@@ -27,13 +27,14 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.ISelectionModelFeature;
+import org.xidget.ifeature.model.ISelectionModelFeature;
+import org.xidget.ifeature.model.ISelectionUpdateFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
-import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
-import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
+import org.xmodel.xpath.variable.IVariableListener;
+import org.xmodel.xpath.variable.IVariableScope;
 
 /**
  * An implementation of ITagHandler for the <i>selection</i> element.
@@ -51,7 +52,7 @@ public class SelectionTagHandler implements ITagHandler
     IXidget xidget = feature.getXidget();
     if ( xidget == null) return false;
     
-    return xidget.getFeature( ISelectionModelFeature.class) != null;
+    return xidget.getFeature( ISelectionUpdateFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -63,19 +64,6 @@ public class SelectionTagHandler implements ITagHandler
     if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
     IXidget xidget = xidgetFeature.getXidget();
-    
-    // configure selection model
-    ISelectionModelFeature selectionModelFeature = xidget.getFeature( ISelectionModelFeature.class);
-    selectionModelFeature.configure( element);
-    
-    // get parent expression
-    IExpression expression = Xlate.childGet( element, "parent", Xlate.get( element, "parent", (IExpression)null));
-    if ( expression != null)
-    {
-      XidgetBinding binding = new XidgetBinding( expression, new ParentListener( xidget));
-      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-      bindFeature.addBindingAfterChildren( binding);
-    }
     
     // get variable
     String variable = Xlate.get( element, "variable", (String)null);
@@ -104,36 +92,7 @@ public class SelectionTagHandler implements ITagHandler
     return null;
   }
   
-  private final static class ParentListener extends ExpressionListener
-  {
-    ParentListener( IXidget xidget)
-    {
-      this.xidget = xidget;
-    }
-    
-    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
-    {
-      IModelObject selectionParent = expression.queryFirst( context);
-      ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
-      feature.setParent( (StatefulContext)context, selectionParent);
-    }
-
-    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
-    {
-      IModelObject selectionParent = expression.queryFirst( context);
-      ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
-      feature.setParent( (StatefulContext)context, selectionParent);
-    }
-
-    public boolean requiresValueNotification()
-    {
-      return false;
-    }
-
-    private IXidget xidget;
-  }
-  
-  private final static class VariableBinding implements IXidgetBinding
+  private final static class VariableBinding implements IXidgetBinding, IVariableListener
   {
     public VariableBinding( IXidget xidget, String variable)
     {
@@ -144,10 +103,60 @@ public class SelectionTagHandler implements ITagHandler
     public void bind( StatefulContext context)
     {
       ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
-      feature.setVariable( context, variable);
+      feature.setSourceVariable( variable);
+      
+      context.getScope().addListener( variable, context, this);
     }
 
     public void unbind( StatefulContext context)
+    {
+      context.getScope().removeListener( variable, context, this);
+      
+      ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
+      feature.setSourceVariable( null);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyAdd(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyAdd( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
+    {
+      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
+      feature.displaySelect( nodes);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyRemove(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyRemove( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
+    {
+      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
+      feature.displayDeselect( nodes);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyChange(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void notifyChange( String name, IVariableScope scope, IContext context, String newValue, String oldValue)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyChange(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.lang.Number, java.lang.Number)
+     */
+    @Override
+    public void notifyChange( String name, IVariableScope scope, IContext context, Number newValue, Number oldValue)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyChange(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.lang.Boolean)
+     */
+    @Override
+    public void notifyChange( String name, IVariableScope scope, IContext context, Boolean newValue)
     {
     }
 

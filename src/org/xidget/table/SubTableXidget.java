@@ -23,15 +23,18 @@ import org.xidget.Xidget;
 import org.xidget.feature.BindFeature;
 import org.xidget.feature.DragAndDropFeature;
 import org.xidget.feature.ScriptFeature;
-import org.xidget.feature.SelectionModelFeature;
+import org.xidget.feature.model.SelectionModelFeature;
+import org.xidget.feature.model.SelectionUpdateFeature;
 import org.xidget.feature.tree.ColumnSetFeature;
 import org.xidget.feature.tree.RowSetFeature;
 import org.xidget.ifeature.IAsyncFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IDragAndDropFeature;
 import org.xidget.ifeature.IScriptFeature;
-import org.xidget.ifeature.ISelectionModelFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
+import org.xidget.ifeature.model.ISelectionModelFeature;
+import org.xidget.ifeature.model.ISelectionUpdateFeature;
+import org.xidget.ifeature.model.ISelectionWidgetFeature;
 import org.xidget.ifeature.tree.IColumnSetFeature;
 import org.xidget.ifeature.tree.IRowSetFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
@@ -47,6 +50,8 @@ public class SubTableXidget extends Xidget
     columnSetFeature = new ColumnSetFeature( this);
     bindFeature = new BindFeature( this, new String[] { "text", "combo", "button"});
     selectionModelFeature = new SelectionModelFeature( this);
+    selectionUpdateFeature = new SelectionUpdateFeature( this);
+    selectionWidgetFeature = new SubTableSelectionWidgetFeature( this);
     scriptFeature = new ScriptFeature( this);
     dndFeature = new DragAndDropFeature( this);
   }
@@ -62,6 +67,8 @@ public class SubTableXidget extends Xidget
     if ( clss == IRowSetFeature.class) return (T)rowSetFeature;
     if ( clss == IBindFeature.class) return (T)bindFeature;
     if ( clss == ISelectionModelFeature.class) return (T)selectionModelFeature;
+    if ( clss == ISelectionUpdateFeature.class) return (T)selectionUpdateFeature;
+    if ( clss == ISelectionWidgetFeature.class) return (T)selectionWidgetFeature;
     if ( clss == ITreeWidgetFeature.class) return (T)getParent().getFeature( clss);
     if ( clss == IAsyncFeature.class) return (T)getParent().getFeature( clss);
     if ( clss == IWidgetCreationFeature.class) return (T)getParent().getFeature( clss);
@@ -76,6 +83,8 @@ public class SubTableXidget extends Xidget
   private IColumnSetFeature columnSetFeature;
   private IBindFeature bindFeature;
   private ISelectionModelFeature selectionModelFeature;
+  private ISelectionUpdateFeature selectionUpdateFeature;
+  private ISelectionWidgetFeature selectionWidgetFeature;
   private IScriptFeature scriptFeature;
   private IDragAndDropFeature dndFeature;
 }

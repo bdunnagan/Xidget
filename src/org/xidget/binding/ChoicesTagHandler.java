@@ -19,7 +19,6 @@
  */
 package org.xidget.binding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.xidget.IXidget;
@@ -29,10 +28,11 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.IChoiceListFeature;
+import org.xidget.ifeature.model.IMultiValueModelFeature;
+import org.xidget.ifeature.model.IMultiValueUpdateFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
-import org.xmodel.diff.AbstractListDiffer;
+import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -54,55 +54,72 @@ public class ChoicesTagHandler extends AbstractTagHandler
     IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
     if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
-    //
-    // This tag handler does not handle statically defined choices. So there is nothing to do if the
-    // element has children (static choices).  Static choices are handled in the IWidgetCreationFeature.
-    //
     IXidget xidget = xidgetFeature.getXidget();
-    if ( element.getNumberOfChildren( "choice") == 0)
-    {
-      // choice list expression
-      IExpression expression = Xlate.get( element, Xlate.childGet( element, "list", (IExpression)null));
-      if ( expression == null) throw new TagException( "Choice list expression not defined.");
+    IExpression choiceExpr = getChoiceExpression( element);
+    if ( choiceExpr == null) throw new TagException( "Choice list expression not defined.");
       
-      // bind choices expression
-      IExpressionListener listener = new Listener( xidget);
-      XidgetBinding binding = new XidgetBinding( expression, listener);
-      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-      if ( bindFeature != null) bindFeature.addBindingBeforeChildren( binding);
-      
-      // choice display transform
-      IExpression transform = Xlate.childGet( element, "show", (IExpression)null);
-      if ( transform != null)
-      {
-        IChoiceListFeature choiceListFeature = xidget.getFeature( IChoiceListFeature.class);
-        choiceListFeature.setTransform( transform);
-      }
-    }
+    // specify choice expression
+    IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
+    modelFeature.setSourceExpression( choiceExpr);
+    
+    // bind choice expression
+    IExpressionListener listener = new Listener( xidget);
+    XidgetBinding binding = new XidgetBinding( choiceExpr, listener);
+    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+    if ( bindFeature != null) bindFeature.addBindingBeforeChildren( binding);
     
     return false;
+  }
+  
+  /**
+   * Returns the choice list expression given the configuration element.
+   * @param element The configuration element.
+   * @return Returns the choice list expression.
+   */
+  private IExpression getChoiceExpression( IModelObject element)
+  {
+    if ( element.getNumberOfChildren( "choice") > 0)
+    {
+      staticChoiceExpr = XPath.createExpression( "static( $choices)");
+      staticChoiceExpr.setVariable( "choices", element.getChildren( "choice"));
+      return staticChoiceExpr;
+    }
+    else
+    {
+      return Xlate.get( element, (IExpression)null);
+    }
   }
 
   private static final class Listener extends ExpressionListener
   {
     Listener( IXidget xidget)
     {
-      this.differ = new ListDiffer();
-      this.choiceListFeature = xidget.getFeature( IChoiceListFeature.class);
+      this.xidget = xidget;
     }
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes = expression.query( context, null);
-      updateChoices( context, nodes);
+      IMultiValueUpdateFeature feature = xidget.getFeature( IMultiValueUpdateFeature.class);
+      feature.updateWidget();
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      nodes = expression.query( context, null);
-      updateChoices( context, nodes);
+      IMultiValueUpdateFeature feature = xidget.getFeature( IMultiValueUpdateFeature.class);
+      feature.updateWidget();
     }
     
+    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
+    {
+      List<IModelObject> nodes = expression.query( contexts[ 0], null);
+      int index = nodes.indexOf( object);
+      if ( index >= 0)
+      {
+        IMultiValueUpdateFeature feature = xidget.getFeature( IMultiValueUpdateFeature.class);
+        feature.displayUpdate( index, object);
+      }
+    }
+
     /* (non-Javadoc)
      * @see org.xmodel.xpath.expression.ExpressionListener#requiresValueNotification()
      */
@@ -111,43 +128,9 @@ public class ChoicesTagHandler extends AbstractTagHandler
     {
       return true;
     }
-
-    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
-    {
-      List<IModelObject> nodes = expression.query( contexts[ 0], null);
-      int index = nodes.indexOf( object);
-      if ( index >= 0) choiceListFeature.updateChoice( index, object);
-    }
-
-    private void updateChoices( IContext parent, List<IModelObject> rhs)
-    {
-      List<Object> lhsCopy = new ArrayList<Object>( choiceListFeature.getChoices());
-      List<Object> rhsCopy = new ArrayList<Object>( rhs);
-      differ.diff( lhsCopy, rhsCopy);
-    }
     
-    @SuppressWarnings("rawtypes")
-    private class ListDiffer extends AbstractListDiffer
-    {
-      /* (non-Javadoc)
-       * @see org.xmodel.diff.IListDiffer#notifyInsert(java.util.List, int, int, java.util.List, int, int)
-       */
-      public void notifyInsert( List lhs, int lIndex, int lAdjust, List rhs, int rIndex, int rCount)
-      {
-        int index = lIndex + lAdjust;
-        for( int i=0; i<rCount; i++, index++) choiceListFeature.insertChoice( index, rhs.get( rIndex + i));
-      }
-
-      /* (non-Javadoc)
-       * @see org.xmodel.diff.IListDiffer#notifyRemove(java.util.List, int, int, java.util.List, int)
-       */
-      public void notifyRemove( List lhs, int lIndex, int lAdjust, List rhs, int rCount)
-      {
-        for( int i=0; i<rCount; i++) choiceListFeature.removeChoice( lIndex + lAdjust);
-      }
-    }
-    
-    private ListDiffer differ;
-    private IChoiceListFeature choiceListFeature;
+    private IXidget xidget;
   }
+  
+  private IExpression staticChoiceExpr;
 }

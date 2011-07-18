@@ -84,13 +84,13 @@ public class SourceTagHandler extends AbstractTagHandler
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
-      if ( feature != null) feature.setStorageLocation( expression.queryFirst( context));
+      if ( feature != null) feature.setSourceNode( expression.queryFirst( context));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
-      if ( feature != null) feature.setStorageLocation( expression.queryFirst( context));
+      if ( feature != null) feature.setSourceNode( expression.queryFirst( context));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)

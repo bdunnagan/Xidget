@@ -85,7 +85,8 @@ public class ScriptFeature implements IScriptFeature
       
       IXidget xidget = (IXidget)holder.getValue();
       IToolkit toolkit = Creator.getInstance().getToolkit();
-      toolkit.openMessageDialog( xidget, context, "Exception", null, e.getMessage(), MessageType.error);
+      String message = String.format( "%s: %s\n", e.getClass().getSimpleName(), e.getMessage());
+      toolkit.openMessageDialog( xidget, context, "Exception", null, message, MessageType.error);
     }
     
     return null;

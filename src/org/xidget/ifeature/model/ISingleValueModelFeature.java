@@ -17,11 +17,17 @@ public interface ISingleValueModelFeature
    * Set the node that stores the value.
    * @param node The node.
    */
-  public void setStorageLocation( IModelObject node);
+  public void setSourceNode( IModelObject node);
+
+  /**
+   * Set the context variable that stores the value.
+   * @param name The name of the variable.
+   */
+  public void setSourceVariable( String name);
   
   /**
    * Set the value in the storage location. This method has no effect if the 
-   * storage location has not yet been defiend.
+   * storage location has not yet been defined.
    * @param value The value.
    */
   public void setValue( Object value);

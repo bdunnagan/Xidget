@@ -13,8 +13,8 @@ import org.xmodel.diff.XmlDiffer;
 import org.xmodel.external.NonSyncingListener;
 
 /**
- * An implementation of ISingleValueModelFeature that passes the storage node,
- * itself, as the value.
+ * An implementation of ISingleValueModelFeature that passes the storage node as the value
+ * instead of the calling the getValue() method on the node and returning its result.
  */
 public class SelfSingleValueModelFeature implements ISingleValueModelFeature
 {
@@ -29,7 +29,7 @@ public class SelfSingleValueModelFeature implements ISingleValueModelFeature
    * @see org.xidget.ifeature.model.ISingleValueModelFeature#setStorageLocation(org.xmodel.IModelObject)
    */
   @Override
-  public void setStorageLocation( IModelObject newNode)
+  public void setSourceNode( IModelObject newNode)
   {
     IModelObject oldNode = node;
     if ( oldNode == newNode) return;
@@ -41,6 +41,14 @@ public class SelfSingleValueModelFeature implements ISingleValueModelFeature
     
     ISingleValueUpdateFeature updateFeature = xidget.getFeature( ISingleValueUpdateFeature.class);
     updateFeature.display( getValue());
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.model.ISingleValueModelFeature#setSourceVariable(java.lang.String)
+   */
+  @Override
+  public void setSourceVariable( String name)
+  {
   }
 
   /* (non-Javadoc)

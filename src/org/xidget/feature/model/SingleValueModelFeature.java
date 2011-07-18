@@ -23,7 +23,7 @@ public class SingleValueModelFeature implements ISingleValueModelFeature
    * @see org.xidget.ifeature.model.ISingleValueModelFeature#setStorageLocation(org.xmodel.IModelObject)
    */
   @Override
-  public void setStorageLocation( IModelObject newNode)
+  public void setSourceNode( IModelObject newNode)
   {
     IModelObject oldNode = node;
     if ( oldNode == newNode) return;
@@ -31,7 +31,15 @@ public class SingleValueModelFeature implements ISingleValueModelFeature
     node = newNode;
     
     ISingleValueUpdateFeature updateFeature = xidget.getFeature( ISingleValueUpdateFeature.class);
-    updateFeature.display( getValue());
+    updateFeature.updateWidget();
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.model.ISingleValueModelFeature#setSourceVariable(java.lang.String)
+   */
+  @Override
+  public void setSourceVariable( String name)
+  {
   }
 
   /* (non-Javadoc)
@@ -50,7 +58,7 @@ public class SingleValueModelFeature implements ISingleValueModelFeature
   @Override
   public void setValue( Object value)
   {
-    node.setValue( value);
+    if ( node != null) node.setValue( value);
   }
 
   private IXidget xidget;

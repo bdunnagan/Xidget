@@ -4,7 +4,6 @@
  */
 package org.xidget.ifeature.model;
 
-import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xpath.expression.IExpression;
 
 /**
@@ -16,9 +15,16 @@ import org.xmodel.xpath.expression.IExpression;
 public interface ISingleValueUpdateFeature
 {
   /**
-   * @return Returns true if an update is in progress.
+   * The expression used to transform a model value.
+   * @param expression The expression.
    */
-  public boolean isUpdating();
+  public void setDisplayTransform( IExpression expression);
+  
+  /**
+   * The expression used to transform a widget value.
+   * @param expression The expression.
+   */
+  public void setCommitTransform( IExpression expression);
   
   /**
    * Read the value from the model and send it through the transformation and
@@ -45,26 +51,16 @@ public interface ISingleValueUpdateFeature
   public void commit( Object value);
   
   /**
-   * The expression used to transform a model value.
-   * @param expression The expression.
+   * Transform and validate the specified value from a model value to a display value.
+   * @param value The value.
+   * @return Returns null or the transformed value.
    */
-  public void setDisplayTransform( IExpression expression);
+  public Object toDisplay( Object value);
   
   /**
-   * The expression used to transform a widget value.
-   * @param expression The expression.
+   * Transform and validate the specified value from a display value to a model value.
+   * @param value The value.
+   * @return Returns null or the transformed value.
    */
-  public void setCommitTransform( IExpression expression);
-  
-  /**
-   * Set the script used to transform, validate and/or veto a model value.
-   * @param script The script.
-   */
-  public void setDisplayScript( ScriptAction script);
-  
-  /**
-   * Set the script used to transform, validate and/or veto a widget value.
-   * @param script The script.
-   */
-  public void setCommitScript( ScriptAction script);
+  public Object toModel( Object value);
 }

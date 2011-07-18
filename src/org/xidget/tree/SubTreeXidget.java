@@ -21,11 +21,16 @@ package org.xidget.tree;
 
 import org.xidget.Xidget;
 import org.xidget.feature.BindFeature;
+import org.xidget.feature.model.SelectionModelFeature;
+import org.xidget.feature.model.SelectionUpdateFeature;
 import org.xidget.feature.tree.TreeExpandFeature;
 import org.xidget.ifeature.IAsyncFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xidget.ifeature.IWidgetFeature;
+import org.xidget.ifeature.model.ISelectionModelFeature;
+import org.xidget.ifeature.model.ISelectionUpdateFeature;
+import org.xidget.ifeature.model.ISelectionWidgetFeature;
 import org.xidget.ifeature.tree.ITreeExpandFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 
@@ -43,6 +48,9 @@ public class SubTreeXidget extends Xidget
   {
     bindFeature = new BindFeature( this, new String[] { "tree"});
     expandFeature = new TreeExpandFeature( this);
+    selectionModelFeature = new SelectionModelFeature( this);
+    selectionUpdateFeature = new SelectionUpdateFeature( this);
+    selectionWidgetFeature = new SubTreeSelectionWidgetFeature( this);
   }
 
   /* (non-Javadoc)
@@ -53,6 +61,9 @@ public class SubTreeXidget extends Xidget
   public <T> T getFeature( Class<T> clss)
   {
     if ( clss == IBindFeature.class) return (T)bindFeature;
+    if ( clss == ISelectionModelFeature.class) return (T)selectionModelFeature;
+    if ( clss == ISelectionUpdateFeature.class) return (T)selectionUpdateFeature;
+    if ( clss == ISelectionWidgetFeature.class) return (T)selectionWidgetFeature;
     if ( clss == ITreeExpandFeature.class) return (T)expandFeature;
     if ( clss == ITreeWidgetFeature.class) return (T)getParent().getFeature( clss);
     if ( clss == IWidgetFeature.class) return (T)getParent().getFeature( clss);
@@ -64,4 +75,7 @@ public class SubTreeXidget extends Xidget
 
   private IBindFeature bindFeature;
   private ITreeExpandFeature expandFeature;
+  private ISelectionModelFeature selectionModelFeature;
+  private ISelectionUpdateFeature selectionUpdateFeature;
+  private ISelectionWidgetFeature selectionWidgetFeature;
 }

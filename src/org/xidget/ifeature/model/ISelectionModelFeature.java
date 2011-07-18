@@ -6,8 +6,6 @@ package org.xidget.ifeature.model;
 
 import java.util.List;
 
-import org.xmodel.IModelObject;
-
 /**
  * An interface for getting and setting a single value in a model. This interface
  * provides methods for the tag processor to specify a storage location in the model,
@@ -16,29 +14,22 @@ import org.xmodel.IModelObject;
 public interface ISelectionModelFeature
 {
   /**
-   * Set the element where selection will be stored.
-   * @param element The element.
-   */
-  public void setElementStorage( IModelObject element);
-  
-  /**
-   * Set the name of the variable where the selection will be stored.
+   * Set the name of a context variable where the selection will be stored.
    * @param name The name of the variable.
    */
-  public void setVariableStorage( String name);
+  public void setSourceVariable( String name);
   
   /**
-   * Insert the selected object at the specified index in the selection.
-   * @param index The index.
+   * Add the specified object to the selection.
    * @param object The object.
    */
-  public void insertSelected( int index, Object object);
-  
+  public void select( Object object);
+
   /**
-   * Remove the selected object from the selection.
+   * Remove the specified object for the selection.
    * @param object The object.
    */
-  public void removeSelected( Object object);
+  public void deselect( Object object);
   
   /**
    * Set the list of selected objects.

@@ -35,6 +35,7 @@ import org.xidget.binding.FontBindingRule;
 import org.xidget.binding.FontSizeBindingRule;
 import org.xidget.binding.FontStyleBindingRule;
 import org.xidget.binding.ForegroundBindingRule;
+import org.xidget.binding.GetTagHandler;
 import org.xidget.binding.IconBindingRule;
 import org.xidget.binding.KeyTagHandler;
 import org.xidget.binding.LabelBindingRule;
@@ -43,6 +44,7 @@ import org.xidget.binding.PaddingBindingRule;
 import org.xidget.binding.PointsTagHandler;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
+import org.xidget.binding.SetTagHandler;
 import org.xidget.binding.SkipTagHandler;
 import org.xidget.binding.SourceTagHandler;
 import org.xidget.binding.SpacingBindingRule;
@@ -106,6 +108,7 @@ public final class Creator
     processor.addHandler( "fontStyle", new BindingTagHandler( new FontStyleBindingRule()));
     processor.addHandler( "fontSize", new BindingTagHandler( new FontSizeBindingRule()));
     processor.addHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
+    processor.addHandler( "get", new GetTagHandler());
     processor.addHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "margins", new BindingTagHandler( new MarginsBindingRule()));
@@ -113,6 +116,7 @@ public final class Creator
     processor.addHandler( "points", new PointsTagHandler());
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new SelectionTagHandler());
+    processor.addHandler( "set", new SetTagHandler());
     processor.addHandler( "source", new SourceTagHandler());
     processor.addHandler( "spacing", new BindingTagHandler( new SpacingBindingRule()));
     processor.addHandler( "title", new BindingTagHandler( new TitleBindingRule()));
@@ -167,8 +171,10 @@ public final class Creator
     processor.addHandler( "onFocusGain", new ScriptTagHandler());
     processor.addHandler( "onFocusLost", new ScriptTagHandler());
     processor.addHandler( "onDisplay", new ScriptTagHandler());
-    processor.addHandler( "onCommit", new ScriptTagHandler());
-    processor.addHandler( "onValidate", new ScriptTagHandler());
+    processor.addHandler( "onSet", new ScriptTagHandler());
+    processor.addHandler( "onGet", new ScriptTagHandler());
+    processor.addHandler( "onSelect", new ScriptTagHandler());
+    processor.addHandler( "onDeselect", new ScriptTagHandler());
     
     // key bindings
     processor.addHandler( "onKey", new KeyTagHandler());

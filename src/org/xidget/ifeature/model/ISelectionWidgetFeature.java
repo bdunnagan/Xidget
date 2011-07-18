@@ -12,17 +12,16 @@ import java.util.List;
 public interface ISelectionWidgetFeature
 {
   /**
-   * Insert the selected object at the specified index in the selection.
-   * @param index The index.
+   * Add the specified object to the selection.
    * @param object The object.
    */
-  public void insertSelected( int index, Object object);
+  public void select( Object object);
   
   /**
-   * Remove the selected object from the selection.
+   * Remove the specified object for the selection.
    * @param object The object.
    */
-  public void removeSelected( Object object);
+  public void deselect( Object object);
   
   /**
    * Set the list of selected objects.
