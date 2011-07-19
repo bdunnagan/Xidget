@@ -125,12 +125,12 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       {
         if ( !rhsSet.contains( lObject))
         {
-          modelFeature.deselect( lObject);
           if ( onDeselect) 
           {
             context.getScope().set( "value", lObject);
             scriptFeature.runScript( "onDeselect", context);
           }
+          modelFeature.deselect( lObject);
         }
       }
       
@@ -139,12 +139,12 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       {
         if ( !lhsSet.contains( rObject))
         {
-          modelFeature.select( rObject);
           if ( onSelect) 
           {
             context.getScope().set( "value", rObject);
             scriptFeature.runScript( "onSelect", context);
           }
+          modelFeature.select( rObject);
         }
       }
     }

@@ -105,7 +105,7 @@ public class SelectionTagHandler implements ITagHandler
     {
       ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
       feature.setSourceVariable( variable);
-      
+
       context.getScope().addListener( variable, context, this);
     }
 
