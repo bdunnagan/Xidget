@@ -29,6 +29,7 @@ import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.model.ISelectionModelFeature;
 import org.xidget.ifeature.model.ISelectionUpdateFeature;
+import org.xidget.util.XidgetUtil;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.IContext;
@@ -65,12 +66,12 @@ public class SelectionTagHandler implements ITagHandler
 
     IXidget xidget = xidgetFeature.getXidget();
     
-    // get variable
-    String variable = Xlate.get( element, "variable", (String)null);
+    // create variable binding if present
+    String variable = Xlate.get( element, "var", Xlate.get( element, "variable", (String)null));
     if ( variable != null)
     {
       VariableBinding binding = new VariableBinding( xidget, variable);
-      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      IBindFeature bindFeature = XidgetUtil.findTreeRoot( xidget).getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
     }
     

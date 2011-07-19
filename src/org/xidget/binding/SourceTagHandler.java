@@ -36,6 +36,9 @@ import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
+import org.xmodel.xpath.expression.StatefulContext;
+import org.xmodel.xpath.variable.IVariableListener;
+import org.xmodel.xpath.variable.IVariableScope;
 
 /**
  * An implementation of ITagHandler for the <i>source</i> element.
@@ -62,14 +65,24 @@ public class SourceTagHandler extends AbstractTagHandler
     IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
     IXidget xidget = xidgetFeature.getXidget();
         
-    // create source expression
-    IExpression expression = Xlate.get( element, (IExpression)null);
+    // create variable binding if present
+    String variable = Xlate.get( element, "var", Xlate.get( element, "variable", (String)null));
+    if ( variable != null)
+    {
+      VariableBinding binding = new VariableBinding( xidget, variable);
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      bindFeature.addBindingAfterChildren( binding);
+    }
     
-    // create binding
-    IExpressionListener listener = new Listener( xidget);
-    XidgetBinding binding = new XidgetBinding( expression, listener);
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    bindFeature.addBindingAfterChildren( binding);
+    // create expression binding if present
+    IExpression expression = Xlate.get( element, (IExpression)null);
+    if ( expression != null)
+    {
+      IExpressionListener listener = new Listener( xidget);
+      XidgetBinding binding = new XidgetBinding( expression, listener);
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      bindFeature.addBindingAfterChildren( binding);
+    }
     
     return true;
   }
@@ -83,14 +96,20 @@ public class SourceTagHandler extends AbstractTagHandler
     
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
-      if ( feature != null) feature.setSourceNode( expression.queryFirst( context));
+      ISingleValueModelFeature modelFeature = xidget.getFeature( ISingleValueModelFeature.class);
+      if ( modelFeature != null) modelFeature.setSourceNode( expression.queryFirst( context));
+      
+      ISingleValueUpdateFeature updateFeature = xidget.getFeature( ISingleValueUpdateFeature.class);
+      updateFeature.updateWidget();
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
       if ( feature != null) feature.setSourceNode( expression.queryFirst( context));
+      
+      ISingleValueUpdateFeature updateFeature = xidget.getFeature( ISingleValueUpdateFeature.class);
+      updateFeature.updateWidget();
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
@@ -123,5 +142,79 @@ public class SourceTagHandler extends AbstractTagHandler
     }
 
     private IXidget xidget;
+  }
+  
+  private final static class VariableBinding implements IXidgetBinding, IVariableListener
+  {
+    public VariableBinding( IXidget xidget, String variable)
+    {
+      this.xidget = xidget;
+      this.variable = variable;
+    }
+
+    public void bind( StatefulContext context)
+    {
+      ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
+      feature.setSourceVariable( variable);
+      
+      context.getScope().addListener( variable, context, this);
+    }
+
+    public void unbind( StatefulContext context)
+    {
+      context.getScope().removeListener( variable, context, this);
+      
+      ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
+      feature.setSourceVariable( null);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyAdd(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyAdd( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyRemove(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyRemove( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyChange(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void notifyChange( String name, IVariableScope scope, IContext context, String newValue, String oldValue)
+    {
+      ISingleValueUpdateFeature feature = xidget.getFeature( ISingleValueUpdateFeature.class);
+      if ( feature != null) feature.display( newValue);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyChange(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.lang.Number, java.lang.Number)
+     */
+    @Override
+    public void notifyChange( String name, IVariableScope scope, IContext context, Number newValue, Number oldValue)
+    {
+      ISingleValueUpdateFeature feature = xidget.getFeature( ISingleValueUpdateFeature.class);
+      if ( feature != null) feature.display( newValue);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.variable.IVariableListener#notifyChange(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.lang.Boolean)
+     */
+    @Override
+    public void notifyChange( String name, IVariableScope scope, IContext context, Boolean newValue)
+    {
+      ISingleValueUpdateFeature feature = xidget.getFeature( ISingleValueUpdateFeature.class);
+      if ( feature != null) feature.display( newValue);
+    }
+
+    private IXidget xidget;
+    private String variable;
   }
 }

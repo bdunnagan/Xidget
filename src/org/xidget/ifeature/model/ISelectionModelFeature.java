@@ -7,9 +7,7 @@ package org.xidget.ifeature.model;
 import java.util.List;
 
 /**
- * An interface for getting and setting a single value in a model. This interface
- * provides methods for the tag processor to specify a storage location in the model,
- * as well as methods for getting and setting the value at that location. 
+ * An interface to the list of selected objects stored in a model.
  */
 public interface ISelectionModelFeature
 {

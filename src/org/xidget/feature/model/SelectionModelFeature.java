@@ -41,8 +41,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
   {
     if ( varName == null) return;
     
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext context = bindFeature.getBoundContext();
+    StatefulContext context = getContext();
     if ( context != null) context.getScope().insert( varName, object);
   }
 
@@ -54,8 +53,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
   {
     if ( varName == null) return;
     
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext context = bindFeature.getBoundContext();
+    StatefulContext context = getContext();
     if ( context != null) context.getScope().remove( varName, object);
   }
 
@@ -69,8 +67,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
 
     if ( list.size() == 0 || !(list.get( 0) instanceof IModelObject)) return;
     
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext context = bindFeature.getBoundContext();
+    StatefulContext context = getContext();
     if ( context != null) context.getScope().set( varName, list);
   }
 
@@ -81,8 +78,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
   @Override
   public List<? extends Object> getSelection()
   {
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext context = bindFeature.getBoundContext();
+    StatefulContext context = getContext();
     if ( context != null) 
     {
       List<? extends Object> list = (List<? extends Object>)context.getScope().get( varName);
@@ -91,6 +87,15 @@ public class SelectionModelFeature implements ISelectionModelFeature
     return Collections.emptyList();
   }
 
+  /**
+   * @return Returns the context for script executation and/or transformation.
+   */
+  protected StatefulContext getContext()
+  {
+    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+    return bindFeature.getBoundContext();
+  }
+  
   protected IXidget xidget;
   protected String varName;
 }

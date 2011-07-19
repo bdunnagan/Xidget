@@ -4,10 +4,13 @@
  */
 package org.xidget.feature.model;
 
+import java.util.List;
+
 import org.xidget.IXidget;
+import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.model.ISingleValueModelFeature;
-import org.xidget.ifeature.model.ISingleValueUpdateFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An implementation of ISingleValueUpdateFeature suitable for most purposes.
@@ -27,11 +30,7 @@ public class SingleValueModelFeature implements ISingleValueModelFeature
   {
     IModelObject oldNode = node;
     if ( oldNode == newNode) return;
-    
     node = newNode;
-    
-    ISingleValueUpdateFeature updateFeature = xidget.getFeature( ISingleValueUpdateFeature.class);
-    updateFeature.updateWidget();
   }
 
   /* (non-Javadoc)
@@ -40,6 +39,7 @@ public class SingleValueModelFeature implements ISingleValueModelFeature
   @Override
   public void setSourceVariable( String name)
   {
+    this.variable = name;
   }
 
   /* (non-Javadoc)
@@ -48,8 +48,17 @@ public class SingleValueModelFeature implements ISingleValueModelFeature
   @Override
   public Object getValue()
   {
-    if ( node == null) return null;
-    return node.getValue();
+    if ( node != null) return node.getValue();
+    
+    if ( variable != null)
+    {
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      StatefulContext context = bindFeature.getBoundContext();
+      Object value = context.get( variable);
+      if ( !(value instanceof List)) return value;
+    }
+    
+    return null;
   }
 
   /* (non-Javadoc)
@@ -59,8 +68,16 @@ public class SingleValueModelFeature implements ISingleValueModelFeature
   public void setValue( Object value)
   {
     if ( node != null) node.setValue( value);
+    
+    if ( variable != null)
+    {
+      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+      StatefulContext context = bindFeature.getBoundContext();
+      context.getScope().set( variable, value);
+    }
   }
 
-  private IXidget xidget;
+  protected IXidget xidget;
   private IModelObject node;
+  private String variable;
 }

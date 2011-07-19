@@ -7,7 +7,7 @@ package org.xidget.ifeature.model;
 import java.util.List;
 
 /**
- * An interface for getting and setting a single value in a widget.
+ * An interface to the list of selected objects stored in a widget.
  */
 public interface ISelectionWidgetFeature
 {

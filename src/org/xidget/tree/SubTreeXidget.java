@@ -21,11 +21,11 @@ package org.xidget.tree;
 
 import org.xidget.Xidget;
 import org.xidget.feature.BindFeature;
-import org.xidget.feature.model.SelectionModelFeature;
-import org.xidget.feature.model.SelectionUpdateFeature;
+import org.xidget.feature.ScriptFeature;
 import org.xidget.feature.tree.TreeExpandFeature;
 import org.xidget.ifeature.IAsyncFeature;
 import org.xidget.ifeature.IBindFeature;
+import org.xidget.ifeature.IScriptFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.ifeature.model.ISelectionModelFeature;
@@ -47,9 +47,9 @@ public class SubTreeXidget extends Xidget
   protected void createFeatures()
   {
     bindFeature = new BindFeature( this, new String[] { "tree"});
+    scriptFeature = new ScriptFeature( this);
     expandFeature = new TreeExpandFeature( this);
-    selectionModelFeature = new SelectionModelFeature( this);
-    selectionUpdateFeature = new SelectionUpdateFeature( this);
+    selectionUpdateFeature = new SubTreeSelectionUpdateFeature( this);
     selectionWidgetFeature = new SubTreeSelectionWidgetFeature( this);
   }
 
@@ -61,7 +61,8 @@ public class SubTreeXidget extends Xidget
   public <T> T getFeature( Class<T> clss)
   {
     if ( clss == IBindFeature.class) return (T)bindFeature;
-    if ( clss == ISelectionModelFeature.class) return (T)selectionModelFeature;
+    if ( clss == IScriptFeature.class) return (T)scriptFeature;
+    if ( clss == ISelectionModelFeature.class) return (T)getParent().getFeature( clss);
     if ( clss == ISelectionUpdateFeature.class) return (T)selectionUpdateFeature;
     if ( clss == ISelectionWidgetFeature.class) return (T)selectionWidgetFeature;
     if ( clss == ITreeExpandFeature.class) return (T)expandFeature;
@@ -74,8 +75,8 @@ public class SubTreeXidget extends Xidget
   }
 
   private IBindFeature bindFeature;
+  private IScriptFeature scriptFeature;
   private ITreeExpandFeature expandFeature;
-  private ISelectionModelFeature selectionModelFeature;
   private ISelectionUpdateFeature selectionUpdateFeature;
   private ISelectionWidgetFeature selectionWidgetFeature;
 }

@@ -34,23 +34,24 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void updateWidget()
   {
-    // get model selection
-    ISelectionModelFeature modelFeature = xidget.getFeature( ISelectionModelFeature.class);
-    List<? extends Object> rhs = modelFeature.getSelection();
-    Set<Object> rhsSet = new HashSet<Object>( rhs);
+    if ( updatingWidget) return;
+    updatingWidget = true;
     
-    // get widget selection
-    ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
-    List<? extends Object> lhs = widgetFeature.getSelection();
-    Set<Object> lhsSet = new HashSet<Object>( lhs);
-    
-    // create scripting context
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext parent = bindFeature.getBoundContext();
-    if ( parent != null)
+    try
     {
-      StatefulContext context = (parent != null)? new StatefulContext( parent): null;
+      StatefulContext context = getContext();
+      if ( context == null) return;
         
+      // get model selection
+      ISelectionModelFeature modelFeature = xidget.getFeature( ISelectionModelFeature.class);
+      List<? extends Object> rhs = modelFeature.getSelection();
+      Set<Object> rhsSet = new HashSet<Object>( rhs);
+      
+      // get widget selection
+      ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
+      List<? extends Object> lhs = widgetFeature.getSelection();
+      Set<Object> lhsSet = new HashSet<Object>( lhs);
+      
       // get script feature
       IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
       boolean onSelect = context != null && scriptFeature.hasScript( "onSelect");
@@ -84,6 +85,10 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
         }
       }
     }
+    finally
+    {
+      updatingWidget = false;
+    }
   }
   
   /* (non-Javadoc)
@@ -92,23 +97,24 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void updateModel()
   {
-    // get widget selection
-    ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
-    List<? extends Object> rhs = widgetFeature.getSelection();
-    Set<Object> rhsSet = new HashSet<Object>( rhs);
+    if ( updatingModel) return;
+    updatingModel = true;
     
-    // get model selection
-    ISelectionModelFeature modelFeature = xidget.getFeature( ISelectionModelFeature.class);
-    List<? extends Object> lhs = modelFeature.getSelection();
-    Set<Object> lhsSet = new HashSet<Object>( lhs);
-
-    // create scripting context
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext parent = bindFeature.getBoundContext();
-    if ( parent != null)
+    try
     {
-      StatefulContext context = (parent != null)? new StatefulContext( parent): null;
+      StatefulContext context = getContext();
+      if ( context == null) return;
         
+      // get widget selection
+      ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
+      List<? extends Object> rhs = widgetFeature.getSelection();
+      Set<Object> rhsSet = new HashSet<Object>( rhs);
+      
+      // get model selection
+      ISelectionModelFeature modelFeature = xidget.getFeature( ISelectionModelFeature.class);
+      List<? extends Object> lhs = modelFeature.getSelection();
+      Set<Object> lhsSet = new HashSet<Object>( lhs);
+  
       // get script feature
       IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
       boolean onSelect = context != null && scriptFeature.hasScript( "onSelect");
@@ -142,6 +148,10 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
         }
       }
     }
+    finally
+    {
+      updatingModel = false;
+    }
   }
 
   /* (non-Javadoc)
@@ -150,25 +160,33 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void displaySelect( List<? extends Object> objects)
   {
-    // create scripting context
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext parent = bindFeature.getBoundContext();
-    StatefulContext context = (parent != null)? new StatefulContext( parent): null;
-      
-    // get script feature
-    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
-    boolean onSelect = context != null && scriptFeature.hasScript( "onSelect");
-
-    // update
-    ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
-    for( Object object: objects)
+    if ( updatingWidget) return;
+    updatingWidget = true;
+    
+    try
     {
-      if ( onSelect) 
+      StatefulContext context = getContext();
+      if ( context == null) return;
+        
+      // get script feature
+      IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
+      boolean onSelect = context != null && scriptFeature.hasScript( "onSelect");
+  
+      // update
+      ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
+      for( Object object: objects)
       {
-        context.getScope().set( "value", object);
-        scriptFeature.runScript( "onSelect", context);
+        if ( onSelect) 
+        {
+          context.getScope().set( "value", object);
+          scriptFeature.runScript( "onSelect", context);
+        }
+        widgetFeature.select( object);
       }
-      widgetFeature.select( object);
+    }
+    finally
+    {
+      updatingWidget = false;
     }
   }
 
@@ -178,25 +196,33 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void displayDeselect( List<? extends Object> objects)
   {
-    // create scripting context
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext parent = bindFeature.getBoundContext();
-    StatefulContext context = (parent != null)? new StatefulContext( parent): null;
-      
-    // get script feature
-    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
-    boolean onDeselect = context != null && scriptFeature.hasScript( "onDeselect");
-
-    // update
-    ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
-    for( Object object: objects)
+    if ( updatingWidget) return;
+    updatingWidget = true;
+    
+    try
     {
-      if ( onDeselect) 
+      StatefulContext context = getContext();
+      if ( context == null) return;
+        
+      // get script feature
+      IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
+      boolean onDeselect = context != null && scriptFeature.hasScript( "onDeselect");
+  
+      // update
+      ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
+      for( Object object: objects)
       {
-        context.getScope().set( "value", object);
-        scriptFeature.runScript( "onDeselect", context);
+        if ( onDeselect) 
+        {
+          context.getScope().set( "value", object);
+          scriptFeature.runScript( "onDeselect", context);
+        }
+        widgetFeature.deselect( object);
       }
-      widgetFeature.deselect( object);
+    }
+    finally
+    {
+      updatingWidget = false;
     }
   }
 
@@ -206,25 +232,33 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void modelSelect( List<? extends Object> objects)
   {
-    // create scripting context
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext parent = bindFeature.getBoundContext();
-    StatefulContext context = (parent != null)? new StatefulContext( parent): null;
-      
-    // get script feature
-    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
-    boolean onSelect = context != null && scriptFeature.hasScript( "onSelect");
-
-    // update
-    ISelectionModelFeature modelFeature = xidget.getFeature( ISelectionModelFeature.class);
-    for( Object object: objects)
+    if ( updatingModel) return;
+    updatingModel = true;
+    
+    try
     {
-      if ( onSelect) 
+      StatefulContext context = getContext();
+      if ( context == null) return;
+        
+      // get script feature
+      IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
+      boolean onSelect = context != null && scriptFeature.hasScript( "onSelect");
+  
+      // update
+      ISelectionModelFeature modelFeature = xidget.getFeature( ISelectionModelFeature.class);
+      for( Object object: objects)
       {
-        context.getScope().set( "value", object);
-        scriptFeature.runScript( "onSelect", context);
+        if ( onSelect) 
+        {
+          context.getScope().set( "value", object);
+          scriptFeature.runScript( "onSelect", context);
+        }
+        modelFeature.select( object);
       }
-      modelFeature.select( object);
+    }
+    finally
+    {
+      updatingModel = false;
     }
   }
 
@@ -234,27 +268,47 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void modelDeselect( List<? extends Object> objects)
   {
-    // create scripting context
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    StatefulContext parent = bindFeature.getBoundContext();
-    StatefulContext context = (parent != null)? new StatefulContext( parent): null;
-      
-    // get script feature
-    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
-    boolean onDeselect = context != null && scriptFeature.hasScript( "onDeselect");
-
-    // update
-    ISelectionModelFeature modelFeature = xidget.getFeature( ISelectionModelFeature.class);
-    for( Object object: objects)
+    if ( updatingModel) return;
+    updatingModel = true;
+    
+    try
     {
-      if ( onDeselect) 
+      StatefulContext context = getContext();
+      if ( context == null) return;
+        
+      // get script feature
+      IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
+      boolean onDeselect = context != null && scriptFeature.hasScript( "onDeselect");
+  
+      // update
+      ISelectionModelFeature modelFeature = xidget.getFeature( ISelectionModelFeature.class);
+      for( Object object: objects)
       {
-        context.getScope().set( "value", object);
-        scriptFeature.runScript( "onDeselect", context);
+        if ( onDeselect) 
+        {
+          context.getScope().set( "value", object);
+          scriptFeature.runScript( "onDeselect", context);
+        }
+        modelFeature.deselect( object);
       }
-      modelFeature.deselect( object);
+    }
+    finally
+    {
+      updatingModel = false;
     }
   }
   
+  /**
+   * Returns the context for script execution and/or transformation.
+   * @return Returns the context for script execution and/or transformation.
+   */
+  protected StatefulContext getContext()
+  {
+    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+    return bindFeature.getBoundContext();
+  }
+  
   protected IXidget xidget;
+  private boolean updatingModel;
+  private boolean updatingWidget;
 }
