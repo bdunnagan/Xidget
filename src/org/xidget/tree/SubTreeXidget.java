@@ -49,6 +49,7 @@ public class SubTreeXidget extends Xidget
     bindFeature = new BindFeature( this, new String[] { "tree"});
     scriptFeature = new ScriptFeature( this);
     expandFeature = new TreeExpandFeature( this);
+    selectionModelFeature = new SubTreeSelectionModelFeature( this);
     selectionUpdateFeature = new SubTreeSelectionUpdateFeature( this);
     selectionWidgetFeature = new SubTreeSelectionWidgetFeature( this);
   }
@@ -62,7 +63,7 @@ public class SubTreeXidget extends Xidget
   {
     if ( clss == IBindFeature.class) return (T)bindFeature;
     if ( clss == IScriptFeature.class) return (T)scriptFeature;
-    if ( clss == ISelectionModelFeature.class) return (T)getParent().getFeature( clss);
+    if ( clss == ISelectionModelFeature.class) return (T)selectionModelFeature;
     if ( clss == ISelectionUpdateFeature.class) return (T)selectionUpdateFeature;
     if ( clss == ISelectionWidgetFeature.class) return (T)selectionWidgetFeature;
     if ( clss == ITreeExpandFeature.class) return (T)expandFeature;
@@ -77,6 +78,7 @@ public class SubTreeXidget extends Xidget
   private IBindFeature bindFeature;
   private IScriptFeature scriptFeature;
   private ITreeExpandFeature expandFeature;
+  private ISelectionModelFeature selectionModelFeature;
   private ISelectionUpdateFeature selectionUpdateFeature;
   private ISelectionWidgetFeature selectionWidgetFeature;
 }

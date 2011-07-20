@@ -15,6 +15,7 @@ public interface ISelectionUpdateFeature
    * Update the widget selection based on the selection in the model. This method retrieves
    * the entire selection from the widget and the model and determines what objects need
    * to be inserted and removed to synchronize them.
+   * @param context The context.
    */
   public void updateWidget();
   

@@ -34,8 +34,8 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void updateWidget()
   {
-    if ( updatingWidget) return;
-    updatingWidget = true;
+    if ( updating) return;
+    updating = true;
     
     try
     {
@@ -87,7 +87,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
     }
     finally
     {
-      updatingWidget = false;
+      updating = false;
     }
   }
   
@@ -97,8 +97,8 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void updateModel()
   {
-    if ( updatingModel) return;
-    updatingModel = true;
+    if ( updating) return;
+    updating = true;
     
     try
     {
@@ -150,7 +150,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
     }
     finally
     {
-      updatingModel = false;
+      updating = false;
     }
   }
 
@@ -160,8 +160,8 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void displaySelect( List<? extends Object> objects)
   {
-    if ( updatingWidget) return;
-    updatingWidget = true;
+    if ( updating) return;
+    updating = true;
     
     try
     {
@@ -186,7 +186,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
     }
     finally
     {
-      updatingWidget = false;
+      updating = false;
     }
   }
 
@@ -196,8 +196,8 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void displayDeselect( List<? extends Object> objects)
   {
-    if ( updatingWidget) return;
-    updatingWidget = true;
+    if ( updating) return;
+    updating = true;
     
     try
     {
@@ -222,7 +222,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
     }
     finally
     {
-      updatingWidget = false;
+      updating = false;
     }
   }
 
@@ -232,8 +232,8 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void modelSelect( List<? extends Object> objects)
   {
-    if ( updatingModel) return;
-    updatingModel = true;
+    if ( updating) return;
+    updating = true;
     
     try
     {
@@ -258,7 +258,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
     }
     finally
     {
-      updatingModel = false;
+      updating = false;
     }
   }
 
@@ -268,8 +268,8 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   @Override
   public void modelDeselect( List<? extends Object> objects)
   {
-    if ( updatingModel) return;
-    updatingModel = true;
+    if ( updating) return;
+    updating = true;
     
     try
     {
@@ -294,7 +294,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
     }
     finally
     {
-      updatingModel = false;
+      updating = false;
     }
   }
   
@@ -309,6 +309,5 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   }
   
   protected IXidget xidget;
-  private boolean updatingModel;
-  private boolean updatingWidget;
+  private boolean updating;
 }

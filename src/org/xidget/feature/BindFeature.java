@@ -155,8 +155,6 @@ public class BindFeature implements IBindFeature
   {
     Log.printf( "xidget", "unbind: %s with %s\n", xidget, context);
     
-    contexts.remove( context);
-        
     // call onClose script
     IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
     if ( scriptFeature != null) scriptFeature.runScript( "onClose", context);
@@ -178,6 +176,9 @@ public class BindFeature implements IBindFeature
       for( IXidgetBinding binding: bindAfterChildren)
         binding.unbind( context);
     
+    // remove context
+    contexts.remove( context);
+          
     // remove widget-context association
     IWidgetContextFeature widgetContextFeature = xidget.getFeature( IWidgetContextFeature.class);
     IWidgetCreationFeature widgetCreationFeature = xidget.getFeature( IWidgetCreationFeature.class);

@@ -10,8 +10,12 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.model.ISelectionModelFeature;
+import org.xidget.ifeature.model.ISelectionUpdateFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.StatefulContext;
+import org.xmodel.xpath.variable.IVariableListener;
+import org.xmodel.xpath.variable.IVariableScope;
 
 /**
  * The standard implementation of ISelectionModelFeature responsible for storing and retrieving the selection
@@ -30,7 +34,23 @@ public class SelectionModelFeature implements ISelectionModelFeature
   @Override
   public void setSourceVariable( String name)
   {
+    StatefulContext context = getContext();
+    
+    // remove old listener
+    if ( varName != null) context.getScope().removeListener( varName, context, variableListener);
+    
+    // set variable
     varName = name;
+    
+    // make sure variable is defined in this scope
+    if ( !context.getScope().isDefined( varName))
+    {
+      context.getScope().set( varName, Collections.emptyList());
+    }
+    
+    // add new listener
+    System.out.printf( "bind: %s\n", name);
+    if ( varName != null) context.getScope().addListener( varName, context, variableListener);
   }
 
   /* (non-Javadoc)
@@ -88,7 +108,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
   }
 
   /**
-   * @return Returns the context for script executation and/or transformation.
+   * @return Returns the context for script execution and/or transformation.
    */
   protected StatefulContext getContext()
   {
@@ -96,6 +116,28 @@ public class SelectionModelFeature implements ISelectionModelFeature
     return bindFeature.getBoundContext();
   }
   
+  private IVariableListener variableListener = new IVariableListener() {
+    public void notifyAdd( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
+    {
+      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
+      feature.displaySelect( nodes);
+    }
+    public void notifyRemove( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
+    {
+      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
+      feature.displayDeselect( nodes);
+    }
+    public void notifyChange( String name, IVariableScope scope, IContext context, String newValue, String oldValue)
+    {
+    }
+    public void notifyChange( String name, IVariableScope scope, IContext context, Number newValue, Number oldValue)
+    {
+    }
+    public void notifyChange( String name, IVariableScope scope, IContext context, Boolean newValue)
+    {
+    }
+  };
+  
   protected IXidget xidget;
-  protected String varName;
+  private String varName;
 }

@@ -19,8 +19,6 @@
  */
 package org.xidget.binding;
 
-import java.util.List;
-
 import org.xidget.IXidget;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
@@ -32,10 +30,7 @@ import org.xidget.ifeature.model.ISelectionUpdateFeature;
 import org.xidget.util.XidgetUtil;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
-import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.StatefulContext;
-import org.xmodel.xpath.variable.IVariableListener;
-import org.xmodel.xpath.variable.IVariableScope;
 
 /**
  * An implementation of ITagHandler for the <i>selection</i> element.
@@ -70,6 +65,9 @@ public class SelectionTagHandler implements ITagHandler
     String variable = Xlate.get( element, "var", Xlate.get( element, "variable", (String)null));
     if ( variable != null)
     {
+      //
+      // Bind the selection variable in the context of the root of the tree.
+      //
       VariableBinding binding = new VariableBinding( xidget, variable);
       IBindFeature bindFeature = XidgetUtil.findTreeRoot( xidget).getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
@@ -93,7 +91,7 @@ public class SelectionTagHandler implements ITagHandler
     return null;
   }
   
-  private final static class VariableBinding implements IXidgetBinding, IVariableListener
+  private final static class VariableBinding implements IXidgetBinding
   {
     public VariableBinding( IXidget xidget, String variable)
     {
@@ -105,60 +103,12 @@ public class SelectionTagHandler implements ITagHandler
     {
       ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
       feature.setSourceVariable( variable);
-
-      context.getScope().addListener( variable, context, this);
     }
 
     public void unbind( StatefulContext context)
     {
-      context.getScope().removeListener( variable, context, this);
-      
       ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
       feature.setSourceVariable( null);
-    }
-
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.variable.IVariableListener#notifyAdd(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.util.List)
-     */
-    @Override
-    public void notifyAdd( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
-    {
-      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
-      feature.displaySelect( nodes);
-    }
-
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.variable.IVariableListener#notifyRemove(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.util.List)
-     */
-    @Override
-    public void notifyRemove( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
-    {
-      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
-      feature.displayDeselect( nodes);
-    }
-
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.variable.IVariableListener#notifyChange(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.lang.String, java.lang.String)
-     */
-    @Override
-    public void notifyChange( String name, IVariableScope scope, IContext context, String newValue, String oldValue)
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.variable.IVariableListener#notifyChange(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.lang.Number, java.lang.Number)
-     */
-    @Override
-    public void notifyChange( String name, IVariableScope scope, IContext context, Number newValue, Number oldValue)
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.variable.IVariableListener#notifyChange(java.lang.String, org.xmodel.xpath.variable.IVariableScope, org.xmodel.xpath.expression.IContext, java.lang.Boolean)
-     */
-    @Override
-    public void notifyChange( String name, IVariableScope scope, IContext context, Boolean newValue)
-    {
     }
 
     private IXidget xidget;
