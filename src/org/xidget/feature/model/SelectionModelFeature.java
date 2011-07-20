@@ -12,10 +12,12 @@ import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.model.ISelectionModelFeature;
 import org.xidget.ifeature.model.ISelectionUpdateFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.xpath.XPath;
+import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
+import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.IExpressionListener;
 import org.xmodel.xpath.expression.StatefulContext;
-import org.xmodel.xpath.variable.IVariableListener;
-import org.xmodel.xpath.variable.IVariableScope;
 
 /**
  * The standard implementation of ISelectionModelFeature responsible for storing and retrieving the selection
@@ -36,11 +38,12 @@ public class SelectionModelFeature implements ISelectionModelFeature
   {
     StatefulContext context = getContext();
     
-    // remove old listener
-    if ( varName != null) context.getScope().removeListener( varName, context, variableListener);
+    // remove old listener with notification
+    if ( varName != null) varExpr.removeNotifyListener( context, variableListener);
     
-    // set variable
+    // set variable and expression
     varName = name;
+    varExpr = XPath.createExpression( "$"+varName, false);
     
     // make sure variable is defined in this scope
     if ( !context.getScope().isDefined( varName))
@@ -49,8 +52,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
     }
     
     // add new listener
-    System.out.printf( "bind: %s\n", name);
-    if ( varName != null) context.getScope().addListener( varName, context, variableListener);
+    if ( varName != null) varExpr.addNotifyListener( context, variableListener);
   }
 
   /* (non-Javadoc)
@@ -115,29 +117,21 @@ public class SelectionModelFeature implements ISelectionModelFeature
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
     return bindFeature.getBoundContext();
   }
-  
-  private IVariableListener variableListener = new IVariableListener() {
-    public void notifyAdd( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
+
+  private IExpressionListener variableListener = new ExpressionListener() {
+    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
       feature.displaySelect( nodes);
     }
-    public void notifyRemove( String name, IVariableScope scope, IContext context, List<IModelObject> nodes)
+    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
       feature.displayDeselect( nodes);
     }
-    public void notifyChange( String name, IVariableScope scope, IContext context, String newValue, String oldValue)
-    {
-    }
-    public void notifyChange( String name, IVariableScope scope, IContext context, Number newValue, Number oldValue)
-    {
-    }
-    public void notifyChange( String name, IVariableScope scope, IContext context, Boolean newValue)
-    {
-    }
   };
-  
+    
   protected IXidget xidget;
   private String varName;
+  private IExpression varExpr;
 }

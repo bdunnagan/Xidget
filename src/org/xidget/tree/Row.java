@@ -194,6 +194,16 @@ public class Row
   {
     return table;
   }
+
+  /**
+   * Returns the tree to which the row belongs (the parent of the table).
+   * @param root The root tree xidget.
+   * @return Returns the tree to which the row belongs.
+   */
+  public IXidget getTree( IXidget root)
+  {
+    return (table != null)? table.getParent(): root;
+  }
   
   /**
    * Set the tree switch for this row.
