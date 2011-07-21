@@ -19,6 +19,8 @@
  */
 package org.xidget.binding;
 
+import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
@@ -30,6 +32,9 @@ import org.xidget.ifeature.model.ISelectionUpdateFeature;
 import org.xidget.util.XidgetUtil;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
+import org.xmodel.xpath.expression.ExpressionListener;
+import org.xmodel.xpath.expression.IContext;
+import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -69,6 +74,17 @@ public class SelectionTagHandler implements ITagHandler
       // Bind the selection variable in the context of the root of the tree.
       //
       VariableBinding binding = new VariableBinding( xidget, variable);
+      IBindFeature bindFeature = XidgetUtil.findTreeRoot( xidget).getFeature( IBindFeature.class);
+      bindFeature.addBindingAfterChildren( binding);
+    }
+    
+    IExpression parentExpr = Xlate.get( element, "parent", (IExpression)null);
+    if ( parentExpr != null)
+    {
+      //
+      // Bind the selection parent in the context of the root of the tree.
+      //
+      ParentBinding binding = new ParentBinding( xidget, parentExpr);
       IBindFeature bindFeature = XidgetUtil.findTreeRoot( xidget).getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
     }
@@ -113,5 +129,39 @@ public class SelectionTagHandler implements ITagHandler
 
     private IXidget xidget;
     private String variable;
+  }
+  
+  private final static class ParentBinding extends ExpressionListener implements IXidgetBinding
+  {
+    public ParentBinding( IXidget xidget, IExpression parentExpr)
+    {
+      this.xidget = xidget;
+      this.parentExpr = parentExpr;
+    }
+
+    public void bind( StatefulContext context)
+    {
+      parentExpr.addNotifyListener( context, this);
+    }
+
+    public void unbind( StatefulContext context)
+    {
+      parentExpr.removeNotifyListener( context, this);
+    }
+
+    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
+      feature.setSourceNode( expression.queryFirst( context));
+    }
+
+    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
+      feature.setSourceNode( expression.queryFirst( context));
+    }
+
+    private IXidget xidget;
+    private IExpression parentExpr;
   }
 }

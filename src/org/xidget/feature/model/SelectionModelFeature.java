@@ -11,7 +11,10 @@ import org.xidget.IXidget;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.model.ISelectionModelFeature;
 import org.xidget.ifeature.model.ISelectionUpdateFeature;
+import org.xmodel.IModelListener;
 import org.xmodel.IModelObject;
+import org.xmodel.ModelListener;
+import org.xmodel.Reference;
 import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
@@ -56,15 +59,47 @@ public class SelectionModelFeature implements ISelectionModelFeature
   }
 
   /* (non-Javadoc)
+   * @see org.xidget.ifeature.model.ISelectionModelFeature#setSourceNode(org.xmodel.IModelObject)
+   */
+  @Override
+  public void setSourceNode( IModelObject node)
+  {
+    // remove listener from previous parent
+    if ( parent != null) 
+    {
+      parent.removeModelListener( parentListener);
+      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
+      feature.displayDeselect( parent.getChildren());
+    }
+    
+    // set parent
+    parent = node;
+    
+    // add listener to new parent
+    if ( parent != null) 
+    {
+      parent.addModelListener( parentListener);
+      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
+      feature.displaySelect( parent.getChildren());
+    }
+  }
+
+  /* (non-Javadoc)
    * @see org.xidget.ifeature.model.ISelectionModelFeature#select(java.lang.Object)
    */
   @Override
   public void select( Object object)
   {
-    if ( varName == null) return;
+    if ( varName != null)
+    {
+      StatefulContext context = getContext();
+      if ( context != null) context.getScope().insert( varName, object);
+    }
     
-    StatefulContext context = getContext();
-    if ( context != null) context.getScope().insert( varName, object);
+    if ( parent != null && object instanceof IModelObject)
+    {
+      parent.addChild( new Reference( (IModelObject)object));
+    }
   }
 
   /* (non-Javadoc)
@@ -73,10 +108,16 @@ public class SelectionModelFeature implements ISelectionModelFeature
   @Override
   public void deselect( Object object)
   {
-    if ( varName == null) return;
+    if ( varName != null)
+    {
+      StatefulContext context = getContext();
+      if ( context != null) context.getScope().remove( varName, object);
+    }
     
-    StatefulContext context = getContext();
-    if ( context != null) context.getScope().remove( varName, object);
+    if ( parent != null && object instanceof IModelObject)
+    {
+      parent.removeChild( new Reference( (IModelObject)object));
+    }
   }
 
   /* (non-Javadoc)
@@ -85,12 +126,22 @@ public class SelectionModelFeature implements ISelectionModelFeature
   @Override
   public void setSelection( List<? extends Object> list)
   {
-    if ( varName == null) return;
-
-    if ( list.size() == 0 || !(list.get( 0) instanceof IModelObject)) return;
+    if ( list == null) list = Collections.emptyList();
     
-    StatefulContext context = getContext();
-    if ( context != null) context.getScope().set( varName, list);
+    if ( varName != null)
+    {
+      StatefulContext context = getContext();
+      if ( context != null) context.getScope().set( varName, list);
+    }
+    
+    if ( parent != null)
+    {
+      parent.removeChildren();
+      for( Object object: list)
+      {
+        parent.addChild( new Reference( (IModelObject)object));
+      }
+    }
   }
 
   /* (non-Javadoc)
@@ -103,9 +154,18 @@ public class SelectionModelFeature implements ISelectionModelFeature
     StatefulContext context = getContext();
     if ( context != null) 
     {
-      List<? extends Object> list = (List<? extends Object>)context.getScope().get( varName);
-      if ( list != null) return list;
+      if ( varName != null)
+      {
+        List<? extends Object> list = (List<? extends Object>)context.getScope().get( varName);
+        if ( list != null) return list;
+      }
     }
+    
+    if ( parent != null)
+    {
+      return parent.getChildren();
+    }
+    
     return Collections.emptyList();
   }
 
@@ -130,8 +190,22 @@ public class SelectionModelFeature implements ISelectionModelFeature
       feature.displayDeselect( nodes);
     }
   };
-    
+
+  private IModelListener parentListener = new ModelListener() {
+    public void notifyAddChild( IModelObject parent, IModelObject child, int index)
+    {
+      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
+      feature.displaySelect( Collections.singletonList( child));
+    }
+    public void notifyRemoveChild( IModelObject parent, IModelObject child, int index)
+    {
+      ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
+      feature.displayDeselect( Collections.singletonList( child));
+    }
+  };
+  
   protected IXidget xidget;
   private String varName;
   private IExpression varExpr;
+  private IModelObject parent;
 }

@@ -6,6 +6,8 @@ package org.xidget.ifeature.model;
 
 import java.util.List;
 
+import org.xmodel.IModelObject;
+
 /**
  * An interface to the list of selected objects stored in a model.
  */
@@ -16,6 +18,12 @@ public interface ISelectionModelFeature
    * @param name The name of the variable.
    */
   public void setSourceVariable( String name);
+  
+  /**
+   * Set the parent of the selection.
+   * @param node The node.
+   */
+  public void setSourceNode( IModelObject node);
   
   /**
    * Add the specified object to the selection.
