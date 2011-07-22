@@ -284,23 +284,75 @@ public final class Creator
    * Unbind and dispose the specified xidget hierarchy.
    * @param xidget The xidget.
    */
-  public void destroy( IXidget xidget)
+  public void destroy( IXidget root)
   {
     // unbind all contexts
-    IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+    IBindFeature bindFeature = root.getFeature( IBindFeature.class);
     StatefulContext[] contexts = bindFeature.getBoundContexts().toArray( new StatefulContext[ 0]);
     for( StatefulContext context: contexts) bindFeature.unbind( (StatefulContext)context);
     
-    // destroy widget hierarchy
-    IWidgetCreationFeature creationFeature = xidget.getFeature( IWidgetCreationFeature.class);
-    creationFeature.destroyWidgets();
+    // flatten hierarchy into list
+    List<IXidget> list = flattenHierarchy( root);
+    for( IXidget xidget: list)
+    {
+      // destroy widget hierarchy
+      IWidgetCreationFeature creationFeature = xidget.getFeature( IWidgetCreationFeature.class);
+      creationFeature.destroyWidgets();
+      
+      // clear xidget attribute
+      xidget.getConfig().removeAttribute( "instance");
+      
+      // remove xidget from parent
+      if ( xidget.getParent() != null) 
+        xidget.getParent().getChildren().remove( xidget);
+    }
+  }
+  
+  /**
+   * Flatten the specified xidget hierarchy into a leaf-first list. 
+   * @param root The root of the xidget hierarchy.
+   * @return Returns the list.
+   */
+  private List<IXidget> flattenHierarchy( IXidget root)
+  {
+    Stack<IXidget> stack = new Stack<IXidget>();
+    stack.push( root);
     
-    // clear xidget attribure
-    xidget.getConfig().removeAttribute( "instance");
+    List<IXidget> list = new ArrayList<IXidget>();
+    while( !stack.empty())
+    {
+      IXidget xidget = stack.pop();
+      list.add( 0, xidget);
+      for( IXidget child: xidget.getChildren())
+      {
+        stack.push( child);
+      }
+    }
     
-    // remove xidget from parent
-    if ( xidget.getParent() != null) 
-      xidget.getParent().getChildren().remove( xidget);
+    return list;
+  }
+  
+  /**
+   * Create the widget hierarchy for the specified xidget. The root of the widget
+   * hierarchy can be accessed through an appropriate platform-specific feature.
+   * @param root The root of the xidget hierarchy.
+   */
+  public void build( IXidget root)
+  {
+    Stack<IXidget> stack = new Stack<IXidget>();
+    stack.push( root);
+    while( !stack.empty())
+    {
+      IXidget xidget = stack.pop();
+      
+      IWidgetCreationFeature feature = xidget.getFeature( IWidgetCreationFeature.class);
+      if ( feature != null) feature.createWidgets();
+      
+      // push children in reverse order
+      List<IXidget> children = xidget.getChildren();
+      for( int i = children.size() - 1; i >= 0; i--)
+        stack.push( children.get( i));
+    }
   }
   
   /**
@@ -310,13 +362,9 @@ public final class Creator
    */
   public IXidget rebuild( IXidget xidget) throws TagException
   {
-    // get context
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-    List<StatefulContext> contexts = bindFeature.getBoundContexts();
-    if ( contexts.size() == 0) return null;
-
-    // only rebind first context
-    StatefulContext context = contexts.get( 0);
+    StatefulContext context = bindFeature.getBoundContext();
+    if ( context == null) return null;
 
     // reset parent layout
     IXidget parent = xidget.getParent();
@@ -383,29 +431,6 @@ public final class Creator
     List<IXidget> created = new ArrayList<IXidget>( parent.getChildren());
     created.removeAll( children);
     return created;
-  }
-  
-  /**
-   * Create the widget hierarchy for the specified xidget. The root of the widget
-   * hierarchy can be accessed through an appropriate platform-specific feature.
-   * @param root The root of the xidget hierarchy.
-   */
-  public void build( IXidget root)
-  {
-    Stack<IXidget> stack = new Stack<IXidget>();
-    stack.push( root);
-    while( !stack.empty())
-    {
-      IXidget xidget = stack.pop();
-      
-      IWidgetCreationFeature feature = xidget.getFeature( IWidgetCreationFeature.class);
-      if ( feature != null) feature.createWidgets();
-      
-      // push children in reverse order
-      List<IXidget> children = xidget.getChildren();
-      for( int i = children.size() - 1; i >= 0; i--)
-        stack.push( children.get( i));
-    }
   }
   
   /**

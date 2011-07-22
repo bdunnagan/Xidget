@@ -30,31 +30,40 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
   @Override
   public void updateWidget()
   {
-    IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
-    List<? extends Object> rhs = modelFeature.getValues();
-    
-    IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
-    List<? extends Object> lhs = widgetFeature.getValues();
-    
-    differ.diff( lhs, rhs);
-    
-    List<Change> changes = differ.getChanges();
-    for( Change change: changes)
+    if ( updating) return;
+    updating = true;
+    try
     {
-      if ( change.rIndex >= 0)
+      IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
+      List<? extends Object> rhs = modelFeature.getValues();
+      
+      IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
+      List<? extends Object> lhs = widgetFeature.getValues();
+      
+      differ.diff( lhs, rhs);
+      
+      List<Change> changes = differ.getChanges();
+      for( Change change: changes)
       {
-        for( int i=0; i<change.count; i++)
+        if ( change.rIndex >= 0)
         {
-          displayInsert( change.lIndex + i, rhs.get( change.rIndex + i));
+          for( int i=0; i<change.count; i++)
+          {
+            displayInsert( change.lIndex + i, rhs.get( change.rIndex + i));
+          }
+        }
+        else
+        {
+          for( int i=0; i<change.count; i++)
+          {
+            displayRemove( change.lIndex);
+          }
         }
       }
-      else
-      {
-        for( int i=0; i<change.count; i++)
-        {
-          displayRemove( change.lIndex);
-        }
-      }
+    }
+    finally
+    {
+      updating = false;
     }
   }
 
@@ -64,31 +73,40 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
   @Override
   public void updateModel()
   {
-    IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
-    List<? extends Object> rhs = widgetFeature.getValues();
-    
-    IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
-    List<? extends Object> lhs = modelFeature.getValues();
-    
-    differ.diff( lhs, rhs);
-    
-    List<Change> changes = differ.getChanges();
-    for( Change change: changes)
+    if ( updating) return;
+    updating = true;
+    try
     {
-      if ( change.rIndex >= 0)
+      IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
+      List<? extends Object> rhs = widgetFeature.getValues();
+      
+      IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
+      List<? extends Object> lhs = modelFeature.getValues();
+      
+      differ.diff( lhs, rhs);
+      
+      List<Change> changes = differ.getChanges();
+      for( Change change: changes)
       {
-        for( int i=0; i<change.count; i++)
+        if ( change.rIndex >= 0)
         {
-          modelInsert( change.lIndex + i, rhs.get( change.rIndex + i));
+          for( int i=0; i<change.count; i++)
+          {
+            modelInsert( change.lIndex + i, rhs.get( change.rIndex + i));
+          }
+        }
+        else
+        {
+          for( int i=0; i<change.count; i++)
+          {
+            modelRemove( change.lIndex);
+          }
         }
       }
-      else
-      {
-        for( int i=0; i<change.count; i++)
-        {
-          modelRemove( change.lIndex);
-        }
-      }
+    }
+    finally
+    {
+      updating = false;
     }
   }
 
@@ -98,8 +116,17 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
   @Override
   public void displayInsert( int index, Object value)
   {
-    IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
-    widgetFeature.insertValue( index, value);
+    if ( updating) return;
+    updating = true;
+    try
+    {
+      IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
+      widgetFeature.insertValue( index, value);
+    }
+    finally
+    {
+      updating = false;
+    }
   }
 
   /* (non-Javadoc)
@@ -108,8 +135,17 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
   @Override
   public void displayUpdate( int index, Object value)
   {
-    IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
-    widgetFeature.updateValue( index, value);
+    if ( updating) return;
+    updating = true;
+    try
+    {
+      IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
+      widgetFeature.updateValue( index, value);
+    }
+    finally
+    {
+      updating = false;
+    }
   }
 
   /* (non-Javadoc)
@@ -118,8 +154,17 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
   @Override
   public void displayRemove( int index)
   {
-    IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
-    widgetFeature.removeValue( index);
+    if ( updating) return;
+    updating = true;
+    try
+    {
+      IMultiValueWidgetFeature widgetFeature = xidget.getFeature( IMultiValueWidgetFeature.class);
+      widgetFeature.removeValue( index);
+    }
+    finally
+    {
+      updating = false;
+    }
   }
 
   /* (non-Javadoc)
@@ -128,8 +173,17 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
   @Override
   public void modelInsert( int index, Object value)
   {
-    IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
-    modelFeature.insertValue( index, value);
+    if ( updating) return;
+    updating = true;
+    try
+    {
+      IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
+      modelFeature.insertValue( index, value);
+    }
+    finally
+    {
+      updating = false;
+    }
   }
 
   /* (non-Javadoc)
@@ -138,8 +192,17 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
   @Override
   public void modelUpdate( int index, Object value)
   {
-    IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
-    modelFeature.updateValue( index, value);
+    if ( updating) return;
+    updating = true;
+    try
+    {
+      IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
+      modelFeature.updateValue( index, value);
+    }
+    finally
+    {
+      updating = false;
+    }
   }
 
   /* (non-Javadoc)
@@ -148,10 +211,20 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
   @Override
   public void modelRemove( int index)
   {
-    IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
-    modelFeature.removeValue( index);
+    if ( updating) return;
+    updating = true;
+    try
+    {
+      IMultiValueModelFeature modelFeature = xidget.getFeature( IMultiValueModelFeature.class);
+      modelFeature.removeValue( index);
+    }
+    finally
+    {
+      updating = false;
+    }
   }
 
   protected IXidget xidget;
   private ListDiffer differ;
+  private boolean updating;
 }

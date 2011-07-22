@@ -29,8 +29,17 @@ public class SingleValueUpdateFeature implements ISingleValueUpdateFeature
   @Override
   public void updateModel()
   {
-    ISingleValueWidgetFeature feature = xidget.getFeature( ISingleValueWidgetFeature.class);
-    commit( feature.getValue());
+    if ( updating) return;
+    updating = true;
+    try
+    {
+      ISingleValueWidgetFeature feature = xidget.getFeature( ISingleValueWidgetFeature.class);
+      commit( feature.getValue());
+    }
+    finally
+    {
+      updating = false;
+    }
   }
 
   /* (non-Javadoc)
@@ -39,8 +48,17 @@ public class SingleValueUpdateFeature implements ISingleValueUpdateFeature
   @Override
   public void updateWidget()
   {
-    ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
-    display( feature.getValue());
+    if ( updating) return;
+    updating = true;
+    try
+    {
+      ISingleValueModelFeature feature = xidget.getFeature( ISingleValueModelFeature.class);
+      display( feature.getValue());
+    }
+    finally
+    {
+      updating = false;
+    }
   }
 
   /* (non-Javadoc)
@@ -185,4 +203,5 @@ public class SingleValueUpdateFeature implements ISingleValueUpdateFeature
   protected IXidget xidget;
   private IExpression commitExpr;
   private IExpression displayExpr;
+  private boolean updating;
 }
