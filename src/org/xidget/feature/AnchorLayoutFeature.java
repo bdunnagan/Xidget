@@ -77,6 +77,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     sorted = null;
     groups.clear();
+    width = 0;
+    height = 0;
   }
 
   /* (non-Javadoc)
@@ -84,6 +86,13 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void layout( StatefulContext context)
   {
+    IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+    Bounds bounds = widgetFeature.getDefaultBounds();
+    if ( width == bounds.width && height == bounds.height) return;
+
+    width = bounds.width;
+    height = bounds.height;
+    
     // layout children
     layoutChildren( context);
     
@@ -688,4 +697,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
   private ScriptAction script;
   private Map<IXidget, NodeGroup> groups;
   private List<IComputeNode> sorted;
+  private float width;
+  private float height;
 }

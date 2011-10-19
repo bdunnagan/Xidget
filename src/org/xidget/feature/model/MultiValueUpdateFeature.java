@@ -49,14 +49,14 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
         {
           for( int i=0; i<change.count; i++)
           {
-            displayInsert( change.lIndex + i, rhs.get( change.rIndex + i));
+            widgetFeature.insertValue( change.lIndex + i, rhs.get( change.rIndex + i));
           }
         }
         else
         {
           for( int i=0; i<change.count; i++)
           {
-            displayRemove( change.lIndex);
+            widgetFeature.removeValue( change.lIndex);
           }
         }
       }
@@ -92,14 +92,14 @@ public class MultiValueUpdateFeature implements IMultiValueUpdateFeature
         {
           for( int i=0; i<change.count; i++)
           {
-            modelInsert( change.lIndex + i, rhs.get( change.rIndex + i));
+            modelFeature.insertValue( change.lIndex + i, rhs.get( change.rIndex + i));
           }
         }
         else
         {
           for( int i=0; i<change.count; i++)
           {
-            modelRemove( change.lIndex);
+            modelFeature.removeValue( change.lIndex);
           }
         }
       }
