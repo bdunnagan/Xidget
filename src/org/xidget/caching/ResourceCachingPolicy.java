@@ -69,26 +69,6 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
   }
   
   /* (non-Javadoc)
-   * @see org.xmodel.external.AbstractCachingPolicy#checkin(org.xmodel.external.IExternalReference)
-   */
-  @Override
-  public void checkin( IExternalReference reference)
-  {
-    if ( useJar( reference)) zipCachingPolicy.checkin( reference);
-    else fileCachingPolicy.checkin( reference);
-  }
-
-  /* (non-Javadoc)
-   * @see org.xmodel.external.AbstractCachingPolicy#checkout(org.xmodel.external.IExternalReference)
-   */
-  @Override
-  public void checkout( IExternalReference reference)
-  {
-    if ( useJar( reference)) zipCachingPolicy.checkout( reference);
-    else fileCachingPolicy.checkout( reference);
-  }
-
-  /* (non-Javadoc)
    * @see org.xmodel.external.AbstractCachingPolicy#clear(org.xmodel.external.IExternalReference)
    */
   @Override

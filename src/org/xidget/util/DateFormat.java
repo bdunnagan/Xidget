@@ -78,7 +78,7 @@ public class DateFormat
     D,
     DD,
     DAY,
-    DAYDAY,
+    DAYFULL,
     DDD,
     h,
     hh,
@@ -122,7 +122,7 @@ public class DateFormat
         case D:      sb.append( cal.get( Calendar.DAY_OF_MONTH)); break;
         case DD:     twoDigitPadding( cal.get( Calendar.DAY_OF_MONTH), sb); break;
         case DAY:    sb.append( cal.getDisplayName( Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())); break;
-        case DAYDAY: sb.append( cal.getDisplayName( Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())); break;
+        case DAYFULL: sb.append( cal.getDisplayName( Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())); break;
         case DDD:    sb.append( cal.get( Calendar.DAY_OF_YEAR)); break;
         case h:      sb.append( cal.get( Calendar.HOUR) + 1); break;
         case hh:     twoDigitPadding( cal.get( Calendar.HOUR_OF_DAY), sb); break;
@@ -189,7 +189,7 @@ public class DateFormat
           break;
           
         case DAY:    parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.SHORT, 3); break;
-        case DAYDAY: parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.LONG); break;
+        case DAYFULL: parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.LONG); break;
         case DDD:    parseNumber( date, cal, Calendar.DAY_OF_YEAR, 0); break;
         
         case h:
@@ -441,7 +441,7 @@ public class DateFormat
   public static void main( String[] args) throws Exception
   {
     DateFormat util = new DateFormat();
-    String f = "{YY}/{M}/{DD}";
+    String f = "{YY}/{M}/{DAYFULL}";
     String s = util.format( f, System.currentTimeMillis());
     System.out.println( s);
     

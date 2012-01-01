@@ -26,7 +26,6 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   protected ColumnWidthFeature( IXidget xidget)
   {
     this.xidget = xidget;
-    this.rows = new ArrayList<Integer[]>();
   }
 
   /**
@@ -57,6 +56,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     widest = new int[ count];
     sizes = new int[ count];
     sorted = new List[ count];
+    rows = new ArrayList<Integer[]>();
     for( int i=0; i<count; i++) sorted[ i] = new ArrayList<Integer>();
     
     int charWidth = getMaxWidth();
@@ -107,6 +107,8 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     {
       setFreeWidth( i, -1, -1, 0);
     }
+    
+    insertRow( 0);
   }
   
   private static List<IModelObject> getColumnDeclarations( IXidget xidget)
@@ -318,17 +320,25 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   {
     row++;
     
-    if ( row >= rows.size()) insertRow( row - 1);
-    
-    int width = getTextWidth( text, row == 0);
     Integer[] widths = rows.get( row);
+    
+    // remove old width from sorted array
+    int index = Collections.binarySearch( sorted[ column], widths[ column]);
+    if ( index >= 0) sorted[ column].remove( index);
+    
+    // compute column width
+    int width = getTextWidth( text, row == 0);
+    
+    // update column width
     widths[ column] = width;
 
-    if ( widest[ column] < width) widest[ column] = width;
-    
-    int index = Collections.binarySearch( sorted[ column], width);
-    if ( index < 0) index = -(index + 1);
-    sorted[ column].add( index, width);
+    // insert new width into sorted array
+    index = Collections.binarySearch( sorted[ column], width);
+    if ( index < 0) index = -index - 1;
+    sorted[ column].add( index, width); 
+
+    if ( sorted[ column].size() > 0)
+      widest[ column] = sorted[ column].get( sorted[ column].size() - 1);
     
     update();
   }
@@ -340,12 +350,15 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   {
     row++;
     
-    for( int i=rows.size(); i<row; i++)
+    for( int i=rows.size(); i<=row; i++)
     {
-      rows.add( i, new Integer[ styles.length]);
+      Integer[] widths = new Integer[ styles.length];
+      for( int j=0; j<widths.length; j++) widths[ j] = 0;
+      rows.add( i, widths);
     }
     
-    rows.add( row, new Integer[ styles.length]);
+    for( int i=0; i<sorted.length; i++)
+      sorted[ i].add( 0, 0);
   }
   
   /* (non-Javadoc)

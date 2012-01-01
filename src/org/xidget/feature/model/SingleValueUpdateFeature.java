@@ -147,7 +147,6 @@ public class SingleValueUpdateFeature implements ISingleValueUpdateFeature
       context.getScope().set( "value", value);
       Object[] result = scriptFeature.runScript( "onGet", context);
       value = (result != null && result.length > 0)? result[ 0]: null;
-      commit( value);
     }
     
     return value;
@@ -177,7 +176,6 @@ public class SingleValueUpdateFeature implements ISingleValueUpdateFeature
       context.getScope().set( "value", value);
       Object[] result = scriptFeature.runScript( "onSet", context);
       value = (result != null && result.length > 0)? result[ 0]: null;
-      display( value);
     }
     
     return value;
