@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.graph;
+package org.xidget.chart;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
@@ -485,7 +485,6 @@ public class Scale
   private double log;
   private double logq;
   
-  @SuppressWarnings("unused")
   public static void main( String[] args) throws Exception
   {
 //    for( int i=0; i<1; i++)

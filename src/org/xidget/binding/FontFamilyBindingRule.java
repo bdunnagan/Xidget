@@ -1,7 +1,7 @@
 /*
  * Xidget - XML Widgets based on JAHM
  * 
- * FontBindingRule.java
+ * FontStyleBindingRule.java
  * 
  * Copyright 2009 Robert Arvin Dunnagan
  * 
@@ -19,13 +19,10 @@
  */
 package org.xidget.binding;
 
-import java.util.EnumSet;
 import java.util.List;
-
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IWidgetFeature;
-import org.xidget.ifeature.IWidgetFeature.FontStyle;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -33,17 +30,19 @@ import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
-/**
- * An implementation of IBindingRule for icons.
- */
-public class FontBindingRule implements IBindingRule
+public class FontFamilyBindingRule implements IBindingRule
 {
+  public FontFamilyBindingRule( String fontTag)
+  {
+    this.fontTag = fontTag;
+  }
+  
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( IWidgetFeature.class) != null;
+    return element.getParent().isType( fontTag) && xidget.getFeature( IWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -53,25 +52,6 @@ public class FontBindingRule implements IBindingRule
   {
     return new Listener( xidget);
   }  
-  
-  static EnumSet<FontStyle> parseStyles( String styles)
-  {
-    styles = styles.toLowerCase();
-    boolean italic = styles.contains( "italic");
-    boolean bold = styles.contains( "bold");
-    if ( italic)
-    {
-      return bold? EnumSet.of( FontStyle.italic, FontStyle.bold): EnumSet.of( FontStyle.italic);
-    }
-    else if ( bold)
-    {
-      return EnumSet.of( FontStyle.bold);
-    }
-    else
-    {
-      return EnumSet.of( FontStyle.plain);
-    }
-  }
   
   private static final class Listener extends ExpressionListener
   {
@@ -83,25 +63,29 @@ public class FontBindingRule implements IBindingRule
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = nodes.get( 0);
-      setFont( Xlate.get( node, ""));
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setFontFamily( Xlate.get( node, ""));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
-      if ( node != null) setFont( Xlate.get( node, ""));
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setFontFamily( Xlate.get( node, ""));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      setFont( newValue);
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setFontFamily( newValue);
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
       if ( object == node) 
       {
-        setFont( Xlate.get( object, ""));
+        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+        feature.setFontFamily( Xlate.get( object, ""));
       }
     }
 
@@ -109,18 +93,10 @@ public class FontBindingRule implements IBindingRule
     {
       return true;
     }
-    
-    private void setFont( String font)
-    {
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      
-      String[] parsed = font.split( "\\s*,\\s*");
-      if ( parsed.length > 0) feature.setFontFamily( parsed[ 0]);
-      if ( parsed.length > 1) feature.setFontSize( Double.parseDouble( parsed[ 1]));
-      if ( parsed.length > 2) feature.setFontStyles( parseStyles( parsed[ 2]));
-    }
 
     private IXidget xidget;
     private IModelObject node;
   }
+  
+  private String fontTag;
 }

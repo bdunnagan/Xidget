@@ -30,17 +30,19 @@ import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
-/**
- * An implementation of IBindingRule for icons.
- */
 public class FontStyleBindingRule implements IBindingRule
 {
+  public FontStyleBindingRule( String fontTag)
+  {
+    this.fontTag = fontTag;
+  }
+  
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( IWidgetFeature.class) != null;
+    return element.getParent().isType( fontTag) && xidget.getFeature( IWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -62,20 +64,20 @@ public class FontStyleBindingRule implements IBindingRule
     {
       node = nodes.get( 0);
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setFontStyle( Xlate.get( node, ""));
+      feature.setFontStyles( FontBindingRule.parseStyles( Xlate.get( node, "")));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setFontStyle( Xlate.get( node, ""));
+      feature.setFontStyles( FontBindingRule.parseStyles( Xlate.get( node, "")));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setFontStyle( newValue);
+      feature.setFontStyles( FontBindingRule.parseStyles( newValue));
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
@@ -83,7 +85,7 @@ public class FontStyleBindingRule implements IBindingRule
       if ( object == node) 
       {
         IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-        feature.setFontStyle( Xlate.get( object, ""));
+        feature.setFontStyles( FontBindingRule.parseStyles( Xlate.get( object, "")));
       }
     }
 
@@ -95,4 +97,6 @@ public class FontStyleBindingRule implements IBindingRule
     private IXidget xidget;
     private IModelObject node;
   }
+  
+  private String fontTag;
 }

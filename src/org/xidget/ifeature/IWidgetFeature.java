@@ -19,6 +19,8 @@
  */
 package org.xidget.ifeature;
 
+import java.util.EnumSet;
+
 import org.xidget.layout.Bounds;
 import org.xidget.layout.Margins;
 import org.xmodel.IModelObject;
@@ -125,22 +127,27 @@ public interface IWidgetFeature
    * @param color The background color.
    */
   public void setBackground( int color);
-  
+
   /**
-   * Set the name of the font family.
-   * @param font The font family name (i.e. courier).
+   * Font styles.
    */
-  public void setFont( String font);
-  
+  public enum FontStyle { plain, italic, bold};
+
   /**
-   * Set the font style.
-   * @param style The font style name (i.e. italic).
+   * Set the font family to the nearest matching font family.
+   * @param family The font family.
    */
-  public void setFontStyle( String style);
+  public void setFontFamily( String family);
   
   /**
-   * Set the font size.
-   * @param size The size of the font in points.
+   * Set the font styles.
+   * @param styles The styles.
+   */
+  public void setFontStyles( EnumSet<FontStyle> styles);
+  
+  /**
+   * Set the font size. 
+   * @param size The size.
    */
   public void setFontSize( double size);
 }

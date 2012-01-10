@@ -30,17 +30,19 @@ import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
-/**
- * An implementation of IBindingRule for icons.
- */
 public class FontSizeBindingRule implements IBindingRule
 {
+  public FontSizeBindingRule( String fontTag)
+  {
+    this.fontTag = fontTag;
+  }
+  
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( IWidgetFeature.class) != null;
+    return element.getParent().isType( fontTag) && xidget.getFeature( IWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -107,4 +109,6 @@ public class FontSizeBindingRule implements IBindingRule
     private IXidget xidget;
     private IModelObject node;
   }
+  
+  private String fontTag;
 }

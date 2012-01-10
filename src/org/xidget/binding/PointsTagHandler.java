@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.xidget.IXidget;
+import org.xidget.chart.Point;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
-import org.xidget.graph.Point;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IPointsFeature;
 import org.xmodel.IModelObject;
@@ -47,7 +47,8 @@ public class PointsTagHandler implements ITagHandler
     IExpression expression = Xlate.childGet( element, "list", (IExpression)null);
     if ( expression != null)
     {
-      PointNodeListener listener = new PointNodeListener( xidget, createCoordinateExpressions( element));
+      IExpression labelExpr = Xlate.childGet( element, "label", (IExpression)null);
+      PointNodeListener listener = new PointNodeListener( xidget, createCoordinateExpressions( element), labelExpr);
       XidgetBinding binding = new XidgetBinding( expression, listener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
@@ -103,16 +104,19 @@ public class PointsTagHandler implements ITagHandler
   
   private class PointNodeListener extends ExactExpressionListener
   {
-    public PointNodeListener( IXidget xidget, IExpression[] coordExprs)
+    public PointNodeListener( IXidget xidget, IExpression[] coordExprs, IExpression labelExpr)
     {
       this.xidget = xidget;
       this.coordExprs = coordExprs;
+      this.labelExpr = labelExpr;
       
-      listeners = new PointCoordListener[ coordExprs.length];
-      for( int i=0; i<listeners.length; i++)
+      coordListeners = new PointCoordListener[ coordExprs.length];
+      for( int i=0; i<coordListeners.length; i++)
       {
-        listeners[ i] = new PointCoordListener( xidget, i);
+        coordListeners[ i] = new PointCoordListener( xidget, i);
       }
+      
+      labelListener = new PointLabelListener( xidget);
     }
 
     /* (non-Javadoc)
@@ -136,7 +140,13 @@ public class PointsTagHandler implements ITagHandler
         {
           double coord = coordExprs[ j].evaluateNumber( pointContext);
           point.coords[ j] = coord;
-          coordExprs[ j].addListener( pointContext, listeners[ j]);
+          coordExprs[ j].addListener( pointContext, coordListeners[ j]);
+        }
+        
+        if ( labelExpr != null) 
+        {
+          point.label = labelExpr.evaluateString( pointContext);
+          labelExpr.addListener( pointContext, labelListener);
         }
         
         feature.add( start + i, point);
@@ -151,13 +161,14 @@ public class PointsTagHandler implements ITagHandler
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes, int start, int count)
     {
       IPointsFeature feature = xidget.getFeature( IPointsFeature.class);
-      for( int i=0; i<count; i++)
-        feature.remove( start);
+      for( int i=0; i<count; i++) feature.remove( start);
     }
     
     private IXidget xidget;
     private IExpression[] coordExprs;
-    private PointCoordListener[] listeners;
+    private PointCoordListener[] coordListeners;
+    private IExpression labelExpr;
+    private PointLabelListener labelListener;
   }
   
   private class PointCoordListener extends ExpressionListener
@@ -209,7 +220,7 @@ public class PointsTagHandler implements ITagHandler
     {
       if ( newValue != null)
       {
-        update( context, newValue.toString());
+        update( context, newValue);
       }
     }
     
@@ -240,13 +251,7 @@ public class PointsTagHandler implements ITagHandler
      */
     private void update( IContext context, String value)
     {
-      try
-      {
-        update( context, Double.parseDouble( value));
-      }
-      catch( Exception e)
-      {
-      }
+      try { update( context, Double.parseDouble( value));} catch( Exception e) {}
     }
     
     /**
@@ -261,9 +266,88 @@ public class PointsTagHandler implements ITagHandler
       if ( point == null) return;
       feature.update( point, coordinate, value);
     }
-
+    
     private IXidget xidget;
     private IPointsFeature feature;
     private int coordinate;
+  }
+  
+  private class PointLabelListener extends ExpressionListener
+  {
+    public PointLabelListener( IXidget xidget)
+    {
+      this.xidget = xidget;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyAdd(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      IModelObject node = expression.queryFirst( context);
+      update( context, Xlate.get( node, ""));
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyRemove(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext, java.util.List)
+     */
+    @Override
+    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
+    {
+      IModelObject node = expression.queryFirst( context);
+      update( context, Xlate.get( node, ""));
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext, double, double)
+     */
+    @Override
+    public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
+    {
+      update( context, ""+newValue);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
+    {
+      if ( newValue != null)
+      {
+        update( context, newValue);
+      }
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyValue(org.xmodel.xpath.expression.IExpression, 
+     * org.xmodel.xpath.expression.IContext[], org.xmodel.IModelObject, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
+    {
+      if ( newValue != null) update( contexts[ 0], newValue.toString());
+    }
+    
+    /**
+     * Update the coordinate with the specified value.
+     * @param context The context.
+     * @param value The new value.
+     */
+    private void update( IContext context, String value)
+    {
+      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
+      Point point = map.get( context.getObject());
+      if ( point == null) return;
+      feature.update( point, value);
+    }
+    
+    private IXidget xidget;
+    private IPointsFeature feature;
   }
 }

@@ -2,10 +2,10 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.ifeature.graph;
+package org.xidget.ifeature.chart;
 
 import org.xidget.IXidget;
-import org.xidget.graph.Scale.Format;
+import org.xidget.chart.Scale.Format;
 
 /**
  * An interface for defining the graph associated with a scale xidget.

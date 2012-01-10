@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.graph;
+package org.xidget.chart;
 
 import java.util.List;
 
@@ -10,8 +10,7 @@ import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 
 /**
- * A class that defines shapes for the various point styles. The shapes are
- * defined as a series of line segments.
+ * A class that defines shapes for the various point styles. The shapes are defined as a series of line segments.
  */
 public class PointStyles
 {

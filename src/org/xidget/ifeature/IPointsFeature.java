@@ -4,7 +4,7 @@
  */
 package org.xidget.ifeature;
 
-import org.xidget.graph.Point;
+import org.xidget.chart.Point;
 
 /**
  * An interface for specifying points in a point list.
@@ -31,6 +31,13 @@ public interface IPointsFeature
    * @param value The new value.
    */
   public void update( Point point, int coordinate, double value);
+  
+  /**
+   * Update the specified point.
+   * @param point The point.
+   * @param label The new label.
+   */
+  public void update( Point point, String label);
   
   /**
    * Remove the point at the specified index.
