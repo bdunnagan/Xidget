@@ -20,6 +20,7 @@
 package org.xidget.binding;
 
 import java.util.Stack;
+
 import org.xidget.IXidget;
 import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
@@ -27,6 +28,7 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 
 /**
  * An implementation of ITagHandler for processing xidget declarations. This handler will
@@ -41,10 +43,35 @@ public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeatu
    */
   public XidgetTagHandler( Class<? extends IXidget> xidgetClass)
   {
+    this( xidgetClass, null, null);
+  }
+  
+  /**
+   * Create a xidget tag handler which instantiates xidgets of the specified class.  Specifying the
+   * style attribute allows multiple xidgets to share an element name while being differentiated
+   * by an attribute.
+   * @param xidgetClass The implementation class of IXidget.
+   * @param styleAttribute The name of an attribute that specifies the style.
+   * @param styleValue The value of the style attribute associated with this xidget class.
+   */
+  public XidgetTagHandler( Class<? extends IXidget> xidgetClass, String styleAttribute, String styleValue)
+  {
     this.xidgetClass = xidgetClass;
     this.xidgets = new Stack<IXidget>();
+    this.styleAttribute = styleAttribute;
+    this.styleValue = styleValue;
   }
     
+  /* (non-Javadoc)
+   * @see org.xidget.config.AbstractTagHandler#filter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
+   */
+  @Override
+  public boolean filter( TagProcessor processor, ITagHandler parent, IModelObject element)
+  {
+    if ( styleAttribute == null) return true;
+    return Xlate.get( element, styleAttribute, "").equals( styleValue);
+  }
+
   /* (non-Javadoc)
    * @see org.xidget.config.ITagHandler#enter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
@@ -106,4 +133,6 @@ public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeatu
 
   private Class<? extends IXidget> xidgetClass;
   private Stack<IXidget> xidgets;
+  private String styleAttribute;
+  private String styleValue;
 }

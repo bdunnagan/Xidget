@@ -47,7 +47,7 @@ public class PluginAction extends GuardedAction
   /* (non-Javadoc)
    * @see org.xmodel.xaction.GuardedAction#doAction(org.xmodel.xpath.expression.IContext)
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   @Override
   protected Object[] doAction( IContext context)
   {
