@@ -22,7 +22,7 @@ package org.xidget;
 import java.util.List;
 
 import org.xidget.config.TagProcessor;
-import org.xmodel.external.caching.IFileAssociation;
+import org.xmodel.caching.IFileAssociation;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -54,32 +54,29 @@ public interface IToolkit extends IFeatured
   
   /**
    * Open a confirmation dialog.
-   * @param xidget The parent xidget.
    * @param context The context.
    * @param title The dialog title.
    * @param message The confirmation message.
    * @param allowCancel True if options include cancelling.
    * @return Returns the confirmation status.
    */
-  public Confirmation openConfirmDialog( IXidget xidget, StatefulContext context, String title, Object image, String message, boolean allowCancel);
+  public Confirmation openConfirmDialog( StatefulContext context, String title, Object image, String message, boolean allowCancel);
   
   public enum MessageType { error, warning, information, status};
   
   /**
    * Open a message dialog.
-   * @param xidget The parent xidget.
    * @param context The context.
    * @param title The dialog title.
    * @param message The confirmation message.
    * @param type The type of message.
    */
-  public void openMessageDialog( IXidget xidget, StatefulContext context, String title, Object image, String message, MessageType type);
+  public void openMessageDialog( StatefulContext context, String title, Object image, String message, MessageType type);
   
   public enum FileDialogType { openOne, openMany, save};
   
   /**
    * Open a file dialog.
-   * @param xidget The parent xidget.
    * @param context The context.
    * @param dir The current directory.
    * @param filter An expression that filters the files that can be selected.
@@ -87,5 +84,5 @@ public interface IToolkit extends IFeatured
    * @param type The type of file chooser.
    * @return Returns an array containing the paths of the selected files.
    */
-  public String[] openFileDialog( IXidget xidget, StatefulContext context, IExpression dir, IExpression filter, String desc, FileDialogType type);
+  public String[] openFileDialog( StatefulContext context, IExpression dir, IExpression filter, String desc, FileDialogType type);
 }

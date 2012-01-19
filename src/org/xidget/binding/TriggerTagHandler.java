@@ -58,9 +58,11 @@ public class TriggerTagHandler extends AbstractTagHandler
       trigger = new EntityTrigger();
     
     // configure trigger
-    XActionDocument document = new XActionDocument( processor.getClassLoader());
-    document.setRoot( element);
-    trigger.configure( document);
+    XActionDocument doc = new XActionDocument( processor.getClassLoader());
+    doc.addPackage( "org.xidget.xaction");
+    doc.addPackage( "org.xidget.layout.xaction");
+    doc.setRoot( element);
+    trigger.configure( doc);
     
     TriggerBinding binding = new TriggerBinding( trigger);
     IXidget xidget = xidgetFeature.getXidget();

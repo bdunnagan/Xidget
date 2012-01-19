@@ -50,12 +50,13 @@ public class RebuildXidgetAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
+    Creator creator = Creator.getInstance();
+    
     for( IModelObject element: xidgetExpr.query( context, null))
     {
-      Object object = element.getAttribute( "instance");
-      if ( !(object instanceof IXidget)) continue;
+      IXidget xidget = creator.findXidget( element);
+      if ( xidget == null) continue;
       
-      IXidget xidget = (IXidget)object;
       try
       {
         if ( xidget != null) Creator.getInstance().rebuild( xidget);

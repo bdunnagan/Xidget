@@ -20,13 +20,13 @@
 package org.xidget.xaction;
 
 import java.util.List;
+
 import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.config.TagException;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.dialog.IDialogFeature;
 import org.xmodel.IModelObject;
-import org.xmodel.ModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xaction.XActionDocument;
@@ -79,14 +79,8 @@ public class OpenDialogAction extends GuardedAction
     IModelObject element = (contextExpr != null)? contextExpr.queryFirst( context): context.getObject();
     if ( element == null) return null;
       
-    StatefulContext dialogContext = new StatefulContext( context, element);
-    
-    // set xidget in dialog context
-    IModelObject holder = new ModelObject( "xidget");
-    holder.setValue( xidget);
-    dialogContext.set( "dialog", holder);
-    
     // bind dialog
+    StatefulContext dialogContext = new StatefulContext( context, element);
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
     bindFeature.bind( dialogContext);
     

@@ -26,18 +26,18 @@ import org.xmodel.external.ICache;
 /**
  * An extension of FileSystemCachingPolicy that uses the toolkit IFileAssociation for loading images.
  */
-public class FileSystemCachingPolicy extends org.xmodel.external.caching.FileSystemCachingPolicy
+public class FileSystemCachingPolicy extends org.xmodel.caching.FileSystemCachingPolicy
 {
   public FileSystemCachingPolicy()
   {
-    IToolkit toolkit = Creator.getInstance().getToolkit();
+    IToolkit toolkit = Creator.getToolkit();
     addAssociation( toolkit.getImageFileAssociation());
   }
 
   public FileSystemCachingPolicy( ICache cache)
   {
     super( cache);
-    IToolkit toolkit = Creator.getInstance().getToolkit();
+    IToolkit toolkit = Creator.getToolkit();
     addAssociation( toolkit.getImageFileAssociation());
   }
 }

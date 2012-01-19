@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
-import org.xidget.ifeature.IWidgetContainerFeature;
+import org.xidget.ifeature.IWidgetFeature;
 import org.xidget.layout.Margins;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -21,14 +21,14 @@ import org.xmodel.xpath.expression.IExpressionListener;
  * An implementation of IBindingRule that sets the margins of a xidget. 
  * The margins can be defined in a node or in a string.
  */
-public class MarginsBindingRule implements IBindingRule
+public class OutsideMarginsBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
    * @see org.xidget.binding.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( IWidgetContainerFeature.class) != null;
+    return xidget.getFeature( IWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -69,8 +69,8 @@ public class MarginsBindingRule implements IBindingRule
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
       Margins margins = new Margins( (int)newValue);
-      IWidgetContainerFeature feature = xidget.getFeature( IWidgetContainerFeature.class);
-      feature.setInsideMargins( margins);
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setOutsideMargins( margins);
     }
 
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
@@ -98,8 +98,8 @@ public class MarginsBindingRule implements IBindingRule
     private void setMargins( String string)
     {
       Margins margins = new Margins( string);
-      IWidgetContainerFeature feature = xidget.getFeature( IWidgetContainerFeature.class);
-      feature.setInsideMargins( margins);
+      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      feature.setOutsideMargins( margins);
     }
     
     private IXidget xidget;

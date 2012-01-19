@@ -21,7 +21,7 @@ import org.xmodel.xpath.expression.IExpressionListener;
  * An implementation of IBindingRule that sets the margins of a xidget. 
  * The margins can be defined in a node or in a string.
  */
-public class PaddingBindingRule implements IBindingRule
+public class InsideMarginsBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
    * @see org.xidget.binding.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
@@ -70,7 +70,7 @@ public class PaddingBindingRule implements IBindingRule
     {
       Margins margins = new Margins( (int)newValue);
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setOutsideMargins( margins);
+      feature.setInsideMargins( margins);
     }
 
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
@@ -99,7 +99,7 @@ public class PaddingBindingRule implements IBindingRule
     {
       Margins margins = new Margins( string);
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setOutsideMargins( margins);
+      feature.setInsideMargins( margins);
     }
     
     private IXidget xidget;

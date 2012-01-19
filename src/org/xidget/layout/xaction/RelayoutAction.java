@@ -19,6 +19,7 @@
  */
 package org.xidget.layout.xaction;
 
+import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xmodel.IModelObject;
@@ -48,9 +49,11 @@ public class RelayoutAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
+    Creator creator = Creator.getInstance();
+
     for( IModelObject element: xidgetExpr.query( context, null))
     {
-      IXidget xidget = (IXidget)element.getAttribute( "instance");
+      IXidget xidget = creator.findXidget( element);
       if ( xidget != null)
       {
         IWidgetContainerFeature feature = xidget.getFeature( IWidgetContainerFeature.class);

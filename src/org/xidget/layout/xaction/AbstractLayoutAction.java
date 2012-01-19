@@ -22,6 +22,7 @@ package org.xidget.layout.xaction;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xidget.ifeature.IWidgetFeature;
@@ -52,10 +53,12 @@ public abstract class AbstractLayoutAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
+    Creator creator = Creator.getInstance();
+    
     // get parent xidget
     IModelObject element = context.getObject();
-    IXidget parent = (IXidget)element.getAttribute( "instance");
-    
+    IXidget parent = creator.findXidget( element);
+        
     // get parameters
     IWidgetContainerFeature containerFeature = parent.getFeature( IWidgetContainerFeature.class);
     int spacing = containerFeature.getSpacing();
@@ -79,7 +82,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
       List<IXidget> xidgets = new ArrayList<IXidget>( elements.size());
       for( IModelObject node: elements)
       {
-        IXidget xidget = (IXidget)node.getAttribute( "instance");
+        IXidget xidget = creator.findXidget( node);
         if ( xidget != null) xidgets.add( xidget);
       }
       layout( context, parent, xidgets, spacing);

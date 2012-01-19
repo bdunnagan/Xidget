@@ -22,16 +22,15 @@ package org.xidget.xaction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.xidget.Creator;
 import org.xidget.IToolkit;
-import org.xidget.IXidget;
 import org.xidget.IToolkit.FileDialogType;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
-import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -58,7 +57,6 @@ public class OpenFileDialogAction extends GuardedAction
     typeExpr = document.getExpression( "type", true);
     if ( typeExpr == null) typeExpr = XPath.createExpression( "'openOne'");
     
-    windowExpr = document.getExpression( "window", true);
     folderExpr = document.getExpression( "folder", true);
     filterExpr = document.getExpression( "filter", true);
     descExpr = document.getExpression( "description", true);
@@ -70,12 +68,6 @@ public class OpenFileDialogAction extends GuardedAction
    */
   protected Object[] doAction( IContext context)
   {
-    IModelObject windowNode = windowExpr.queryFirst( context);
-    if ( windowNode == null) throw new XActionException( "Window is undefined: "+windowExpr);
-    
-    IXidget xidget = (IXidget)windowNode.getValue();
-    if ( xidget == null) throw new XActionException( "Window is undefined: "+windowExpr);
-
     FileDialogType type = FileDialogType.valueOf( typeExpr.evaluateString( context));
     String desc = (descExpr != null)? descExpr.evaluateString( context): "";
 
@@ -87,8 +79,8 @@ public class OpenFileDialogAction extends GuardedAction
     }
     
     // open dialog
-    IToolkit toolkit = Creator.getInstance().getToolkit();
-    String[] paths = toolkit.openFileDialog( xidget, (StatefulContext)context, folderExpr, filterExpr, desc, type);
+    IToolkit toolkit = Creator.getToolkit();
+    String[] paths = toolkit.openFileDialog( (StatefulContext)context, folderExpr, filterExpr, desc, type);
     
     if ( type == FileDialogType.openMany)
     {
@@ -136,7 +128,6 @@ public class OpenFileDialogAction extends GuardedAction
     return null;
   }
 
-  private IExpression windowExpr;
   private IExpression targetExpr;
   private IExpression folderExpr;
   private IExpression filterExpr;

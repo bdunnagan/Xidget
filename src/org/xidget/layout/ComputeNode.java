@@ -22,7 +22,6 @@ package org.xidget.layout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.xidget.Log;
 
 /**
  * An abstract base class for anchors.
@@ -120,7 +119,6 @@ public abstract class ComputeNode implements IComputeNode
         break;
       }
     }
-    Log.printf( "layout", "update: %s\n", toString()); 
   }
   
   /* (non-Javadoc)

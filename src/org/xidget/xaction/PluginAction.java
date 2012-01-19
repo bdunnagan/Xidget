@@ -56,7 +56,7 @@ public class PluginAction extends GuardedAction
     {
       Class clss = getDocument().getClassLoader().loadClass( className);
       IPlugin plugin = (IPlugin)clss.newInstance();
-      IToolkit toolkit = Creator.getInstance().getToolkit();
+      IToolkit toolkit = Creator.getToolkit();
       if ( toolkit == null) throw new XActionException( "Toolkit must be defined before plugins can be loaded.");
       plugin.configure( toolkit);
     }

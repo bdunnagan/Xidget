@@ -81,10 +81,26 @@ public interface IWidgetFeature
   public IModelObject getBoundsNode();
   
   /**
+   * Set the inside margins of this widget.
+   * @param margins The margins.
+   */
+  public void setInsideMargins( Margins margins);
+  
+  /**
+   * @return Returns the inside margins of the widget.
+   */
+  public Margins getInsideMargins();
+  
+  /**
    * Set the outside margins of the widget (otherwise known as padding).
    * @param margins The outside margins of the widget.
    */
   public void setOutsideMargins( Margins margins);
+  
+  /**
+   * @return Returns the outside margins of the widget.
+   */
+  public Margins getOutsideMargins();
     
   /**
    * Set whether the widget is visible.

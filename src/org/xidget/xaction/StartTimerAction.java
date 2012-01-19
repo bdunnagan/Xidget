@@ -56,7 +56,7 @@ public class StartTimerAction extends GuardedAction
     int period = (int)((delayExpr != null)? delayExpr.evaluateNumber( context): -1);
     boolean repeat = (repeatExpr != null)? repeatExpr.evaluateBoolean( context): false;
     
-    IAsyncFeature feature = Creator.getInstance().getToolkit().getFeature( IAsyncFeature.class);
+    IAsyncFeature feature = Creator.getToolkit().getFeature( IAsyncFeature.class);
     if ( feature != null)
     {
       Task task = new Task( context);

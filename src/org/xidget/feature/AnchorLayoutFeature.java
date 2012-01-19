@@ -141,8 +141,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void initContainerNodes()
   {
-    IWidgetContainerFeature containerFeature = xidget.getFeature( IWidgetContainerFeature.class);
-    Margins margins = containerFeature.getInsideMargins();
+    IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+    Margins margins = widgetFeature.getInsideMargins();
     
     IComputeNode top = getCreateNode( xidget, Side.top);
     top.clearDependencies();
@@ -152,7 +152,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
     left.clearDependencies();
     left.addDependency( new ConstantNode( margins.x0));
     
-    IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
     Bounds bounds = widgetFeature.getDefaultBounds();
     
     if ( bounds.width >= 0)
@@ -251,8 +250,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     IComputeNode right = getCreateNode( xidget, Side.right);
     IComputeNode bottom = getCreateNode( xidget, Side.bottom);
 
-    IWidgetContainerFeature containerFeature = xidget.getFeature( IWidgetContainerFeature.class);
-    Margins margins = containerFeature.getInsideMargins();
+    Margins margins = widgetFeature.getInsideMargins();
     if ( right.hasValue()) bounds.width = right.getValue() + margins.x1;
     if ( bottom.hasValue()) bounds.height = bottom.getValue() + margins.y1;
     
@@ -327,10 +325,11 @@ public class AnchorLayoutFeature implements ILayoutFeature
       IModelObject element = layoutExpr.queryFirst( context);
       if ( element != null)
       {
-        XActionDocument document = new XActionDocument( element);
+        XActionDocument doc = new XActionDocument( element);
+        doc.addPackage( "org.xidget.layout.xaction");
         ClassLoader loader = getClass().getClassLoader();
-        document.setClassLoader( loader);
-        script = document.createScript();
+        doc.setClassLoader( loader);
+        script = doc.createScript();
       }
     }
     
@@ -340,10 +339,11 @@ public class AnchorLayoutFeature implements ILayoutFeature
       IModelObject layout = config.getFirstChild( "layout");
       if ( layout != null)
       {
-        XActionDocument document = new XActionDocument( layout);
+        XActionDocument doc = new XActionDocument( layout);
+        doc.addPackage( "org.xidget.layout.xaction");
         ClassLoader loader = getClass().getClassLoader();
-        document.setClassLoader( loader);
-        script = document.createScript();
+        doc.setClassLoader( loader);
+        script = doc.createScript();
       }
     }
   }

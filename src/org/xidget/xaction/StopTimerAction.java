@@ -49,7 +49,7 @@ public class StopTimerAction extends GuardedAction
   protected Object[] doAction( IContext context)
   {
     String id = idExpr.evaluateString( context);
-    IAsyncFeature feature = Creator.getInstance().getToolkit().getFeature( IAsyncFeature.class);
+    IAsyncFeature feature = Creator.getToolkit().getFeature( IAsyncFeature.class);
     if ( feature != null) feature.cancel( id);
     return null;
   }

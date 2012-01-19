@@ -24,11 +24,9 @@ import java.util.Map;
 
 import org.xidget.Creator;
 import org.xidget.IToolkit;
-import org.xidget.IXidget;
 import org.xidget.IToolkit.MessageType;
+import org.xidget.IXidget;
 import org.xidget.ifeature.IScriptFeature;
-import org.xmodel.IModelObject;
-import org.xmodel.ModelObject;
 import org.xmodel.log.Log;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -42,8 +40,7 @@ public class ScriptFeature implements IScriptFeature
 {
   public ScriptFeature( IXidget xidget)
   {
-    holder = new ModelObject( "holder");
-    holder.setValue( xidget);
+    this.xidget = xidget;
   }
 
   /* (non-Javadoc)
@@ -72,28 +69,29 @@ public class ScriptFeature implements IScriptFeature
   {
     if ( scripts == null) return null;
 
-    context.set( "xidget", holder);
-    
     try
     {
       ScriptAction script = scripts.get( name);
-      if ( script != null) return script.run( context);
+      if ( script != null) 
+      {
+        context.set( "here", xidget.getConfig());
+        return script.run( context);
+      }
     }
     catch( Exception e)
     {
       log.exception( e);
       
-      IXidget xidget = (IXidget)holder.getValue();
-      IToolkit toolkit = Creator.getInstance().getToolkit();
+      IToolkit toolkit = Creator.getToolkit();
       String message = String.format( "%s: %s\n", e.getClass().getSimpleName(), e.getMessage());
-      toolkit.openMessageDialog( xidget, context, "Exception", null, message, MessageType.error);
+      toolkit.openMessageDialog( context, "Exception", null, message, MessageType.error);
     }
     
     return null;
   }
 
   private static Log log = Log.getLog( "org.xidget.feature");
-  
-  private IModelObject holder;
+
+  private IXidget xidget;
   private Map<String, ScriptAction> scripts;
 }

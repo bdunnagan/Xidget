@@ -21,14 +21,13 @@ package org.xidget.xaction;
 
 import org.xidget.Creator;
 import org.xidget.IToolkit;
-import org.xidget.IXidget;
 import org.xidget.IToolkit.Confirmation;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
+import org.xmodel.xaction.Conventions;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.IXAction;
 import org.xmodel.xaction.XActionDocument;
-import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -46,8 +45,7 @@ public class OpenConfirmDialogAction extends GuardedAction
   {
     super.configure( document);
     
-    variable = Xlate.get( document.getRoot(), "assign", (String)null);
-    windowExpr = document.getExpression( "window", true);
+    variable = Conventions.getVarName( document.getRoot(), false);
     targetExpr = document.getExpression( "target", true);
     allowCancelExpr = document.getExpression( "allowCancel", true);
     titleExpr = document.getExpression( "title", true);
@@ -62,12 +60,6 @@ public class OpenConfirmDialogAction extends GuardedAction
    */
   protected Object[] doAction( IContext context)
   {
-    IModelObject windowNode = windowExpr.queryFirst( context);
-    if ( windowNode == null) throw new XActionException( "Window is undefined: "+windowExpr);
-    
-    IXidget xidget = (IXidget)windowNode.getValue();
-    if ( xidget == null) throw new XActionException( "Window is undefined: "+windowExpr);
-
     String title = titleExpr.evaluateString( context);
     String message = messageExpr.evaluateString( context);
     boolean allowCancel = (allowCancelExpr != null)? allowCancelExpr.evaluateBoolean( context): false;
@@ -75,8 +67,8 @@ public class OpenConfirmDialogAction extends GuardedAction
     Object image = (imageNode != null)? imageNode.getValue(): null;
     
     // open dialog
-    IToolkit toolkit = Creator.getInstance().getToolkit();
-    Confirmation confirmation = toolkit.openConfirmDialog( xidget, (StatefulContext)context, title, image, message, allowCancel);
+    IToolkit toolkit = Creator.getToolkit();
+    Confirmation confirmation = toolkit.openConfirmDialog( (StatefulContext)context, title, image, message, allowCancel);
     
     if ( targetExpr != null)
     {
@@ -95,7 +87,6 @@ public class OpenConfirmDialogAction extends GuardedAction
     return null;
   }
 
-  private IExpression windowExpr;
   private IExpression targetExpr;
   private IExpression titleExpr;
   private IExpression imageExpr;

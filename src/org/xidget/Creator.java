@@ -21,7 +21,9 @@ package org.xidget;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import org.xidget.binding.BackgroundBindingRule;
@@ -38,10 +40,10 @@ import org.xidget.binding.FontTagHandler;
 import org.xidget.binding.ForegroundBindingRule;
 import org.xidget.binding.GetTagHandler;
 import org.xidget.binding.IconBindingRule;
+import org.xidget.binding.InsideMarginsBindingRule;
 import org.xidget.binding.KeyTagHandler;
 import org.xidget.binding.LabelBindingRule;
-import org.xidget.binding.MarginsBindingRule;
-import org.xidget.binding.PaddingBindingRule;
+import org.xidget.binding.OutsideMarginsBindingRule;
 import org.xidget.binding.PointsTagHandler;
 import org.xidget.binding.ScriptTagHandler;
 import org.xidget.binding.SelectionTagHandler;
@@ -66,6 +68,7 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
+import org.xidget.ifeature.IFocusFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xidget.xpath.CapitalizeFunction;
@@ -97,6 +100,8 @@ public final class Creator
   protected Creator()
   {
     this.processor = new TagProcessor();
+    this.map = new HashMap<Object, IXidget>();
+    this.roots = new ArrayList<IXidget>( 1);
 
     // general
     processor.addHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
@@ -110,8 +115,9 @@ public final class Creator
     processor.addHandler( "get", new GetTagHandler());
     processor.addHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
-    processor.addHandler( "margins", new BindingTagHandler( new MarginsBindingRule()));
-    processor.addHandler( "padding", new BindingTagHandler( new PaddingBindingRule()));
+    processor.addHandler( "margins", new BindingTagHandler( new InsideMarginsBindingRule()));
+    processor.addHandler( "insideMargins", new BindingTagHandler( new InsideMarginsBindingRule()));
+    processor.addHandler( "outsideMargins", new BindingTagHandler( new OutsideMarginsBindingRule()));
     processor.addHandler( "points", new PointsTagHandler());
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new SelectionTagHandler());
@@ -149,8 +155,10 @@ public final class Creator
     processor.addAttributeHandler( "size", new BindingTagHandler( new FontSizeBindingRule( "font")));
     processor.addAttributeHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
-    processor.addAttributeHandler( "margins", new BindingTagHandler( new MarginsBindingRule()));
-    processor.addAttributeHandler( "padding", new BindingTagHandler( new PaddingBindingRule()));
+    processor.addAttributeHandler( "margins", new BindingTagHandler( new InsideMarginsBindingRule()));
+    processor.addAttributeHandler( "insideMargins", new BindingTagHandler( new InsideMarginsBindingRule()));
+    processor.addAttributeHandler( "outsideMargins", new BindingTagHandler( new OutsideMarginsBindingRule()));
+    processor.addAttributeHandler( "source", new SourceTagHandler());
     processor.addAttributeHandler( "spacing", new BindingTagHandler( new SpacingBindingRule()));
     processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));
     
@@ -191,19 +199,20 @@ public final class Creator
    * if the toolkit is specified from a thread other than the UI thread.
    * @param toolkit The toolkit.
    */
-  public void setToolkit( IToolkit toolkit)
+  public static void setToolkit( IToolkit toolkit)
   {
-    this.toolkit = toolkit; 
-    if ( toolkit != null) toolkit.configure( processor);
+    Creator creator = getInstance();
+    creator.toolkit = toolkit; 
+    if ( toolkit != null) toolkit.configure( creator.processor);
   }
 
   /**
    * Returns the platofmr-specific tookit.
    * @return Returns the platofmr-specific tookit.
    */
-  public IToolkit getToolkit()
+  public static IToolkit getToolkit()
   {
-    return toolkit;
+    return getInstance().toolkit;
   }
   
   /**
@@ -230,30 +239,123 @@ public final class Creator
   }
   
   /**
+   * Register an instance of IXidget with its associated widget.  This method is not normally called
+   * by clients.  Instances of IXidget are automatically registered with the widgets created by their
+   * IWidgetCreationFeature implementation.
+   * @param widget The widget.
+   * @param xidget The xidget.
+   */
+  public void register( Object widget, IXidget xidget)
+  {
+    map.put( widget, xidget);
+  }
+  
+  /**
+   * Returns the xidget that created the specified widget.
+   * @param widget The widget.
+   * @return Returns null or the xidget.
+   */
+  public IXidget getXidget( Object widget)
+  {
+    return map.get( widget);
+  }
+
+  /**
+   * @return Returns the list of xidgets that have been created without parents.
+   */
+  public List<IXidget> getActiveHierarchies()
+  {
+    return roots;
+  }
+  
+  /**
+   * Search the xidget hierarchies for the first xidget that was constructed from the specified configuration element.
+   * The search begins with the hierarchy containing the xidget that has focus.  If a matching xidget is not found
+   * then the each of the root hierarchies are searched in an unspecified order until a match is found.
+   * @param config The configuration element.
+   * @return Returns null or the first matching xidget.
+   */
+  public IXidget findXidget( IModelObject config)
+  {
+    List<IXidget> roots = getActiveHierarchies();
+    
+    IXidget focus = toolkit.getFeature( IFocusFeature.class).getFocus();
+    if ( focus != null) roots.add( 0, focus);
+    
+    for( IXidget root: roots)
+    {
+      IXidget xidget = findXidget( root, config);
+      if ( xidget != null) return xidget;
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Search the xidget hierarchies for the xidgets that were constructed from the specified configuration element.
+   * Each active hierarchy is searched and all matching xidgets are returned.
+   * @param config The configuration element.
+   * @return Returns the list of matching xidgets.
+   */
+  public List<IXidget> findXidgets( IModelObject config)
+  {
+    List<IXidget> matches = new ArrayList<IXidget>();
+    
+    for( IXidget root: getActiveHierarchies())
+    {
+      IXidget xidget = findXidget( root, config);
+      if ( xidget != null) matches.add( xidget);
+    }
+    
+    return matches;
+  }
+  
+  /**
+   * Search the descendants of the specified xidget for the xidget constructed from the specified configuration element.
+   * Note that it is possible for multiple xidgets to be constructed from the same configuration element.  However, it
+   * is necessary to clone a configuration element for each new xidget if this is the case.  Also, it is the 
+   * responsibility of the application to keep track of these cloned configuration elements because the framework
+   * assumes that xidgets can be found from their configuration elements with the only additional piece of information
+   * being the xidget that currently has focus.
+   * @param root The root of the xidget hierarchy to search.
+   * @param config The configuration element.
+   * @return Returns null or the matching xidget.
+   */
+  private IXidget findXidget( IXidget root, IModelObject config)
+  {
+    Stack<IXidget> stack = new Stack<IXidget>();
+    stack.push( root);
+    while( !stack.empty())
+    {
+      IXidget current = stack.pop();
+      
+      if ( current.getConfig() == config) return current;
+      
+      for( IXidget child: current.getChildren()) 
+      {
+        if ( child != current)
+          stack.push( child);
+      }
+    }
+    return null;
+  }
+  
+  /**
    * Create the xidget hierarchy for the specified configuration.
    * @param parent Null or the parent xidget.
    * @param configContext The configuration context.
    */
   public List<IXidget> create( IXidget parent, StatefulContext configContext) throws TagException
   {
-    long t0 = System.nanoTime();
-    
     // parse configuration
     List<IXidget> xidgets = (parent != null)? parse( parent, configContext): parse( configContext);
     if ( xidgets.size() == 0) return Collections.emptyList();
     
-    long t1 = System.nanoTime();
-    Log.printf( "perf", "parse: %3.2fms\n", (t1-t0)/1000000f);
+    // build
+    for( IXidget xidget: xidgets) build( xidget);
     
-    for( IXidget xidget: xidgets)
-    {
-      // build widget hierarchy
-      build( xidget);
-      
-      long t2 = System.nanoTime();
-      Log.printf( "perf", "build: %3.2fms\n", (t2-t1)/1000000f);
-      t1 = t2;
-    }
+    // save roots
+    if ( parent == null) roots.addAll( xidgets);
     
     return xidgets;
   }
@@ -266,16 +368,14 @@ public final class Creator
    */
   public List<IXidget> create( IXidget parent, StatefulContext configContext, StatefulContext bindContext) throws TagException
   {
-    long t0 = System.nanoTime();
     List<IXidget> xidgets = create( parent, configContext);
+    
     for( IXidget xidget: xidgets)
     {
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       bindFeature.bind( (StatefulContext)bindContext);
-    
-      long t1 = System.nanoTime();
-      Log.printf( "perf", "bind: %3.2fms\n", (t1-t0)/1000000f);
     }
+    
     return xidgets;
   }
       
@@ -297,9 +397,6 @@ public final class Creator
       // destroy widget hierarchy
       IWidgetCreationFeature creationFeature = xidget.getFeature( IWidgetCreationFeature.class);
       creationFeature.destroyWidgets();
-      
-      // clear xidget attribute
-      xidget.getConfig().removeAttribute( "instance");
       
       // remove xidget from parent
       if ( xidget.getParent() != null) 
@@ -345,7 +442,12 @@ public final class Creator
       IXidget xidget = stack.pop();
       
       IWidgetCreationFeature feature = xidget.getFeature( IWidgetCreationFeature.class);
-      if ( feature != null) feature.createWidgets();
+      if ( feature != null) 
+      {
+        feature.createWidgets();
+        for( Object widget: feature.getLastWidgets())
+          register( widget, xidget);
+      }
       
       // push children in reverse order
       List<IXidget> children = xidget.getChildren();
@@ -390,7 +492,7 @@ public final class Creator
     }
     
     // create widget hierarchy
-    xidget = (IXidget)config.getAttribute( "instance");
+    xidget = findXidget( config);
     build( xidget);
     
     // bind the xidget
@@ -438,7 +540,12 @@ public final class Creator
    */
   public static Creator getInstance()
   {
-    if ( instance == null) instance = new Creator();
+    Creator instance = instances.get();
+    if ( instance == null)
+    {
+      instance = new Creator();
+      instances.set( instance);
+    }
     return instance;
   }
 
@@ -497,7 +604,9 @@ public final class Creator
     private IXidget xidget;
   }
   
-  private static Creator instance;
+  private static ThreadLocal<Creator> instances = new ThreadLocal<Creator>();
   private IToolkit toolkit;
   private TagProcessor processor;
+  private Map<Object, IXidget> map;
+  private List<IXidget> roots;
 }

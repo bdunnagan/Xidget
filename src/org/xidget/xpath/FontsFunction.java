@@ -49,7 +49,7 @@ public class FontsFunction extends Function
 
     if ( result != null) return result;
     
-    List<String> fonts = Creator.getInstance().getToolkit().getFonts();
+    List<String> fonts = Creator.getToolkit().getFonts();
     result = new ArrayList<IModelObject>( fonts.size());
     for( String font: fonts)
     {

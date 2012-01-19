@@ -32,6 +32,7 @@ import org.xidget.ifeature.model.ISingleValueModelFeature;
 import org.xidget.ifeature.model.ISingleValueUpdateFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
+import org.xmodel.xpath.AttributeNode;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -66,12 +67,15 @@ public class SourceTagHandler extends AbstractTagHandler
     IXidget xidget = xidgetFeature.getXidget();
         
     // create variable binding if present
-    String variable = Xlate.get( element, "var", Xlate.get( element, "variable", (String)null));
-    if ( variable != null)
+    if ( !(element instanceof AttributeNode))
     {
-      VariableBinding binding = new VariableBinding( xidget, variable);
-      IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
-      bindFeature.addBindingAfterChildren( binding);
+      String var = Xlate.get( element, "var", (String)null);
+      if ( var != null)
+      {
+        VariableBinding binding = new VariableBinding( xidget, var);
+        IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
+        bindFeature.addBindingAfterChildren( binding);
+      }
     }
     
     // create expression binding if present

@@ -48,9 +48,11 @@ public class DestroyXidgetAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
+    Creator creator = Creator.getInstance();
+    
     for( IModelObject element: xidgetExpr.query( context, null))
     {
-      IXidget xidget = (IXidget)element.getAttribute( "instance");
+      IXidget xidget = creator.findXidget( element);
       if ( xidget != null) 
       {
         Creator.getInstance().destroy( xidget);

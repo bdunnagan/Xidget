@@ -141,9 +141,10 @@ public interface IKeyFeature
   /**
    * Add the specified key-binding.
    * @param keys The keys sequence to be bound.
+   * @param override True if normal processing of key should be skipped.
    * @param script The script to be executed.
    */
-  public void bind( String keys, IXAction script);
+  public void bind( String keys, boolean override, IXAction script);
   
   /**
    * Remove the specified key-binding.

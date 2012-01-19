@@ -100,14 +100,8 @@ public abstract class Xidget implements IXidget
   public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
   {
     if ( parent != null) parent.addChild( this);
-    
-    // set xidget attribute and save config (bi-directional mapping)
-    element.setAttribute( "instance", this);
     config = element;
-    
-    // create features
     createFeatures();
-    
     return true;
   }
 

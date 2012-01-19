@@ -68,6 +68,9 @@ public class KeyTagHandler extends AbstractTagHandler
 
     IXidget xidget = xidgetFeature.getXidget();
     
+    // override?
+    boolean override = Xlate.get( element, "override", true);
+    
     // create expression
     String xpath = Xlate.get( element, "keys", "");
     if ( xpath.length() == 0) return;
@@ -77,13 +80,14 @@ public class KeyTagHandler extends AbstractTagHandler
       // create binding
       IExpression expression = XPath.compileExpression( xpath);
       
-      Listener listener = new Listener();
-      listener.xidget = xidget;
-      
       XActionDocument doc = new XActionDocument( element);
+      doc.addPackage( "org.xidget.xaction");
+      doc.addPackage( "org.xidget.layout.xaction");
       doc.setClassLoader( processor.getClassLoader());
-      listener.script = doc.createScript();
+      IXAction script = doc.createScript();
         
+      Listener listener = new Listener( xidget, override, script);
+      
       XidgetBinding binding = new XidgetBinding( expression, listener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
@@ -96,15 +100,23 @@ public class KeyTagHandler extends AbstractTagHandler
   
   private class Listener extends ExpressionListener
   {
+    public Listener( IXidget xidget, boolean override, IXAction script)
+    {
+      this.xidget = xidget;
+      this.override = override;
+      this.script = script;
+    }
+    
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
       if ( newValue == null) return;
       
       IKeyFeature keyFeature = xidget.getFeature( IKeyFeature.class);
-      if ( keyFeature != null) keyFeature.bind( newValue, script);
+      if ( keyFeature != null) keyFeature.bind( newValue, override, script);
     }
     
-    IXidget xidget;
-    IXAction script;
+    private IXidget xidget;
+    private boolean override;
+    private IXAction script;
   };
 }

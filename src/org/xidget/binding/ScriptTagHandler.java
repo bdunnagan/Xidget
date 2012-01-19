@@ -26,6 +26,7 @@ import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IScriptFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.ScriptAction;
+import org.xmodel.xaction.XActionDocument;
 
 /**
  * The binding rule for any element containing a script. The script name is the element name.
@@ -49,7 +50,11 @@ public class ScriptTagHandler implements ITagHandler
     IXidgetFeature xidgetFeature = (parent != null)? parent.getFeature( IXidgetFeature.class): null;
     IScriptFeature scriptFeature = xidgetFeature.getXidget().getFeature( IScriptFeature.class);
 
-    ScriptAction script = new ScriptAction( processor.getClassLoader(), element);    
+    XActionDocument doc = new XActionDocument( element);
+    doc.addPackage( "org.xidget.xaction");
+    doc.addPackage( "org.xidget.layout.xaction");
+    
+    ScriptAction script = doc.createScript();
     scriptFeature.setScript( element.getType(), script);
     
     return false;

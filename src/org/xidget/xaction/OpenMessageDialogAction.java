@@ -21,12 +21,10 @@ package org.xidget.xaction;
 
 import org.xidget.Creator;
 import org.xidget.IToolkit;
-import org.xidget.IXidget;
 import org.xidget.IToolkit.MessageType;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
-import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -43,7 +41,6 @@ public class OpenMessageDialogAction extends GuardedAction
   {
     super.configure( document);
     
-    windowExpr = document.getExpression( "window", true);
     titleExpr = document.getExpression( "title", true);
     imageExpr = document.getExpression( "image", true);
     messageTypeExpr = document.getExpression( "type", true);
@@ -56,12 +53,6 @@ public class OpenMessageDialogAction extends GuardedAction
    */
   protected Object[] doAction( IContext context)
   {
-    IModelObject windowNode = windowExpr.queryFirst( context);
-    if ( windowNode == null) throw new XActionException( "Window is undefined: "+windowExpr);
-    
-    IXidget xidget = (IXidget)windowNode.getValue();
-    if ( xidget == null) throw new XActionException( "Window is undefined: "+windowExpr);
-
     String title = titleExpr.evaluateString( context);
     String message = messageExpr.evaluateString( context);
     IModelObject imageNode = (imageExpr != null)? imageExpr.queryFirst( context): null;
@@ -69,13 +60,12 @@ public class OpenMessageDialogAction extends GuardedAction
     String messageType = messageTypeExpr.evaluateString( context);
     
     // open dialog
-    IToolkit toolkit = Creator.getInstance().getToolkit();
-    toolkit.openMessageDialog( xidget, (StatefulContext)context, title, image, message, MessageType.valueOf( messageType));
+    IToolkit toolkit = Creator.getToolkit();
+    toolkit.openMessageDialog( (StatefulContext)context, title, image, message, MessageType.valueOf( messageType));
     
     return null;
   }
 
-  private IExpression windowExpr;
   private IExpression titleExpr;
   private IExpression imageExpr;
   private IExpression messageExpr;

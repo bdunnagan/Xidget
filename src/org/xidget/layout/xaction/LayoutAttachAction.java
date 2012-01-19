@@ -23,10 +23,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
-import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xidget.ifeature.ILayoutFeature.Side;
+import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
@@ -36,8 +37,8 @@ import org.xmodel.xml.XmlIO;
 import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
-import org.xmodel.xpath.expression.StatefulContext;
 import org.xmodel.xpath.expression.IExpression.ResultType;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An XAction that creates one or more attachments of any type for one xidget. The target xidget
@@ -94,9 +95,11 @@ public class LayoutAttachAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
+    Creator creator = Creator.getInstance();
+    
     // get container xidget
     IModelObject parentElement = context.getObject();
-    IXidget parent = (IXidget)parentElement.getAttribute( "instance");
+    IXidget parent = creator.findXidget( parentElement);
     
     // evaluate child xidgets
     List<IModelObject> elements = null;
@@ -120,12 +123,12 @@ public class LayoutAttachAction extends GuardedAction
     for( IModelObject element: elements)
     {
       // get xidget for which attachments are being created
-      IXidget xidget = (IXidget)element.getAttribute( "instance");
+      IXidget xidget = creator.findXidget( element);
       if ( xidget == null) return null;
       
       // create nodes for attachments
       for( Attachment attachment: attachments)
-        createNodes( attachment, context, parent, xidget);
+        createNodes( creator, attachment, context, parent, xidget);
     }
     
     return null;
@@ -133,11 +136,12 @@ public class LayoutAttachAction extends GuardedAction
       
   /**
    * Attach anchors of the specified xidget based on the specified attachment.
+   * @parma creator The Creator instance.
    * @param attachment The attachment.
    * @param context The context.
    * @param xidget1 The xidget.
    */
-  private void createNodes( Attachment attachment, IContext context, IXidget parent, IXidget xidget1)
+  private void createNodes( Creator creator, Attachment attachment, IContext context, IXidget parent, IXidget xidget1)
   {
     StatefulContext configContext = new StatefulContext( context, xidget1.getConfig());
     
@@ -155,7 +159,7 @@ public class LayoutAttachAction extends GuardedAction
       
       IModelObject xidgetNode = attachment.xidgetExpr.queryFirst( context);
       if ( xidgetNode == null) return;
-      xidget2 = (IXidget)xidgetNode.getAttribute( "instance");
+      xidget2 = creator.findXidget( xidgetNode);
     }
     
     // validation
