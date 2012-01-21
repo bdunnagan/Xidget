@@ -19,8 +19,6 @@
  */
 package org.xidget.ifeature;
 
-import java.util.EnumSet;
-
 import org.xidget.layout.Bounds;
 import org.xidget.layout.Margins;
 import org.xmodel.IModelObject;
@@ -121,12 +119,6 @@ public interface IWidgetFeature
   public void setEnabled( boolean enabled);
   
   /**
-   * Set whether the text is editable.
-   * @param editable True if editable.
-   */
-  public void setEditable( boolean editable);
-  
-  /**
    * Set the tooltip of the widget.
    * @param tooltip The tooltip.
    */
@@ -143,27 +135,4 @@ public interface IWidgetFeature
    * @param color The background color.
    */
   public void setBackground( int color);
-
-  /**
-   * Font styles.
-   */
-  public enum FontStyle { plain, italic, bold};
-
-  /**
-   * Set the font family to the nearest matching font family.
-   * @param family The font family.
-   */
-  public void setFontFamily( String family);
-  
-  /**
-   * Set the font styles.
-   * @param styles The styles.
-   */
-  public void setFontStyles( EnumSet<FontStyle> styles);
-  
-  /**
-   * Set the font size. 
-   * @param size The size.
-   */
-  public void setFontSize( double size);
 }

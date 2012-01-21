@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
+import org.xidget.ifeature.ITextWidgetFeature;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -64,8 +65,8 @@ public class EditableBindingRule implements IBindingRule
     @Override
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setEditable( expression.evaluateBoolean( context));
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
+      if ( feature != null) feature.setEditable( expression.evaluateBoolean( context));
     }
 
     /* (non-Javadoc)
@@ -74,14 +75,14 @@ public class EditableBindingRule implements IBindingRule
     @Override
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setEditable( expression.evaluateBoolean( context));
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
+      if ( feature != null) feature.setEditable( expression.evaluateBoolean( context));
     }
 
     public void notifyChange( IExpression expression, IContext context, boolean newValue)
     {
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setEditable( newValue);
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
+      if ( feature != null) feature.setEditable( newValue);
     }
 
     private IXidget xidget;

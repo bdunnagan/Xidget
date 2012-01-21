@@ -53,15 +53,7 @@ public class DestroyXidgetAction extends GuardedAction
     for( IModelObject element: xidgetExpr.query( context, null))
     {
       IXidget xidget = creator.findXidget( element);
-      if ( xidget != null) 
-      {
-        Creator.getInstance().destroy( xidget);
-      }
-      else
-      {
-        xidget = (IXidget)element.getValue();
-        if ( xidget != null) Creator.getInstance().destroy( xidget);
-      }
+      if ( xidget != null) Creator.getInstance().destroy( xidget);
     }
     
     return null;

@@ -24,8 +24,9 @@ import java.util.List;
 
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
+import org.xidget.ifeature.ITextWidgetFeature;
+import org.xidget.ifeature.ITextWidgetFeature.FontStyle;
 import org.xidget.ifeature.IWidgetFeature;
-import org.xidget.ifeature.IWidgetFeature.FontStyle;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -112,12 +113,14 @@ public class FontBindingRule implements IBindingRule
     
     private void setFont( String font)
     {
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      
-      String[] parsed = font.split( "\\s*,\\s*");
-      if ( parsed.length > 0) feature.setFontFamily( parsed[ 0]);
-      if ( parsed.length > 1) feature.setFontSize( Double.parseDouble( parsed[ 1]));
-      if ( parsed.length > 2) feature.setFontStyles( parseStyles( parsed[ 2]));
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
+      if ( feature != null)
+      {
+        String[] parsed = font.split( "\\s*,\\s*");
+        if ( parsed.length > 0) feature.setFontFamily( parsed[ 0]);
+        if ( parsed.length > 1) feature.setFontSize( Double.parseDouble( parsed[ 1]));
+        if ( parsed.length > 2) feature.setFontStyles( parseStyles( parsed[ 2]));
+      }
     }
 
     private IXidget xidget;

@@ -1,7 +1,7 @@
 /*
  * Xidget - XML Widgets based on JAHM
  * 
- * FontStyleBindingRule.java
+ * FontBindingRule.java
  * 
  * Copyright 2009 Robert Arvin Dunnagan
  * 
@@ -24,6 +24,7 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.ITextWidgetFeature;
+import org.xidget.ifeature.ITextWidgetFeature.VAlign;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -31,19 +32,17 @@ import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
-public class FontStyleBindingRule implements IBindingRule
+/**
+ * An implementation of IBindingRule for text vertical alignment.
+ */
+public class VAlignBindingRule implements IBindingRule
 {
-  public FontStyleBindingRule( String fontTag)
-  {
-    this.fontTag = fontTag;
-  }
-  
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return element.getParent().isType( fontTag) && xidget.getFeature( ITextWidgetFeature.class) != null;
+    return xidget.getFeature( ITextWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -64,29 +63,25 @@ public class FontStyleBindingRule implements IBindingRule
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = nodes.get( 0);
-      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
-      feature.setFontStyles( FontBindingRule.parseStyles( Xlate.get( node, "")));
+      update( Xlate.get( node, ""));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
-      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
-      feature.setFontStyles( FontBindingRule.parseStyles( Xlate.get( node, "")));
+      if ( node != null) update( Xlate.get( node, ""));
     }
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
-      feature.setFontStyles( FontBindingRule.parseStyles( newValue));
+      update( newValue);
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
       if ( object == node) 
       {
-        ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
-        feature.setFontStyles( FontBindingRule.parseStyles( Xlate.get( object, "")));
+        update( Xlate.get( object, ""));
       }
     }
 
@@ -94,10 +89,19 @@ public class FontStyleBindingRule implements IBindingRule
     {
       return true;
     }
+    
+    private void update( String alignment)
+    {
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
+      if ( feature != null)
+      {
+        if ( alignment.equals( "top")) feature.setVAlign( VAlign.top);
+        if ( alignment.equals( "center")) feature.setVAlign( VAlign.center);
+        if ( alignment.equals( "bottom")) feature.setVAlign( VAlign.bottom);
+      }
+    }
 
     private IXidget xidget;
     private IModelObject node;
   }
-  
-  private String fontTag;
 }

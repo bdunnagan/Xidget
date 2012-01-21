@@ -28,7 +28,7 @@ import org.xidget.IToolkit;
 import org.xidget.IToolkit.FileDialogType;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelObject;
-import org.xmodel.Xlate;
+import org.xmodel.xaction.Conventions;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xpath.XPath;
@@ -52,7 +52,7 @@ public class OpenFileDialogAction extends GuardedAction
   {
     super.configure( document);
     
-    variable = Xlate.get( document.getRoot(), "assign", (String)null);
+    var = Conventions.getVarName( document.getRoot(), false, "assign");
     
     typeExpr = document.getExpression( "type", true);
     if ( typeExpr == null) typeExpr = XPath.createExpression( "'openOne'");
@@ -72,10 +72,10 @@ public class OpenFileDialogAction extends GuardedAction
     String desc = (descExpr != null)? descExpr.evaluateString( context): "";
 
     // initialize the variable
-    if ( variable != null)
+    if ( var != null)
     {
       IVariableScope scope = context.getScope();
-      if ( scope != null) scope.set( variable, Collections.<IModelObject>emptyList());
+      if ( scope != null) scope.set( var, Collections.<IModelObject>emptyList());
     }
     
     // open dialog
@@ -102,10 +102,10 @@ public class OpenFileDialogAction extends GuardedAction
         }
       }
       
-      if ( variable != null)
+      if ( var != null)
       {
         IVariableScope scope = context.getScope();
-        if ( scope != null) scope.set( variable, entries);
+        if ( scope != null) scope.set( var, entries);
       }
     }
     
@@ -118,10 +118,10 @@ public class OpenFileDialogAction extends GuardedAction
         if ( target != null) target.setValue( (paths.length > 0)? paths[ 0]: "");
       }
       
-      if ( variable != null)
+      if ( var != null)
       {
         IVariableScope scope = context.getScope();
-        if ( scope != null) scope.set( variable, (paths.length > 0? paths[ 0]: ""));
+        if ( scope != null) scope.set( var, (paths.length > 0? paths[ 0]: ""));
       }
     }
     
@@ -133,5 +133,5 @@ public class OpenFileDialogAction extends GuardedAction
   private IExpression filterExpr;
   private IExpression descExpr;
   private IExpression typeExpr;
-  private String variable;
+  private String var;
 }

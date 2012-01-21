@@ -20,9 +20,10 @@
 package org.xidget.binding;
 
 import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
-import org.xidget.ifeature.IWidgetFeature;
+import org.xidget.ifeature.ITextWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -42,7 +43,7 @@ public class FontSizeBindingRule implements IBindingRule
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return element.getParent().isType( fontTag) && xidget.getFeature( IWidgetFeature.class) != null;
+    return element.getParent().isType( fontTag) && xidget.getFeature( ITextWidgetFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -63,14 +64,14 @@ public class FontSizeBindingRule implements IBindingRule
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = nodes.get( 0);
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
       feature.setFontSize( Xlate.get( node, 10.0));
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
       feature.setFontSize( Xlate.get( node, 10.0));
     }
     
@@ -78,7 +79,7 @@ public class FontSizeBindingRule implements IBindingRule
     {
       try
       {
-        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+        ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
         feature.setFontSize( Double.parseDouble( newValue));
       }
       catch( Exception e)
@@ -88,7 +89,7 @@ public class FontSizeBindingRule implements IBindingRule
 
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+      ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
       feature.setFontSize( newValue);
     }
 
@@ -96,7 +97,7 @@ public class FontSizeBindingRule implements IBindingRule
     {
       if ( object == node) 
       {
-        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+        ITextWidgetFeature feature = xidget.getFeature( ITextWidgetFeature.class);
         feature.setFontSize( Xlate.get( node, 10.0));
       }
     }

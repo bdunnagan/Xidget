@@ -39,6 +39,7 @@ import org.xidget.binding.FontStyleBindingRule;
 import org.xidget.binding.FontTagHandler;
 import org.xidget.binding.ForegroundBindingRule;
 import org.xidget.binding.GetTagHandler;
+import org.xidget.binding.HAlignBindingRule;
 import org.xidget.binding.IconBindingRule;
 import org.xidget.binding.InsideMarginsBindingRule;
 import org.xidget.binding.KeyTagHandler;
@@ -54,6 +55,7 @@ import org.xidget.binding.SpacingBindingRule;
 import org.xidget.binding.TitleBindingRule;
 import org.xidget.binding.TooltipBindingRule;
 import org.xidget.binding.TriggerTagHandler;
+import org.xidget.binding.VAlignBindingRule;
 import org.xidget.binding.VisibleBindingRule;
 import org.xidget.binding.slider.MaximumBindingRule;
 import org.xidget.binding.slider.MinimumBindingRule;
@@ -129,6 +131,8 @@ public final class Creator
     processor.addHandler( "tooltip", new BindingTagHandler( new TooltipBindingRule()));
     processor.addHandler( "trigger", new TriggerTagHandler());
     processor.addHandler( "visible", new BindingTagHandler( new VisibleBindingRule()));
+    processor.addHandler( "halign", new BindingTagHandler( new HAlignBindingRule()));
+    processor.addHandler( "valign", new BindingTagHandler( new VAlignBindingRule()));
     
     // slider
     processor.addHandler( "min", new BindingTagHandler( new MinimumBindingRule()));
@@ -161,6 +165,8 @@ public final class Creator
     processor.addAttributeHandler( "source", new SourceTagHandler());
     processor.addAttributeHandler( "spacing", new BindingTagHandler( new SpacingBindingRule()));
     processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));
+    processor.addAttributeHandler( "halign", new BindingTagHandler( new HAlignBindingRule()));
+    processor.addAttributeHandler( "valign", new BindingTagHandler( new VAlignBindingRule()));
     
     // skip
     processor.addHandler( "functions", new SkipTagHandler());
@@ -195,15 +201,12 @@ public final class Creator
   }
 
   /**
-   * Set the toolkit used by the creator singleton. This method may not work
-   * if the toolkit is specified from a thread other than the UI thread.
-   * @param toolkit The toolkit.
+   * Set the toolkit class.
+   * @param toolkitClass The toolkit class.
    */
-  public static void setToolkit( IToolkit toolkit)
+  public static void setToolkitClass( Class<? extends IToolkit> toolkitClass)
   {
-    Creator creator = getInstance();
-    creator.toolkit = toolkit; 
-    if ( toolkit != null) toolkit.configure( creator.processor);
+    Creator.toolkitClass = toolkitClass;
   }
 
   /**
@@ -212,7 +215,20 @@ public final class Creator
    */
   public static IToolkit getToolkit()
   {
-    return getInstance().toolkit;
+    Creator creator = getInstance();
+    if ( creator.toolkit == null) 
+    {
+      try
+      {
+        creator.toolkit = toolkitClass.newInstance();
+        creator.toolkit.configure( creator.processor);
+      }
+      catch( Exception e)
+      {
+        throw new RuntimeException( e);
+      }
+    }
+    return creator.toolkit;
   }
   
   /**
@@ -390,43 +406,38 @@ public final class Creator
     StatefulContext[] contexts = bindFeature.getBoundContexts().toArray( new StatefulContext[ 0]);
     for( StatefulContext context: contexts) bindFeature.unbind( (StatefulContext)context);
     
-    // flatten hierarchy into list
-    List<IXidget> list = flattenHierarchy( root);
-    for( IXidget xidget: list)
-    {
-      // destroy widget hierarchy
-      IWidgetCreationFeature creationFeature = xidget.getFeature( IWidgetCreationFeature.class);
-      creationFeature.destroyWidgets();
-      
-      // remove xidget from parent
-      if ( xidget.getParent() != null) 
-        xidget.getParent().getChildren().remove( xidget);
-    }
+    // destroy widget hierarchy
+    IWidgetCreationFeature creationFeature = root.getFeature( IWidgetCreationFeature.class);
+    creationFeature.destroyWidgets();
+    
+    // remove xidget from parent
+    IXidget parent = root.getParent();
+    if ( parent != null) parent.getChildren().remove( root);
   }
   
-  /**
-   * Flatten the specified xidget hierarchy into a leaf-first list. 
-   * @param root The root of the xidget hierarchy.
-   * @return Returns the list.
-   */
-  private List<IXidget> flattenHierarchy( IXidget root)
-  {
-    Stack<IXidget> stack = new Stack<IXidget>();
-    stack.push( root);
-    
-    List<IXidget> list = new ArrayList<IXidget>();
-    while( !stack.empty())
-    {
-      IXidget xidget = stack.pop();
-      list.add( 0, xidget);
-      for( IXidget child: xidget.getChildren())
-      {
-        stack.push( child);
-      }
-    }
-    
-    return list;
-  }
+//  /**
+//   * Flatten the specified xidget hierarchy into a leaf-first list. 
+//   * @param root The root of the xidget hierarchy.
+//   * @return Returns the list.
+//   */
+//  private List<IXidget> flattenHierarchy( IXidget root)
+//  {
+//    Stack<IXidget> stack = new Stack<IXidget>();
+//    stack.push( root);
+//    
+//    List<IXidget> list = new ArrayList<IXidget>();
+//    while( !stack.empty())
+//    {
+//      IXidget xidget = stack.pop();
+//      list.add( 0, xidget);
+//      for( IXidget child: xidget.getChildren())
+//      {
+//        stack.push( child);
+//      }
+//    }
+//    
+//    return list;
+//  }
   
   /**
    * Create the widget hierarchy for the specified xidget. The root of the widget
@@ -605,6 +616,7 @@ public final class Creator
   }
   
   private static ThreadLocal<Creator> instances = new ThreadLocal<Creator>();
+  private static Class<? extends IToolkit> toolkitClass;
   private IToolkit toolkit;
   private TagProcessor processor;
   private Map<Object, IXidget> map;

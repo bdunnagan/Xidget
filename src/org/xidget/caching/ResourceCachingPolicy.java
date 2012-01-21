@@ -79,10 +79,10 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
   }
 
   /* (non-Javadoc)
-   * @see org.xmodel.external.AbstractCachingPolicy#flush(org.xmodel.external.IExternalReference)
+   * @see org.xmodel.external.ConfiguredCachingPolicy#flushImpl(org.xmodel.external.IExternalReference)
    */
   @Override
-  public void flush( IExternalReference reference) throws CachingException
+  public void flushImpl( IExternalReference reference) throws CachingException
   {
     if ( useJar( reference)) zipCachingPolicy.flush( reference);
     else fileCachingPolicy.flush( reference);

@@ -19,6 +19,8 @@
  */
 package org.xidget.ifeature;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * An interface for asynchronous and timed execution on the UI thread.
  */
@@ -29,6 +31,12 @@ public interface IAsyncFeature
    * @param runnable The runnable.
    */
   public void run( Runnable runnable);
+  
+  /**
+   * Run the specified runnable in the UI thread and block for its execution.
+   * @param runnable The runnable.
+   */
+  public void runWait( Runnable runnable) throws InvocationTargetException, InterruptedException;
   
   /**
    * Schedule the specified runnable to execute in the UI thread after the specified delay.

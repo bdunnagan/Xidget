@@ -33,7 +33,8 @@ public interface IWidgetCreationFeature
   public void createWidgets();
   
   /**
-   * Destroy the widget or widgets.
+   * Destroy the widget or widgets created for this xidget.  When a xidget is destroyed, this
+   * method is only called for the root of the hierarchy.
    */
   public void destroyWidgets();
   

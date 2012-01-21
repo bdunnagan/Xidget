@@ -26,7 +26,6 @@ import org.xidget.IXidget;
 import org.xidget.config.TagException;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
-import org.xmodel.Xlate;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xaction.XActionException;
@@ -69,7 +68,7 @@ public class CreateXidgetAction extends GuardedAction
       StatefulContext configContext = new StatefulContext( context, root);
       StatefulContext bindContext = createBindContext( context, configContext);
       IModelObject parentNode = (parentExpr != null)? parentExpr.queryFirst( context): null;
-      IXidget parent = Xlate.get( parentNode, (IXidget)null);
+      IXidget parent = creator.findXidget( parentNode);
       List<IXidget> xidgets = creator.create( parent, configContext, bindContext);
       
       for( IXidget xidget: xidgets) 
