@@ -25,9 +25,11 @@ import java.util.Stack;
 
 import org.xidget.Log;
 import org.xmodel.IModelObject;
+import org.xmodel.PathSyntaxException;
 import org.xmodel.Xlate;
 import org.xmodel.util.HashMultiMap;
 import org.xmodel.util.MultiMap;
+import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -266,24 +268,29 @@ public class TagProcessor
       IModelObject child = children.get( i);
       if ( child.isType( "insert"))
       {
-        IExpression targetExpr = Xlate.get( child, (IExpression)null);
-        if ( targetExpr == null) throw new TagException( "Error in insert expression: "+child.getValue());
-        
-        // get targets
-        List<IModelObject> targets = targetExpr.query( new StatefulContext( context, child), null);
-        
-        // remove insert element
-        child.removeFromParent();
-        insert--;
-        
-        // insert targets at index
-        for( IModelObject target: targets)
+        try
         {
-          // recursion
-          replaceInserts( target);
+          // get targets
+          IExpression targetExpr = XPath.compileExpression( Xlate.get( child, ""));
+          List<IModelObject> targets = targetExpr.query( new StatefulContext( context, child), null);
           
-          // insert
-          parent.addChild( target.cloneTree(), insert++);
+          // remove insert element
+          child.removeFromParent();
+          insert--;
+          
+          // insert targets at index
+          for( IModelObject target: targets)
+          {
+            // recursion
+            replaceInserts( target);
+            
+            // insert
+            parent.addChild( target.cloneTree(), insert++);
+          }
+        }
+        catch( PathSyntaxException e)
+        {
+          throw new TagException( "Error in insert expression: ", e);
         }
       }
     }

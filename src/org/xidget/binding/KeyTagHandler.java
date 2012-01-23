@@ -36,6 +36,7 @@ import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.StatefulContext;
 
 public class KeyTagHandler extends AbstractTagHandler
 {
@@ -67,6 +68,11 @@ public class KeyTagHandler extends AbstractTagHandler
     if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
 
     IXidget xidget = xidgetFeature.getXidget();
+    if ( xidget.getFeature( IKeyFeature.class) == null)
+    {
+      throw new TagException( String.format( 
+        "Key bindings not supported by xidget, %s.", xidget.getConfig().getType()));
+    }
     
     // override?
     boolean override = Xlate.get( element, "override", true);
@@ -86,9 +92,7 @@ public class KeyTagHandler extends AbstractTagHandler
       doc.setClassLoader( processor.getClassLoader());
       IXAction script = doc.createScript();
         
-      Listener listener = new Listener( xidget, override, script);
-      
-      XidgetBinding binding = new XidgetBinding( expression, listener);
+      KeyBinding binding = new KeyBinding( expression, xidget, override, script);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
     }
@@ -96,6 +100,36 @@ public class KeyTagHandler extends AbstractTagHandler
     {
       throw new TagException( String.format( "Error in expression: %s", element), e);
     }
+  }
+  
+  private class KeyBinding implements IXidgetBinding
+  {
+    public KeyBinding( IExpression expression, IXidget xidget, boolean override, IXAction script)
+    {
+      this.expression = expression;
+      this.listener = new Listener( xidget, override, script);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xidget.binding.IXidgetBinding#bind(org.xmodel.xpath.expression.StatefulContext)
+     */
+    @Override
+    public void bind( StatefulContext context)
+    {
+      expression.addNotifyListener( context, listener);
+    }
+
+    /* (non-Javadoc)
+     * @see org.xidget.binding.IXidgetBinding#unbind(org.xmodel.xpath.expression.StatefulContext)
+     */
+    @Override
+    public void unbind( StatefulContext context)
+    {
+      expression.removeNotifyListener( context, listener);
+    }
+    
+    private IExpression expression;
+    private Listener listener;
   }
   
   private class Listener extends ExpressionListener
@@ -109,10 +143,12 @@ public class KeyTagHandler extends AbstractTagHandler
     
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
-      if ( newValue == null) return;
+      if ( oldValue == null) oldValue = "";
+      if ( newValue == null) newValue = "";
       
       IKeyFeature keyFeature = xidget.getFeature( IKeyFeature.class);
-      if ( keyFeature != null) keyFeature.bind( newValue, override, script);
+      if ( !oldValue.equals( "")) keyFeature.unbind( oldValue, script);
+      if ( !newValue.equals( "")) keyFeature.bind( newValue, override, script);
     }
     
     private IXidget xidget;

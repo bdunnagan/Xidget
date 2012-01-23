@@ -106,14 +106,14 @@ public final class Creator
     this.roots = new ArrayList<IXidget>( 1);
 
     // general
-    processor.addHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
+    processor.addHandler( "bgcolor", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addHandler( "bounds", new BindingTagHandler( new BoundsBindingRule()));
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "context", new ContextTagHandler());
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "font", new FontTagHandler());
-    processor.addHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
+    processor.addHandler( "fgcolor", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addHandler( "get", new GetTagHandler());
     processor.addHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
@@ -150,10 +150,10 @@ public final class Creator
     processor.addHandler( "showGrid", new BindingTagHandler( new ShowGridBindingRule()));
     
     // attributes
-    processor.addAttributeHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
+    processor.addAttributeHandler( "bgcolor", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addAttributeHandler( "bounds", new BindingTagHandler( new BoundsBindingRule()));
     processor.addAttributeHandler( "context", new ContextTagHandler());
-    processor.addAttributeHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
+    processor.addAttributeHandler( "fgcolor", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addAttributeHandler( "family", new BindingTagHandler( new FontFamilyBindingRule( "font")));
     processor.addAttributeHandler( "style", new BindingTagHandler( new FontStyleBindingRule( "font")));
     processor.addAttributeHandler( "size", new BindingTagHandler( new FontSizeBindingRule( "font")));
@@ -165,6 +165,7 @@ public final class Creator
     processor.addAttributeHandler( "source", new SourceTagHandler());
     processor.addAttributeHandler( "spacing", new BindingTagHandler( new SpacingBindingRule()));
     processor.addAttributeHandler( "title", new BindingTagHandler( new TitleBindingRule()));
+    processor.addAttributeHandler( "title", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addAttributeHandler( "halign", new BindingTagHandler( new HAlignBindingRule()));
     processor.addAttributeHandler( "valign", new BindingTagHandler( new VAlignBindingRule()));
     
@@ -264,6 +265,13 @@ public final class Creator
   public void register( Object widget, IXidget xidget)
   {
     map.put( widget, xidget);
+    
+    //
+    // This behavior was added to support JAppletXidget, which is the only Swing xidget that
+    // is not built by the Creator class.  In general, any xidget being registered with this
+    // method will already be parented, except the root xidget.
+    //
+    if ( xidget.getParent() == null && !roots.contains( xidget)) roots.add( xidget);
   }
   
   /**
@@ -275,7 +283,7 @@ public final class Creator
   {
     return map.get( widget);
   }
-
+  
   /**
    * @return Returns the list of xidgets that have been created without parents.
    */
@@ -295,7 +303,7 @@ public final class Creator
   {
     List<IXidget> roots = getActiveHierarchies();
     
-    IXidget focus = toolkit.getFeature( IFocusFeature.class).getFocus();
+    IXidget focus = getToolkit().getFeature( IFocusFeature.class).getFocus();
     if ( focus != null) roots.add( 0, focus);
     
     for( IXidget root: roots)

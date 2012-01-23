@@ -230,9 +230,10 @@ public class KeyTree<T>
     iter.binding = null;
     
     // discard unused nodes
-    while( iter.parent != null && iter.children == null || iter.children.size() == 0)
+    while( iter != null && (iter.children == null || iter.children.size() == 0))
     {
-      iter.parent.children.remove( iter.key);
+      if ( iter.parent != null) iter.parent.children.remove( iter.key);
+      iter = iter.parent;
     }
   }
   

@@ -65,7 +65,9 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     for( int i=0; i<columns.size(); i++)
     {
       IModelObject column = columns.get( i);
+      
       IModelObject width = column.getFirstChild( "width");
+      if ( width == null) width = column.getAttributeNode( "width");
       if ( width == null)
       {
         setFreeWidth( i, -1, -1, 0);

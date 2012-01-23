@@ -52,8 +52,8 @@ public class ColumnSetFeature implements IColumnSetFeature
     for( IModelObject columnElement: element.getChildren( "cell"))
     {
       Column column = new Column();
-      column.imageExpr = Xlate.childGet( columnElement, "image", (IExpression)null);
-      column.sourceExpr = Xlate.childGet( columnElement, "source", (IExpression)null);
+      column.imageExpr = Xlate.get( columnElement, "image", Xlate.childGet( columnElement, "image", (IExpression)null));
+      column.sourceExpr = Xlate.get( columnElement, "source", Xlate.childGet( columnElement, "source", (IExpression)null));
       columns.add( column);
     }
   }
