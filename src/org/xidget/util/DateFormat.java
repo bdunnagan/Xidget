@@ -14,7 +14,7 @@ import java.util.TimeZone;
 
 /**
  * A class for formatting and parsing dates using the Xidget formatting flags defined below.
- * Each formatting flag must be enclosed in braces {} to separate it from surround text.
+ * Each formatting flag must be enclosed in brackets [] to separate it from surround text.
  * 
  * empty-string => default format for current locale
  * 
@@ -255,20 +255,121 @@ public class DateFormat
   }
   
   /**
+   * Add (subtract) units from the specified field of the specified absolute time.
+   * @param time The absolute time.
+   * @param field The field.
+   * @param units The units.
+   * @return Returns the absolute time in milliseconds after modification.
+   */
+  public static long addToField( long time, Field field, int units)
+  {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis( time);
+    
+    int calField = getCalendarField( field);
+    if ( calField == -1) throw new IllegalArgumentException();
+    
+    calendar.add( calField, units);
+    return calendar.getTimeInMillis();
+  }
+  
+  /**
+   * Set units of the specified field of the specified absolute time.
+   * @param time The absolute time.
+   * @param field The field.
+   * @param units The units.
+   * @return Returns the absolute time in milliseconds after modification.
+   */
+  public static long setToField( long time, Field field, int units)
+  {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis( time);
+    
+    int calField = getCalendarField( field);
+    if ( calField == -1) throw new IllegalArgumentException();
+    
+    calendar.set( calField, units);
+    return calendar.getTimeInMillis();
+  }
+  
+  /**
+   * Translates the Field enum into a Calendar field.
+   * @param field The field.
+   * @return Returns the Calendar field or -1;
+   */
+  private static int getCalendarField( Field field)
+  {
+    switch( field)
+    {
+      case YY:   
+      case YEAR: 
+        return Calendar.YEAR; 
+      
+      case M:
+      case MM:
+      case MON:
+      case MONTH:
+        return Calendar.MONTH;
+      
+      case YW:
+        return Calendar.WEEK_OF_MONTH;
+      
+      case D:      
+      case DD:
+        return Calendar.DAY_OF_MONTH;
+        
+      case DAY:
+      case DAYFULL:
+        return Calendar.DAY_OF_WEEK;
+    
+      case DDD:
+        return Calendar.DAY_OF_YEAR;
+      
+      case h:
+      case hh:
+        return Calendar.HOUR_OF_DAY;
+        
+      case m:
+      case mm:
+        return Calendar.MINUTE;
+        
+      case s:
+      case ss:
+        return  Calendar.SECOND;
+        
+      case S:
+      case SSS:
+        return Calendar.MILLISECOND;
+    }
+    
+    return -1;
+  }
+  
+  /**
+   * Parse the name of a field into the Field enum.
+   * @param fieldName The name of the field.
+   * @return Returns null or the name of the field.
+   */
+  public static Field parseFieldName( String fieldName)
+  {
+    return Field.valueOf( fieldName);
+  }
+  
+  /**
    * Return the next field from the specified format string.
    * @param format The format.
    * @return Return the next field from the specified format string.
    */
   private Field nextField( String format, StringBuilder sb)
   {
-    int start = format.indexOf( '{', formatIndex);
+    int start = format.indexOf( '[', formatIndex);
     if ( start < 0)
     {
       sb.append( format.substring( formatIndex));
       return Field.NONE;
     }
     
-    int end = format.indexOf( '}', start+1);
+    int end = format.indexOf( ']', start+1);
     if ( end < 0)
     {
       sb.append( format.substring( formatIndex));
@@ -441,7 +542,7 @@ public class DateFormat
   public static void main( String[] args) throws Exception
   {
     DateFormat util = new DateFormat();
-    String f = "{YY}/{M}/{DAYFULL}";
+    String f = "[YY]/[M]/[DAYFULL]";
     String s = util.format( f, System.currentTimeMillis());
     System.out.println( s);
     

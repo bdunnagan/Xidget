@@ -18,7 +18,8 @@ public class Point
   
   public double[] coords;
   public int[][] shape;
-  public String color;
+  public String fgColor;
+  public String bgColor;
   public String label;
   
   public Point prev;

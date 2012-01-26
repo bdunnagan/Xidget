@@ -29,7 +29,7 @@ import org.xmodel.IModelObject;
 public class Cell
 {
   public Object icon;
-  public String text;
+  public Object value;
   public IModelObject source;
   public ColumnImageListener imageListener;
   public ColumnSourceListener sourceListener;

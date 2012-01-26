@@ -24,7 +24,6 @@ import org.xidget.IXidget;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xidget.tree.Row;
 import org.xmodel.IModelObject;
-import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -42,12 +41,12 @@ public class ColumnSourceListener extends ExpressionListener
   }
 
   /**
-   * Set the text of the cell.
-   * @param text The text.
+   * Set the value of the cell.
+   * @param value The value.
    */
-  private void setText( String text)
+  private void setValue( Object value)
   {
-    row.getCell( columnIndex).text = text;
+    row.getCell( columnIndex).value = value;
     ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     feature.updateCell( row, columnIndex);
   }
@@ -68,7 +67,7 @@ public class ColumnSourceListener extends ExpressionListener
   @Override
   public void notifyChange( IExpression expression, IContext context, boolean newValue)
   {
-    setText( Boolean.toString( newValue));
+    setValue( newValue);
   }
   
   /* (non-Javadoc)
@@ -78,7 +77,7 @@ public class ColumnSourceListener extends ExpressionListener
   @Override
   public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
   {
-    setText( Double.toString( newValue));
+    setValue( newValue);
   }
   
   /* (non-Javadoc)
@@ -88,7 +87,7 @@ public class ColumnSourceListener extends ExpressionListener
   @Override
   public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
   {
-    setText( newValue);
+    setValue( newValue);
   }
   
   /* (non-Javadoc)
@@ -100,7 +99,7 @@ public class ColumnSourceListener extends ExpressionListener
   {
     nodes = expression.query( context, null);
 
-    setText( Xlate.get( nodes.get( 0), ""));
+    setValue( nodes.get( 0).getValue());
     setSource( nodes.get( 0));    
   }
   
@@ -114,7 +113,7 @@ public class ColumnSourceListener extends ExpressionListener
     nodes = expression.query( context, null);
   
     IModelObject node = (nodes.size() > 0)? nodes.get( 0): null;
-    setText( Xlate.get( node, ""));
+    setValue( (node != null)? node.getValue(): null);
     setSource( node);
   }
   
@@ -125,7 +124,7 @@ public class ColumnSourceListener extends ExpressionListener
   @Override
   public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
   {
-    setText( (newValue != null)? newValue.toString(): "");
+    setValue( newValue);
   }
   
   /* (non-Javadoc)

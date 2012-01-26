@@ -155,7 +155,7 @@ public class TreeExpandFeature implements ITreeExpandFeature
       
       Row temp = new Row( null);
       temp.setContext( dummy);
-      temp.getCell( 0).text = "Oops!";
+      temp.getCell( 0).value = "Oops!";
       row.addChild( 0, 0, temp);
       
       feature.insertRows( row, 0, new Row[] { temp});

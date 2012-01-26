@@ -7,7 +7,6 @@ package org.xidget.binding;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.xidget.IXidget;
 import org.xidget.chart.Point;
 import org.xidget.config.ITagHandler;
@@ -48,7 +47,11 @@ public class PointsTagHandler implements ITagHandler
     if ( expression != null)
     {
       IExpression labelExpr = Xlate.childGet( element, "label", (IExpression)null);
-      PointNodeListener listener = new PointNodeListener( xidget, createCoordinateExpressions( element), labelExpr);
+      IExpression fgColorExpr = Xlate.childGet( element, "fgcolor", (IExpression)null);
+      IExpression bgColorExpr = Xlate.childGet( element, "bgcolor", (IExpression)null);
+      
+      PointNodeListener listener = new PointNodeListener( xidget, createCoordinateExpressions( element), labelExpr, fgColorExpr, bgColorExpr);
+      
       XidgetBinding binding = new XidgetBinding( expression, listener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
@@ -104,11 +107,13 @@ public class PointsTagHandler implements ITagHandler
   
   private class PointNodeListener extends ExactExpressionListener
   {
-    public PointNodeListener( IXidget xidget, IExpression[] coordExprs, IExpression labelExpr)
+    public PointNodeListener( IXidget xidget, IExpression[] coordExprs, IExpression labelExpr, IExpression fgColorExpr, IExpression bgColorExpr)
     {
       this.xidget = xidget;
       this.coordExprs = coordExprs;
       this.labelExpr = labelExpr;
+      this.fgColorExpr = fgColorExpr;
+      this.bgColorExpr = bgColorExpr;
       
       coordListeners = new PointCoordListener[ coordExprs.length];
       for( int i=0; i<coordListeners.length; i++)
@@ -116,7 +121,9 @@ public class PointsTagHandler implements ITagHandler
         coordListeners[ i] = new PointCoordListener( xidget, i);
       }
       
-      labelListener = new PointLabelListener( xidget);
+      labelListener = new PointDetailListener( xidget, Detail.label);
+      fgColorListener = new PointDetailListener( xidget, Detail.fgcolor);
+      bgColorListener = new PointDetailListener( xidget, Detail.bgcolor);
     }
 
     /* (non-Javadoc)
@@ -149,6 +156,18 @@ public class PointsTagHandler implements ITagHandler
           labelExpr.addListener( pointContext, labelListener);
         }
         
+        if ( fgColorExpr != null)
+        {
+          point.fgColor = fgColorExpr.evaluateString( pointContext);
+          fgColorExpr.addListener( pointContext, fgColorListener);
+        }
+        
+        if ( bgColorExpr != null)
+        {
+          point.bgColor = bgColorExpr.evaluateString( pointContext);
+          bgColorExpr.addListener( pointContext, bgColorListener);
+        }
+        
         feature.add( start + i, point);
       }
     }
@@ -168,7 +187,11 @@ public class PointsTagHandler implements ITagHandler
     private IExpression[] coordExprs;
     private PointCoordListener[] coordListeners;
     private IExpression labelExpr;
-    private PointLabelListener labelListener;
+    private IExpression fgColorExpr;
+    private IExpression bgColorExpr;
+    private PointDetailListener labelListener;
+    private PointDetailListener fgColorListener;
+    private PointDetailListener bgColorListener;
   }
   
   private class PointCoordListener extends ExpressionListener
@@ -272,11 +295,14 @@ public class PointsTagHandler implements ITagHandler
     private int coordinate;
   }
   
-  private class PointLabelListener extends ExpressionListener
+  public static enum Detail { label, fgcolor, bgcolor};
+  
+  private class PointDetailListener extends ExpressionListener
   {
-    public PointLabelListener( IXidget xidget)
+    public PointDetailListener( IXidget xidget, Detail detail)
     {
       this.xidget = xidget;
+      this.detail = detail;
     }
     
     /* (non-Javadoc)
@@ -335,7 +361,7 @@ public class PointsTagHandler implements ITagHandler
     }
     
     /**
-     * Update the coordinate with the specified value.
+     * Update the detail with the specified value.
      * @param context The context.
      * @param value The new value.
      */
@@ -344,10 +370,19 @@ public class PointsTagHandler implements ITagHandler
       if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
       Point point = map.get( context.getObject());
       if ( point == null) return;
+      
+      switch( detail)
+      {
+        case label:   point.label = value; break;
+        case fgcolor: point.fgColor = value; break;
+        case bgcolor: point.bgColor = value; break;
+      }
+      
       feature.update( point, value);
     }
     
     private IXidget xidget;
+    private Detail detail;
     private IPointsFeature feature;
   }
 }

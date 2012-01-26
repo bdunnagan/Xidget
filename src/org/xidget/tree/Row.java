@@ -255,7 +255,7 @@ public class Row
       {
         for( Cell cell: cells)
         {
-          sb.append( cell.text);
+          sb.append( cell.value);
           sb.append( "|");
         }
       }
