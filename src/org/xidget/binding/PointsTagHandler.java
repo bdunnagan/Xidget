@@ -17,11 +17,10 @@ import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IPointsFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
-import org.xmodel.xpath.expression.ExactExpressionListener;
-import org.xmodel.xpath.expression.ExpressionListener;
+import org.xmodel.listeners.ListDetailListener;
+import org.xmodel.listeners.NodeValueListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
-import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An implementation of ITagHandler for the points element.
@@ -46,11 +45,25 @@ public class PointsTagHandler implements ITagHandler
     IExpression expression = Xlate.childGet( element, "list", (IExpression)null);
     if ( expression != null)
     {
-      IExpression labelExpr = Xlate.childGet( element, "label", (IExpression)null);
-      IExpression fgColorExpr = Xlate.childGet( element, "fgcolor", (IExpression)null);
-      IExpression bgColorExpr = Xlate.childGet( element, "bgcolor", (IExpression)null);
+      IExpression[] coordExprs = createCoordinateExpressions( element);
+      PointNodeListener listener = new PointNodeListener( xidget, coordExprs.length);
+
+      for( int i=0; i<coordExprs.length; i++)
+      {
+        if ( coordExprs[ i] != null) 
+        {
+          listener.addDetail( coordExprs[ i], new CoordListener( xidget, i));
+        }
+      }
       
-      PointNodeListener listener = new PointNodeListener( xidget, createCoordinateExpressions( element), labelExpr, fgColorExpr, bgColorExpr);
+      IExpression labelExpr = Xlate.childGet( element, "label", (IExpression)null);
+      if ( labelExpr != null) listener.addDetail( labelExpr, new LabelListener( xidget));
+      
+      IExpression foregroundExpr = Xlate.childGet( element, "foreground", (IExpression)null);
+      if ( foregroundExpr != null) listener.addDetail( foregroundExpr, new ForegroundColorListener( xidget));
+      
+      IExpression backgroundExpr = Xlate.childGet( element, "background", (IExpression)null);
+      if ( backgroundExpr != null) listener.addDetail( backgroundExpr, new BackgroundColorListener( xidget));
       
       XidgetBinding binding = new XidgetBinding( expression, listener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
@@ -72,7 +85,7 @@ public class PointsTagHandler implements ITagHandler
     int i=0;
     for( IModelObject child: children)
     {
-      result[ i++] = Xlate.get( child, (IExpression)null);
+      result[ i++] = Xlate.get( child, "source", Xlate.childGet( child, "source", (IExpression)null));
     }
     return result;
   }
@@ -105,189 +118,80 @@ public class PointsTagHandler implements ITagHandler
   
   private Map<IModelObject, Point> map;
   
-  private class PointNodeListener extends ExactExpressionListener
+  private class PointNodeListener extends ListDetailListener
   {
-    public PointNodeListener( IXidget xidget, IExpression[] coordExprs, IExpression labelExpr, IExpression fgColorExpr, IExpression bgColorExpr)
+    public PointNodeListener( IXidget xidget, int dimensions)
     {
       this.xidget = xidget;
-      this.coordExprs = coordExprs;
-      this.labelExpr = labelExpr;
-      this.fgColorExpr = fgColorExpr;
-      this.bgColorExpr = bgColorExpr;
-      
-      coordListeners = new PointCoordListener[ coordExprs.length];
-      for( int i=0; i<coordListeners.length; i++)
-      {
-        coordListeners[ i] = new PointCoordListener( xidget, i);
-      }
-      
-      labelListener = new PointDetailListener( xidget, Detail.label);
-      fgColorListener = new PointDetailListener( xidget, Detail.fgcolor);
-      bgColorListener = new PointDetailListener( xidget, Detail.bgcolor);
+      this.dimensions = dimensions;
+    }
+
+    @Override
+    protected void notifyDetailsBound( IContext context, int index)
+    {
+      Point point = map.get( context.getObject());
+      IPointsFeature feature = xidget.getFeature( IPointsFeature.class);
+      feature.add( index, point);
     }
 
     /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExactExpressionListener#notifyInsert(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, java.util.List, int, int)
+     * @see org.xmodel.listeners.ListDetailListener#notifyInsert(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.util.List, int, int)
      */
     @Override
     public void notifyInsert( IExpression expression, IContext context, List<IModelObject> nodes, int start, int count)
     {
-      IPointsFeature feature = xidget.getFeature( IPointsFeature.class);
       for( int i=0; i<count; i++) 
       {
-        IModelObject node = nodes.get( start + i);
-        
         Point point = new Point();
+        point.coords = new double[ dimensions];
+        IModelObject node = nodes.get( start + i);
         map.put( node, point);
-        
-        StatefulContext pointContext = new StatefulContext( context, node);
-        point.coords = new double[ coordExprs.length];
-        for( int j=0; j<point.coords.length; j++)
-        {
-          double coord = coordExprs[ j].evaluateNumber( pointContext);
-          point.coords[ j] = coord;
-          coordExprs[ j].addListener( pointContext, coordListeners[ j]);
-        }
-        
-        if ( labelExpr != null) 
-        {
-          point.label = labelExpr.evaluateString( pointContext);
-          labelExpr.addListener( pointContext, labelListener);
-        }
-        
-        if ( fgColorExpr != null)
-        {
-          point.fgColor = fgColorExpr.evaluateString( pointContext);
-          fgColorExpr.addListener( pointContext, fgColorListener);
-        }
-        
-        if ( bgColorExpr != null)
-        {
-          point.bgColor = bgColorExpr.evaluateString( pointContext);
-          bgColorExpr.addListener( pointContext, bgColorListener);
-        }
-        
-        feature.add( start + i, point);
       }
+      
+      super.notifyInsert( expression, context, nodes, start, count);
     }
 
     /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExactExpressionListener#notifyRemove(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, java.util.List, int, int)
+     * @see org.xmodel.listeners.ListDetailListener#notifyRemove(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.util.List, int, int)
      */
     @Override
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes, int start, int count)
     {
+      super.notifyRemove( expression, context, nodes, start, count);
+      
       IPointsFeature feature = xidget.getFeature( IPointsFeature.class);
-      for( int i=0; i<count; i++) feature.remove( start);
+      for( int i=0; i<count; i++) 
+      {
+        map.remove( nodes.get( start + i));
+        feature.remove( start);
+      }
     }
     
     private IXidget xidget;
-    private IExpression[] coordExprs;
-    private PointCoordListener[] coordListeners;
-    private IExpression labelExpr;
-    private IExpression fgColorExpr;
-    private IExpression bgColorExpr;
-    private PointDetailListener labelListener;
-    private PointDetailListener fgColorListener;
-    private PointDetailListener bgColorListener;
+    private int dimensions;
   }
   
-  private class PointCoordListener extends ExpressionListener
+  private class CoordListener extends NodeValueListener
   {
-    public PointCoordListener( IXidget xidget, int coordinate)
+    public CoordListener( IXidget xidget, int coordinate)
     {
       this.xidget = xidget;
       this.coordinate = coordinate;
     }
     
     /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyAdd(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, java.util.List)
+     * @see org.xmodel.listeners.NodeValueListener#notifyValue(org.xmodel.xpath.expression.IContext, java.lang.Object, java.lang.Object)
      */
     @Override
-    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
+    protected void notifyValue( IContext context, Object newValue, Object oldValue)
     {
-      IModelObject node = expression.queryFirst( context);
-      update( context, Xlate.get( node, 0.0));
-    }
-    
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyRemove(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, java.util.List)
-     */
-    @Override
-    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
-    {
-      IModelObject node = expression.queryFirst( context);
-      update( context, Xlate.get( node, 0.0));
-    }
-    
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, double, double)
-     */
-    @Override
-    public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
-    {
-      update( context, newValue);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, java.lang.String, java.lang.String)
-     */
-    @Override
-    public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
-    {
-      if ( newValue != null)
-      {
-        update( context, newValue);
-      }
-    }
-    
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyValue(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext[], org.xmodel.IModelObject, java.lang.Object, java.lang.Object)
-     */
-    @Override
-    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
-    {
-      if ( newValue != null)
-      {
-        if ( newValue instanceof Double)
-        {
-          update( contexts[ 0], (Double)newValue);
-        }
-        else
-        {
-          update( contexts[ 0], newValue.toString());
-        }
-      }
-    }
-    
-    /**
-     * Parse a double from the specified string and update the coordinate.
-     * @param context The context.
-     * @param value The string value.
-     */
-    private void update( IContext context, String value)
-    {
-      try { update( context, Double.parseDouble( value));} catch( Exception e) {}
-    }
-    
-    /**
-     * Update the coordinate with the specified value.
-     * @param context The context.
-     * @param value The new value.
-     */
-    private void update( IContext context, double value)
-    {
-      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
       Point point = map.get( context.getObject());
       if ( point == null) return;
-      feature.update( point, coordinate, value);
+      
+      point.coords[ coordinate] = (Double)newValue;
+      
+      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
+      feature.updatePoint( point);
     }
     
     private IXidget xidget;
@@ -295,94 +199,81 @@ public class PointsTagHandler implements ITagHandler
     private int coordinate;
   }
   
-  public static enum Detail { label, fgcolor, bgcolor};
-  
-  private class PointDetailListener extends ExpressionListener
+  private class LabelListener extends NodeValueListener
   {
-    public PointDetailListener( IXidget xidget, Detail detail)
+    public LabelListener( IXidget xidget)
     {
       this.xidget = xidget;
-      this.detail = detail;
     }
     
     /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyAdd(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, java.util.List)
+     * @see org.xmodel.listeners.NodeValueListener#notifyValue(org.xmodel.xpath.expression.IContext, java.lang.Object, java.lang.Object)
      */
     @Override
-    public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
+    protected void notifyValue( IContext context, Object newValue, Object oldValue)
     {
-      IModelObject node = expression.queryFirst( context);
-      update( context, Xlate.get( node, ""));
-    }
-    
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyRemove(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, java.util.List)
-     */
-    @Override
-    public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
-    {
-      IModelObject node = expression.queryFirst( context);
-      update( context, Xlate.get( node, ""));
-    }
-    
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, double, double)
-     */
-    @Override
-    public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
-    {
-      update( context, ""+newValue);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext, java.lang.String, java.lang.String)
-     */
-    @Override
-    public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
-    {
-      if ( newValue != null)
-      {
-        update( context, newValue);
-      }
-    }
-    
-    /* (non-Javadoc)
-     * @see org.xmodel.xpath.expression.ExpressionListener#notifyValue(org.xmodel.xpath.expression.IExpression, 
-     * org.xmodel.xpath.expression.IContext[], org.xmodel.IModelObject, java.lang.Object, java.lang.Object)
-     */
-    @Override
-    public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
-    {
-      if ( newValue != null) update( contexts[ 0], newValue.toString());
-    }
-    
-    /**
-     * Update the detail with the specified value.
-     * @param context The context.
-     * @param value The new value.
-     */
-    private void update( IContext context, String value)
-    {
-      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
       Point point = map.get( context.getObject());
       if ( point == null) return;
       
-      switch( detail)
-      {
-        case label:   point.label = value; break;
-        case fgcolor: point.fgColor = value; break;
-        case bgcolor: point.bgColor = value; break;
-      }
+      point.label = newValue.toString();
       
-      feature.update( point, value);
+      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
+      feature.updatePoint( point);
     }
     
     private IXidget xidget;
-    private Detail detail;
+    private IPointsFeature feature;
+  }
+  
+  private class ForegroundColorListener extends NodeValueListener
+  {
+    public ForegroundColorListener( IXidget xidget)
+    {
+      this.xidget = xidget;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xmodel.listeners.NodeValueListener#notifyValue(org.xmodel.xpath.expression.IContext, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    protected void notifyValue( IContext context, Object newValue, Object oldValue)
+    {
+      Point point = map.get( context.getObject());
+      if ( point == null) return;
+      
+      point.foreground = newValue.toString();
+      
+      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
+      feature.updatePoint( point);
+    }
+    
+    private IXidget xidget;
+    private IPointsFeature feature;
+  }
+  
+  private class BackgroundColorListener extends NodeValueListener
+  {
+    public BackgroundColorListener( IXidget xidget)
+    {
+      this.xidget = xidget;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xmodel.listeners.NodeValueListener#notifyValue(org.xmodel.xpath.expression.IContext, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    protected void notifyValue( IContext context, Object newValue, Object oldValue)
+    {
+      Point point = map.get( context.getObject());
+      if ( point == null) return;
+      
+      point.background = newValue.toString();
+      
+      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
+      feature.updatePoint( point);
+    }
+    
+    private IXidget xidget;
     private IPointsFeature feature;
   }
 }

@@ -25,19 +25,10 @@ public interface IPointsFeature
   public void add( int index, Point point);
 
   /**
-   * Update the specified point.
+   * Update one of the non-coordinate fields of a point.
    * @param point The point.
-   * @param coordinate The coordinate.
-   * @param value The new value.
    */
-  public void update( Point point, int coordinate, double value);
-  
-  /**
-   * Update the specified point.
-   * @param point The point.
-   * @param label The new label.
-   */
-  public void update( Point point, String label);
+  public void updatePoint( Point point);
   
   /**
    * Remove the point at the specified index.

@@ -17,10 +17,11 @@ public class Point
   }
   
   public double[] coords;
-  public int[][] shape;
-  public String fgColor;
-  public String bgColor;
+  public String[] coordLabels;
+  public String foreground;
+  public String background;
   public String label;
+  public int[][] shape;
   
   public Point prev;
   public Point next;

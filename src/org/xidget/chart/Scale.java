@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import org.xmodel.xpath.expression.IContext;
+import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * A class that calculates tick marks over a user-specified range of values. The scale is
@@ -25,18 +28,16 @@ public class Scale
     public String label;
   }
   
-  public enum Format { decimal, normalized, scientific, engineering};
-  
   /**
    * Create a linear scale over the specified range with at most the specified number of ticks.
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
-   * @param format The formatting style.
+   * @param context The parent context.
    */
-  public Scale( double min, double max, int count, Format format)
+  public Scale( double min, double max, int count, IContext context)
   {
-    this( min, max, count, 0, format);
+    this( min, max, count, 0, context);
   }
   
   /**
@@ -45,11 +46,11 @@ public class Scale
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
    * @param log 0 or the log base for logarithmic scales.
-   * @param format The formatting style.
+   * @param context The parent context.
    */
-  public Scale( double min, double max, int count, double log, Format format)
+  public Scale( double min, double max, int count, double log, IContext context)
   {
-    this.format = format;
+    this.context = (context != null)? new StatefulContext( context): null;
     this.log = log;
     this.count = count;
     
@@ -361,78 +362,15 @@ public class Scale
    */
   private void createLabel( Tick tick)
   {
-    double norm = normalize( tick.value);
-    
-    switch( format)
+    if ( labelExpr != null)
     {
-      case decimal:
-      {
-        tick.label = String.format( "%f", tick.value);
-        tick.label = trimZeros( tick.label);
-      }
-      break;
-      
-      case normalized:
-      {
-        tick.label = String.format( "%f", norm);
-        tick.label = trimZeros( tick.label);
-      }
-      break;
-      
-      case scientific:
-      {
-        tick.label = String.format( "%1.2e", tick.value);
-        tick.label = trimZeros( tick.label);
-      }
-      break;
-      
-      case engineering:
-      {
-        if ( tick.value == 0) 
-        {
-          tick.label = "0";
-          return;
-        }
-        
-        int e = (int)Math.floor( Math.log10( tick.value));
-        if ( e < -2)
-        {
-          int i = (-e / 3) - 1;
-          int r = -e % 3;
-          if ( r == 1) norm *= 10;
-          if ( r == 2) norm *= 100;
-          String label = trimZeros( String.format( "%1.2f", norm));
-          if ( i < negativeExponentSymbols.length())
-          {
-            tick.label = label + negativeExponentSymbols.charAt( i);
-          }
-          else
-          {
-            tick.label = norm + "10E-" + i;
-          }
-        }
-        else if ( e > 2)
-        {
-          int i = (e / 3) - 1;
-          int r = e % 3;
-          if ( r == 1) norm *= 10;
-          if ( r == 2) norm *= 100;
-          String label = trimZeros( String.format( "%1.2f", norm));
-          if ( i < positiveExponentSymbols.length())
-          {
-            tick.label = label + positiveExponentSymbols.charAt( i);
-          }
-          else
-          {
-            tick.label = label + "10E" + i;
-          }
-        }
-        else
-        {
-          tick.label = trimZeros( String.format( "%1.2f", tick.value));
-        }
-      }
-      break;
+      context.set( "value", tick.value);
+      tick.label = labelExpr.evaluateString( context);
+    }
+    else
+    {
+      tick.label = String.format( "%f", tick.value);
+      tick.label = trimZeros( tick.label);
     }
   }
   
@@ -458,23 +396,8 @@ public class Scale
     return label.substring( 0, index);
   }
   
-  /**
-   * Normalize the specified value.
-   * @param value The value.
-   * @return Returns a value less than 10 and greater than -10.
-   */
-  private double normalize( double value)
-  {
-    int e = (int)Math.floor( Math.log10( Math.abs( value)));
-    double p = Math.pow( 10, e);
-    return value / p;
-  }
-  
-  private final static String negativeExponentSymbols = "munpfazy";
-  private final static String positiveExponentSymbols = "KMGTPEZY";
   private static DecimalFormatSymbols symbols;
-  
-  private Format format;
+
   private List<Tick> ticks;
   private List<Integer> counts;
   private int count;
@@ -484,34 +407,6 @@ public class Scale
   private double scaleRange;
   private double log;
   private double logq;
-  
-  public static void main( String[] args) throws Exception
-  {
-//    for( int i=0; i<1; i++)
-//    {
-//      long t0 = System.nanoTime();
-//      
-//      int count = 100;
-//      Scale scale = new Scale( -900, -121, count, 0, Format.engineering);
-//      
-//      long t1 = System.nanoTime();
-//      System.out.printf( "%gms\n", (t1 - t0) / 1e6);
-//    }
-    
-    double min = -919;
-    double max = 102.45;
-    Scale scale = new Scale( min, max, 67, 0, Format.engineering);
-    for( Tick tick: scale.ticks)
-    {
-      for( int j=0; j<tick.depth; j++)
-        System.out.printf( "    ");
-      System.out.printf( "%f | %f\n", tick.value, tick.scale);
-    }
-    
-//    for( double i=min; i<=max; i += 1)
-//    {
-//      System.out.printf( "%f -> %f\n", i, scale.plot( i));
-//      //if ( i == 0) i = 10; else i *= 10;
-//    }
-  }
+  private StatefulContext context;
+  private IExpression labelExpr;
 }

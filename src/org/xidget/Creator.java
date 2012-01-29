@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
+import org.xidget.binding.AxisLabelTagHandler;
 import org.xidget.binding.BackgroundBindingRule;
 import org.xidget.binding.BindingTagHandler;
 import org.xidget.binding.BoundsBindingRule;
@@ -106,14 +106,14 @@ public final class Creator
     this.roots = new ArrayList<IXidget>( 1);
 
     // general
-    processor.addHandler( "bgcolor", new BindingTagHandler( new BackgroundBindingRule()));
+    processor.addHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addHandler( "bounds", new BindingTagHandler( new BoundsBindingRule()));
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "context", new ContextTagHandler());
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "font", new FontTagHandler());
-    processor.addHandler( "fgcolor", new BindingTagHandler( new ForegroundBindingRule()));
+    processor.addHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addHandler( "get", new GetTagHandler());
     processor.addHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
@@ -150,15 +150,16 @@ public final class Creator
     processor.addHandler( "showGrid", new BindingTagHandler( new ShowGridBindingRule()));
     
     // attributes
-    processor.addAttributeHandler( "bgcolor", new BindingTagHandler( new BackgroundBindingRule()));
+    processor.addAttributeHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addAttributeHandler( "bounds", new BindingTagHandler( new BoundsBindingRule()));
     processor.addAttributeHandler( "context", new ContextTagHandler());
-    processor.addAttributeHandler( "fgcolor", new BindingTagHandler( new ForegroundBindingRule()));
+    processor.addAttributeHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addAttributeHandler( "family", new BindingTagHandler( new FontFamilyBindingRule( "font")));
     processor.addAttributeHandler( "style", new BindingTagHandler( new FontStyleBindingRule( "font")));
     processor.addAttributeHandler( "size", new BindingTagHandler( new FontSizeBindingRule( "font")));
     processor.addAttributeHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
+    processor.addAttributeHandler( "label", new AxisLabelTagHandler());
     processor.addAttributeHandler( "margins", new BindingTagHandler( new InsideMarginsBindingRule()));
     processor.addAttributeHandler( "insideMargins", new BindingTagHandler( new InsideMarginsBindingRule()));
     processor.addAttributeHandler( "outsideMargins", new BindingTagHandler( new OutsideMarginsBindingRule()));

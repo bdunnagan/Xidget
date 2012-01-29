@@ -5,7 +5,7 @@
 package org.xidget.ifeature.chart;
 
 import org.xidget.IXidget;
-import org.xidget.chart.Scale.Format;
+import org.xmodel.xpath.expression.IExpression;
 
 /**
  * An interface for defining the graph associated with a scale xidget.
@@ -33,8 +33,20 @@ public interface IAxisFeature
   public void setLogBase( int base);
   
   /**
-   * Set the format for the axis labels.
-   * @param format The format.
+   * Set the maximum tick depth at which labels will be shown.
+   * @param depth The maximum label depth.
    */
-  public void setFormat( Format format);
+  public void setLabelDepth( int depth);
+  
+  /**
+   * Set the minimum spacing between ticks.
+   * @param spacing The minimum spacing in pixels.
+   */
+  public void setTickSpacing( int spacing);
+  
+  /**
+   * Set the label expression.
+   * @param labelExpr The label expression.
+   */
+  public void setLabelExpression( IExpression labelExpr);
 }
