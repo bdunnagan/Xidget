@@ -11,17 +11,11 @@ package org.xidget.chart;
  */
 public class Point
 {
-  public Point()
-  {
-    shape = PointStyles.getLineSegments( PointStyles.Style.ex);
-  }
-  
   public double[] coords;
   public String[] coordLabels;
   public String foreground;
   public String background;
   public String label;
-  public int[][] shape;
   
   public Point prev;
   public Point next;

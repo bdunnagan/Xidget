@@ -14,7 +14,7 @@ import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.IPointsFeature;
+import org.xidget.ifeature.chart.IPointsFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.listeners.ListDetailListener;
