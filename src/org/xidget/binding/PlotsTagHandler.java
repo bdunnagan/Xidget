@@ -4,34 +4,36 @@
  */
 package org.xidget.binding;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.xidget.IXidget;
+import org.xidget.binding.PointsTagHandler_Old.BackgroundColorListener;
+import org.xidget.binding.PointsTagHandler_Old.CoordListener;
+import org.xidget.binding.PointsTagHandler_Old.ForegroundColorListener;
+import org.xidget.binding.PointsTagHandler_Old.LabelListener;
 import org.xidget.chart.Point;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
-import org.xidget.ifeature.chart.IPointsFeature;
+import org.xidget.ifeature.chart.IPlotFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
 import org.xmodel.listeners.ListDetailListener;
 import org.xmodel.listeners.NodeValueListener;
+import org.xmodel.listeners.SetDetailListener;
+import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
 /**
- * An implementation of ITagHandler for the points element.
+ * An implementation of ITagHandler that configures a set of plots, as defined by org.xidget.chart.Plot.
+ * An expression defines the set of plots.  For each plot, an ordered list defines the points in the plot.
+ * Coordinate expressions define the coordinates of each point in the plot, and detail expressions defined
+ * the display characteristics of those points.
  */
-public class PointsTagHandler implements ITagHandler
+public class PlotsTagHandler implements ITagHandler
 {
-  public PointsTagHandler()
-  {
-    map = new HashMap<IModelObject, Point>();
-  }
-  
   /* (non-Javadoc)
    * @see org.xidget.config.ITagHandler#enter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
@@ -40,32 +42,17 @@ public class PointsTagHandler implements ITagHandler
   {
     IXidgetFeature xidgetFeature = parent.getFeature( IXidgetFeature.class);
     if ( xidgetFeature == null) throw new TagException( "Parent tag handler must have an IXidgetFeature.");
-    
-    IXidget xidget = xidgetFeature.getXidget();
-    IExpression expression = Xlate.childGet( element, "list", (IExpression)null);
-    if ( expression != null)
-    {
-      IExpression[] coordExprs = createCoordinateExpressions( element);
-      PointNodeListener listener = new PointNodeListener( xidget, coordExprs.length);
 
-      for( int i=0; i<coordExprs.length; i++)
-      {
-        if ( coordExprs[ i] != null) 
-        {
-          listener.addDetail( coordExprs[ i], new CoordListener( xidget, i));
-        }
-      }
+    IXidget xidget = xidgetFeature.getXidget();
+    IExpression plotsExpr = Xlate.get( element, "", (IExpression)null);
+    if ( plotsExpr != null)
+    {
+      SetDetailListener plotsListener = new SetDetailListener();
       
-      IExpression labelExpr = Xlate.childGet( element, "label", (IExpression)null);
-      if ( labelExpr != null) listener.addDetail( labelExpr, new LabelListener( xidget));
+      IExpression pointsExpr = Xlate.get( element, "", (IExpression)null);
+      plotsListener.addDetail( pointsExpr, new PointNodeListener( xidget, dimensions));
       
-      IExpression foregroundExpr = Xlate.childGet( element, "foreground", (IExpression)null);
-      if ( foregroundExpr != null) listener.addDetail( foregroundExpr, new ForegroundColorListener( xidget));
-      
-      IExpression backgroundExpr = Xlate.childGet( element, "background", (IExpression)null);
-      if ( backgroundExpr != null) listener.addDetail( backgroundExpr, new BackgroundColorListener( xidget));
-      
-      XidgetBinding binding = new XidgetBinding( expression, listener);
+      XidgetBinding binding = new XidgetBinding( plotsExpr, plotsListener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
     }
@@ -73,23 +60,6 @@ public class PointsTagHandler implements ITagHandler
     return false;
   }
   
-  /**
-   * Create the coordinate expressions from the children of the specified element.
-   * @param element The element.
-   * @return Returns the coordinate expressions.
-   */
-  private IExpression[] createCoordinateExpressions( IModelObject element)
-  {
-    List<IModelObject> children = element.getChildren( "coord");
-    IExpression[] result = new IExpression[ children.size()];
-    int i=0;
-    for( IModelObject child: children)
-    {
-      result[ i++] = Xlate.get( child, "source", Xlate.childGet( child, "source", (IExpression)null));
-    }
-    return result;
-  }
-
   /* (non-Javadoc)
    * @see org.xidget.config.ITagHandler#exit(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)
    */
@@ -115,22 +85,39 @@ public class PointsTagHandler implements ITagHandler
   {
     return null;
   }
-  
-  private Map<IModelObject, Point> map;
-  
+    
   private class PointNodeListener extends ListDetailListener
   {
     public PointNodeListener( IXidget xidget, int dimensions)
     {
       this.xidget = xidget;
       this.dimensions = dimensions;
+      
+      IExpression[] coordExprs = createCoordinateExpressions( element);
+      
+      for( int i=0; i<coordExprs.length; i++)
+      {
+        if ( coordExprs[ i] != null) 
+        {
+          listener.addDetail( coordExprs[ i], new CoordListener( xidget, i));
+        }
+      }
+      
+      IExpression labelExpr = Xlate.childGet( element, "label", (IExpression)null);
+      if ( labelExpr != null) listener.addDetail( labelExpr, new LabelListener( xidget));
+      
+      IExpression foregroundExpr = Xlate.childGet( element, "foreground", (IExpression)null);
+      if ( foregroundExpr != null) listener.addDetail( foregroundExpr, new ForegroundColorListener( xidget));
+      
+      IExpression backgroundExpr = Xlate.childGet( element, "background", (IExpression)null);
+      if ( backgroundExpr != null) listener.addDetail( backgroundExpr, new BackgroundColorListener( xidget));
     }
 
     @Override
     protected void notifyDetailsBound( IContext context, int index)
     {
       Point point = map.get( context.getObject());
-      IPointsFeature feature = xidget.getFeature( IPointsFeature.class);
+      IPlotFeature feature = xidget.getFeature( IPlotFeature.class);
       feature.add( index, point);
     }
 
@@ -159,7 +146,7 @@ public class PointsTagHandler implements ITagHandler
     {
       super.notifyRemove( expression, context, nodes, start, count);
       
-      IPointsFeature feature = xidget.getFeature( IPointsFeature.class);
+      IPlotFeature feature = xidget.getFeature( IPlotFeature.class);
       for( int i=0; i<count; i++) 
       {
         map.remove( nodes.get( start + i));
@@ -190,12 +177,12 @@ public class PointsTagHandler implements ITagHandler
       
       point.coords[ coordinate] = (Double)newValue;
       
-      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
+      if ( feature == null) feature = xidget.getFeature( IPlotFeature.class);
       feature.updatePoint( point);
     }
     
     private IXidget xidget;
-    private IPointsFeature feature;
+    private IPlotFeature feature;
     private int coordinate;
   }
   
@@ -217,12 +204,12 @@ public class PointsTagHandler implements ITagHandler
       
       point.label = newValue.toString();
       
-      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
+      if ( feature == null) feature = xidget.getFeature( IPlotFeature.class);
       feature.updatePoint( point);
     }
     
     private IXidget xidget;
-    private IPointsFeature feature;
+    private IPlotFeature feature;
   }
   
   private class ForegroundColorListener extends NodeValueListener
@@ -243,12 +230,12 @@ public class PointsTagHandler implements ITagHandler
       
       point.foreground = newValue.toString();
       
-      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
+      if ( feature == null) feature = xidget.getFeature( IPlotFeature.class);
       feature.updatePoint( point);
     }
     
     private IXidget xidget;
-    private IPointsFeature feature;
+    private IPlotFeature feature;
   }
   
   private class BackgroundColorListener extends NodeValueListener
@@ -269,11 +256,11 @@ public class PointsTagHandler implements ITagHandler
       
       point.background = newValue.toString();
       
-      if ( feature == null) feature = xidget.getFeature( IPointsFeature.class);
+      if ( feature == null) feature = xidget.getFeature( IPlotFeature.class);
       feature.updatePoint( point);
     }
     
     private IXidget xidget;
-    private IPointsFeature feature;
+    private IPlotFeature feature;
   }
 }

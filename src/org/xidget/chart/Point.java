@@ -13,10 +13,7 @@ public class Point
 {
   public double[] coords;
   public String[] coordLabels;
+  public String label;
   public String foreground;
   public String background;
-  public String label;
-  
-  public Point prev;
-  public Point next;
 }
