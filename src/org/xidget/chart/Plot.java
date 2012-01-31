@@ -4,6 +4,7 @@
  */
 package org.xidget.chart;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,6 +12,11 @@ import java.util.List;
  */
 public class Plot
 {
+  public Plot()
+  {
+    points = new ArrayList<Point>();
+  }
+  
   /**
    * Add a point to the plot.
    * @param index The index of the point.
@@ -34,6 +40,8 @@ public class Plot
         if ( coord > max[ i]) max[ i] = coord;
       }
     }
+    
+    points.add( index, point);
   }
 
   /**
@@ -98,6 +106,15 @@ public class Plot
   {
     return max;
   }
+
+  /**
+   * Set the foreground color.
+   * @param color The color.
+   */
+  public void setForeground( String color)
+  {
+    fcolor = color;
+  }
   
   /**
    * @return Returns the foreground color.
@@ -105,6 +122,15 @@ public class Plot
   public String getForeground()
   {
     return fcolor;
+  }
+  
+  /**
+   * Set the background color.
+   * @param color The color.
+   */
+  public void setBackground( String color)
+  {
+    bcolor = color;
   }
   
   /**

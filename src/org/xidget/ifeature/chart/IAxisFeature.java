@@ -4,7 +4,6 @@
  */
 package org.xidget.ifeature.chart;
 
-import org.xidget.IXidget;
 import org.xmodel.xpath.expression.IExpression;
 
 /**
@@ -12,20 +11,6 @@ import org.xmodel.xpath.expression.IExpression;
  */
 public interface IAxisFeature
 {
-  /**
-   * Set the axis that this scale xidget represents on the specified graph.
-   * @param axis The axis.
-   * @param xidget The graph xidget.
-   */
-  public void setGraph( String axis, IXidget xidget);
-  
-  /**
-   * Set the minimum and maximum values of the axis.
-   * @param min The minimum value.
-   * @param max The maximum value.
-   */
-  public void setExtrema( double min, double max);
-  
   /**
    * Set the log base for the axis.
    * @param base The log base (0 for linear).

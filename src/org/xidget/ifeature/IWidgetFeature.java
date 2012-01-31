@@ -128,11 +128,11 @@ public interface IWidgetFeature
    * Set the foreground color of the widget.
    * @param color The foreground color.
    */
-  public void setForeground( int color);
+  public void setForeground( Object color);
   
   /**
    * Set the background color of the widget.
    * @param color The background color.
    */
-  public void setBackground( int color);
+  public void setBackground( Object color);
 }

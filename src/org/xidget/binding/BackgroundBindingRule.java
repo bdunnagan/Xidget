@@ -24,7 +24,6 @@ import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
-import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -51,23 +50,6 @@ public class BackgroundBindingRule implements IBindingRule
     return new Listener( xidget);
   }  
   
-  /**
-   * Returns the color value from the specified hex rbg string.
-   * @param color The color expressed as rgb in hex.
-   * @return Returns the color value from the specified hex rbg string.
-   */
-  private static int getColor( String color)
-  {
-    try
-    {
-      return Integer.parseInt( color, 16);
-    }
-    catch( Exception e)
-    {
-      return Integer.parseInt( "ffffff", 16);
-    }
-  }
-
   private static final class Listener extends ExpressionListener
   {
     Listener( IXidget xidget)
@@ -79,14 +61,14 @@ public class BackgroundBindingRule implements IBindingRule
     {
       node = nodes.get( 0);
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setBackground( getColor( Xlate.get( node, "ffffff")));
+      feature.setBackground( node.getValue());
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setBackground( getColor( Xlate.get( node, "ffffff")));
+      feature.setBackground( node.getValue());
     }
     
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
@@ -98,7 +80,7 @@ public class BackgroundBindingRule implements IBindingRule
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)
     {
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setBackground( getColor( newValue));
+      feature.setBackground( newValue);
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
@@ -106,7 +88,7 @@ public class BackgroundBindingRule implements IBindingRule
       if ( object == node) 
       {
         IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-        feature.setBackground( getColor( Xlate.get( node, "ffffff")));
+        feature.setBackground( newValue);
       }
     }
 

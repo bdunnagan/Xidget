@@ -26,7 +26,7 @@ public class PlotsListener extends SetDetailListener
 {
   public PlotsListener( IXidget xidget)
   {
-    this.plotFeature = xidget.getFeature( IPlotFeature.class);
+    this.xidget = xidget;
     this.plotMap = new HashMap<IModelObject, Plot>();
     this.pointMap = new HashMap<IModelObject, Point>();
     this.pointsListener = new PointsListener();
@@ -47,7 +47,7 @@ public class PlotsListener extends SetDetailListener
    */
   public void setCoordsExpression( IExpression expression)
   {
-    pointsListener.addDetail( expression, new CoordsListener());
+    if ( expression != null) pointsListener.addDetail( expression, new CoordsListener());
   }
   
   /**
@@ -56,7 +56,7 @@ public class PlotsListener extends SetDetailListener
    */
   public void setPlotForegroundExpression( IExpression expression)
   {
-    addDetail( expression, new PlotForegroundListener());
+    if ( expression != null) addDetail( expression, new PlotForegroundListener());
   }
   
   /**
@@ -65,7 +65,7 @@ public class PlotsListener extends SetDetailListener
    */
   public void setPlotBackgroundExpression( IExpression expression)
   {
-    addDetail( expression, new PlotBackgroundListener());
+    if ( expression != null) addDetail( expression, new PlotBackgroundListener());
   }
   
   /**
@@ -74,7 +74,7 @@ public class PlotsListener extends SetDetailListener
    */
   public void setPointForegroundExpression( IExpression expression)
   {
-    pointsListener.addDetail( expression, new PointForegroundListener());
+    if ( expression != null) pointsListener.addDetail( expression, new PointForegroundListener());
   }
   
   /**
@@ -83,7 +83,7 @@ public class PlotsListener extends SetDetailListener
    */
   public void setPointBackgroundExpression( IExpression expression)
   {
-    pointsListener.addDetail( expression, new PointBackgroundListener());
+    if ( expression != null) pointsListener.addDetail( expression, new PointBackgroundListener());
   }
   
   /**
@@ -109,14 +109,21 @@ public class PlotsListener extends SetDetailListener
     return 0;
   }
   
+  /**
+   * @return Returns the IPlotFeature.
+   */
+  private final IPlotFeature getPlotFeature()
+  {
+    if ( plotFeature == null) plotFeature = xidget.getFeature( IPlotFeature.class);
+    return plotFeature;
+  }
+  
   /* (non-Javadoc)
    * @see org.xmodel.xpath.expression.ExpressionListener#notifyAdd(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.util.List)
    */
   @Override
   public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
   {
-    super.notifyAdd( expression, context, nodes);
-    
     for( IModelObject node: nodes)
     {
       Plot plot = new Plot();
@@ -126,8 +133,10 @@ public class PlotsListener extends SetDetailListener
       pointsExpr.addNotifyListener( new StatefulContext( context, node), pointsListener);
       binding = false;
 
-      plotFeature.addPlot( plot);
+      getPlotFeature().addPlot( plot);
     }
+    
+    super.notifyAdd( expression, context, nodes);
   }
 
   /* (non-Javadoc)
@@ -141,7 +150,7 @@ public class PlotsListener extends SetDetailListener
     for( IModelObject node: nodes)
     {
       Plot plot = plotMap.remove( node);
-      plotFeature.removePlot( plot);
+      getPlotFeature().removePlot( plot);
 
       pointsExpr.removeListener( new StatefulContext( context, node), pointsListener);
     }
@@ -155,15 +164,19 @@ public class PlotsListener extends SetDetailListener
     @Override
     public void notifyInsert( IExpression expression, IContext context, List<IModelObject> nodes, int start, int count)
     {
-      Plot plot = plotMap.get( context.getObject());
+      Point[] points = new Point[ count];
       
+      Plot plot = plotMap.get( context.getObject());
       for( int i=0; i<count; i++)
       {
         IModelObject node = nodes.get( start + i);
-        pointMap.put( node, new Point( plot));
+        Point point = points[ i] = new Point( plot);
+        pointMap.put( node, point);
       }
       
       super.notifyInsert( expression, context, nodes, start, count);
+      
+      for( int i=0; i<count; i++) plot.add( start + i, points[ i]);
     }
 
     /* (non-Javadoc)
@@ -174,10 +187,12 @@ public class PlotsListener extends SetDetailListener
     {
       super.notifyRemove( expression, context, nodes, start, count);
       
+      Plot plot = plotMap.get( context.getObject());
       for( int i=0; i<count; i++)
       {
         IModelObject node = nodes.get( start + i);
         pointMap.remove( node);
+        plot.remove( i);
       }
     }
   }
@@ -231,10 +246,18 @@ public class PlotsListener extends SetDetailListener
     private void update( Point point, List<IModelObject> nodes)
     {
       double[] coords = new double[ nodes.size()];
-      for( int i=0; i<point.coords.length; i++)
-        coords[ i] = getCoordinate( nodes.get( i));
-        
-      if ( !binding) plotFeature.updateCoords( point, coords);
+      for( int i=0; i<coords.length; i++)
+        coords[ i] = getCoordinate( nodes.get( i).getValue());
+
+      if ( binding) 
+      {
+        point.coords = coords;
+      }
+      else 
+      {
+        getPlotFeature().updateCoords( point, coords);
+        point.coords = coords;
+      }
     }
     
     private CoordListener[] coordListeners;
@@ -254,8 +277,12 @@ public class PlotsListener extends SetDetailListener
     @Override
     public void notifyChange( IModelObject object, String attrName, Object newValue, Object oldValue)
     {
-      if ( attrName.length() != 0) return;
-      if ( !binding) plotFeature.updateCoord( point, coordinate, getCoordinate( newValue));
+      if ( attrName.length() == 0)
+      {
+        double value = getCoordinate( newValue);
+        getPlotFeature().updateCoord( point, coordinate, value);
+        point.coords[ coordinate] = value;
+      }
     }
     
     private Point point;
@@ -270,11 +297,10 @@ public class PlotsListener extends SetDetailListener
     @Override
     protected void notifyValue( IContext context, Object newValue, Object oldValue)
     {
-      if ( !binding) 
-      {
-        Point point = pointMap.get( context.getObject());
-        plotFeature.updateLabel( point, (newValue != null)? newValue.toString(): "");
-      }
+      String label = (newValue != null)? newValue.toString(): "";
+      Point point = pointMap.get( context.getObject());
+      if ( !binding) getPlotFeature().updateLabel( point, label);
+      point.label = label;
     }
   }
   
@@ -286,8 +312,10 @@ public class PlotsListener extends SetDetailListener
     @Override
     protected void notifyValue( IContext context, Object newValue, Object oldValue)
     {
+      String color = (newValue != null)? newValue.toString(): "";
       Plot plot = plotMap.get( context.getObject());
-      plotFeature.updateForeground( plot, (newValue != null)? newValue.toString(): "");
+      if ( !binding) getPlotFeature().updateForeground( plot, color);
+      plot.setForeground( color);
     }
   }
   
@@ -299,8 +327,10 @@ public class PlotsListener extends SetDetailListener
     @Override
     protected void notifyValue( IContext context, Object newValue, Object oldValue)
     {
+      String color = (newValue != null)? newValue.toString(): "";
       Plot plot = plotMap.get( context.getObject());
-      plotFeature.updateForeground( plot, (newValue != null)? newValue.toString(): "");
+      if ( !binding) getPlotFeature().updateBackground( plot, color);
+      plot.setBackground( color);
     }
   }
   
@@ -312,11 +342,10 @@ public class PlotsListener extends SetDetailListener
     @Override
     protected void notifyValue( IContext context, Object newValue, Object oldValue)
     {
-      if ( !binding) 
-      {
-        Point point = pointMap.get( context.getObject());
-        plotFeature.updateForeground( point, (newValue != null)? newValue.toString(): "");
-      }
+      String color = (newValue != null)? newValue.toString(): "";
+      Point point = pointMap.get( context.getObject());
+      if ( !binding) getPlotFeature().updateForeground( point, color);
+      point.fcolor = color;
     }
   }
   
@@ -328,14 +357,14 @@ public class PlotsListener extends SetDetailListener
     @Override
     protected void notifyValue( IContext context, Object newValue, Object oldValue)
     {
-      if ( !binding) 
-      {
-        Point point = pointMap.get( context.getObject());
-        plotFeature.updateBackground( point, (newValue != null)? newValue.toString(): "");
-      }
+      String color = (newValue != null)? newValue.toString(): "";
+      Point point = pointMap.get( context.getObject());
+      if ( !binding) getPlotFeature().updateBackground( point, color);
+      point.bcolor = color;
     }
   }
-  
+
+  private IXidget xidget;
   private IPlotFeature plotFeature;
   private Map<IModelObject, Plot> plotMap;
   private Map<IModelObject, Point> pointMap;

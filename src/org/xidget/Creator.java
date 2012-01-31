@@ -121,7 +121,7 @@ public final class Creator
     processor.addHandler( "margins", new BindingTagHandler( new InsideMarginsBindingRule()));
     processor.addHandler( "insideMargins", new BindingTagHandler( new InsideMarginsBindingRule()));
     processor.addHandler( "outsideMargins", new BindingTagHandler( new OutsideMarginsBindingRule()));
-    processor.addHandler( "points", new PlotsTagHandler());
+    processor.addHandler( "plots", new PlotsTagHandler());
     processor.addHandler( "rows", new BindingTagHandler( new RowSetBindingRule()));
     processor.addHandler( "selection", new SelectionTagHandler());
     processor.addHandler( "set", new SetTagHandler());
