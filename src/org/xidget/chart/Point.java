@@ -5,15 +5,25 @@
 package org.xidget.chart;
 
 /**
- * A class that stores a point of arbitrary dimension. This class provides
- * references to the previous and next points in a linked-list to support
- * line drawing.
+ * A class that stores a point of arbitrary dimension along with display characteristics.  This class
+ * defines detail listeners that should be installed on the nodes that represent points in a plot.  This
+ * mechanism is designed around the following principles:
+ * <ul>
+ * <li>The implementation of IPlotFeature does not have to add its own listeners.</li>
+ * <li>The implementation receives specific notifications that can be used to optimize repainting.</li>
+ * <li>The model is simple to maximize painting performance.</li>
+ * </ul>
  */
 public class Point
 {
+  public Point( Plot plot)
+  {
+    this.plot = plot;
+  }
+  
+  public Plot plot;
   public double[] coords;
-  public String[] coordLabels;
   public String label;
-  public String foreground;
-  public String background;
+  public String fcolor;
+  public String bcolor;
 }

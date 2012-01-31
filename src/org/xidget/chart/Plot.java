@@ -43,6 +43,15 @@ public class Plot
   public void remove( int index)
   {
     Point point = points.remove( index);
+    updateExtrema( point);
+  }
+
+  /**
+   * Update the extrema when a point coordinate is updated.
+   * @param point The point that was updated.
+   */
+  protected void updateExtrema( Point point)
+  {
     if ( isExtreme( point))
     {
       System.arraycopy( points.get( 0).coords, 0, min, 0, min.length);
@@ -55,7 +64,7 @@ public class Plot
       }
     }
   }
-
+  
   /**
    * Find the index of the specified point.
    * @param point The point.
@@ -87,7 +96,7 @@ public class Plot
    */
   public String getForeground()
   {
-    return foreground;
+    return fcolor;
   }
   
   /**
@@ -95,7 +104,7 @@ public class Plot
    */
   public String getBackground()
   {
-    return background;
+    return bcolor;
   }
   
   /**
@@ -112,10 +121,10 @@ public class Plot
     }
     return false;
   }
-  
+
   private List<Point> points;
-  private String foreground;
-  private String background;
+  private String fcolor;
+  private String bcolor;
   private double[] min;
   private double[] max;
 }

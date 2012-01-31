@@ -1,0 +1,15 @@
+<stuff>
+  <chart style="line">
+    <!-- indirect model -->
+    <plots source="$plot1 | $plot2">
+      <points source="@list">
+        <coords>@x | @y</coords>
+      </points>
+    </plots>
+    <plots source="$plot2">
+      <points source="list">
+        <coords>@x | @y</coords>
+      </points>
+    </plots>
+  </chart>
+</stuff>

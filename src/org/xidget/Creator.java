@@ -106,14 +106,14 @@ public final class Creator
     this.roots = new ArrayList<IXidget>( 1);
 
     // general
-    processor.addHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
+    processor.addHandler( "bcolor", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addHandler( "bounds", new BindingTagHandler( new BoundsBindingRule()));
     processor.addHandler( "choices", new ChoicesTagHandler());
     processor.addHandler( "context", new ContextTagHandler());
     processor.addHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
     processor.addHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addHandler( "font", new FontTagHandler());
-    processor.addHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
+    processor.addHandler( "fcolor", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addHandler( "get", new GetTagHandler());
     processor.addHandler( "image", new BindingTagHandler( new IconBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
@@ -151,10 +151,10 @@ public final class Creator
     processor.addHandler( "showGrid", new BindingTagHandler( new ShowGridBindingRule()));
     
     // attributes
-    processor.addAttributeHandler( "background", new BindingTagHandler( new BackgroundBindingRule()));
+    processor.addAttributeHandler( "bcolor", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addAttributeHandler( "bounds", new BindingTagHandler( new BoundsBindingRule()));
     processor.addAttributeHandler( "context", new ContextTagHandler());
-    processor.addAttributeHandler( "foreground", new BindingTagHandler( new ForegroundBindingRule()));
+    processor.addAttributeHandler( "fcolor", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addAttributeHandler( "family", new BindingTagHandler( new FontFamilyBindingRule( "font")));
     processor.addAttributeHandler( "style", new BindingTagHandler( new FontStyleBindingRule( "font")));
     processor.addAttributeHandler( "size", new BindingTagHandler( new FontSizeBindingRule( "font")));
