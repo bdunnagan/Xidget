@@ -66,6 +66,14 @@ public class Plot
   }
   
   /**
+   * @return Returns the points in this plot.
+   */
+  public List<Point> getPoints()
+  {
+    return points;
+  }
+  
+  /**
    * Find the index of the specified point.
    * @param point The point.
    * @return Returns -1 or the index.
