@@ -43,16 +43,25 @@ public class PlotsListener extends SetDetailListener
   
   /**
    * Set the expression that returns the nodes representing the point coordinates.
-   * @param expression The coordinate nodes expression.
+   * @param expression The expression.
    */
   public void setCoordsExpression( IExpression expression)
   {
     if ( expression != null) pointsListener.addDetail( expression, new CoordsListener());
   }
+
+  /**
+   * Set the expression that returns the plot stroke line width.
+   * @param expression The expression.
+   */
+  public void setPlotStrokeExpression( IExpression expression)
+  {
+    if ( expression != null) addDetail( expression, new PlotStrokeListener());
+  }
   
   /**
    * Set the expression that returns the foreground color for a plot.
-   * @param expression Plot foreground color expression.
+   * @param expression The expression.
    */
   public void setPlotForegroundExpression( IExpression expression)
   {
@@ -61,7 +70,7 @@ public class PlotsListener extends SetDetailListener
   
   /**
    * Set the expression that returns the background color for a plot.
-   * @param expression Plot background color expression.
+   * @param expression The expression.
    */
   public void setPlotBackgroundExpression( IExpression expression)
   {
@@ -70,7 +79,7 @@ public class PlotsListener extends SetDetailListener
   
   /**
    * Set the expression that returns the foreground color for a point.
-   * @param expression Point foreground color expression.
+   * @param expression The expression.
    */
   public void setPointForegroundExpression( IExpression expression)
   {
@@ -79,19 +88,19 @@ public class PlotsListener extends SetDetailListener
   
   /**
    * Set the expression that returns the background color for a point.
-   * @param expression Point background color expression.
+   * @param expression The expression.
    */
   public void setPointBackgroundExpression( IExpression expression)
   {
     if ( expression != null) pointsListener.addDetail( expression, new PointBackgroundListener());
   }
-  
+
   /**
-   * Returns the value of the coordinate stored in the specified value object..
-   * @param value The coordinate node value object.
-   * @return Returns the value of the coordinate stored in the specified value object.
+   * Returns the specified value object as a double.
+   * @param value The value object.
+   * @return Returns the specified value object as a double.
    */
-  private static double getCoordinate( Object value)
+  private static double getDoubleValue( Object value)
   {
     if ( value instanceof Number)
     {
@@ -247,7 +256,7 @@ public class PlotsListener extends SetDetailListener
     {
       double[] coords = new double[ nodes.size()];
       for( int i=0; i<coords.length; i++)
-        coords[ i] = getCoordinate( nodes.get( i).getValue());
+        coords[ i] = getDoubleValue( nodes.get( i).getValue());
 
       if ( binding) 
       {
@@ -279,7 +288,7 @@ public class PlotsListener extends SetDetailListener
     {
       if ( attrName.length() == 0)
       {
-        double value = getCoordinate( newValue);
+        double value = getDoubleValue( newValue);
         getPlotFeature().updateCoord( point, coordinate, value);
         point.coords[ coordinate] = value;
       }
@@ -301,6 +310,21 @@ public class PlotsListener extends SetDetailListener
       Point point = pointMap.get( context.getObject());
       if ( !binding) getPlotFeature().updateLabel( point, label);
       point.label = label;
+    }
+  }
+  
+  public class PlotStrokeListener extends NodeValueListener
+  {
+    /* (non-Javadoc)
+     * @see org.xmodel.listeners.NodeValueListener#notifyValue(org.xmodel.xpath.expression.IContext, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    protected void notifyValue( IContext context, Object newValue, Object oldValue)
+    {
+      double value = getDoubleValue( newValue);
+      Plot plot = plotMap.get( context.getObject());
+      if ( !binding) getPlotFeature().updateStrokeWidth( plot, value);
+      plot.setStrokeWidth( value);
     }
   }
   

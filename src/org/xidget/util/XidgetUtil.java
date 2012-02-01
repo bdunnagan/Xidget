@@ -45,38 +45,38 @@ public class XidgetUtil
       case 3:
       {
         result = new float[ 3];
-        result[ 0] = Integer.parseInt( color.substring( 0, 1), 16) / 16f;
-        result[ 1] = Integer.parseInt( color.substring( 1, 2), 16) / 16f;
-        result[ 2] = Integer.parseInt( color.substring( 2), 16) / 16f;
+        result[ 0] = Integer.parseInt( color.substring( 0, 1), 16) / 15f;
+        result[ 1] = Integer.parseInt( color.substring( 1, 2), 16) / 15f;
+        result[ 2] = Integer.parseInt( color.substring( 2), 16) / 15f;
       }
       break;
         
       case 4:
       {
         result = new float[ 4];
-        result[ 0] = Integer.parseInt( color.substring( 0, 1), 16) / 16f;
-        result[ 1] = Integer.parseInt( color.substring( 1, 2), 16) / 16f;
-        result[ 2] = Integer.parseInt( color.substring( 2, 3), 16) / 16f;
-        result[ 3] = Integer.parseInt( color.substring( 3), 16) / 16f;
+        result[ 0] = Integer.parseInt( color.substring( 0, 1), 16) / 15f;
+        result[ 1] = Integer.parseInt( color.substring( 1, 2), 16) / 15f;
+        result[ 2] = Integer.parseInt( color.substring( 2, 3), 16) / 15f;
+        result[ 3] = Integer.parseInt( color.substring( 3), 16) / 15f;
       }
       break;
         
       case 6:
       {
         result = new float[ 4];
-        result[ 0] = Integer.parseInt( color.substring( 0, 2), 16) / 256f;
-        result[ 1] = Integer.parseInt( color.substring( 2, 4), 16) / 256f;
-        result[ 2] = Integer.parseInt( color.substring( 4), 16) / 256f;
+        result[ 0] = Integer.parseInt( color.substring( 0, 2), 16) / 255f;
+        result[ 1] = Integer.parseInt( color.substring( 2, 4), 16) / 255f;
+        result[ 2] = Integer.parseInt( color.substring( 4), 16) / 255f;
       }
       break;
         
       case 8:
       {
         result = new float[ 4];
-        result[ 0] = Integer.parseInt( color.substring( 0, 2), 16) / 256f;
-        result[ 1] = Integer.parseInt( color.substring( 2, 4), 16) / 256f;
-        result[ 2] = Integer.parseInt( color.substring( 4, 6), 16) / 256f;
-        result[ 3] = Integer.parseInt( color.substring( 6), 16) / 256f;
+        result[ 0] = Integer.parseInt( color.substring( 0, 2), 16) / 255f;
+        result[ 1] = Integer.parseInt( color.substring( 2, 4), 16) / 255f;
+        result[ 2] = Integer.parseInt( color.substring( 4, 6), 16) / 255f;
+        result[ 3] = Integer.parseInt( color.substring( 6), 16) / 255f;
       }
       break;
     }

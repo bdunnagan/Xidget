@@ -194,7 +194,6 @@ public class Scale
     double maxExpFloor = findExponent( min, max);
     maxPow = Math.pow( 10, maxExpFloor);
     
-    // note that scale min and max are exponents for logarithmic scales
     if ( min > 0) scaleMin = roundTowardZero( min / maxPow) * maxPow;
     else scaleMin = roundAwayFromZero( min / maxPow) * maxPow;
     if ( max > 0) scaleMax = roundAwayFromZero( max / maxPow) * maxPow;

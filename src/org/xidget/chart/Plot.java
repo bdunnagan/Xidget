@@ -15,6 +15,7 @@ public class Plot
   public Plot()
   {
     points = new ArrayList<Point>();
+    stroke = 1;
   }
   
   /**
@@ -142,6 +143,23 @@ public class Plot
   }
   
   /**
+   * Set the stroke width for the plot.
+   * @param value The value.
+   */
+  public void setStrokeWidth( double value)
+  {
+    stroke = value;
+  }
+  
+  /**
+   * @return Returns the stroke width for the plot.
+   */
+  public double getStrokeWidth()
+  {
+    return stroke;
+  }
+  
+  /**
    * Returns true if any coordinate of the specified point lies on the boundary.
    * @param point The point.
    * @return Returns true if any coordinate of the specified point lies on the boundary.
@@ -159,6 +177,7 @@ public class Plot
   private List<Point> points;
   private String fcolor;
   private String bcolor;
+  private double stroke;
   private double[] min;
   private double[] max;
 }

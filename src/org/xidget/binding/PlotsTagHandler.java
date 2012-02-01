@@ -41,6 +41,7 @@ public class PlotsTagHandler implements ITagHandler
       // plot expressions
       plotsListener.setPlotForegroundExpression( Xlate.get( element, "fcolor", Xlate.childGet( element, "fcolor", (IExpression)null)));
       plotsListener.setPlotBackgroundExpression( Xlate.get( element, "bcolor", Xlate.childGet( element, "bcolor", (IExpression)null)));
+      plotsListener.setPlotStrokeExpression( Xlate.get( element, "stroke", Xlate.childGet( element, "stroke", (IExpression)null)));
 
       // point expressions
       IModelObject pointsElement = element.getFirstChild( "points");

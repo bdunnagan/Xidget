@@ -40,6 +40,13 @@ public interface IPlotFeature
   public void updateBackground( Plot plot, String color);
   
   /**
+   * Update the stroke width of the plot.
+   * @param plot The plot.
+   * @param value The new stroke width.
+   */
+  public void updateStrokeWidth( Plot plot, double value);
+  
+  /**
    * Called when a point is added to a plot.
    * @param plot The plot containing the point.
    * @param index The index where the point was inserted.
