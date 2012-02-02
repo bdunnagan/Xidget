@@ -21,7 +21,6 @@ package org.xidget.layout.xaction;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.ifeature.IWidgetContainerFeature;
@@ -29,8 +28,10 @@ import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
+import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
+import org.xmodel.xpath.expression.IExpression.ResultType;
 
 /**
  * A base implementation of XAction for use with the various layout actions defined in this package.
@@ -78,7 +79,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
     }
     else
     {
-      List<IModelObject> elements = xidgetsExpr.evaluateNodes( context);
+      List<IModelObject> elements = getTargets( xidgetsExpr, context);
       List<IXidget> xidgets = new ArrayList<IXidget>( elements.size());
       for( IModelObject node: elements)
       {
@@ -92,6 +93,26 @@ public abstract class AbstractLayoutAction extends GuardedAction
   }
   
   /**
+   * Evaluate the xidget expression and return the target xidget configuration elements.
+   * @param xidgetExpr The expression that identifies the xidget configuration elements.
+   * @param context The context.
+   * @return Returns the list of xidget configuration elements.
+   */
+  protected static List<IModelObject> getTargets( IExpression xidgetExpr, IContext context)
+  {
+    if ( xidgetExpr.getType( context) == ResultType.NODES)
+    {
+      return xidgetExpr.evaluateNodes( context);
+    }
+    else
+    {
+      String name = xidgetExpr.evaluateString( context);
+      xidgetFinder.setVariable( "name", name);
+      return xidgetFinder.evaluateNodes( context);
+    }
+  }
+  
+  /**
    * Create the attachments for the children of the specified xidget.
    * @param context The context of the action.
    * @param parent The parent xidget.
@@ -100,5 +121,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
    */
   protected abstract void layout( IContext context, IXidget parent, List<IXidget> children, int spacing);
 
+  private final static IExpression xidgetFinder = XPath.createExpression( "*[ @id = $name or @name = $name]");
+  
   private IExpression xidgetsExpr;
 }

@@ -25,6 +25,7 @@ import org.xidget.IToolkit.MessageType;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
+import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -46,6 +47,9 @@ public class OpenMessageDialogAction extends GuardedAction
     messageTypeExpr = document.getExpression( "type", true);
     messageExpr = document.getExpression( "message", true);
     if ( messageExpr == null) messageExpr = document.getExpression();
+    
+    if ( titleExpr == null) throw new XActionException( getDocument(), "Message dialog title not defined.");
+    if ( messageExpr == null) throw new XActionException( getDocument(), "Message dialog message not defined.");
   }
 
   /* (non-Javadoc)
@@ -57,7 +61,7 @@ public class OpenMessageDialogAction extends GuardedAction
     String message = messageExpr.evaluateString( context);
     IModelObject imageNode = (imageExpr != null)? imageExpr.queryFirst( context): null;
     Object image = (imageNode != null)? imageNode.getValue(): null;
-    String messageType = messageTypeExpr.evaluateString( context);
+    String messageType = (messageTypeExpr != null)? messageTypeExpr.evaluateString( context): "information";
     
     // open dialog
     IToolkit toolkit = Creator.getToolkit();

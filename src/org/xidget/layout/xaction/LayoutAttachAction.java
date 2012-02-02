@@ -20,9 +20,7 @@
 package org.xidget.layout.xaction;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
 import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
@@ -58,10 +56,8 @@ public class LayoutAttachAction extends GuardedAction
     IModelObject root = document.getRoot();
 
     // configure should only specify one of the following
-    xidgetID = Xlate.get( root, "xid", (String)null);
     xidgetExpr = document.getExpression( "xidget", true);
-    if ( xidgetID == null && xidgetExpr == null) 
-      xidgetExpr = document.getExpression( "xidgets", true);
+    if ( xidgetExpr == null) xidgetExpr = document.getExpression( "xidgets", true);
     
     attachments = new ArrayList<Attachment>();
     for( Side side: Side.values())
@@ -80,7 +76,7 @@ public class LayoutAttachAction extends GuardedAction
         Attachment attachment = new Attachment();
         attachment.side1 = side;
         attachment.side2 = Side.valueOf( Xlate.get( element, "side", element.getType()));
-        attachment.xidgetExpr = Xlate.get( element, "attach", thisExpr);
+        attachment.xidgetExpr = Xlate.get( element, "attach", containerExpr);
         attachment.offsetExpr = Xlate.get( element, "offset", (IExpression)null);
         attachment.percentExpr = Xlate.get( element, "percent", (IExpression)null);
         attachment.handleExpr = Xlate.get( element, "handle", (IExpression)null);
@@ -102,25 +98,8 @@ public class LayoutAttachAction extends GuardedAction
     IXidget parent = creator.findXidget( parentElement);
     
     // evaluate child xidgets
-    List<IModelObject> elements = null;
-    if ( xidgetID != null)
-    {
-      for( IModelObject child: parentElement.getChildren())
-        if ( child.getID().equals( xidgetID))
-        {
-          elements = Collections.singletonList( child);
-          break;
-        }
-    }
-    else if ( xidgetExpr != null) 
-    {
-      elements = xidgetExpr.query( context, null);
-    }
-    
-    // no child xidget found
-    if ( elements == null) return null;
-
-    for( IModelObject element: elements)
+    if ( xidgetExpr == null) return null;
+    for( IModelObject element: AbstractLayoutAction.getTargets( xidgetExpr, context))
     {
       // get xidget for which attachments are being created
       IXidget xidget = creator.findXidget( element);
@@ -157,9 +136,9 @@ public class LayoutAttachAction extends GuardedAction
       attachment.xidgetExpr.setVariable( "previous", prev.getConfig());
       attachment.xidgetExpr.setVariable( "next", next.getConfig());
       
-      IModelObject xidgetNode = attachment.xidgetExpr.queryFirst( context);
-      if ( xidgetNode == null) return;
-      xidget2 = creator.findXidget( xidgetNode);
+      List<IModelObject> xidgetNodes = AbstractLayoutAction.getTargets( attachment.xidgetExpr, context);
+      if ( xidgetNodes.size() == 0) return;
+      xidget2 = creator.findXidget( xidgetNodes.get( 0));
     }
     
     // validation
@@ -213,9 +192,8 @@ public class LayoutAttachAction extends GuardedAction
     IExpression handleExpr;
   }
 
-  private final static IExpression thisExpr = XPath.createExpression( ".");
+  private final static IExpression containerExpr = XPath.createExpression( ".");
   
-  private String xidgetID;
   private IExpression xidgetExpr;
   private List<Attachment> attachments;
 }
