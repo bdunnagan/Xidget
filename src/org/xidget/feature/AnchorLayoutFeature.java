@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
 import org.xidget.IXidget;
 import org.xidget.Log;
 import org.xidget.ifeature.ILabelFeature;
@@ -377,10 +376,19 @@ public class AnchorLayoutFeature implements ILayoutFeature
   /* (non-Javadoc)
    * @see org.xidget.ifeature.ILayoutFeature#attachContainer(org.xidget.IXidget, org.xidget.ifeature.ILayoutFeature.Side, int)
    */
-  public void attachContainer( IXidget child, Side side, int offset)
+  @Override
+  public void attachContainer( IXidget xidget, Side side, int offset)
   {
-    IComputeNode node1 = getCreateNode( child, side);
-    IComputeNode node2 = getCreateNode( xidget, side);
+    attachContainer( xidget, side, side, offset);
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ILayoutFeature#attachContainer(org.xidget.IXidget, org.xidget.ifeature.ILayoutFeature.Side, org.xidget.ifeature.ILayoutFeature.Side, int)
+   */
+  public void attachContainer( IXidget child, Side side1, Side side2, int offset)
+  {
+    IComputeNode node1 = getCreateNode( child, side1);
+    IComputeNode node2 = getCreateNode( xidget, side2);
     if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
     else node1.addDependency( node2);
   }
@@ -470,7 +478,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     }
     else
     {
-      attachContainer( child, fromSide, offset);
+      attachContainer( child, fromSide, toSide, offset);
     }
   }
 
@@ -487,7 +495,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     }
     else
     {
-      attachContainer( child, fromSide, offset);
+      attachContainer( child, fromSide, toSide, offset);
     }
   }
   
@@ -631,15 +639,15 @@ public class AnchorLayoutFeature implements ILayoutFeature
       }
       
       // attach the top side of the first xidget to the form
-      attachContainer( children.get( 0), Side.top, 0);
+      attachContainer( children.get( 0), Side.top, Side.top, 0);
       
       // attach the bottom side of the last xidget to the form
-      attachContainer( children.get( last), Side.bottom, 0);
+      attachContainer( children.get( last), Side.bottom, Side.bottom, 0);
     }
     else
     {
       // attach the top of the first widget to the container
-      attachContainer( children.get( 0), Side.top, 0);
+      attachContainer( children.get( 0), Side.top, Side.top, 0);
       
       // attach the container to the bottom of the last widget
       NodeGroup group = getNodeGroup( xidget);
@@ -650,8 +658,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
     // attach the left and right side of each xidget to the form
     for( IXidget child: children)
     {
-      attachContainer( child, Side.left, 0);
-      attachContainer( child, Side.right, 0);
+      attachContainer( child, Side.left, Side.left, 0);
+      attachContainer( child, Side.right, Side.right, 0);
     }
     
     // attach the top of other widgets to previous widget

@@ -64,10 +64,11 @@ public interface IXidget extends IFeatured
    * Called when the start tag of the configuration is encountered - before children.
    * @param processor The tag processor.
    * @param parent Null or the parent of this xidget.
+   * @param index The index of insertion (-1 for last).
    * @param element The configuration element.
    * @return Returns true if the tag processor should process the children of the specified element.
    */
-  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException;
+  public boolean startConfig( TagProcessor processor, IXidget parent, int index, IModelObject element) throws TagException;
   
   /**
    * Called when the end tag of the configuration is encountered - after children.

@@ -74,11 +74,14 @@ import org.xidget.ifeature.IFocusFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xidget.xpath.CapitalizeFunction;
+import org.xidget.xpath.DateAddFunction;
+import org.xidget.xpath.DateFormatFunction;
+import org.xidget.xpath.DateNowFunction;
+import org.xidget.xpath.DateParseFunction;
+import org.xidget.xpath.DateSetFunction;
 import org.xidget.xpath.FileExistsFunction;
 import org.xidget.xpath.FontsFunction;
-import org.xidget.xpath.FormatDateFunction;
 import org.xidget.xpath.IsFolderFunction;
-import org.xidget.xpath.ParseDateFunction;
 import org.xidget.xpath.ValidateXPathFunction;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
@@ -253,8 +256,11 @@ public final class Creator
     FunctionFactory.getInstance().register( FontsFunction.name, FontsFunction.class);
     FunctionFactory.getInstance().register( IsFolderFunction.name, IsFolderFunction.class);
     FunctionFactory.getInstance().register( ValidateXPathFunction.name, ValidateXPathFunction.class);
-    FunctionFactory.getInstance().register( FormatDateFunction.name, FormatDateFunction.class);
-    FunctionFactory.getInstance().register( ParseDateFunction.name, ParseDateFunction.class);
+    FunctionFactory.getInstance().register( DateFormatFunction.name, DateFormatFunction.class);
+    FunctionFactory.getInstance().register( DateParseFunction.name, DateParseFunction.class);
+    FunctionFactory.getInstance().register( DateAddFunction.name, DateAddFunction.class);
+    FunctionFactory.getInstance().register( DateSetFunction.name, DateSetFunction.class);
+    FunctionFactory.getInstance().register( DateNowFunction.name, DateNowFunction.class);
   }
   
   /**
@@ -371,10 +377,10 @@ public final class Creator
    * @param parent Null or the parent xidget.
    * @param configContext The configuration context.
    */
-  public List<IXidget> create( IXidget parent, StatefulContext configContext) throws TagException
+  public List<IXidget> create( IXidget parent, int index, StatefulContext configContext) throws TagException
   {
     // parse configuration
-    List<IXidget> xidgets = (parent != null)? parse( parent, configContext): parse( configContext);
+    List<IXidget> xidgets = (parent != null)? parse( parent, index, configContext): parse( configContext);
     if ( xidgets.size() == 0) return Collections.emptyList();
     
     // build
@@ -389,12 +395,13 @@ public final class Creator
   /**
    * Create and bind the xidget hierarchy for the specified configuration.
    * @param parent Null or the parent xidget.
+   * @param index The index of insertion.
    * @param configContext The configuration context.
    * @param bindContext The binding context.
    */
-  public List<IXidget> create( IXidget parent, StatefulContext configContext, StatefulContext bindContext) throws TagException
+  public List<IXidget> create( IXidget parent, int index, StatefulContext configContext, StatefulContext bindContext) throws TagException
   {
-    List<IXidget> xidgets = create( parent, configContext);
+    List<IXidget> xidgets = create( parent, index, configContext);
     
     for( IXidget xidget: xidgets)
     {
@@ -541,14 +548,16 @@ public final class Creator
   
   /**
    * Parse the specified xidget configuration.
-   * @param xidget Null or a parent xidget.
+   * @param parent Null or a parent xidget.
+   * @param index The index of insertion.
    * @param element The root of the configuration.
    * @return Returns the list of xidgets created.
    */
-  public List<IXidget> parse( IXidget parent, StatefulContext context) throws TagException
+  public List<IXidget> parse( IXidget parent, int index, StatefulContext context) throws TagException
   {
     List<IXidget> children = new ArrayList<IXidget>( parent.getChildren());
-    processor.process( new ParentTagHandler( parent), context);
+    if ( index == -1) index = children.size();
+    processor.process( new ParentTagHandler( parent, index), context);
 
     List<IXidget> created = new ArrayList<IXidget>( parent.getChildren());
     created.removeAll( children);
@@ -574,11 +583,17 @@ public final class Creator
    * An implementation of ITagHandler that is passed to the TagProcessor to support parenting 
    * of newly created xidgets when rebuilding a sub-tree of the xidget hierarchy.
    */
-  private class ParentTagHandler implements ITagHandler, IXidgetFeature
+  public class ParentTagHandler implements ITagHandler, IXidgetFeature
   {
     public ParentTagHandler( IXidget xidget)
     {
+      this( xidget, xidget.getChildren().size());
+    }
+    
+    public ParentTagHandler( IXidget xidget, int index)
+    {
       this.xidget = xidget;
+      this.index = index;
     }
     
     /* (non-Javadoc)
@@ -611,6 +626,14 @@ public final class Creator
     {
       return xidget;
     }
+    
+    /**
+     * @return Returns the index of insertion.
+     */
+    public int getIndex()
+    {
+      return index;
+    }
 
     /* (non-Javadoc)
      * @see org.xidget.IFeatured#getFeature(java.lang.Class)
@@ -623,6 +646,7 @@ public final class Creator
     }
     
     private IXidget xidget;
+    private int index;
   }
   
   private static ThreadLocal<Creator> instances = new ThreadLocal<Creator>();

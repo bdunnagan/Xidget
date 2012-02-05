@@ -48,6 +48,7 @@ public class CreateXidgetAction extends GuardedAction
     
     contextExpr = document.getExpression( "context", true);
     parentExpr = document.getExpression( "parent", true);
+    indexExpr = document.getExpression( "index", true);
     xidgetExpr = document.getExpression( "xidget", true);
     if ( xidgetExpr == null) xidgetExpr = document.getExpression();
   }
@@ -69,8 +70,8 @@ public class CreateXidgetAction extends GuardedAction
       StatefulContext bindContext = createBindContext( context, configContext);
       IModelObject parentNode = (parentExpr != null)? parentExpr.queryFirst( context): null;
       IXidget parent = creator.findXidget( parentNode);
-      List<IXidget> xidgets = creator.create( parent, configContext, bindContext);
-      
+      int index = (indexExpr != null)? (int)indexExpr.evaluateNumber( context): -1;
+      List<IXidget> xidgets = creator.create( parent, index, configContext, bindContext);
       for( IXidget xidget: xidgets) 
       {
         IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
@@ -103,5 +104,6 @@ public class CreateXidgetAction extends GuardedAction
   
   private IExpression contextExpr;
   private IExpression parentExpr;
+  private IExpression indexExpr;
   private IExpression xidgetExpr;
 }

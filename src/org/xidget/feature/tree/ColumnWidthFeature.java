@@ -70,7 +70,8 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
       if ( width == null) width = column.getAttributeNode( "width");
       if ( width == null)
       {
-        setFreeWidth( i, -1, -1, 0);
+        setAutoWidth( i, -1, -1, 0, false);
+        //setFreeWidth( i, -1, -1, 0);
       }
       else
       {

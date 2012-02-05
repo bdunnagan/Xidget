@@ -20,7 +20,7 @@
 package org.xidget.binding;
 
 import java.util.Stack;
-
+import org.xidget.Creator.ParentTagHandler;
 import org.xidget.IXidget;
 import org.xidget.config.AbstractTagHandler;
 import org.xidget.config.ITagHandler;
@@ -81,6 +81,10 @@ public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeatu
     IXidgetFeature xidgetFeature = (parent != null)? parent.getFeature( IXidgetFeature.class): null;
     IXidget xidgetParent = (xidgetFeature != null)? xidgetFeature.getXidget(): null;
     
+    // TODO: Put this functionality on ITagHandler feature.
+    int index = (xidgetParent != null)? xidgetParent.getChildren().size(): 0;
+    if ( parent instanceof ParentTagHandler) index = ((ParentTagHandler)parent).getIndex();
+    
     try
     {
       // instantiate xidget class and store on tag handler to support parenting
@@ -88,7 +92,7 @@ public class XidgetTagHandler extends AbstractTagHandler implements IXidgetFeatu
       xidgets.push( xidget);
       
       // configure new xidget
-      return xidget.startConfig( processor, xidgetParent, element);
+      return xidget.startConfig( processor, xidgetParent, index, element);
     }
     catch( InstantiationException e)
     {

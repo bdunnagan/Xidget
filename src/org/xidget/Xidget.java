@@ -90,16 +90,12 @@ public abstract class Xidget implements IXidget
     getChildren().remove( xidget);
   }
 
-  /**
-   * Stubbed implementation for convenience.
-   * @param processor The tag processor.
-   * @param parent Null or the parent of this xidget.
-   * @param element The configuration element.
-   * @return Returns true.
+  /* (non-Javadoc)
+   * @see org.xidget.IXidget#startConfig(org.xidget.config.TagProcessor, org.xidget.IXidget, int, org.xmodel.IModelObject)
    */
-  public boolean startConfig( TagProcessor processor, IXidget parent, IModelObject element) throws TagException
+  public boolean startConfig( TagProcessor processor, IXidget parent, int index, IModelObject element) throws TagException
   {
-    if ( parent != null) parent.addChild( this);
+    if ( parent != null) parent.addChild( index, this);
     config = element;
     createFeatures();
     return true;

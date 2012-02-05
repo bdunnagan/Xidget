@@ -169,7 +169,7 @@ public class LayoutAttachAction extends GuardedAction
       {
         int offset = 0;
         if ( attachment.offsetExpr != null) offset = (int)attachment.offsetExpr.evaluateNumber( configContext, 0);
-        layoutFeature.attachContainer( xidget1, attachment.side1, offset);
+        layoutFeature.attachContainer( xidget1, attachment.side1, attachment.side2, offset);
       }
       else 
       {

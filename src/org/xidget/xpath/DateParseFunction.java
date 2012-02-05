@@ -19,9 +19,9 @@ import org.xmodel.xpath.function.Function;
  * as defined by the org.xidget.util.DateUtil class, and the date string to be parsed. If the date 
  * cannot be parsed then 0 is returned.
  */
-public class ParseDateFunction extends Function
+public class DateParseFunction extends Function
 {
-  public final static String name = "xi:parse-date";
+  public final static String name = "xi:date-parse";
   
   /* (non-Javadoc)
    * @see org.xmodel.xpath.expression.IExpression#getName()

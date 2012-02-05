@@ -83,12 +83,21 @@ public interface ILayoutFeature
   public void attachPeer( IXidget xidget, Side fromSide, IXidget peer, Side toSide, int offset);
 
   /**
-   * Attach the specified xidget to its container.
+   * Attach the specified xidget to the same side of its container.
    * @param xidget The xidget.
-   * @param side The side of the xidget to be attached.
+   * @param side1 The side of the xidget to be attached.
    * @param offset The offset from the container.
    */
   public void attachContainer( IXidget xidget, Side side, int offset);
+
+  /**
+   * Attach the specified xidget to its container.
+   * @param xidget The xidget.
+   * @param side1 The side of the xidget to be attached.
+   * @param side2 The side of the container.
+   * @param offset The offset from the container.
+   */
+  public void attachContainer( IXidget xidget, Side side1, Side side2, int offset);
 
   /**
    * Attach the specified xidget to its container at a position calculated as a percentage

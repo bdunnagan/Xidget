@@ -18,9 +18,9 @@ import org.xmodel.xpath.function.Function;
  * Note that this implementation differs from the xsl:format-date function because this library does
  * not support XSLT.
  */
-public class FormatDateFunction extends Function
+public class DateFormatFunction extends Function
 {
-  public final static String name = "xi:format-date";
+  public final static String name = "xi:date-format";
   
   /* (non-Javadoc)
    * @see org.xmodel.xpath.expression.IExpression#getName()
@@ -50,9 +50,12 @@ public class FormatDateFunction extends Function
     
     IExpression format = getArgument( 0);
     IExpression value = getArgument( 1);
+
+    long time = (long)value.evaluateNumber( context);
+    if ( time == 0) return "";
     
     DateFormat util = new DateFormat();
-    return util.format( format.evaluateString( context), (long)value.evaluateNumber( context));
+    return util.format( format.evaluateString( context), time);
   }
 
   /* (non-Javadoc)
