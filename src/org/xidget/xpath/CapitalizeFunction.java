@@ -58,6 +58,8 @@ public class CapitalizeFunction extends Function
     assertArgs( 1, 1);
     
     String input = getArgument( 0).evaluateString( context);
+    if ( input.length() == 0) return input;
+    
     StringBuilder sb = new StringBuilder();
     sb.append( Character.toUpperCase( input.charAt( 0)));
     sb.append( input, 1, input.length());
