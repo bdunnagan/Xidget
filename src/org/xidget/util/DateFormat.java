@@ -519,9 +519,9 @@ public class DateFormat
   {
     int start = parseIndex;
     
-    char c = date.charAt( parseIndex);
-    while( Character.isDigit( c))
-      c = date.charAt( ++parseIndex);
+    char c = date.charAt( parseIndex++);
+    while( Character.isDigit( c) && parseIndex < date.length())
+      c = date.charAt( parseIndex++);
     
     try
     {

@@ -130,20 +130,19 @@ public class LayoutAttachAction extends GuardedAction
     {
       List<IXidget> children = parent.getChildren();
       int index = children.indexOf( xidget1);
-      IXidget prev = (index == 0)? parent: children.get( index-1);
-      IXidget next = (index == children.size() - 1)? parent: children.get( index+1);
-      
-      attachment.xidgetExpr.setVariable( "previous", prev.getConfig());
-      attachment.xidgetExpr.setVariable( "next", next.getConfig());
+      if ( index >= 0)
+      {
+        IXidget prev = (index == 0)? parent: children.get( index-1);
+        IXidget next = (index == children.size() - 1)? parent: children.get( index+1);
+        attachment.xidgetExpr.setVariable( "previous", prev.getConfig());
+        attachment.xidgetExpr.setVariable( "next", next.getConfig());
+      }
       
       List<IModelObject> xidgetNodes = AbstractLayoutAction.getTargets( attachment.xidgetExpr, context);
       if ( xidgetNodes.size() == 0) return;
       xidget2 = creator.findXidget( xidgetNodes.get( 0));
     }
     
-    // validation
-    if ( xidget1 == xidget2) throw new XActionException( "Cannot make attachment to self: "+XmlIO.toString( getDocument().getRoot()));
-
     // get features
     ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
     IWidgetContainerFeature containerFeature = parent.getFeature( IWidgetContainerFeature.class);
