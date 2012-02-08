@@ -47,6 +47,7 @@ public class PlotsTagHandler implements ITagHandler
       IModelObject pointsElement = element.getFirstChild( "points");
       plotsListener.setPointsExpression( Xlate.get( pointsElement, "source", Xlate.childGet( pointsElement, "source", (IExpression)null)));
       plotsListener.setCoordsExpression( Xlate.get( pointsElement, "coords", Xlate.childGet( pointsElement, "coords", (IExpression)null)));
+      plotsListener.setPointLabelExpression( Xlate.get( pointsElement, "label", Xlate.childGet( pointsElement, "label", (IExpression)null)));
       plotsListener.setPointForegroundExpression( Xlate.get( pointsElement, "fcolor", Xlate.childGet( pointsElement, "fcolor", (IExpression)null)));
       plotsListener.setPointBackgroundExpression( Xlate.get( pointsElement, "bcolor", Xlate.childGet( pointsElement, "bcolor", (IExpression)null)));
       

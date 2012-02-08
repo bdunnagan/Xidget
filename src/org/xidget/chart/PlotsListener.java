@@ -96,6 +96,15 @@ public class PlotsListener extends SetDetailListener
   }
 
   /**
+   * Set the expression that returns the label for a point.
+   * @param expression The expression.
+   */
+  public void setPointLabelExpression( IExpression expression)
+  {
+    if ( expression != null) pointsListener.addDetail( expression, new LabelListener());
+  }
+  
+  /**
    * Returns the specified value object as a double.
    * @param value The value object.
    * @return Returns the specified value object as a double.
