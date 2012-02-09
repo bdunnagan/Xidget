@@ -2,7 +2,7 @@
  * Xidget - UI Toolkit based on XModel
  * Copyright 2009 Bob Dunnagan. All rights reserved.
  */
-package org.xidget.binding;
+package org.xidget.binding.ruler;
 
 import org.xidget.IXidget;
 import org.xidget.config.AbstractTagHandler;
@@ -18,7 +18,7 @@ import org.xmodel.xpath.expression.IExpression;
 /**
  * An implementation of ITagHandler that sets the label expression on an axis.
  */
-public class AxisLabelTagHandler extends AbstractTagHandler
+public class RulerLabelTagHandler extends AbstractTagHandler
 {
   /* (non-Javadoc)
    * @see org.xidget.config.AbstractTagHandler#filter(org.xidget.config.TagProcessor, org.xidget.config.ITagHandler, org.xmodel.IModelObject)

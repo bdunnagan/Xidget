@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import org.xidget.IXidget;
-import org.xidget.Log;
 import org.xidget.ifeature.ILabelFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetContainerFeature;
@@ -44,6 +43,7 @@ import org.xidget.layout.OffsetNode;
 import org.xidget.layout.WidgetHandle;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
+import org.xmodel.log.Log;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xpath.expression.IExpression;
@@ -113,6 +113,12 @@ public class AnchorLayoutFeature implements ILayoutFeature
       for( IComputeNode node: sorted) node.reset();
       for( IComputeNode node: sorted) node.update();
       for( IComputeNode node: sorted) node.update();
+    }
+
+    if ( log.isLevelEnabled( Log.debug))
+    {
+      for( IComputeNode node: sorted)
+        log.debug( node);
     }
     
     // update bounds of children
@@ -224,13 +230,13 @@ public class AnchorLayoutFeature implements ILayoutFeature
       
       if ( group.right != null && group.right.hasValue()) 
       {
-        if ( group.left == null || !group.left.hasValue()) Log.printf( "layout", "Width of child not constrained: %s\n", xidget);
+        if ( group.left == null || !group.left.hasValue()) log.warnf( "Width of child not constrained: %s\n", xidget);
         bounds.width = group.right.getValue() - group.left.getValue();
       }
       
       if ( group.bottom != null && group.bottom.hasValue()) 
       {
-        if ( group.top == null || !group.top.hasValue()) Log.printf( "layout", "Height of child not constrained: %s\n", xidget);
+        if ( group.top == null || !group.top.hasValue()) log.warnf( "Height of child not constrained: %s\n", xidget);
         bounds.height = group.bottom.getValue() - group.top.getValue();
       }
       
@@ -272,8 +278,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void compile( StatefulContext context)
   {
-    Log.printf( "layout", "Compile: %s\n", xidget);
-
     if ( script == null) loadScript( context);
       
     // execute script
@@ -304,10 +308,6 @@ public class AnchorLayoutFeature implements ILayoutFeature
     
     // sort nodes
     sorted = sort( nodes);
-    
-    // dump final node list
-    for( int i=0; i<sorted.size(); i++)
-      Log.printf( "layout", "%d: %s\n", i, sorted.get( i));
   }
   
   /**
@@ -700,6 +700,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
     IComputeNode right;
     IComputeNode bottom;
   }
+
+  private final static Log log = Log.getLog( AnchorLayoutFeature.class);
   
   private IXidget xidget;
   private ScriptAction script;

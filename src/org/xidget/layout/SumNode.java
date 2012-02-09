@@ -80,6 +80,6 @@ public class SumNode extends ComputeNode
    */
   public String toString()
   {
-    return String.format( "%d. (%s) add%s", getID(), printValue(), printDependencies());
+    return String.format( "Sum[%d] = %s <- %s", getID(), printValue(), printDependencies());
   }
 }

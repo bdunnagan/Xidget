@@ -131,7 +131,7 @@ public class AnchorNode extends ComputeNode
    */
   public String toString()
   {
-    return String.format( "%d. (%s) (%%%2.1f, %+d) <- %s", getID(), printValue(), fraction, offset, printDependencies());
+    return String.format( "Anchor[%d] = %s (%%%2.0f, %d) <- %s", getID(), printValue(), fraction, offset, printDependencies());
   }
 
   private IComputeNode node1;

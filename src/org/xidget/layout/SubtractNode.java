@@ -81,6 +81,6 @@ public class SubtractNode extends ComputeNode
    */
   public String toString()
   {
-    return String.format( "%d. (%s) subtract <- %s", getID(), printValue(), printDependencies());
+    return String.format( "Subtract[%d] = %s <- %s", getID(), printValue(), printDependencies());
   }
 }

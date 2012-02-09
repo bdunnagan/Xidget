@@ -4,6 +4,7 @@
  */
 package org.xidget.binding;
 
+import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.chart.PlotsListener;
 import org.xidget.config.ITagHandler;
@@ -51,12 +52,32 @@ public class PlotsTagHandler implements ITagHandler
       plotsListener.setPointForegroundExpression( Xlate.get( pointsElement, "fcolor", Xlate.childGet( pointsElement, "fcolor", (IExpression)null)));
       plotsListener.setPointBackgroundExpression( Xlate.get( pointsElement, "bcolor", Xlate.childGet( pointsElement, "bcolor", (IExpression)null)));
       
+      // alternative coord expressions (since sequences are not implemented yet)
+      IExpression[] coordExprs = getCoordinateExpressions( pointsElement);
+      plotsListener.setCoordExpressions( coordExprs);
+      
       XidgetBinding binding = new XidgetBinding( plotsExpr, plotsListener);
       IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
     }
     
     return false;
+  }
+  
+  /**
+   * Returns the coordinate expressions from the specified points element.
+   * @param pointsElement The points element.
+   * @return Returns the coordinate expressions from the specified points element.
+   */
+  private IExpression[] getCoordinateExpressions( IModelObject pointsElement)
+  {
+    List<IModelObject> coordNodes = pointsElement.getChildren( "coord");
+    IExpression[] coordExprs = new IExpression[ coordNodes.size()];
+    for( int i=0; i<coordExprs.length; i++)
+    {
+      coordExprs[ i] = Xlate.get( coordNodes.get( i), (IExpression)null);
+    }
+    return coordExprs;
   }
   
   /* (non-Javadoc)

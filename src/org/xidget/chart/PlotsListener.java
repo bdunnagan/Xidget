@@ -14,6 +14,7 @@ import org.xmodel.ModelListener;
 import org.xmodel.listeners.ListDetailListener;
 import org.xmodel.listeners.NodeValueListener;
 import org.xmodel.listeners.SetDetailListener;
+import org.xmodel.log.Log;
 import org.xmodel.xpath.expression.ExactExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -48,6 +49,19 @@ public class PlotsListener extends SetDetailListener
   public void setCoordsExpression( IExpression expression)
   {
     if ( expression != null) pointsListener.addDetail( expression, new CoordsListener());
+  }
+  
+  /**
+   * Set the expressions that specify the coordinates of the point.
+   * @param expressions The expressions in order of coordinate.
+   */
+  public void setCoordExpressions( IExpression[] expressions)
+  {
+    pointsListener.dim = expressions.length;
+    for( int i=0; i<expressions.length; i++)
+    {
+      pointsListener.addDetail( expressions[ i], new CoordListener2( i));
+    }
   }
 
   /**
@@ -168,7 +182,7 @@ public class PlotsListener extends SetDetailListener
     for( IModelObject node: nodes)
     {
       Plot plot = plotMap.remove( node);
-      getPlotFeature().removePlot( plot);
+      if ( plot != null) getPlotFeature().removePlot( plot); else log.error( "Duplicate call to remove nodes: "+nodes);
 
       pointsExpr.removeListener( new StatefulContext( context, node), pointsListener);
     }
@@ -190,6 +204,12 @@ public class PlotsListener extends SetDetailListener
         IModelObject node = nodes.get( start + i);
         Point point = points[ i] = new Point( plot);
         pointMap.put( node, point);
+        
+        //
+        // When individual coordinate expressions are used, the dimension is known before binding,
+        // and this is the most convenient place to create the coordinate array.
+        //
+        if ( dim != 0) point.coords = new double[ dim];
       }
       
       super.notifyInsert( expression, context, nodes, start, count);
@@ -213,6 +233,8 @@ public class PlotsListener extends SetDetailListener
         plot.remove( i);
       }
     }
+    
+    public int dim;
   }
 
   public class CoordsListener extends ExactExpressionListener
@@ -231,10 +253,10 @@ public class PlotsListener extends SetDetailListener
           nodes.get( i).removeModelListener( coordListeners[ i]);
       }
       
-      coordListeners = new CoordListener[ nodes.size()];
+      coordListeners = new CoordListener1[ nodes.size()];
       for( int i=0; i<nodes.size(); i++)
       {
-        coordListeners[ i] = new CoordListener( point, i);
+        coordListeners[ i] = new CoordListener1( point, i);
         nodes.get( i).addModelListener( coordListeners[ i]);
       }
 
@@ -254,6 +276,43 @@ public class PlotsListener extends SetDetailListener
       }
       
       coordListeners = null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, double, double)
+     */
+    @Override
+    public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
+    {
+      Point point = pointMap.get( context.getObject());
+      double[] coords = new double[] { newValue};
+      if ( binding)
+      {
+        point.coords = coords;
+      }
+      else
+      {
+        getPlotFeature().updateCoords( point, coords);
+        point.coords = coords;
+      }
+    }
+
+    /* (non-Javadoc)
+     * @see org.xmodel.xpath.expression.ExpressionListener#notifyChange(org.xmodel.xpath.expression.IExpression, org.xmodel.xpath.expression.IContext, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void notifyChange( IExpression expression, IContext context, String newString, String oldString)
+    {
+      try
+      {
+        double newValue = Double.parseDouble( newString);
+        double oldValue = Double.parseDouble( oldString);
+        notifyChange( expression, context, newValue, oldValue);
+      }
+      catch( Exception e)
+      {
+        log.error( String.format( "Unable to parse coordinate string expression: %s", expression));
+      }
     }
 
     /**
@@ -278,12 +337,12 @@ public class PlotsListener extends SetDetailListener
       }
     }
     
-    private CoordListener[] coordListeners;
+    private CoordListener1[] coordListeners;
   }
   
-  public class CoordListener extends ModelListener
+  public class CoordListener1 extends ModelListener
   {
-    public CoordListener( Point point, int coordinate)
+    public CoordListener1( Point point, int coordinate)
     {
       this.point = point;
       this.coordinate = coordinate;
@@ -304,6 +363,38 @@ public class PlotsListener extends SetDetailListener
     }
     
     private Point point;
+    private int coordinate;
+  }
+  
+  public class CoordListener2 extends NodeValueListener
+  {
+    public CoordListener2( int coordinate)
+    {
+      this.coordinate = coordinate;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.xmodel.listeners.NodeValueListener#notifyValue(org.xmodel.xpath.expression.IContext, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    protected void notifyValue( IContext context, Object newObject, Object oldObject)
+    {
+      if ( newObject != null)
+      {
+        try
+        {
+          double newValue = (newObject instanceof Number)? ((Number)newObject).doubleValue(): Double.parseDouble( newObject.toString());
+          Point point = pointMap.get( context.getObject());
+          if ( !binding) getPlotFeature().updateCoord( point, coordinate, newValue);
+          point.coords[ coordinate] = newValue;
+        }
+        catch( Exception e)
+        {
+          log.error( String.format( "Unable to parse coordinate string expression."));
+        }
+      }
+    }
+    
     private int coordinate;
   }
   
@@ -397,6 +488,8 @@ public class PlotsListener extends SetDetailListener
     }
   }
 
+  private Log log = Log.getLog( PlotsListener.class);
+  
   private IXidget xidget;
   private IPlotFeature plotFeature;
   private Map<IModelObject, Plot> plotMap;

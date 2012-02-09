@@ -159,11 +159,13 @@ public abstract class ComputeNode implements IComputeNode
     cycle = true;
     
     StringBuilder sb = new StringBuilder();
+    sb.append( "{");
     for( IComputeNode dependency: dependencies)
     {
       if ( sb.length() > 0) sb.append( ", ");
       sb.append( dependency.getID());
     }
+    sb.append( "}");
     
     cycle = false;
     return sb.toString();

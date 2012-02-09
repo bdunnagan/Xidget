@@ -323,6 +323,12 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   {
     row++;
     
+    if ( rows.size() <= row)
+    {
+      for( int i=row; i<rows.size(); i++)
+        insertRow( i-1);
+    }
+    
     Integer[] widths = rows.get( row);
     
     // remove old width from sorted array

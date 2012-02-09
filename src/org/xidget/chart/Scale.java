@@ -34,10 +34,11 @@ public class Scale
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
    * @param context The parent context.
+   * @param labelExpr The label expression;
    */
-  public Scale( double min, double max, int count, IContext context)
+  public Scale( double min, double max, int count, IContext context, IExpression labelExpr)
   {
-    this( min, max, count, 0, context);
+    this( min, max, count, 0, context, labelExpr);
   }
   
   /**
@@ -47,10 +48,13 @@ public class Scale
    * @param count The maximum number of ticks in the scale.
    * @param log 0 or the log base for logarithmic scales.
    * @param context The parent context.
+   * @param labelExpr The label expression;
    */
-  public Scale( double min, double max, int count, double log, IContext context)
+  public Scale( double min, double max, int count, double log, IContext context, IExpression labelExpr)
   {
     this.context = (context != null)? new StatefulContext( context): null;
+    this.labelExpr = labelExpr;
+    
     this.log = log;
     this.count = count;
     
@@ -191,7 +195,7 @@ public class Scale
    */
   private void computeMajorTicks( double min, double max, List<Tick> ticks)
   {
-    double maxExpFloor = findExponent( min, max);
+    double maxExpFloor = findExponent( 0, (max - min));
     maxPow = Math.pow( 10, maxExpFloor);
     
     if ( min > 0) scaleMin = roundTowardZero( min / maxPow) * maxPow;

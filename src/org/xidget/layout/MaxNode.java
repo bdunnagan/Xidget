@@ -19,8 +19,6 @@
  */
 package org.xidget.layout;
 
-import org.xidget.Log;
-
 /**
  * An implementation of IComputeNode whose value is the maximum value of all of its dependent nodes.
  */
@@ -45,8 +43,15 @@ public class MaxNode extends ComputeNode
       
       if ( max != Float.NEGATIVE_INFINITY) 
         setValue( max);
-      
-      Log.printf( "layout", "update: %s\n", toString()); 
     }
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString()
+  {
+    return String.format( "Max[%d] = %s <- %s", getID(), printValue(), printDependencies());
   }
 }

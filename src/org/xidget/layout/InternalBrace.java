@@ -52,7 +52,7 @@ public class InternalBrace extends ComputeNode
    */
   public String toString()
   {
-    return String.format( "%d. %s %s (%s) %s <- %s", getID(), xidget, name, printValue(), side.name(), printDependencies());
+    return String.format( "%s[%d] = %s <- %s, %s", name, getID(), printValue(), printDependencies(), xidget);
   }
   
   private String name;

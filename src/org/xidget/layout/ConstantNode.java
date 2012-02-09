@@ -49,6 +49,6 @@ public class ConstantNode extends ComputeNode
    */
   public String toString()
   {
-    return String.format( "%d. (%s) <- %s", getID(), printValue(), printDependencies());
+    return String.format( "Constant[%d] = %s <- %s", getID(), printValue(), printDependencies());
   }
 }

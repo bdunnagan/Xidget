@@ -49,7 +49,7 @@ public class OffsetNode extends ComputeNode
    */
   public String toString()
   {
-    return String.format( "%d. %s (%s) %+d <- %s", getID(), name, printValue(), offset, printDependencies());
+    return String.format( "Offset-%s[%d] = %s (%d) <- %s", name, getID(), printValue(), offset, printDependencies());
   }
   
   private String name;
