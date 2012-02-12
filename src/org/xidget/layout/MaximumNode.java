@@ -22,7 +22,7 @@ package org.xidget.layout;
 /**
  * An implementation of IComputeNode whose value is the maximum value of all of its dependent nodes.
  */
-public class MaxNode extends ComputeNode
+public class MaximumNode extends ComputeNode
 {
   /* (non-Javadoc)
    * @see org.xidget.layout.IComputeNode#update()
@@ -52,6 +52,6 @@ public class MaxNode extends ComputeNode
   @Override
   public String toString()
   {
-    return String.format( "Max[%d] = %s <- %s", getID(), printValue(), printDependencies());
+    return String.format( "Maximum[%d] = %s <- %s", getID(), printValue(), printDependencies());
   }
 }

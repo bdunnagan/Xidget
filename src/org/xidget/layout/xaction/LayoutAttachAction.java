@@ -20,18 +20,23 @@
 package org.xidget.layout.xaction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.ILayoutFeature.Side;
 import org.xidget.ifeature.IWidgetContainerFeature;
+import org.xidget.layout.AverageNode;
+import org.xidget.layout.IComputeNode;
+import org.xidget.layout.MaximumNode;
+import org.xidget.layout.MinimumNode;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
+import org.xmodel.log.Log;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
 import org.xmodel.xaction.XActionException;
-import org.xmodel.xml.XmlIO;
 import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -68,18 +73,25 @@ public class LayoutAttachAction extends GuardedAction
         String sideName = Xlate.get( element, "anchor", (String)null);
         if ( sideName != null)
         {
-          System.err.println( "Warning: deprecated use of 'anchor' attribute. Use 'side' instead.");
+          log.warn( "Deprecated use of 'anchor' attribute - use 'side' attribute instead.");
           element.setAttribute( "side", sideName);
           element.removeAttribute( "anchor");
         }
 
         Attachment attachment = new Attachment();
+        
         attachment.side1 = side;
         attachment.side2 = Side.valueOf( Xlate.get( element, "side", element.getType()));
-        attachment.xidgetExpr = Xlate.get( element, "attach", containerExpr);
+        attachment.xidgetsExpr = Xlate.get( element, "attach", containerExpr);
         attachment.offsetExpr = Xlate.get( element, "offset", (IExpression)null);
         attachment.percentExpr = Xlate.get( element, "percent", (IExpression)null);
         attachment.handleExpr = Xlate.get( element, "handle", (IExpression)null);
+        
+        String compute = Xlate.get( element, "compute", "maximum");
+        if ( compute.equals( "minimum")) attachment.minAvgMax = new MinimumNode();
+        if ( compute.equals( "average")) attachment.minAvgMax = new AverageNode();
+        if ( compute.equals( "maximum")) attachment.minAvgMax = new MaximumNode();
+        
         attachments.add( attachment);
       }
     }
@@ -118,29 +130,32 @@ public class LayoutAttachAction extends GuardedAction
    * @parma creator The Creator instance.
    * @param attachment The attachment.
    * @param context The context.
-   * @param xidget1 The xidget.
+   * @param xidget The xidget.
    */
-  private void createNodes( Creator creator, Attachment attachment, IContext context, IXidget parent, IXidget xidget1)
+  private void createNodes( Creator creator, Attachment attachment, IContext context, IXidget parent, IXidget xidget)
   {
-    StatefulContext configContext = new StatefulContext( context, xidget1.getConfig());
+    StatefulContext configContext = new StatefulContext( context, xidget.getConfig());
     
     // find other xidget
-    IXidget xidget2 = parent;
-    if ( attachment.xidgetExpr != null)
+    List<IXidget> sites = Collections.singletonList( parent); // TODO: indicate with null instead to reduce garbage
+    if ( attachment.xidgetsExpr != null)
     {
       List<IXidget> children = parent.getChildren();
-      int index = children.indexOf( xidget1);
+      int index = children.indexOf( xidget);
       if ( index >= 0)
       {
         IXidget prev = (index == 0)? parent: children.get( index-1);
         IXidget next = (index == children.size() - 1)? parent: children.get( index+1);
-        attachment.xidgetExpr.setVariable( "previous", prev.getConfig());
-        attachment.xidgetExpr.setVariable( "next", next.getConfig());
+        attachment.xidgetsExpr.setVariable( "previous", prev.getConfig());
+        attachment.xidgetsExpr.setVariable( "next", next.getConfig());
       }
       
-      List<IModelObject> xidgetNodes = AbstractLayoutAction.getTargets( attachment.xidgetExpr, context);
+      List<IModelObject> xidgetNodes = AbstractLayoutAction.getTargets( attachment.xidgetsExpr, context);
       if ( xidgetNodes.size() == 0) return;
-      xidget2 = creator.findXidget( xidgetNodes.get( 0));
+
+      sites = new ArrayList<IXidget>();
+      for( IModelObject xidgetNode: xidgetNodes)
+        sites.add( creator.findXidget( xidgetNode));
     }
     
     // get features
@@ -150,25 +165,30 @@ public class LayoutAttachAction extends GuardedAction
     // cases
     if ( attachment.percentExpr != null)
     {
-      if ( xidget1 == parent) throw new XActionException( "Containers cannot have proportional attachments: "+XmlIO.toString( getDocument().getRoot()));
-      if ( xidget2 != parent) throw new XActionException( "Proportional attachments must be specified relative to the container: "+XmlIO.toString( getDocument().getRoot()));
+      IXidget site = sites.get( 0);
+
+      if ( sites.size() > 1) throw new XActionException( getDocument(), "Too many xidgets specified with proportional attachment");
+      if ( xidget == parent) throw new XActionException( getDocument(), "Containers cannot have proportional attachments");
+      if ( site != parent) throw new XActionException( getDocument(), "Proportional attachments must be specified relative to the container");
       
       float percent = (float)attachment.percentExpr.evaluateNumber( configContext, 0);
-      IModelObject percentNode = (attachment.percentExpr.getType( configContext) == ResultType.NODES)? 
+      IModelObject percentNode = 
+        (attachment.percentExpr.getType( configContext) == ResultType.NODES)? 
         attachment.percentExpr.queryFirst( configContext): null;
       
       int offset = (attachment.offsetExpr != null)? (int)attachment.offsetExpr.evaluateNumber( configContext, 0): 0;
       boolean handle = (attachment.handleExpr != null)? attachment.handleExpr.evaluateBoolean( configContext): false;
       
-      layoutFeature.attachContainer( xidget1, attachment.side1, percent, percentNode, offset, handle);
+      layoutFeature.attachContainer( xidget, attachment.side1, percent, percentNode, offset, handle);
     }
     else
     {
-      if ( xidget2 == parent) 
+      IXidget site = sites.get( 0);
+      if ( site == parent) 
       {
         int offset = 0;
         if ( attachment.offsetExpr != null) offset = (int)attachment.offsetExpr.evaluateNumber( configContext, 0);
-        layoutFeature.attachContainer( xidget1, attachment.side1, attachment.side2, offset);
+        layoutFeature.attachContainer( xidget, attachment.side1, attachment.side2, offset);
       }
       else 
       {
@@ -176,7 +196,15 @@ public class LayoutAttachAction extends GuardedAction
         if ( attachment.side1 == Side.right && attachment.side2 == Side.left) offset = -offset;
         if ( attachment.side1 == Side.bottom && attachment.side2 == Side.top) offset = -offset;
         if ( attachment.offsetExpr != null) offset = (int)attachment.offsetExpr.evaluateNumber( configContext, 0);
-        layoutFeature.attachPeer( xidget1, attachment.side1, xidget2, attachment.side2, offset);
+        if ( sites.size() == 1)
+        {
+          layoutFeature.attachPeer( xidget, attachment.side1, site, attachment.side2, offset);
+        }
+        else
+        {
+          if ( attachment.minAvgMax == null) attachment.minAvgMax = new MaximumNode();
+          layoutFeature.attachPeers( xidget, attachment.side1, sites, attachment.side2, offset, attachment.minAvgMax);
+        }
       }
     }
   }
@@ -185,12 +213,14 @@ public class LayoutAttachAction extends GuardedAction
   {
     Side side1;
     Side side2;
-    IExpression xidgetExpr;
+    IExpression xidgetsExpr;
     IExpression offsetExpr;
     IExpression percentExpr;
     IExpression handleExpr;
+    IComputeNode minAvgMax;
   }
 
+  private final static Log log = Log.getLog( LayoutAttachAction.class);
   private final static IExpression containerExpr = XPath.createExpression( ".");
   
   private IExpression xidgetExpr;

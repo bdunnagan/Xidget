@@ -20,8 +20,8 @@
 package org.xidget.ifeature;
 
 import java.util.List;
-
 import org.xidget.IXidget;
+import org.xidget.layout.IComputeNode;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -32,7 +32,7 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public interface ILayoutFeature
 {
-  public enum Side { top, left, right, bottom};
+  public enum Side { top, left, right, bottom, hcenter, vcenter};
   
   /**
    * Discard cached layout information.
@@ -81,6 +81,17 @@ public interface ILayoutFeature
    * @param offset The offset.
    */
   public void attachPeer( IXidget xidget, Side fromSide, IXidget peer, Side toSide, int offset);
+
+  /**
+   * Attach the specified xidget to its peers using the specified intermediate node.
+   * @param xidget The xidget.
+   * @param fromSide The side of the xidget to be attached.
+   * @param peers The peer xidgets.
+   * @param toSide The side of the peer xidgets.
+   * @param offset The offset.
+   * @param node One of MinimumNode, AverageNode or MaximumNode.
+   */
+  public void attachPeers( IXidget xidget, Side fromSide, List<IXidget> peers, Side toSide, int offset, IComputeNode node);
 
   /**
    * Attach the specified xidget to the same side of its container.

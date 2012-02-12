@@ -38,7 +38,7 @@ import org.xidget.layout.ConstantNode;
 import org.xidget.layout.IComputeNode;
 import org.xidget.layout.InternalBrace;
 import org.xidget.layout.Margins;
-import org.xidget.layout.MaxNode;
+import org.xidget.layout.MaximumNode;
 import org.xidget.layout.OffsetNode;
 import org.xidget.layout.WidgetHandle;
 import org.xmodel.IModelObject;
@@ -224,6 +224,18 @@ public class AnchorLayoutFeature implements ILayoutFeature
       
       IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
       Bounds bounds = widgetFeature.getDefaultBounds();
+
+      if ( group.hcenter != null && group.hcenter.hasValue() && bounds.width >= 0)
+      {
+        if ( bounds.width < 0) log.warnf( "Unable to set horizontal center of widget without default width: %s\n", xidget);
+        bounds.x = group.hcenter.getValue() - (bounds.width / 2);
+      }
+      
+      if ( group.vcenter != null && group.vcenter.hasValue() && bounds.height >= 0)
+      {
+        if ( bounds.height < 0) log.warnf( "Unable to set vertical center of widget without default height: %s\n", xidget);
+        bounds.y = group.vcenter.getValue() - (bounds.height / 2);
+      }
       
       if ( group.top != null && group.top.hasValue()) bounds.y = group.top.getValue();
       if ( group.left != null && group.left.hasValue()) bounds.x = group.left.getValue();
@@ -304,6 +316,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
       if ( group.left != null) nodes.add( group.left);
       if ( group.right != null) nodes.add( group.right);
       if ( group.bottom != null) nodes.add( group.bottom);
+      if ( group.hcenter != null) nodes.add( group.hcenter);
+      if ( group.vcenter != null) nodes.add( group.vcenter);
     }
     
     // sort nodes
@@ -389,8 +403,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     IComputeNode node1 = getCreateNode( child, side1);
     IComputeNode node2 = getCreateNode( xidget, side2);
-    if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
-    else node1.addDependency( node2);
+    if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset)); else node1.addDependency( node2);
   }
 
   /* (non-Javadoc)
@@ -403,7 +416,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     // get both sides of the container
     IComputeNode node2 = null;
     IComputeNode node3 = null;
-    if ( side == Side.top || side == Side.bottom)
+    if ( side == Side.top || side == Side.bottom || side == Side.vcenter)
     {
       node2 = getCreateNode( xidget, Side.top);
       node3 = getCreateNode( xidget, Side.bottom);
@@ -424,22 +437,24 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void packContainer( List<IXidget> children, Side side, int offset)
   {
-    if ( side == Side.left || side == Side.top) return;
+    if ( side == Side.left || side == Side.top) 
+    {
+      throw new IllegalArgumentException( 
+        "Container may only be packed from the right or bottom sides.");
+    }
     
     IComputeNode node1 = getCreateNode( xidget, side);
     
     if ( children.size() > 1)
     {
-      IComputeNode node2 = new MaxNode();
+      IComputeNode node2 = new MaximumNode();
       for( IXidget child: children) node2.addDependency( getCreateNode( child, side));
-      if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
-      else node1.addDependency( node2);
+      if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset)); else node1.addDependency( node2);
     }
     else
     {
       IComputeNode node2 = getCreateNode( children.get( 0), side);
-      if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
-      else node1.addDependency( node2);
+      node1.addDependency( getOffsetNode( node2, offset));
     }
   }
 
@@ -450,8 +465,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     IComputeNode node1 = getCreateNode( child, side);
     IComputeNode node2 = getCreateNode( peer, getOpposite( side));
-    if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset));
-    else node1.addDependency( node2);
+    node1.addDependency( getOffsetNode( node2, offset));
   }
 
   /* (non-Javadoc)
@@ -461,8 +475,23 @@ public class AnchorLayoutFeature implements ILayoutFeature
   {
     IComputeNode node1 = getCreateNode( child, fromSide);
     IComputeNode node2 = getCreateNode( peer, toSide);
-    if ( offset != 0 && fromSide != toSide) node1.addDependency( new OffsetNode( node2, offset));
-    else node1.addDependency( node2);
+    node1.addDependency( getOffsetNode( node2, offset));
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.ILayoutFeature#attachPeers(org.xidget.IXidget, org.xidget.ifeature.ILayoutFeature.Side, java.util.List, org.xidget.ifeature.ILayoutFeature.Side, int, org.xidget.layout.IComputeNode)
+   */
+  @Override
+  public void attachPeers( IXidget child, Side fromSide, List<IXidget> peers, Side toSide, int offset, IComputeNode node2)
+  {
+    IComputeNode node1 = getCreateNode( child, fromSide);
+    node1.addDependency( getOffsetNode( node2, offset));
+    
+    for( IXidget peer: peers)
+    {
+      IComputeNode node3 = getCreateNode( peer, toSide);
+      node2.addDependency( node3);
+    }
   }
 
   /* (non-Javadoc)
@@ -497,6 +526,18 @@ public class AnchorLayoutFeature implements ILayoutFeature
     {
       attachContainer( child, fromSide, toSide, offset);
     }
+  }
+  
+  /**
+   * Returns an instance of OffsetNode if offset is not zero, otherwise returns the node argument.
+   * @param node The node from which the offset is calculated.
+   * @param offset The offset.
+   * @return Returns an instance of OffsetNode if offset is not zero, otherwise returns the node argument.
+   */
+  private final IComputeNode getOffsetNode( IComputeNode node, int offset)
+  {
+    if ( offset == 0) return node;
+    return new OffsetNode( node, offset);
   }
   
   /**
@@ -557,6 +598,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
       case left: return group.left;
       case right: return group.right;
       case bottom: return group.bottom;
+      case hcenter: return group.hcenter;
+      case vcenter: return group.vcenter;
     }
     return null;
   }
@@ -693,12 +736,16 @@ public class AnchorLayoutFeature implements ILayoutFeature
       left = new WidgetHandle( xidget, Side.left, 0);
       right = new WidgetHandle( xidget, Side.right, 0);
       bottom = new WidgetHandle( xidget, Side.bottom, 0);
+      hcenter = new WidgetHandle( xidget, Side.hcenter, 0);
+      vcenter = new WidgetHandle( xidget, Side.vcenter, 0);
     }
     
     IComputeNode top;
     IComputeNode left;
     IComputeNode right;
     IComputeNode bottom;
+    IComputeNode hcenter;
+    IComputeNode vcenter;
   }
 
   private final static Log log = Log.getLog( AnchorLayoutFeature.class);
