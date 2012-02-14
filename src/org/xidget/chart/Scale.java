@@ -360,7 +360,7 @@ public class Scale
   }
   
   /**
-   * Creete a label for the specified tick.
+   * Create a label for the specified tick.
    * @param tick The tick.
    */
   private void createLabel( Tick tick)

@@ -393,8 +393,13 @@ public final class Creator
     StatefulContext[] contexts = bindFeature.getBoundContexts().toArray( new StatefulContext[ 0]);
     for( StatefulContext context: contexts) bindFeature.unbind( (StatefulContext)context);
     
-    // destroy widget hierarchy
+    // remove root
     IWidgetCreationFeature creationFeature = root.getFeature( IWidgetCreationFeature.class);
+    Object[] widgets = creationFeature.getLastWidgets();
+    for( Object widget: widgets) map.remove( widget);
+    roots.remove( root);
+    
+    // destroy widget hierarchy
     creationFeature.destroyWidgets();
     
     // remove xidget from parent

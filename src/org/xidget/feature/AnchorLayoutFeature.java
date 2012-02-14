@@ -36,7 +36,8 @@ import org.xidget.layout.AnchorNode;
 import org.xidget.layout.Bounds;
 import org.xidget.layout.ConstantNode;
 import org.xidget.layout.IComputeNode;
-import org.xidget.layout.InternalBrace;
+import org.xidget.layout.InternalDefaultBrace;
+import org.xidget.layout.InternalConsistenceBrace;
 import org.xidget.layout.Margins;
 import org.xidget.layout.MaximumNode;
 import org.xidget.layout.OffsetNode;
@@ -225,17 +226,17 @@ public class AnchorLayoutFeature implements ILayoutFeature
       IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
       Bounds bounds = widgetFeature.getDefaultBounds();
 
-      if ( group.hcenter != null && group.hcenter.hasValue() && bounds.width >= 0)
-      {
-        if ( bounds.width < 0) log.warnf( "Unable to set horizontal center of widget without default width: %s\n", xidget);
-        bounds.x = group.hcenter.getValue() - (bounds.width / 2);
-      }
-      
-      if ( group.vcenter != null && group.vcenter.hasValue() && bounds.height >= 0)
-      {
-        if ( bounds.height < 0) log.warnf( "Unable to set vertical center of widget without default height: %s\n", xidget);
-        bounds.y = group.vcenter.getValue() - (bounds.height / 2);
-      }
+//      if ( group.hcenter != null && group.hcenter.hasValue() && bounds.width >= 0)
+//      {
+//        if ( bounds.width < 0) log.warnf( "Unable to set horizontal center of widget without default width: %s\n", xidget);
+//        bounds.x = group.hcenter.getValue() - (bounds.width / 2);
+//      }
+//      
+//      if ( group.vcenter != null && group.vcenter.hasValue() && bounds.height >= 0)
+//      {
+//        if ( bounds.height < 0) log.warnf( "Unable to set vertical center of widget without default height: %s\n", xidget);
+//        bounds.y = group.vcenter.getValue() - (bounds.height / 2);
+//      }
       
       if ( group.top != null && group.top.hasValue()) bounds.y = group.top.getValue();
       if ( group.left != null && group.left.hasValue()) bounds.x = group.left.getValue();
@@ -368,22 +369,93 @@ public class AnchorLayoutFeature implements ILayoutFeature
   private void addInternalBraces( IXidget child)
   {
     NodeGroup group = getNodeGroup( child);
-    if ( isNodeFree( group.top))
+    boolean isTopFree = isNodeFree( group.top);
+    boolean isBottomFree = isNodeFree( group.bottom);
+    boolean isLeftFree = isNodeFree( group.left);
+    boolean isRightFree = isNodeFree( group.right);
+    boolean isHCenterFree = isNodeFree( group.hcenter);
+    boolean isVCenterFree = isNodeFree( group.vcenter);
+
+    //
+    // Case 1: One edge and center are free
+    //
+    if ( isTopFree && isVCenterFree && !isBottomFree)
     {
-      group.top.addDependency( new InternalBrace( "TBBrace", child, group.bottom, Side.top));
+      group.top.addDependency( new InternalDefaultBrace( "BTBrace", child, group.bottom, Side.bottom, Side.top));
+      group.vcenter.addDependency( new InternalDefaultBrace( "BCBrace", child, group.bottom, Side.bottom, Side.vcenter));
+      isTopFree = false;
+      isVCenterFree = false;
     }
-    else if ( isNodeFree( group.bottom))
+    else if ( isBottomFree && isVCenterFree && !isTopFree)
     {
-      group.bottom.addDependency( new InternalBrace( "BTBrace", child, group.top, Side.bottom));
+      group.bottom.addDependency( new InternalDefaultBrace( "TBBrace", child, group.top, Side.top, Side.bottom));
+      group.vcenter.addDependency( new InternalDefaultBrace( "TCBrace", child, group.top, Side.top, Side.vcenter));
+      isBottomFree = false;
+      isVCenterFree = false;
     }
     
-    if ( isNodeFree( group.left))
+    if ( isLeftFree && isHCenterFree && !isRightFree)
     {
-      group.left.addDependency( new InternalBrace( "LRBrace", child, group.right, Side.left));
+      group.left.addDependency( new InternalDefaultBrace( "RLBrace", child, group.right, Side.right, Side.left));
+      group.hcenter.addDependency( new InternalDefaultBrace( "RCBrace", child, group.right, Side.right, Side.hcenter));
+      isLeftFree = false;
+      isHCenterFree = false;
     }
-    else if ( isNodeFree( group.right))
+    else if ( isRightFree && isHCenterFree && !isLeftFree)
     {
-      group.right.addDependency( new InternalBrace( "RLBrace", child, group.left, Side.right));
+      group.right.addDependency( new InternalDefaultBrace( "LRBrace", child, group.left, Side.left, Side.right));
+      group.hcenter.addDependency( new InternalDefaultBrace( "LCBrace", child, group.left, Side.left, Side.hcenter));
+      isRightFree = false;
+      isHCenterFree = false;
+    }
+    
+    //
+    // Case 2: Both edges are free, center is constrained
+    //
+    if ( isTopFree && isBottomFree && !isVCenterFree)
+    {
+      group.top.addDependency( new InternalDefaultBrace( "CTBrace", child, group.vcenter, Side.vcenter, Side.top));
+      group.bottom.addDependency( new InternalDefaultBrace( "CBBrace", child, group.vcenter, Side.vcenter, Side.bottom));
+    }
+    
+    if ( isLeftFree && isRightFree && !isHCenterFree)
+    {
+      group.left.addDependency( new InternalDefaultBrace( "CLBrace", child, group.hcenter, Side.hcenter, Side.left));
+      group.right.addDependency( new InternalDefaultBrace( "CRBrace", child, group.hcenter, Side.hcenter, Side.right));
+    }
+    
+    //
+    // Case 3: One edge and center are constrained
+    //
+    if ( !isTopFree && !isVCenterFree && isBottomFree)
+    {
+      group.bottom.addDependency( new InternalConsistenceBrace( "TCBBrace", child, group.top, Side.top, group.vcenter, Side.vcenter));
+    }
+    else if ( !isBottomFree && !isVCenterFree && isTopFree)
+    {
+      group.top.addDependency( new InternalConsistenceBrace( "BCTBrace", child, group.bottom, Side.bottom, group.vcenter, Side.vcenter));
+    }
+    
+    if ( !isLeftFree && !isHCenterFree && isRightFree)
+    {
+      group.right.addDependency( new InternalConsistenceBrace( "LCRBrace", child, group.left, Side.left, group.hcenter, Side.hcenter));
+    }
+    else if ( !isRightFree && !isHCenterFree && isLeftFree)
+    {
+      group.left.addDependency( new InternalConsistenceBrace( "RCLBrace", child, group.left, Side.left, group.hcenter, Side.hcenter));
+    }
+    
+    //
+    // Case 4: Both edges are constrained, center is free
+    //
+    if ( !isTopFree && !isBottomFree && isVCenterFree)
+    {
+      group.vcenter.addDependency( new InternalConsistenceBrace( "TBCBrace", child, group.top, Side.top, group.bottom, Side.bottom));
+    }
+    
+    if ( !isLeftFree && !isRightFree && isHCenterFree)
+    {
+      group.hcenter.addDependency( new InternalConsistenceBrace( "LRCBrace", child, group.left, Side.left, group.right, Side.right));
     }
   }
 
@@ -728,7 +800,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     return true;
   }
   
-  private class NodeGroup
+  public class NodeGroup
   {
     public NodeGroup( IXidget xidget)
     {
@@ -740,12 +812,12 @@ public class AnchorLayoutFeature implements ILayoutFeature
       vcenter = new WidgetHandle( xidget, Side.vcenter, 0);
     }
     
-    IComputeNode top;
-    IComputeNode left;
-    IComputeNode right;
-    IComputeNode bottom;
-    IComputeNode hcenter;
-    IComputeNode vcenter;
+    public IComputeNode top;
+    public IComputeNode left;
+    public IComputeNode right;
+    public IComputeNode bottom;
+    public IComputeNode hcenter;
+    public IComputeNode vcenter;
   }
 
   private final static Log log = Log.getLog( AnchorLayoutFeature.class);

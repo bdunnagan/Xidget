@@ -143,13 +143,9 @@ public class BindFeature implements IBindFeature
   {
     Log.printf( "xidget", "unbind: %s with %s\n", xidget, context);
     
-    // call onClose script
-    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
-    if ( scriptFeature != null) scriptFeature.runScript( "onClose", context);
-    
     // internal bindings
-    if ( bindBeforeChildren != null)
-      for( IXidgetBinding binding: bindBeforeChildren)
+    if ( bindAfterChildren != null)
+      for( IXidgetBinding binding: bindAfterChildren)
         binding.unbind( context);
     
     // unbind children
@@ -159,9 +155,13 @@ public class BindFeature implements IBindFeature
       bindFeature.unbind( context);
     }
 
+    // call onClose script
+    IScriptFeature scriptFeature = xidget.getFeature( IScriptFeature.class);
+    if ( scriptFeature != null) scriptFeature.runScript( "onClose", context);
+    
     // internal bindings
-    if ( bindAfterChildren != null)
-      for( IXidgetBinding binding: bindAfterChildren)
+    if ( bindBeforeChildren != null)
+      for( IXidgetBinding binding: bindBeforeChildren)
         binding.unbind( context);
     
     // remove context
