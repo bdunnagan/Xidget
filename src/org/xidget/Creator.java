@@ -282,7 +282,13 @@ public final class Creator
     List<IXidget> roots = getActiveHierarchies();
     
     IXidget focus = getToolkit().getFeature( IFocusFeature.class).getFocus();
-    if ( focus != null) roots.add( 0, focus);
+    if ( focus != null)
+    {
+      IXidget parent = focus.getParent();
+      while( parent != null) { focus = parent; parent = parent.getParent();}
+      roots.remove( focus);
+      roots.add( 0, focus);
+    }
     
     for( IXidget root: roots)
     {
@@ -355,9 +361,6 @@ public final class Creator
     
     // build
     for( IXidget xidget: xidgets) build( xidget);
-    
-    // save roots
-    if ( parent == null) roots.addAll( xidgets);
     
     return xidgets;
   }

@@ -1,7 +1,7 @@
 /*
  * Xidget - XML Widgets based on JAHM
  * 
- * TimerAction.java
+ * DestroyXidgetAction.java
  * 
  * Copyright 2009 Robert Arvin Dunnagan
  * 
@@ -19,17 +19,22 @@
  */
 package org.xidget.xaction;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.xidget.Creator;
-import org.xidget.ifeature.IAsyncFeature;
+import org.xidget.IXidget;
+import org.xidget.ifeature.IPrintFeature;
+import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.XActionDocument;
+import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
 /**
- * An XAction which executes another action periodically with a specified delay.
+ * An XAction that uses the IPrintFeature of the IToolkit to print one or more xidgets.
  */
-public class StopTimerAction extends GuardedAction
+public class PrintXidgetAction extends GuardedAction
 {
   /* (non-Javadoc)
    * @see org.xmodel.xaction.GuardedAction#configure(org.xmodel.xaction.XActionDocument)
@@ -38,8 +43,7 @@ public class StopTimerAction extends GuardedAction
   public void configure( XActionDocument document)
   {
     super.configure( document);
-    idExpr = document.getExpression( "id", true);
-    if ( idExpr == null) idExpr = document.getExpression();
+    xidgetsExpr = document.getExpression();
   }
 
   /* (non-Javadoc)
@@ -48,11 +52,22 @@ public class StopTimerAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
-    String id = idExpr.evaluateString( context);
-    IAsyncFeature feature = Creator.getToolkit().getFeature( IAsyncFeature.class);
-    if ( feature != null) feature.cancel( id);
+    Creator creator = Creator.getInstance();
+    
+    IPrintFeature printFeature = Creator.getToolkit().getFeature( IPrintFeature.class);
+    if ( printFeature == null) throw new XActionException( "Xidget platform does not support printing.");
+    
+    List<IXidget> xidgets = new ArrayList<IXidget>();
+    for( IModelObject element: xidgetsExpr.query( context, null))
+    {
+      IXidget xidget = creator.findXidget( element);
+      if ( xidget != null) xidgets.add( xidget);
+    }
+    
+    if ( xidgets.size() > 0) printFeature.print( xidgets);
+    
     return null;
   }
   
-  private IExpression idExpr;
+  private IExpression xidgetsExpr;
 }

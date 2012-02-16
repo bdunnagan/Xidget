@@ -24,6 +24,7 @@ import org.xidget.ifeature.IAsyncFeature;
 import org.xmodel.xaction.GuardedAction;
 import org.xmodel.xaction.IXAction;
 import org.xmodel.xaction.XActionDocument;
+import org.xmodel.xaction.XActionException;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
 
@@ -52,8 +53,10 @@ public class StartTimerAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
-    String id = idExpr.evaluateString( context);
-    int period = (int)((delayExpr != null)? delayExpr.evaluateNumber( context): -1);
+    String id = (idExpr != null)? idExpr.evaluateString( context): Integer.toString( hashCode());
+    if ( id.length() == 0) throw new XActionException( getDocument(), "Unable to start timer with empty identifier.");
+    
+    int period = (int)delayExpr.evaluateNumber( context);
     boolean repeat = (repeatExpr != null)? repeatExpr.evaluateBoolean( context): false;
     
     IAsyncFeature feature = Creator.getToolkit().getFeature( IAsyncFeature.class);
