@@ -25,11 +25,47 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import org.xidget.binding.*;
-import org.xidget.binding.ruler.*;
-import org.xidget.binding.slider.*;
-import org.xidget.binding.table.*;
-import org.xidget.binding.tree.*;
+import org.xidget.binding.BackgroundBindingRule;
+import org.xidget.binding.BindingTagHandler;
+import org.xidget.binding.BoundsBindingRule;
+import org.xidget.binding.ChoicesTagHandler;
+import org.xidget.binding.ContextTagHandler;
+import org.xidget.binding.EditableBindingRule;
+import org.xidget.binding.EnableBindingRule;
+import org.xidget.binding.FontFamilyBindingRule;
+import org.xidget.binding.FontSizeBindingRule;
+import org.xidget.binding.FontStyleBindingRule;
+import org.xidget.binding.FontTagHandler;
+import org.xidget.binding.ForegroundBindingRule;
+import org.xidget.binding.GetTagHandler;
+import org.xidget.binding.HAlignBindingRule;
+import org.xidget.binding.IconBindingRule;
+import org.xidget.binding.InsideMarginsBindingRule;
+import org.xidget.binding.KeyTagHandler;
+import org.xidget.binding.LabelBindingRule;
+import org.xidget.binding.OutsideMarginsBindingRule;
+import org.xidget.binding.PlotsTagHandler;
+import org.xidget.binding.ScriptTagHandler;
+import org.xidget.binding.SelectionTagHandler;
+import org.xidget.binding.SetTagHandler;
+import org.xidget.binding.SkipTagHandler;
+import org.xidget.binding.SourceTagHandler;
+import org.xidget.binding.SpacingBindingRule;
+import org.xidget.binding.TitleBindingRule;
+import org.xidget.binding.TooltipBindingRule;
+import org.xidget.binding.TriggerTagHandler;
+import org.xidget.binding.VAlignBindingRule;
+import org.xidget.binding.VisibleBindingRule;
+import org.xidget.binding.ruler.RulerLabelDepthBindingRule;
+import org.xidget.binding.ruler.RulerLabelTagHandler;
+import org.xidget.binding.slider.MaximumBindingRule;
+import org.xidget.binding.slider.MinimumBindingRule;
+import org.xidget.binding.slider.PrecisionBindingRule;
+import org.xidget.binding.table.ColumnTitleBindingRule;
+import org.xidget.binding.table.RowSetBindingRule;
+import org.xidget.binding.table.ShowGridBindingRule;
+import org.xidget.binding.table.SubTableTagHandler;
+import org.xidget.binding.tree.SubTreeTagHandler;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
 import org.xidget.config.TagProcessor;
@@ -49,6 +85,7 @@ import org.xidget.xpath.FontsFunction;
 import org.xidget.xpath.IsFolderFunction;
 import org.xidget.xpath.ValidateXPathFunction;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.StatefulContext;
 import org.xmodel.xpath.function.FunctionFactory;
 
@@ -337,7 +374,7 @@ public final class Creator
     {
       IXidget current = stack.pop();
       
-      if ( current.getConfig() == config) return current;
+      if ( isSameConfig( current.getConfig(), config)) return current;
       
       for( IXidget child: current.getChildren()) 
       {
@@ -346,6 +383,27 @@ public final class Creator
       }
     }
     return null;
+  }
+  
+  /**
+   * Returns true if either the id or the name attributes of the two elements match.
+   * @param config1 The first configuration element.
+   * @param config2 The second configuration element.
+   * @return True if the elements match.
+   */
+  private boolean isSameConfig( IModelObject config1, IModelObject config2)
+  {
+    if ( config1.equals( config2)) return true;
+    
+    String id1 = Xlate.get( config1, "xi:id", (String)null);
+    String id2 = Xlate.get( config2, "xi:id", (String)null);
+    if ( id1 != null) return (id2 != null && id1.equals( id2));
+    
+    String name1 = Xlate.get( config1, "name", (String)null);
+    String name2 = Xlate.get( config2, "name", (String)null);
+    if ( name1 != null) return (name2 != null && name1.equals( name2));
+    
+    return false;
   }
   
   /**

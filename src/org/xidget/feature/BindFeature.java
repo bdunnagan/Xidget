@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.xidget.IXidget;
 import org.xidget.Log;
 import org.xidget.binding.IXidgetBinding;
