@@ -167,9 +167,20 @@ public class LayoutAttachAction extends GuardedAction
     {
       IXidget site = sites.get( 0);
 
-      if ( sites.size() > 1) throw new XActionException( getDocument(), "Too many xidgets specified with proportional attachment");
-      if ( xidget == parent) throw new XActionException( getDocument(), "Containers cannot have proportional attachments");
-      if ( site != parent) throw new XActionException( getDocument(), "Proportional attachments must be specified relative to the container");
+      if ( sites.size() > 1) 
+      {
+        throw new XActionException( getDocument(), "Too many xidgets specified with proportional attachment");
+      }
+      
+      if ( xidget == parent)
+      {
+        throw new XActionException( getDocument(), "Containers cannot have proportional attachments");
+      }
+      
+      if ( site != parent) 
+      {
+        throw new XActionException( getDocument(), "Proportional attachments must be specified relative to the container");
+      }
       
       float percent = (float)attachment.percentExpr.evaluateNumber( configContext, 0);
       IModelObject percentNode = 
