@@ -18,16 +18,8 @@ import org.xmodel.xpath.expression.StatefulContext;
  * may be calculated for a linear or logarithmic scale.  This class also provides a method
  * to translate coordinates into scale space.
  */
-public class Scale
+public class NumericScale implements IScale
 {
-  public static class Tick
-  {
-    public int depth;
-    public double value;
-    public double scale; 
-    public String label;
-  }
-  
   /**
    * Create a linear scale over the specified range with at most the specified number of ticks.
    * @param min The minimum value in the range.
@@ -36,7 +28,7 @@ public class Scale
    * @param context The parent context.
    * @param labelExpr The label expression;
    */
-  public Scale( double min, double max, int count, IContext context, IExpression labelExpr)
+  public NumericScale( double min, double max, int count, IContext context, IExpression labelExpr)
   {
     this( min, max, count, 0, context, labelExpr);
   }
@@ -50,7 +42,7 @@ public class Scale
    * @param context The parent context.
    * @param labelExpr The label expression;
    */
-  public Scale( double min, double max, int count, double log, IContext context, IExpression labelExpr)
+  public NumericScale( double min, double max, int count, double log, IContext context, IExpression labelExpr)
   {
     this.context = (context != null)? new StatefulContext( context): null;
     this.labelExpr = labelExpr;
@@ -118,29 +110,28 @@ public class Scale
     return maxPow;
   }
   
-  /**
-   * @return Returns the tick marks.
+  /* (non-Javadoc)
+   * @see org.xidget.chart.IScale#getTicks()
    */
+  @Override
   public List<Tick> getTicks()
   {
     return ticks;
   }
   
-  /**
-   * @return Returns the tick counts by depth.
+  /* (non-Javadoc)
+   * @see org.xidget.chart.IScale#getTickCounts()
    */
+  @Override
   public List<Integer> getTickCounts()
   {
     return counts;
   }
   
-  /**
-   * Returns the location of the specified value relative to the scale where
-   * a value of 0 is the minimum tick value and a value of 1 is the maximum
-   * tick value.  
-   * @param value The value to be converted.
-   * @return Returns the location of the specified value in the scale space.
+  /* (non-Javadoc)
+   * @see org.xidget.chart.IScale#plot(double)
    */
+  @Override
   public double plot( double value)
   {
     if ( log != 0 && value != 0)
@@ -148,12 +139,10 @@ public class Scale
     return (value - scaleMin) / scaleRange;
   }
   
-  /**
-   * Returns the value of the specified position on the scale. This method is
-   * the inverse of the plot( double) method.
-   * @param scale A value between 0 and 1, inclusive.
-   * @return Returns the value of the specified position on the scale.
+  /* (non-Javadoc)
+   * @see org.xidget.chart.IScale#value(double)
    */
+  @Override
   public double value( double scale)
   {
     double value = scaleRange * scale + scaleMin;    
@@ -161,14 +150,10 @@ public class Scale
     return value;
   }
   
-  /**
-   * Interpolates the value represented by the specified index on a grid of 
-   * size equally spaced points.  This method compensates for aliasing that
-   * is caused by rounding tick values to the grid.  
-   * @param index A value between 0 (inclusive), and size (exclusive).
-   * @param size The size of the grid.
-   * @return Returns the nearest dealiased/interpolated value.
+  /* (non-Javadoc)
+   * @see org.xidget.chart.IScale#value(int, int)
    */
+  @Override
   public double value( int index, int size)
   {
     double s = (double)index / size * ticks.size();
