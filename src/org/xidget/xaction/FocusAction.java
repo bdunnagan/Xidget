@@ -38,8 +38,11 @@ public class FocusAction extends GuardedAction
     if ( focusFeature != null)
     {
       IModelObject config = focusExpr.queryFirst( context);
-      IXidget xidget = Creator.getInstance().findXidget( config);
-      if ( xidget != null) focusFeature.setFocus( xidget);
+      if ( config != null)
+      {
+        IXidget xidget = Creator.getInstance().findXidget( config);
+        if ( xidget != null) focusFeature.setFocus( xidget);
+      }
     }
     
     return null;

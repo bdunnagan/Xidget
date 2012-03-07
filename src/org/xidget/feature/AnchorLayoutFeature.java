@@ -75,6 +75,8 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   public void invalidate()
   {
+    if ( updating) return;
+    
     sorted = null;
     groups.clear();
     width = 0;
@@ -216,44 +218,52 @@ public class AnchorLayoutFeature implements ILayoutFeature
    */
   private void updateChildrenBounds()
   {
-    for( Map.Entry<IXidget, NodeGroup> entry: groups.entrySet())
+    updating = true;
+    try
     {
-      IXidget xidget = entry.getKey();
-      NodeGroup group = entry.getValue();
-      
-      if ( xidget == this.xidget) continue;
-      
-      IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
-      Bounds bounds = widgetFeature.getDefaultBounds();
-
-//      if ( group.hcenter != null && group.hcenter.hasValue() && bounds.width >= 0)
-//      {
-//        if ( bounds.width < 0) log.warnf( "Unable to set horizontal center of widget without default width: %s\n", xidget);
-//        bounds.x = group.hcenter.getValue() - (bounds.width / 2);
-//      }
-//      
-//      if ( group.vcenter != null && group.vcenter.hasValue() && bounds.height >= 0)
-//      {
-//        if ( bounds.height < 0) log.warnf( "Unable to set vertical center of widget without default height: %s\n", xidget);
-//        bounds.y = group.vcenter.getValue() - (bounds.height / 2);
-//      }
-      
-      if ( group.top != null && group.top.hasValue()) bounds.y = group.top.getValue();
-      if ( group.left != null && group.left.hasValue()) bounds.x = group.left.getValue();
-      
-      if ( group.right != null && group.right.hasValue()) 
+      for( Map.Entry<IXidget, NodeGroup> entry: groups.entrySet())
       {
-        if ( group.left == null || !group.left.hasValue()) log.warnf( "Width of child not constrained: %s\n", xidget);
-        bounds.width = group.right.getValue() - group.left.getValue();
+        IXidget xidget = entry.getKey();
+        NodeGroup group = entry.getValue();
+        
+        if ( xidget == this.xidget) continue;
+        
+        IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);
+        Bounds bounds = widgetFeature.getDefaultBounds();
+  
+  //      if ( group.hcenter != null && group.hcenter.hasValue() && bounds.width >= 0)
+  //      {
+  //        if ( bounds.width < 0) log.warnf( "Unable to set horizontal center of widget without default width: %s\n", xidget);
+  //        bounds.x = group.hcenter.getValue() - (bounds.width / 2);
+  //      }
+  //      
+  //      if ( group.vcenter != null && group.vcenter.hasValue() && bounds.height >= 0)
+  //      {
+  //        if ( bounds.height < 0) log.warnf( "Unable to set vertical center of widget without default height: %s\n", xidget);
+  //        bounds.y = group.vcenter.getValue() - (bounds.height / 2);
+  //      }
+        
+        if ( group.top != null && group.top.hasValue()) bounds.y = group.top.getValue();
+        if ( group.left != null && group.left.hasValue()) bounds.x = group.left.getValue();
+        
+        if ( group.right != null && group.right.hasValue()) 
+        {
+          if ( group.left == null || !group.left.hasValue()) log.warnf( "Width of child not constrained: %s\n", xidget);
+          bounds.width = group.right.getValue() - group.left.getValue();
+        }
+        
+        if ( group.bottom != null && group.bottom.hasValue()) 
+        {
+          if ( group.top == null || !group.top.hasValue()) log.warnf( "Height of child not constrained: %s\n", xidget);
+          bounds.height = group.bottom.getValue() - group.top.getValue();
+        }
+        
+        widgetFeature.setComputedBounds( bounds.x, bounds.y, bounds.width, bounds.height);
       }
-      
-      if ( group.bottom != null && group.bottom.hasValue()) 
-      {
-        if ( group.top == null || !group.top.hasValue()) log.warnf( "Height of child not constrained: %s\n", xidget);
-        bounds.height = group.bottom.getValue() - group.top.getValue();
-      }
-      
-      widgetFeature.setComputedBounds( bounds.x, bounds.y, bounds.width, bounds.height);
+    }
+    finally
+    {
+      updating = false;
     }
   }
   
@@ -523,7 +533,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
       for( IXidget child: children) node2.addDependency( getCreateNode( child, side));
       if ( offset != 0) node1.addDependency( new OffsetNode( node2, offset)); else node1.addDependency( node2);
     }
-    else
+    else if ( children.size() > 0)
     {
       IComputeNode node2 = getCreateNode( children.get( 0), side);
       node1.addDependency( getOffsetNode( node2, offset));
@@ -828,4 +838,5 @@ public class AnchorLayoutFeature implements ILayoutFeature
   private List<IComputeNode> sorted;
   private float width;
   private float height;
+  private boolean updating;
 }

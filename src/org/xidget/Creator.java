@@ -85,7 +85,6 @@ import org.xidget.xpath.FontsFunction;
 import org.xidget.xpath.IsFolderFunction;
 import org.xidget.xpath.ValidateXPathFunction;
 import org.xmodel.IModelObject;
-import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.StatefulContext;
 import org.xmodel.xpath.function.FunctionFactory;
 
@@ -374,7 +373,7 @@ public final class Creator
     {
       IXidget current = stack.pop();
       
-      if ( isSameConfig( current.getConfig(), config)) return current;
+      if ( current.getConfig().equals( config)) return current;
       
       for( IXidget child: current.getChildren()) 
       {
@@ -383,27 +382,6 @@ public final class Creator
       }
     }
     return null;
-  }
-  
-  /**
-   * Returns true if either the id or the name attributes of the two elements match.
-   * @param config1 The first configuration element.
-   * @param config2 The second configuration element.
-   * @return True if the elements match.
-   */
-  private boolean isSameConfig( IModelObject config1, IModelObject config2)
-  {
-    if ( config1.equals( config2)) return true;
-    
-    String id1 = Xlate.get( config1, "xi:id", (String)null);
-    String id2 = Xlate.get( config2, "xi:id", (String)null);
-    if ( id1 != null) return (id2 != null && id1.equals( id2));
-    
-    String name1 = Xlate.get( config1, "name", (String)null);
-    String name2 = Xlate.get( config2, "name", (String)null);
-    if ( name1 != null) return (name2 != null && name1.equals( name2));
-    
-    return false;
   }
   
   /**

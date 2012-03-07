@@ -21,17 +21,13 @@ package org.xidget.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Stack;
 import org.xidget.Log;
 import org.xmodel.IModelObject;
-import org.xmodel.IModelObjectFactory;
-import org.xmodel.ModelAlgorithms;
-import org.xmodel.ModelObjectFactory;
 import org.xmodel.PathSyntaxException;
+import org.xmodel.Reference;
 import org.xmodel.Xlate;
 import org.xmodel.util.HashMultiMap;
-import org.xmodel.util.Identifier;
 import org.xmodel.util.MultiMap;
 import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
@@ -62,7 +58,6 @@ public class TagProcessor
     this.elementHandlers = new HashMultiMap<String, ITagHandler>();
     this.attributeHandlers = new HashMultiMap<String, ITagHandler>();
     this.roots = new ArrayList<Object>();
-    this.random = new Random();
   }
   
   /**
@@ -290,8 +285,7 @@ public class TagProcessor
             replaceInserts( target);
             
             // insert
-            IModelObject targetClone = ModelAlgorithms.cloneTree( target, breadcrumbFactory);
-            parent.addChild( targetClone, insert++);
+            parent.addChild( new Reference( target), insert++);
           }
         }
         catch( PathSyntaxException e)
@@ -480,24 +474,10 @@ public class TagProcessor
     public boolean end;
   }
   
-  private IModelObjectFactory breadcrumbFactory = new ModelObjectFactory() {
-    @Override public IModelObject createClone( IModelObject object)
-    {
-      String id = Identifier.generate( random, 12);
-      object.setAttribute( "xi:id", id); 
-      
-      IModelObject clone = super.createClone( object);
-      clone.setAttribute( "xi:id", id);
-      
-      return clone;
-    }
-  };
- 
   private IContext context;
   private ITagHandler parent;
   private ClassLoader loader;
   private MultiMap<String, ITagHandler> elementHandlers;
   private MultiMap<String, ITagHandler> attributeHandlers;
   private List<Object> roots;
-  private Random random;
 }

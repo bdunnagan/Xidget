@@ -31,17 +31,43 @@ public class XidgetUtil
   }
   
   /**
-   * Parse a color specification.
+   * Parse an 8-bit per channel color specification string in one of 8 formats (Y means gray-scale): 
+   * <ul>
+   * <li>1 char Y</li>
+   * <li>2 char YY</li>
+   * <li>3 char RGB</li>
+   * <li>4 char RGBA</li>
+   * <li>5 char RGBAA</li>
+   * <li>6 char RRGGBB</li>
+   * <li>7 char RRGGBBA</li>
+   * <li>8 char RRGGBBAA</li>
+   * </ul>
+   * The following characters are removed from the string before parsing, ' ', ':', '/'.
    * @param color The color specification.
    * @return Returns an array of 3 or 4 floats containing the red, green, blue and optional alpha channels.
    */
   public static float[] parseColor( String color)
   {
-    float[] result = null;
+    color = color.replaceAll( "[ :/]++", "");  
     
+    float[] result = null;
     int length = color.length();
     switch( length)
     {
+      case 1:
+      {
+        result = new float[ 3];
+        result[ 0] = result[ 1] = result[ 2] = Integer.parseInt( color, 16) / 15f;
+      }
+      break;
+        
+      case 2:
+      {
+        result = new float[ 3];
+        result[ 0] = result[ 1] = result[ 2] = Integer.parseInt( color, 16) / 255f;
+      }
+      break;
+        
       case 3:
       {
         result = new float[ 3];
@@ -61,12 +87,32 @@ public class XidgetUtil
       }
       break;
         
+      case 5:
+      {
+        result = new float[ 4];
+        result[ 0] = Integer.parseInt( color.substring( 0, 1), 16) / 15f;
+        result[ 1] = Integer.parseInt( color.substring( 1, 2), 16) / 15f;
+        result[ 2] = Integer.parseInt( color.substring( 2, 3), 16) / 15f;
+        result[ 3] = Integer.parseInt( color.substring( 3), 16) / 255f;
+      }
+      break;
+        
       case 6:
+      {
+        result = new float[ 3];
+        result[ 0] = Integer.parseInt( color.substring( 0, 2), 16) / 255f;
+        result[ 1] = Integer.parseInt( color.substring( 2, 4), 16) / 255f;
+        result[ 2] = Integer.parseInt( color.substring( 4), 16) / 255f;
+      }
+      break;
+        
+      case 7:
       {
         result = new float[ 4];
         result[ 0] = Integer.parseInt( color.substring( 0, 2), 16) / 255f;
         result[ 1] = Integer.parseInt( color.substring( 2, 4), 16) / 255f;
-        result[ 2] = Integer.parseInt( color.substring( 4), 16) / 255f;
+        result[ 2] = Integer.parseInt( color.substring( 4, 6), 16) / 255f;
+        result[ 3] = Integer.parseInt( color.substring( 6), 16) / 15f;
       }
       break;
         
