@@ -163,7 +163,10 @@ public final class Creator
     processor.addAttributeHandler( "bcolor", new BindingTagHandler( new BackgroundBindingRule()));
     processor.addAttributeHandler( "bounds", new BindingTagHandler( new BoundsBindingRule()));
     processor.addAttributeHandler( "context", new ContextTagHandler());
+    processor.addAttributeHandler( "editable", new BindingTagHandler( new EditableBindingRule()));
+    processor.addAttributeHandler( "enable", new BindingTagHandler( new EnableBindingRule()));
     processor.addAttributeHandler( "fcolor", new BindingTagHandler( new ForegroundBindingRule()));
+    processor.addAttributeHandler( "font", new FontTagHandler());
     processor.addAttributeHandler( "family", new BindingTagHandler( new FontFamilyBindingRule( "font")));
     processor.addAttributeHandler( "style", new BindingTagHandler( new FontStyleBindingRule( "font")));
     processor.addAttributeHandler( "size", new BindingTagHandler( new FontSizeBindingRule( "font")));
