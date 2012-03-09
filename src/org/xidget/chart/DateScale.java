@@ -27,7 +27,7 @@ public class DateScale implements IScale
    */
   public DateScale( double min, double max, int count, IContext context, IExpression labelExpr)
   {
-    long range = (long)(max - min);
+    
   }  
 
   /**
@@ -42,8 +42,34 @@ public class DateScale implements IScale
     return calendar;
   }
 
+  /**
+   * Compute the tick marks.
+   */
   private void computeTicks()
   {
+    String format = null;
+    if ( min.get( Calendar.YEAR) < max.get( Calendar.YEAR))
+    {
+      format = "";
+    }
+    else if ( min.get( Calendar.MONTH) < max.get( Calendar.MONTH))
+    {
+    }
+    else if ( min.get( Calendar.DAY_OF_MONTH) < max.get( Calendar.DAY_OF_MONTH))
+    {
+    }
+    else if ( min.get( Calendar.HOUR_OF_DAY) < max.get( Calendar.HOUR_OF_DAY))
+    {
+    }
+    else if ( min.get( Calendar.MINUTE) < max.get( Calendar.MINUTE))
+    {
+    }
+    else if ( min.get( Calendar.SECOND) < max.get( Calendar.SECOND))
+    {
+    }
+    else if ( min.get( Calendar.MILLISECOND) < max.get( Calendar.MILLISECOND))
+    {
+    }
   }
   
   /* (non-Javadoc)
@@ -95,4 +121,7 @@ public class DateScale implements IScale
     // TODO Auto-generated method stub
     return 0;
   }
+  
+  private Calendar min;
+  private Calendar max;
 }
