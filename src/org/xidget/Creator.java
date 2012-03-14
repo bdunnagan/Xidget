@@ -182,6 +182,7 @@ public final class Creator
     processor.addAttributeHandler( "title", new BindingTagHandler( new ColumnTitleBindingRule(), true));
     processor.addAttributeHandler( "halign", new BindingTagHandler( new HAlignBindingRule()));
     processor.addAttributeHandler( "valign", new BindingTagHandler( new VAlignBindingRule()));
+    processor.addAttributeHandler( "visible", new BindingTagHandler( new VisibleBindingRule()));
     
     // skip
     processor.addHandler( "functions", new SkipTagHandler());
