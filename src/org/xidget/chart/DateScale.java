@@ -4,17 +4,14 @@
  */
 package org.xidget.chart;
 
-import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.List;
 
 import org.xmodel.xpath.expression.IContext;
-import org.xmodel.xpath.expression.IExpression;
 
 /**
  * An implementation of IScale that creates one level of tick marks for values that represent dates.
  */
-@SuppressWarnings("unused")
 public class DateScale implements IScale
 {
   /**
@@ -22,12 +19,11 @@ public class DateScale implements IScale
    * @param min The minimum value in the range.
    * @param max The maximum value in the range.
    * @param count The maximum number of ticks in the scale.
-   * @param context The parent context.
-   * @param labelExpr The label expression;
    */
-  public DateScale( double min, double max, int count, IContext context, IExpression labelExpr)
+  public DateScale( double min, double max, int count)
   {
-    
+    String format = getFormat( getCalendar( min), getCalendar( max));
+    computeTicks( format);
   }  
 
   /**
@@ -44,32 +40,53 @@ public class DateScale implements IScale
 
   /**
    * Compute the tick marks.
+   * @param min The earliest date.
+   * @param max The latest date.
+   * @return Returns the date format.
    */
-  private void computeTicks()
+  private static String getFormat( Calendar min, Calendar max)
   {
-    String format = null;
     if ( min.get( Calendar.YEAR) < max.get( Calendar.YEAR))
     {
-      format = "";
+      return "[MON]/[D]/[YY]";
     }
     else if ( min.get( Calendar.MONTH) < max.get( Calendar.MONTH))
     {
+      return "[MON]/[D]";
     }
     else if ( min.get( Calendar.DAY_OF_MONTH) < max.get( Calendar.DAY_OF_MONTH))
     {
+      return "[MON]/[D]";
     }
     else if ( min.get( Calendar.HOUR_OF_DAY) < max.get( Calendar.HOUR_OF_DAY))
     {
+      return "[h]:[m]:[s]";
     }
     else if ( min.get( Calendar.MINUTE) < max.get( Calendar.MINUTE))
     {
+      return "[h]:[m]:[s]";
     }
     else if ( min.get( Calendar.SECOND) < max.get( Calendar.SECOND))
     {
+      return "[s].[SSS]";
     }
     else if ( min.get( Calendar.MILLISECOND) < max.get( Calendar.MILLISECOND))
     {
+      return "[SSS]";
     }
+    else
+    {
+      return "[MON]/[D]/[YY] [h]:[m]:[s].[SSS]";
+    }
+  }
+  
+  /**
+   * Compute the tick labels.
+   * @param format The date format.
+   */
+  private void computeTicks( String format)
+  {
+    
   }
   
   /* (non-Javadoc)
@@ -122,6 +139,6 @@ public class DateScale implements IScale
     return 0;
   }
   
-  private Calendar min;
-  private Calendar max;
+  private String format;
+  private List<Tick> ticks;
 }
