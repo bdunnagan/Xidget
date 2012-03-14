@@ -80,9 +80,10 @@ public interface IToolkit extends IFeatured
    * @param context The context.
    * @param dir The current directory.
    * @param filter An expression that filters the files that can be selected.
+   * @param dfault The default selected value.
    * @param desc A description of the file filter.
    * @param type The type of file chooser.
    * @return Returns an array containing the paths of the selected files.
    */
-  public String[] openFileDialog( StatefulContext context, IExpression dir, IExpression filter, String desc, FileDialogType type);
+  public String[] openFileDialog( StatefulContext context, IExpression dir, IExpression filter, String dfault, String desc, FileDialogType type);
 }
