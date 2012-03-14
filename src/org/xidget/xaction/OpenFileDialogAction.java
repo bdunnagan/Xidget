@@ -59,6 +59,7 @@ public class OpenFileDialogAction extends GuardedAction
     
     folderExpr = document.getExpression( "folder", true);
     filterExpr = document.getExpression( "filter", true);
+    dfaultExpr = document.getExpression( "default", true);
     descExpr = document.getExpression( "description", true);
     targetExpr = document.getExpression( "target", true);
   }
@@ -78,9 +79,11 @@ public class OpenFileDialogAction extends GuardedAction
       if ( scope != null) scope.set( var, Collections.<IModelObject>emptyList());
     }
     
+    String dfault = (dfaultExpr != null)? dfaultExpr.evaluateString( context): null;
+    
     // open dialog
     IToolkit toolkit = Creator.getToolkit();
-    String[] paths = toolkit.openFileDialog( (StatefulContext)context, folderExpr, filterExpr, desc, type);
+    String[] paths = toolkit.openFileDialog( (StatefulContext)context, folderExpr, filterExpr, dfault, desc, type);
     
     if ( type == FileDialogType.openMany)
     {
@@ -131,6 +134,7 @@ public class OpenFileDialogAction extends GuardedAction
   private IExpression targetExpr;
   private IExpression folderExpr;
   private IExpression filterExpr;
+  private IExpression dfaultExpr;
   private IExpression descExpr;
   private IExpression typeExpr;
   private String var;
