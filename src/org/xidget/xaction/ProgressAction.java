@@ -46,7 +46,7 @@ public class ProgressAction extends ScriptAction
     @Override
     public void run()
     {
-      if ( !debugging)
+      if ( !isDebugging())
       {
         for( IXAction action: getActions())
         {
@@ -57,7 +57,7 @@ public class ProgressAction extends ScriptAction
       }
       else
       {
-        IDebugger debugger = debuggers.get();
+        IDebugger debugger = getDebugger();
         try
         {
           debugger.push( context, ProgressAction.this);
@@ -112,13 +112,13 @@ public class ProgressAction extends ScriptAction
     @Override
     public void run()
     {
-      if ( !debugging)
+      if ( !isDebugging())
       {
         result = action.run( context);
       }
       else
       {
-        IDebugger debugger = debuggers.get();
+        IDebugger debugger = getDebugger();
         result = debugger.run( context, action);
       }
     }
