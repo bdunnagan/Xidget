@@ -20,7 +20,9 @@
 package org.xidget.caching;
 
 import java.io.File;
+import org.xidget.Creator;
 import org.xmodel.Xlate;
+import org.xmodel.caching.FileSystemCachingPolicy;
 import org.xmodel.external.CachingException;
 import org.xmodel.external.ConfiguredCachingPolicy;
 import org.xmodel.external.ICache;
@@ -42,6 +44,7 @@ public class ResourceCachingPolicy extends ConfiguredCachingPolicy
     super( cache);
     
     fileCachingPolicy = new FileSystemCachingPolicy( cache);
+    fileCachingPolicy.addAssociation( Creator.getToolkit().getImageFileAssociation());
     zipCachingPolicy = new ZipCachingPolicy( cache);
     
     String[] static1 = fileCachingPolicy.getStaticAttributes();

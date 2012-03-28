@@ -371,6 +371,8 @@ public final class Creator
    */
   private IXidget findXidget( IXidget root, IModelObject config)
   {
+    if ( config == null) return null;
+    
     Stack<IXidget> stack = new Stack<IXidget>();
     stack.push( root);
     while( !stack.empty())

@@ -199,6 +199,8 @@ public class PlotsListener extends SetDetailListener
       Point[] points = new Point[ count];
       
       Plot plot = plotMap.get( context.getObject());
+      if ( plot == null) return;
+      
       for( int i=0; i<count; i++)
       {
         IModelObject node = nodes.get( start + i);
@@ -226,6 +228,8 @@ public class PlotsListener extends SetDetailListener
       super.notifyRemove( expression, context, nodes, start, count);
       
       Plot plot = plotMap.get( context.getObject());
+      if ( plot == null) return;
+      
       for( int i=0; i<count; i++)
       {
         IModelObject node = nodes.get( start + i);
