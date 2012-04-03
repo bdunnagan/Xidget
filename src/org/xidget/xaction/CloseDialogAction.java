@@ -19,13 +19,12 @@
  */
 package org.xidget.xaction;
 
+import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xidget.ifeature.dialog.IDialogFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xaction.GuardedAction;
-import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.IContext;
-import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -39,15 +38,10 @@ public class CloseDialogAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
-    IModelObject holder = xidgetExpr.queryFirst( context);
-    if ( holder == null) return null;
-    
-    IXidget xidget = (IXidget)holder.getValue();
+    IModelObject dialog = getDocument().getRoot().getAncestor( "dialog");
+    IXidget xidget = Creator.getInstance().findXidget( dialog);
     IDialogFeature feature = xidget.getFeature( IDialogFeature.class);
     feature.close( (StatefulContext)context);
-    
     return null;
   }
-  
-  private final IExpression xidgetExpr = XPath.createExpression( "$dialog"); 
 }

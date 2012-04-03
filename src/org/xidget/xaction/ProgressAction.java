@@ -9,7 +9,7 @@ import org.xidget.ifeature.IAsyncFeature;
 import org.xmodel.xaction.IXAction;
 import org.xmodel.xaction.ScriptAction;
 import org.xmodel.xaction.XActionException;
-import org.xmodel.xaction.debug.IDebugger;
+import org.xmodel.xaction.debug.Debugger;
 import org.xmodel.xpath.expression.IContext;
 
 /**
@@ -57,7 +57,7 @@ public class ProgressAction extends ScriptAction
       }
       else
       {
-        IDebugger debugger = getDebugger();
+        Debugger debugger = getDebugger();
         try
         {
           debugger.push( context, ProgressAction.this);
@@ -118,7 +118,7 @@ public class ProgressAction extends ScriptAction
       }
       else
       {
-        IDebugger debugger = getDebugger();
+        Debugger debugger = getDebugger();
         result = debugger.run( context, action);
       }
     }
