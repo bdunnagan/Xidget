@@ -28,7 +28,7 @@ import org.xmodel.IModelObject;
  */
 public class Cell
 {
-  public Object icon;
+  public Object image;
   public Object value;
   public IModelObject source;
   public ColumnImageListener imageListener;

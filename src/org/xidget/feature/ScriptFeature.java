@@ -83,7 +83,7 @@ public class ScriptFeature implements IScriptFeature
       log.exception( e);
       
       IToolkit toolkit = Creator.getToolkit();
-      String message = String.format( "%s: %s\n", e.getClass().getSimpleName(), e.getMessage());
+      String message = String.format( "%s", e.getMessage());
       toolkit.openMessageDialog( context, "Exception", null, message, MessageType.error);
     }
     

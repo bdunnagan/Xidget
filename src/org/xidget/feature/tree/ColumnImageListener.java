@@ -50,7 +50,7 @@ public class ColumnImageListener extends ExpressionListener
     nodes = expression.query( context, null);
     
     Object value = nodes.get( 0).getValue();
-    row.getCell( columnIndex).icon = value;
+    row.getCell( columnIndex).image = value;
         
     ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     feature.updateCell( row, columnIndex);
@@ -66,7 +66,7 @@ public class ColumnImageListener extends ExpressionListener
     nodes = expression.query( context, null);
     
     Object value = (nodes.size() > 0)? nodes.get( 0).getValue(): null;
-    row.getCell( columnIndex).icon = value;
+    row.getCell( columnIndex).image = value;
     
     ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     feature.updateCell( row, columnIndex);
@@ -79,7 +79,7 @@ public class ColumnImageListener extends ExpressionListener
   @Override
   public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
   {
-    row.getCell( columnIndex).icon = newValue;
+    row.getCell( columnIndex).image = newValue;
     
     ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
     feature.updateCell( row, columnIndex);

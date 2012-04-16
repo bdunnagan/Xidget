@@ -39,7 +39,7 @@ import org.xidget.binding.FontTagHandler;
 import org.xidget.binding.ForegroundBindingRule;
 import org.xidget.binding.GetTagHandler;
 import org.xidget.binding.HAlignBindingRule;
-import org.xidget.binding.IconBindingRule;
+import org.xidget.binding.ImageBindingRule;
 import org.xidget.binding.InsideMarginsBindingRule;
 import org.xidget.binding.KeyTagHandler;
 import org.xidget.binding.LabelBindingRule;
@@ -119,7 +119,7 @@ public final class Creator
     processor.addHandler( "font", new FontTagHandler());
     processor.addHandler( "fcolor", new BindingTagHandler( new ForegroundBindingRule()));
     processor.addHandler( "get", new GetTagHandler());
-    processor.addHandler( "image", new BindingTagHandler( new IconBindingRule()));
+    processor.addHandler( "image", new BindingTagHandler( new ImageBindingRule()));
     processor.addHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addHandler( "margins", new BindingTagHandler( new InsideMarginsBindingRule()));
     processor.addHandler( "insideMargins", new BindingTagHandler( new InsideMarginsBindingRule()));
@@ -170,7 +170,7 @@ public final class Creator
     processor.addAttributeHandler( "family", new BindingTagHandler( new FontFamilyBindingRule( "font")));
     processor.addAttributeHandler( "style", new BindingTagHandler( new FontStyleBindingRule( "font")));
     processor.addAttributeHandler( "size", new BindingTagHandler( new FontSizeBindingRule( "font")));
-    processor.addAttributeHandler( "image", new BindingTagHandler( new IconBindingRule()));
+    processor.addAttributeHandler( "image", new BindingTagHandler( new ImageBindingRule()));
     processor.addAttributeHandler( "label", new BindingTagHandler( new LabelBindingRule()));
     processor.addAttributeHandler( "label", new RulerLabelTagHandler());
     processor.addAttributeHandler( "margins", new BindingTagHandler( new InsideMarginsBindingRule()));

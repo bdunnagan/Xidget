@@ -20,15 +20,13 @@
 package org.xidget.ifeature;
 
 /**
- * An interface for setting an icon. This feature is only appropriate 
- * for xidgets which only display a single icon. It is used by the 
- * IconBindingRule.
+ * An interface for specifying an images to a xidget.
  */
-public interface IIconFeature
+public interface IImageFeature
 {
   /**
-   * Set the xidget icon.
-   * @param The xidget icon.
+   * Set the xidget image.
+   * @param image The xidget image.
    */
-  public void setIcon( Object icon);
+  public void setImage( Object image);
 }

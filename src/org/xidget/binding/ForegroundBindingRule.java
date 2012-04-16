@@ -74,7 +74,7 @@ public class ForegroundBindingRule implements IBindingRule
     public void notifyChange( IExpression expression, IContext context, double newValue, double oldValue)
     {
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      feature.setForeground( (int)newValue);
+      feature.setForeground( newValue);
     }
 
     public void notifyChange( IExpression expression, IContext context, String newValue, String oldValue)

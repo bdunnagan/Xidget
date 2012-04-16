@@ -20,9 +20,9 @@
 package org.xidget;
 
 import java.util.List;
-
 import org.xidget.config.TagProcessor;
 import org.xmodel.caching.IFileAssociation;
+import org.xmodel.compress.ISerializer;
 import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.StatefulContext;
 
@@ -31,6 +31,8 @@ import org.xmodel.xpath.expression.StatefulContext;
  */
 public interface IToolkit extends IFeatured
 {
+  public enum Confirmation { yes, no, cancel};
+  
   /**
    * Configure the specified tag processor for parsing a xidget configuration file for a specific platform.
    * The implementation should add whatever tag handlers are required to generate platform-specific
@@ -50,7 +52,10 @@ public interface IToolkit extends IFeatured
    */
   public IFileAssociation getImageFileAssociation();
 
-  public enum Confirmation { yes, no, cancel};
+  /**
+   * @return Returns an instance of ISerializer that handles images.
+   */
+  public ISerializer getImageSerializer();
   
   /**
    * Open a confirmation dialog.

@@ -52,7 +52,7 @@ public class BoundsBindingRule implements IBindingRule
       if ( node != nodes.get( 0))
       {
         node = nodes.get( 0);
-        setBounds( Xlate.get( node, ""));
+        setBounds( node.getValue());
         IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
         feature.setBoundsNode( node);
       }
@@ -64,7 +64,7 @@ public class BoundsBindingRule implements IBindingRule
       if ( node != null && node != this.node)
       {
         this.node = node;
-        setBounds( Xlate.get( node, ""));
+        setBounds( node.getValue());
         IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
         feature.setBoundsNode( node);
       }
@@ -90,15 +90,24 @@ public class BoundsBindingRule implements IBindingRule
     
     /**
      * Set the bounds of the widget.
-     * @param string The bounds string.
+     * @param object The bounds object.
      */
-    private void setBounds( String string)
+    private void setBounds( Object object)
     {
-      Bounds bounds = new Bounds();
-      IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
-      if ( bounds.parse( string))
+      if ( object instanceof Bounds)
       {
+        Bounds bounds = (Bounds)object;
+        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
         feature.setDefaultBounds( bounds.x, bounds.y, bounds.width, bounds.height, false);
+      }
+      else
+      {
+        Bounds bounds = new Bounds();
+        IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
+        if ( object == null || bounds.parse( object.toString()))
+        {
+          feature.setDefaultBounds( bounds.x, bounds.y, bounds.width, bounds.height, false);
+        }
       }
     }
     

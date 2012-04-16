@@ -22,7 +22,7 @@ package org.xidget.binding;
 import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
-import org.xidget.ifeature.IIconFeature;
+import org.xidget.ifeature.IImageFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
@@ -30,16 +30,16 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.expression.IExpressionListener;
 
 /**
- * An implementation of IBindingRule for icons.
+ * An implementation of IBindingRule for images.
  */
-public class IconBindingRule implements IBindingRule
+public class ImageBindingRule implements IBindingRule
 {
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
    */
   public boolean applies( IXidget xidget, IModelObject element)
   {
-    return xidget.getFeature( IIconFeature.class) != null;
+    return xidget.getFeature( IImageFeature.class) != null;
   }
 
   /* (non-Javadoc)
@@ -60,23 +60,23 @@ public class IconBindingRule implements IBindingRule
     public void notifyAdd( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = nodes.get( 0);
-      IIconFeature feature = xidget.getFeature( IIconFeature.class);
-      feature.setIcon( node.getValue());
+      IImageFeature feature = xidget.getFeature( IImageFeature.class);
+      feature.setImage( node.getValue());
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
-      IIconFeature feature = xidget.getFeature( IIconFeature.class);
-      feature.setIcon( (node == null)? null: node.getValue()); 
+      IImageFeature feature = xidget.getFeature( IImageFeature.class);
+      feature.setImage( (node == null)? null: node.getValue()); 
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
     {
       if ( object == node) 
       {
-        IIconFeature feature = xidget.getFeature( IIconFeature.class);
-        feature.setIcon(  newValue);
+        IImageFeature feature = xidget.getFeature( IImageFeature.class);
+        feature.setImage(  newValue);
       }
     }
 
