@@ -25,6 +25,16 @@ public interface ISelectionModelFeature
    */
   public void setSourceNode( IModelObject node);
   
+  public enum Mode { ref, fk1, fk2};
+  
+  /**
+   * Set the selection mode. The selection mode determines how a selected object is transformed before
+   * it is added to the selection.  The selection transforms are the same ones available through the
+   * <i>assign</i>, <i>add</i> and <i>copy</i> actions.
+   * @param mode The selection mode.
+   */
+  public void setMode( Mode mode);
+  
   /**
    * Add the specified object to the selection.
    * @param object The object.
