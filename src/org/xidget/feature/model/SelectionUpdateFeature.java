@@ -31,6 +31,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   public SelectionUpdateFeature( IXidget xidget)
   {
     this.xidget = xidget;
+    this.mode = Mode.ref;
   }
   
   /* (non-Javadoc)
@@ -40,7 +41,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   public void setMode( Mode mode)
   {
     this.mode = mode;
-    if ( mode != Mode.ref) fkmap = new HashMap<String, IModelObject>();
+    if ( mode != Mode.ref) fkmap = new HashMap<String, FKItem>();
   }
 
   /* (non-Javadoc)
@@ -83,6 +84,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
             scriptFeature.runScript( "onDeselect", context);
           }
           widgetFeature.deselect( lObject);
+          if ( fkmap != null) fkmap.remove( Xlate.get( (IModelObject)lObject, "id", (String)null));
         }
       }
       
@@ -200,7 +202,6 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
           scriptFeature.runScript( "onSelect", context);
         }
         widgetFeature.select( object);
-        if ( fkmap != null) fkmap.put( ((IModelObject)object).getID(), (IModelObject)object);
       }
     }
     finally
@@ -238,7 +239,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
           scriptFeature.runScript( "onDeselect", context);
         }
         widgetFeature.deselect( object);
-        if ( fkmap != null) fkmap.remove( ((IModelObject)object).getID());
+        if ( fkmap != null) fkmap.remove( Xlate.get( (IModelObject)object, "id", (String)null));
       }
     }
     finally
@@ -334,16 +335,14 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       
       case fk1:
       {
-        IModelObject displayNode = fkmap.get( Xlate.get( (IModelObject)selected, (String)null));
-        if ( displayNode == null) throw new IllegalStateException();
-        return displayNode;
+        FKItem fkItem = fkmap.get( Xlate.get( (IModelObject)selected, (String)null));
+        return fkItem.display;
       }
       
       case fk2:
       {
-        IModelObject displayNode = fkmap.get( Xlate.get( (IModelObject)selected, "id", (String)null));
-        if ( displayNode == null) throw new IllegalStateException();
-        return displayNode;
+        FKItem fkItem = fkmap.get( Xlate.get( (IModelObject)selected, "id", (String)null));
+        return fkItem.display;
       }
     }
     
@@ -366,17 +365,29 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       case fk1:
       {
         IModelObject element = (IModelObject)selected;
-        IModelObject fk = element.createObject( element.getType());
-        fk.setValue( element.getID());
-        return fk;
+        FKItem fkItem = fkmap.get( element.getID());
+        if ( fkItem == null)
+        {
+          IModelObject fk = element.createObject( element.getType());
+          fk.setValue( element.getID());
+          fkItem = new FKItem( element, fk);
+          fkmap.put( element.getID(), fkItem);
+        }
+        return fkItem.model;
       }
       
       case fk2:
       {
         IModelObject element = (IModelObject)selected;
-        IModelObject fk = element.createObject( element.getType());
-        fk.setID( element.getID());
-        return fk;
+        FKItem fkItem = fkmap.get( element.getID());
+        if ( fkItem == null)
+        {
+          IModelObject fk = element.createObject( element.getType());
+          fk.setID( element.getID());
+          fkItem = new FKItem( element, fk);
+          fkmap.put( element.getID(), fkItem);
+        }
+        return fkItem.model;
       }
     }
     
@@ -393,8 +404,20 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
     return bindFeature.getBoundContext();
   }
   
+  private final static class FKItem
+  {
+    public FKItem( IModelObject display, IModelObject model)
+    {
+      this.display = display;
+      this.model = model;
+    }
+    
+    public final IModelObject display;
+    public final IModelObject model;
+  }
+  
   protected IXidget xidget;
   private boolean updating;
   private Mode mode;
-  private Map<String, IModelObject> fkmap;
+  private Map<String, FKItem> fkmap;
 }

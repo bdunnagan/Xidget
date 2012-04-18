@@ -54,7 +54,7 @@ public class ContextTagHandler extends AbstractTagHandler
     if ( xidget == null) return false;
     
     IModelObject config = xidget.getConfig();
-    return element.getParent() == config;
+    return element.getParent().equals( config);
   }
 
   /* (non-Javadoc)
