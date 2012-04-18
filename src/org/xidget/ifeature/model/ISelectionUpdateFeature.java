@@ -11,6 +11,16 @@ import java.util.List;
  */
 public interface ISelectionUpdateFeature
 {
+  public enum Mode { ref, fk1, fk2};
+  
+  /**
+   * Set the selection mode. The selection mode determines how a selected object is transformed before
+   * it is added to the selection.  The selection transforms are the same ones available through the
+   * <i>assign</i>, <i>add</i> and <i>copy</i> actions.
+   * @param mode The selection mode.
+   */
+  public void setMode( Mode mode);
+  
   /**
    * Update the widget selection based on the selection in the model. This method retrieves
    * the entire selection from the widget and the model and determines what objects need
@@ -49,4 +59,18 @@ public interface ISelectionUpdateFeature
    * @param objects The objects.
    */
   public void modelDeselect( List<? extends Object> objects);
+  
+  /**
+   * Transform the specified model selection to a display selection according to the mode.
+   * @param selected The model selection.
+   * @return Returns the display selection.
+   */
+  public Object toDisplay( Object selected);
+  
+  /**
+   * Transform the specified display selection to a model selection according to the mode.
+   * @param selected The display selection.
+   * @return Returns the model selection.
+   */
+  public Object toModel( Object selected);
 }

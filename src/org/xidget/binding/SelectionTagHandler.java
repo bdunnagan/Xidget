@@ -20,6 +20,7 @@
 package org.xidget.binding;
 
 import java.util.List;
+
 import org.xidget.IXidget;
 import org.xidget.config.ITagHandler;
 import org.xidget.config.TagException;
@@ -27,8 +28,8 @@ import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.model.ISelectionModelFeature;
-import org.xidget.ifeature.model.ISelectionModelFeature.Mode;
 import org.xidget.ifeature.model.ISelectionUpdateFeature;
+import org.xidget.ifeature.model.ISelectionUpdateFeature.Mode;
 import org.xidget.util.XidgetUtil;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
@@ -67,7 +68,7 @@ public class SelectionTagHandler implements ITagHandler
     IXidget xidget = xidgetFeature.getXidget();
 
     // set mode
-    ISelectionModelFeature feature = xidget.getFeature( ISelectionModelFeature.class);
+    ISelectionUpdateFeature feature = xidget.getFeature( ISelectionUpdateFeature.class);
     feature.setMode( Mode.valueOf( Xlate.get( element, "mode", "ref")));
     
     // create variable binding if present

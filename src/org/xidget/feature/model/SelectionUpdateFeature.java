@@ -4,8 +4,10 @@
  */
 package org.xidget.feature.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.xidget.IXidget;
@@ -14,6 +16,9 @@ import org.xidget.ifeature.IScriptFeature;
 import org.xidget.ifeature.model.ISelectionModelFeature;
 import org.xidget.ifeature.model.ISelectionUpdateFeature;
 import org.xidget.ifeature.model.ISelectionWidgetFeature;
+import org.xmodel.IModelObject;
+import org.xmodel.Reference;
+import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.StatefulContext;
 
 /**
@@ -28,6 +33,16 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
     this.xidget = xidget;
   }
   
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.model.ISelectionUpdateFeature#setMode(org.xidget.ifeature.model.ISelectionUpdateFeature.Mode)
+   */
+  @Override
+  public void setMode( Mode mode)
+  {
+    this.mode = mode;
+    if ( mode != Mode.ref) fkmap = new HashMap<String, IModelObject>();
+  }
+
   /* (non-Javadoc)
    * @see org.xidget.ifeature.model.ISelectionUpdateFeature#updateWidget()
    */
@@ -60,7 +75,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       // handle deletions
       for( Object lObject: lhsSet)
       {
-        if ( !rhsSet.contains( lObject))
+        if ( !rhsSet.contains( toModel( lObject)))
         {
           if ( onDeselect) 
           {
@@ -74,6 +89,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       // handle insertions
       for( Object rObject: rhsSet)
       {
+        rObject = toDisplay( rObject);
         if ( !lhsSet.contains( rObject))
         {
           if ( onSelect) 
@@ -123,7 +139,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       // handle deletions
       for( Object lObject: lhsSet)
       {
-        if ( !rhsSet.contains( lObject))
+        if ( !rhsSet.contains( toDisplay( lObject)))
         {
           if ( onDeselect) 
           {
@@ -137,6 +153,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       // handle insertions
       for( Object rObject: rhsSet)
       {
+        rObject = toModel( rObject);
         if ( !lhsSet.contains( rObject))
         {
           if ( onSelect) 
@@ -176,12 +193,14 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
       for( Object object: objects)
       {
+        object = toDisplay( object);
         if ( onSelect) 
         {
           context.getScope().set( "value", object);
           scriptFeature.runScript( "onSelect", context);
         }
         widgetFeature.select( object);
+        if ( fkmap != null) fkmap.put( ((IModelObject)object).getID(), (IModelObject)object);
       }
     }
     finally
@@ -212,12 +231,14 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       ISelectionWidgetFeature widgetFeature = xidget.getFeature( ISelectionWidgetFeature.class);
       for( Object object: objects)
       {
+        object = toDisplay( object);
         if ( onDeselect) 
         {
           context.getScope().set( "value", object);
           scriptFeature.runScript( "onDeselect", context);
         }
         widgetFeature.deselect( object);
+        if ( fkmap != null) fkmap.remove( ((IModelObject)object).getID());
       }
     }
     finally
@@ -253,7 +274,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
           context.getScope().set( "value", object);
           scriptFeature.runScript( "onSelect", context);
         }
-        modelFeature.select( object);
+        modelFeature.select( toModel( object));
       }
     }
     finally
@@ -289,7 +310,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
           context.getScope().set( "value", object);
           scriptFeature.runScript( "onDeselect", context);
         }
-        modelFeature.deselect( object);
+        modelFeature.deselect( toModel( object));
       }
     }
     finally
@@ -298,6 +319,70 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
     }
   }
   
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.model.ISelectionUpdateFeature#toDisplay(java.lang.Object)
+   */
+  @Override
+  public Object toDisplay( Object selected)
+  {
+    switch( mode)
+    {
+      case ref:
+      {
+        return ((IModelObject)selected).getReferent();
+      }
+      
+      case fk1:
+      {
+        IModelObject displayNode = fkmap.get( Xlate.get( (IModelObject)selected, (String)null));
+        if ( displayNode == null) throw new IllegalStateException();
+        return displayNode;
+      }
+      
+      case fk2:
+      {
+        IModelObject displayNode = fkmap.get( Xlate.get( (IModelObject)selected, "id", (String)null));
+        if ( displayNode == null) throw new IllegalStateException();
+        return displayNode;
+      }
+    }
+    
+    return null;
+  }
+
+  /* (non-Javadoc)
+   * @see org.xidget.ifeature.model.ISelectionUpdateFeature#toModel(java.lang.Object)
+   */
+  @Override
+  public Object toModel( Object selected)
+  {
+    switch( mode)
+    {
+      case ref:
+      {
+        return new Reference( (IModelObject)selected);
+      }
+      
+      case fk1:
+      {
+        IModelObject element = (IModelObject)selected;
+        IModelObject fk = element.createObject( element.getType());
+        fk.setValue( element.getID());
+        return fk;
+      }
+      
+      case fk2:
+      {
+        IModelObject element = (IModelObject)selected;
+        IModelObject fk = element.createObject( element.getType());
+        fk.setID( element.getID());
+        return fk;
+      }
+    }
+    
+    return null;
+  }
+
   /**
    * Returns the context for script execution and/or transformation.
    * @return Returns the context for script execution and/or transformation.
@@ -310,4 +395,6 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   
   protected IXidget xidget;
   private boolean updating;
+  private Mode mode;
+  private Map<String, IModelObject> fkmap;
 }

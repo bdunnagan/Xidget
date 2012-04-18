@@ -4,11 +4,9 @@
  */
 package org.xidget.feature.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import org.xidget.IXidget;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.model.ISelectionModelFeature;
@@ -16,7 +14,6 @@ import org.xidget.ifeature.model.ISelectionUpdateFeature;
 import org.xmodel.IModelListener;
 import org.xmodel.IModelObject;
 import org.xmodel.ModelListener;
-import org.xmodel.Reference;
 import org.xmodel.xpath.XPath;
 import org.xmodel.xpath.expression.ExpressionListener;
 import org.xmodel.xpath.expression.IContext;
@@ -33,7 +30,6 @@ public class SelectionModelFeature implements ISelectionModelFeature
   public SelectionModelFeature( IXidget xidget)
   {
     this.xidget = xidget;
-    this.mode = Mode.ref;
   }
   
   /* (non-Javadoc)
@@ -88,36 +84,11 @@ public class SelectionModelFeature implements ISelectionModelFeature
   }
 
   /* (non-Javadoc)
-   * @see org.xidget.ifeature.model.ISelectionModelFeature#setMode(org.xidget.ifeature.model.ISelectionModelFeature.Mode)
-   */
-  @Override
-  public void setMode( Mode mode)
-  {
-    this.mode = mode;
-    switch( mode)
-    {
-      case ref: fkMap = null; break;
-      case fk1:
-      case fk2: fkMap = new HashMap<Object, Object>(); break;
-    }
-  }
-
-  /* (non-Javadoc)
    * @see org.xidget.ifeature.model.ISelectionModelFeature#select(java.lang.Object)
    */
   @Override
   public void select( Object object)
   {
-    if ( fkMap != null)
-    {
-      switch( mode)
-      {
-        case ref: break;
-        case fk1: fkMap.put( ((IModelObject)object).getValue(), object); break;
-        case fk2: fkMap.put( ((IModelObject)object).getID(), object); break;
-      }
-    }
-    
     if ( varName != null)
     {
       StatefulContext context = getContext();
@@ -126,7 +97,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
     
     if ( parent != null && object instanceof IModelObject)
     {
-      parent.addChild( createReference( (IModelObject)object));
+      parent.addChild( (IModelObject)object);
     }
   }
 
@@ -136,16 +107,6 @@ public class SelectionModelFeature implements ISelectionModelFeature
   @Override
   public void deselect( Object object)
   {
-    if ( fkMap != null)
-    {
-      switch( mode)
-      {
-        case ref: break;
-        case fk1: fkMap.remove( ((IModelObject)object).getValue()); break;
-        case fk2: fkMap.remove( ((IModelObject)object).getID()); break;
-      }
-    }
-    
     if ( varName != null)
     {
       StatefulContext context = getContext();
@@ -154,69 +115,8 @@ public class SelectionModelFeature implements ISelectionModelFeature
     
     if ( parent != null && object instanceof IModelObject)
     {
-      IModelObject element = (IModelObject)object;
-      switch( mode)
-      {
-        case ref:
-        {
-          parent.removeChild( element); 
-          break;
-        }
-        
-        case fk1:
-        {
-          for( IModelObject child: parent.getChildren( element.getType()))
-          {
-            Object value1 = child.getValue();
-            Object value2 = element.getValue();
-            if ( (value1 == null || value2 == null && value1 == value2) || value1.equals( value2))
-            {
-              child.removeFromParent();
-            }
-          }
-          break;
-        }
-        
-        case fk2:
-        {
-          for( IModelObject child: parent.getChildren( element.getType()))
-          {
-            if ( child.getID().equals( element.getID()))
-              child.removeFromParent();
-          }
-          break;
-        }
-      }
+      parent.removeChild( (IModelObject)object);
     }
-  }
-  
-  /**
-   * Returns an appropriate reference to the specified element.
-   * @param element The element.
-   * @return Returns an appropriate reference to the specified element.
-   */
-  private IModelObject createReference( IModelObject element)
-  {
-    switch( mode)
-    {
-      case ref: return new Reference( element);
-        
-      case fk1:
-      {
-        IModelObject fk = element.createObject( element.getType());
-        fk.setValue( element.getID());
-        return fk;
-      }
-        
-      case fk2:
-      {
-        IModelObject fk = element.createObject( element.getType());
-        fk.setID( element.getID());
-        return fk;
-      }
-    }
-
-    throw new IllegalStateException();
   }
 
   /* (non-Javadoc)
@@ -238,7 +138,7 @@ public class SelectionModelFeature implements ISelectionModelFeature
       parent.removeChildren();
       for( Object object: list)
       {
-        parent.addChild( new Reference( (IModelObject)object));
+        parent.addChild( (IModelObject)object);
       }
     }
   }
@@ -250,45 +150,19 @@ public class SelectionModelFeature implements ISelectionModelFeature
   @Override
   public List<? extends Object> getSelection()
   {
-    List<? extends Object> inList = null;
-        
     StatefulContext context = getContext();
-    if ( context != null && varName != null) inList = (List<? extends Object>)context.getScope().get( varName);
-    else if ( parent != null) inList = parent.getChildren();
-    
-    if ( inList != null)
+    if ( context != null) 
     {
-      List<IModelObject> outList = new ArrayList<IModelObject>( inList.size());
-      switch( mode)
+      if ( varName != null)
       {
-        case ref:
-        {
-          for( Object object: inList)
-          {
-            outList.add( ((IModelObject)object).getReferent());
-          }
-          break;
-        }
-        
-        case fk1:
-        {
-          for( Object object: inList)
-          {
-            outList.add( (IModelObject)fkMap.get( ((IModelObject)object).getValue()));
-          }
-          break;
-        }
-        
-        case fk2:
-        {
-          for( Object object: inList)
-          {
-            outList.add( (IModelObject)fkMap.get( ((IModelObject)object).getID()));
-          }
-        }
+        List<? extends Object> list = (List<? extends Object>)context.getScope().get( varName);
+        if ( list != null) return list;
       }
-      
-      return outList;
+    }
+    
+    if ( parent != null)
+    {
+      return parent.getChildren();
     }
     
     return Collections.emptyList();
@@ -328,11 +202,9 @@ public class SelectionModelFeature implements ISelectionModelFeature
       feature.displayDeselect( Collections.singletonList( child));
     }
   };
-
+  
   protected IXidget xidget;
-  private Mode mode;
   private String varName;
   private IExpression varExpr;
   private IModelObject parent;
-  private Map<Object, Object> fkMap;
 }
