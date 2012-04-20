@@ -106,9 +106,16 @@ public abstract class AbstractLayoutAction extends GuardedAction
     }
     else
     {
-      String name = xidgetExpr.evaluateString( context);
-      xidgetFinder.setVariable( "name", name);
-      return xidgetFinder.evaluateNodes( context);
+      List<IModelObject> targets = new ArrayList<IModelObject>();
+      String spec = xidgetExpr.evaluateString( context);
+      String[] names = spec.split( "\\s*,\\s*");
+      for( String name: names)
+      {
+        if ( name.length() ==  0) continue;
+        xidgetFinder.setVariable( "name", name);
+        targets.addAll( xidgetFinder.evaluateNodes( context));
+      }
+      return targets;
     }
   }
   
