@@ -160,7 +160,7 @@ public abstract class Xidget implements IXidget
     }
     else
     {
-      sb.append( ModelAlgorithms.createIdentityPath( config));
+      sb.append( ModelAlgorithms.createIdentityPath( config, true));
     }
     
     return sb.toString();
