@@ -810,7 +810,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
     return true;
   }
   
-  public class NodeGroup
+  private final static class NodeGroup
   {
     public NodeGroup( IXidget xidget)
     {
