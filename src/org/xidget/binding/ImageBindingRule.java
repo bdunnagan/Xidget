@@ -34,6 +34,13 @@ import org.xmodel.xpath.expression.IExpressionListener;
  */
 public class ImageBindingRule implements IBindingRule
 {
+  public enum Purpose { up, down, hover};
+  
+  public ImageBindingRule( Purpose purpose)
+  {
+    this.purpose = purpose;
+  }
+  
   /* (non-Javadoc)
    * @see org.xidget.IBindingRule#applies(org.xidget.IXidget, org.xmodel.IModelObject)
    */
@@ -50,7 +57,7 @@ public class ImageBindingRule implements IBindingRule
     return new Listener( xidget);
   }  
 
-  private static final class Listener extends ExpressionListener
+  private final class Listener extends ExpressionListener
   {
     Listener( IXidget xidget)
     {
@@ -61,14 +68,26 @@ public class ImageBindingRule implements IBindingRule
     {
       node = nodes.get( 0);
       IImageFeature feature = xidget.getFeature( IImageFeature.class);
-      feature.setImage( node.getValue());
+      Object object = node.getValue();
+      switch( purpose)
+      {
+        case up:    feature.setImage( object); break;
+        case down:  feature.setImagePress( object); break;
+        case hover: feature.setImageHover( object); break;
+      }
     }
 
     public void notifyRemove( IExpression expression, IContext context, List<IModelObject> nodes)
     {
       node = expression.queryFirst( context);
       IImageFeature feature = xidget.getFeature( IImageFeature.class);
-      feature.setImage( (node == null)? null: node.getValue()); 
+      Object object = (node == null)? null: node.getValue();
+      switch( purpose)
+      {
+        case up:    feature.setImage( object); break;
+        case down:  feature.setImagePress( object); break;
+        case hover: feature.setImageHover( object); break;
+      }
     }
 
     public void notifyValue( IExpression expression, IContext[] contexts, IModelObject object, Object newValue, Object oldValue)
@@ -76,7 +95,12 @@ public class ImageBindingRule implements IBindingRule
       if ( object == node) 
       {
         IImageFeature feature = xidget.getFeature( IImageFeature.class);
-        feature.setImage(  newValue);
+        switch( purpose)
+        {
+          case up:    feature.setImage( newValue); break;
+          case down:  feature.setImagePress( newValue); break;
+          case hover: feature.setImageHover( newValue); break;
+        }
       }
     }
 
@@ -88,4 +112,6 @@ public class ImageBindingRule implements IBindingRule
     private IXidget xidget;
     private IModelObject node;
   }
+  
+  private Purpose purpose;
 }

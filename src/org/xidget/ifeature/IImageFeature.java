@@ -25,8 +25,20 @@ package org.xidget.ifeature;
 public interface IImageFeature
 {
   /**
-   * Set the xidget image.
-   * @param image The xidget image.
+   * Set the image.
+   * @param image The image.
    */
   public void setImage( Object image);
+  
+  /**
+   * Set the mouse-hovering image (if supported).
+   * @param image The image.
+   */
+  public void setImageHover( Object image);
+  
+  /**
+   * Set the mouse-pressed image (if supported).
+   * @param image The image.
+   */
+  public void setImagePress( Object image);
 }
