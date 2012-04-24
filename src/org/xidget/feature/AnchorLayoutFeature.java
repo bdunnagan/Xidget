@@ -178,7 +178,7 @@ public class AnchorLayoutFeature implements ILayoutFeature
   }
   
   /**
-   * Find the longest label among the labelled components and initialize
+   * Find the longest label among the labeled components and initialize
    * the size of all peer labels to the same size to provide a nice 
    * alignment. This algorithm is only applied if every peer has a label.
    */
