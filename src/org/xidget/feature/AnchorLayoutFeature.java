@@ -120,8 +120,18 @@ public class AnchorLayoutFeature implements ILayoutFeature
 
     if ( log.isLevelEnabled( Log.debug))
     {
-      for( IComputeNode node: sorted)
-        log.debug( node);
+      StringBuilder sb = new StringBuilder();
+      sb.append( "LAYOUT: "); sb.append( xidget); sb.append( '\n');
+      for( IComputeNode node: sorted) 
+      {
+        if ( node.hasValue())
+        {
+          sb.append( "\t");
+          sb.append( node);
+          sb.append( '\n');
+        }
+      }
+      log.debug( sb.toString());
     }
     
     // update bounds of children

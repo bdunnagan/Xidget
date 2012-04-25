@@ -54,18 +54,6 @@ public interface ICanvasFeature
   public void removeChild( IXidget child);
   
   /**
-   * Returns the width of the canvas.
-   * @return Returns the width of the canvas.
-   */
-  public int getWidth();
-  
-  /**
-   * Returns the height of the canvas.
-   * @return Returns the height of the canvas.
-   */
-  public int getHeight();
-  
-  /**
    * Tell the canvas to repaint itself.
    */
   public void repaint();
