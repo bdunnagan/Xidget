@@ -19,6 +19,8 @@
  */
 package org.xidget.ifeature;
 
+import org.xidget.IXidget;
+
 /**
  * An interface for creating and deleting the widget (or widgets) associated with a xidget.
  * It is usually convenient to implement this interface with another feature interface that
@@ -35,8 +37,9 @@ public interface IWidgetCreationFeature
   /**
    * Destroy the widget or widgets created for this xidget.  When a xidget is destroyed, this
    * method is only called for the root of the hierarchy.
+   * @param parent The parent from which the xidget was removed.
    */
-  public void destroyWidgets();
+  public void destroyWidgets( IXidget parent);
   
   /**
    * Returns the widgets which created by the last call to the <code>createWidgets</code> method.

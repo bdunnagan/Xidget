@@ -19,6 +19,9 @@
  */
 package org.xidget.xaction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.xidget.Creator;
 import org.xidget.IXidget;
 import org.xmodel.IModelObject;
@@ -50,8 +53,10 @@ public class DestroyXidgetAction extends GuardedAction
   {
     Creator creator = Creator.getInstance();
     
-    for( IModelObject element: xidgetExpr.query( context, null))
+    List<IModelObject> elements = new ArrayList<IModelObject>( xidgetExpr.query( context, null)); 
+    for( IModelObject element: elements)
     {
+      element.removeFromParent();
       IXidget xidget = creator.findXidget( element);
       if ( xidget != null) Creator.getInstance().destroy( xidget);
     }

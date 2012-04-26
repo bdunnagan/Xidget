@@ -451,37 +451,13 @@ public final class Creator
     for( Object widget: widgets) map.remove( widget);
     roots.remove( root);
     
-    // destroy widget hierarchy
-    creationFeature.destroyWidgets();
-    
     // remove xidget from parent
     IXidget parent = root.getParent();
     if ( parent != null) parent.getChildren().remove( root);
+    
+    // destroy widget hierarchy
+    creationFeature.destroyWidgets( parent);
   }
-  
-//  /**
-//   * Flatten the specified xidget hierarchy into a leaf-first list. 
-//   * @param root The root of the xidget hierarchy.
-//   * @return Returns the list.
-//   */
-//  private List<IXidget> flattenHierarchy( IXidget root)
-//  {
-//    Stack<IXidget> stack = new Stack<IXidget>();
-//    stack.push( root);
-//    
-//    List<IXidget> list = new ArrayList<IXidget>();
-//    while( !stack.empty())
-//    {
-//      IXidget xidget = stack.pop();
-//      list.add( 0, xidget);
-//      for( IXidget child: xidget.getChildren())
-//      {
-//        stack.push( child);
-//      }
-//    }
-//    
-//    return list;
-//  }
   
   /**
    * Create the widget hierarchy for the specified xidget. The root of the widget

@@ -131,7 +131,7 @@ public abstract class Xidget implements IXidget
   public final void destroyWidget()
   {
     IWidgetCreationFeature feature = getFeature( IWidgetCreationFeature.class);
-    if ( feature != null) feature.destroyWidgets();
+    if ( feature != null) feature.destroyWidgets(null);
   }
 
   /* (non-Javadoc)
