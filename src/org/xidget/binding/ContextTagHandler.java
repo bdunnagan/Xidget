@@ -91,10 +91,11 @@ public class ContextTagHandler extends AbstractTagHandler
     {
       IBindFeature feature = xidget.getFeature( IBindFeature.class);
       
-      StatefulContext nested = map.remove( context);
+      StatefulContext nested = map.get( context);
       if ( nested != null)
       {
         if ( nested.getObject() == node) return;
+        map.remove( context);
         feature.unbind( nested);
       }
       

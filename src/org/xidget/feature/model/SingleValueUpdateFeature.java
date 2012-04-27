@@ -129,6 +129,12 @@ public class SingleValueUpdateFeature implements ISingleValueUpdateFeature
   @Override
   public Object toDisplay( Object value)
   {
+    //
+    // If a null value is read from a source node, it should be converted to an empty string
+    // here. The value may be stored back into the model as an empty string later, but that's ok.
+    //
+    if ( value == null) value = "";
+    
     IBindFeature bindFeature = xidget.getFeature( IBindFeature.class);
     StatefulContext context = bindFeature.getBoundContext();
     if ( context == null) return null;
