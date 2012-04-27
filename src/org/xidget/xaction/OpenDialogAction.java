@@ -49,7 +49,9 @@ public class OpenDialogAction extends GuardedAction
   {
     super.configure( document);
     
-    dialogExpr = document.getExpression( "config", true);
+    dialogExpr = document.getExpression( "xidget", true);
+    if ( dialogExpr == null) dialogExpr = document.getExpression( "config", true);
+    
     contextExpr = document.getExpression( "context", true);
     onClose = document.createChildScript( "onClose");
   }

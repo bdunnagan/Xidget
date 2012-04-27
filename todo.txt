@@ -1,0 +1,19 @@
+Areas For Improvement
+
+Construction, Tag-processing and Xidget-Widget Association
+
+  . Multiple uses of a xidget via insert tags does not work.
+  . Tag-processing should support scripted modification of configuration prior to creation.
+  . Xidget-Widget association may not be robust due to insert tags.  
+
+Layout
+
+  . Need more options for laying out labels.
+  . setComputedSize() should not change default size.
+  . Set Swing LayoutManager to null, and put layout in lifecycle.
+
+Contexts
+
+  . Using global collections is cumbersome, but better than relying on global variables.
+  . Named contexts may be confusing.
+  . Need easier, intuitive way to share information between two xidget configurations.

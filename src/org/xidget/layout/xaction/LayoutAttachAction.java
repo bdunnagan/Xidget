@@ -203,9 +203,11 @@ public class LayoutAttachAction extends GuardedAction
       }
       else 
       {
-        int offset = containerFeature.getSpacing();
-        if ( attachment.side1 == Side.right && attachment.side2 == Side.left) offset = -offset;
-        if ( attachment.side1 == Side.bottom && attachment.side2 == Side.top) offset = -offset;
+        int offset = 0;
+        if ( attachment.side1 == Side.left && attachment.side2 == Side.right) offset = containerFeature.getSpacing();
+        if ( attachment.side1 == Side.right && attachment.side2 == Side.left) offset = -containerFeature.getSpacing();
+        if ( attachment.side1 == Side.top && attachment.side2 == Side.bottom) offset = containerFeature.getSpacing();
+        if ( attachment.side1 == Side.bottom && attachment.side2 == Side.top) offset = -containerFeature.getSpacing();
         if ( attachment.offsetExpr != null) offset = (int)attachment.offsetExpr.evaluateNumber( configContext, 0);
         if ( sites.size() == 1)
         {
