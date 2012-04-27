@@ -63,13 +63,20 @@ public class Plot
   {
     if ( isExtreme( point))
     {
-      System.arraycopy( points.get( 0).coords, 0, min, 0, min.length);
-      System.arraycopy( points.get( 0).coords, 0, max, 0, max.length);
-      for( int i=1; i<point.coords.length; i++)
+      if ( points.size() > 0)
       {
-        double coord = point.coords[ i];
-        if ( coord < min[ i]) min[ i] = coord;
-        if ( coord > max[ i]) max[ i] = coord;
+        System.arraycopy( points.get( 0).coords, 0, min, 0, min.length);
+        System.arraycopy( points.get( 0).coords, 0, max, 0, max.length);
+        for( int i=1; i<point.coords.length; i++)
+        {
+          double coord = point.coords[ i];
+          if ( coord < min[ i]) min[ i] = coord;
+          if ( coord > max[ i]) max[ i] = coord;
+        }
+      }
+      else
+      {
+        min = max = null;
       }
     }
   }
