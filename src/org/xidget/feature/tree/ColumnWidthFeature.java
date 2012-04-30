@@ -5,22 +5,20 @@
 package org.xidget.feature.tree;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
 import org.xidget.IXidget;
 import org.xidget.ifeature.tree.IColumnWidthFeature;
 import org.xidget.ifeature.tree.ITreeWidgetFeature;
 import org.xmodel.BreadthFirstIterator;
 import org.xmodel.IModelObject;
 import org.xmodel.Xlate;
+import org.xmodel.log.SLog;
 
 /**
  * An implementation of IColumnWidthFeature that provides a very fast and flexible
  * algorithm for computing the width of the columns of a tree, table or other 
  * columnar xidget.
  */
-@SuppressWarnings("unchecked")
 public abstract class ColumnWidthFeature implements IColumnWidthFeature
 {
   protected ColumnWidthFeature( IXidget xidget)
@@ -53,11 +51,9 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   {
     int count = findNumberOfColumns( xidget);
     styles = new ColumnStyle[ count];
-    widest = new int[ count];
-    sizes = new int[ count];
-    sorted = new List[ count];
+    longestText = new int[ count];
+    columnWidths = new int[ count];
     rows = new ArrayList<Integer[]>();
-    for( int i=0; i<count; i++) sorted[ i] = new ArrayList<Integer>();
     
     int charWidth = getMaxWidth();
     
@@ -111,7 +107,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
       setFreeWidth( i, -1, -1, 0);
     }
     
-    insertRow( 0);
+    insertRow( -1);
   }
   
   private static List<IModelObject> getColumnDeclarations( IXidget xidget)
@@ -285,7 +281,8 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   @Override
   public int getWidth( int column)
   {
-    return sizes[ column];
+    SLog.debugf( this, "%d", column);
+    return columnWidths[ column];
   }
 
   /* (non-Javadoc)
@@ -303,7 +300,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
    */
   public final void setTotalWidth( int width)
   {
-    this.width = width;
+    this.totalWidth = width;
     update();
   }
   
@@ -323,17 +320,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   {
     row++;
     
-    if ( rows.size() <= row)
-    {
-      for( int i=row; i<rows.size(); i++)
-        insertRow( i-1);
-    }
-    
     Integer[] widths = rows.get( row);
-    
-    // remove old width from sorted array
-    int index = Collections.binarySearch( sorted[ column], widths[ column]);
-    if ( index >= 0) sorted[ column].remove( index);
     
     // compute column width
     int width = getTextWidth( text, row == 0);
@@ -341,15 +328,17 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
     // update column width
     widths[ column] = width;
 
-    // insert new width into sorted array
-    index = Collections.binarySearch( sorted[ column], width);
-    if ( index < 0) index = -index - 1;
-    sorted[ column].add( index, width); 
-
-    if ( sorted[ column].size() > 0)
-      widest[ column] = sorted[ column].get( sorted[ column].size() - 1);
-    
-    update();
+    // check if scan is necessary
+    if ( width >= longestText[ column]) 
+    {
+      longestText[ column] = width;
+      update();
+    }
+    else
+    {
+      findColumnWidths();
+      update();
+    }
   }
   
   /* (non-Javadoc)
@@ -365,9 +354,6 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
       for( int j=0; j<widths.length; j++) widths[ j] = 0;
       rows.add( i, widths);
     }
-    
-    for( int i=0; i<sorted.length; i++)
-      sorted[ i].add( 0, 0);
   }
   
   /* (non-Javadoc)
@@ -377,28 +363,19 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   {
     row++;
     
-    Integer[] widths = rows.get( row);
-    for( int i=0; i<styles.length; i++)
+    if ( row < rows.size())
     {
-      int width = widths[ i];
-      int index = Collections.binarySearch( sorted[ i], width);
-      if ( width == widest[ i])
+      Integer[] widths = rows.remove( row);
+      for( int i=0; i<widths.length; i++)
       {
-        if ( index > 0)
+        if ( widths[ i] == longestText[ i])
         {
-          int shorter = sorted[ i].get( index-1);
-          widest[ i] = shorter;
-        }
-        else
-        {
-          widest[ i] = 0;
+          findColumnWidths();
+          update();
+          return;
         }
       }
-      sorted[ i].remove( index);
     }
-    rows.remove( row);
-    
-    update();
   }
 
   /**
@@ -416,14 +393,14 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   
   /**
    * Compute the width of each column.
-   * @param width Returns the computed width of each column.
+   * @param totalWidth Returns the computed width of each column.
    * @return Returns the width of each column.
    */
   private final void compute( int[] widths)
   {
-    if ( width == 0) return;
+    if ( totalWidth == 0) return;
     
-    double total = width;
+    double total = totalWidth;
     int columns = styles.length;
     
     // subtract absolute and auto widths from total width
@@ -437,7 +414,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
       }
       else if ( styles[ i].mode == Mode.auto)
       {
-        widths[ i] = constrain( styles[ i], widest[ i] + styles[ i].padding);
+        widths[ i] = constrain( styles[ i], longestText[ i] + styles[ i].padding);
         total -= widths[ i];
         columns--;
       }
@@ -488,23 +465,34 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   }
   
   /**
+   * Scan the table and find the width of each column.
+   */
+  private void findColumnWidths()
+  {
+    for( int i=0; i<columnWidths.length; i++)
+    {
+      columnWidths[ i] = 0;
+      for( int j=0; j<rows.size(); j++)
+      {
+        Integer[] widths = rows.get( j);
+        if ( widths[ i] > columnWidths[ i])
+          columnWidths[ i] = widths[ i];
+      }
+    }
+  }
+  
+  /**
    * Update column sizes and notify subclass.
    */
   public void update()
   {
-    int[] newSizes = new int[ sizes.length];
-    compute( newSizes);
+    compute( columnWidths);
     
     ITreeWidgetFeature feature = xidget.getFeature( ITreeWidgetFeature.class);
-    for( int i=0; i<newSizes.length; i++)
-    {
-      //if ( newSizes[ i] != sizes[ i])
-        feature.setColumnWidth( i, newSizes[ i]);
-    }
-    
-    sizes = newSizes;
+    for( int i=0; i<columnWidths.length; i++)
+      feature.setColumnWidth( i, columnWidths[ i]);
   }
-
+  
   private enum Mode { absolute, relative, free, auto};
   
   private final static class ColumnStyle
@@ -519,8 +507,7 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   protected IXidget xidget;
   private ColumnStyle[] styles;
   private List<Integer[]> rows;
-  private List<Integer>[] sorted;
-  private int[] widest;
-  private int[] sizes;
-  private int width;
+  private int[] longestText;
+  private int[] columnWidths;
+  private int totalWidth;
 }
