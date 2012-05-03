@@ -71,22 +71,19 @@ public class OpenFileDialogAction extends GuardedAction
   {
     FileDialogType type = FileDialogType.valueOf( typeExpr.evaluateString( context));
     String desc = (descExpr != null)? descExpr.evaluateString( context): "";
-
-    // initialize the variable
-    if ( var != null)
-    {
-      IVariableScope scope = context.getScope();
-      if ( scope != null) scope.set( var, Collections.<IModelObject>emptyList());
-    }
-    
     String dfault = (dfaultExpr != null)? dfaultExpr.evaluateString( context): null;
     
     // open dialog
     IToolkit toolkit = Creator.getToolkit();
     String[] paths = toolkit.openFileDialog( (StatefulContext)context, folderExpr, filterExpr, dfault, desc, type);
     
+    IVariableScope scope = context.getScope();
+    
     if ( type == FileDialogType.openMany)
     {
+      // initialize the variable
+      if ( var != null && scope != null) scope.set( var, Collections.emptyList());
+      
       List<IModelObject> entries = new ArrayList<IModelObject>();
       for( String path: paths)
       {
@@ -105,11 +102,7 @@ public class OpenFileDialogAction extends GuardedAction
         }
       }
       
-      if ( var != null)
-      {
-        IVariableScope scope = context.getScope();
-        if ( scope != null) scope.set( var, entries);
-      }
+      if ( var != null && scope != null) scope.set( var, entries);
     }
     
     // single selection mode
@@ -121,11 +114,7 @@ public class OpenFileDialogAction extends GuardedAction
         if ( target != null) target.setValue( (paths.length > 0)? paths[ 0]: "");
       }
       
-      if ( var != null)
-      {
-        IVariableScope scope = context.getScope();
-        if ( scope != null) scope.set( var, (paths.length > 0? paths[ 0]: ""));
-      }
+      if ( var != null && scope != null) scope.set( var, (paths.length > 0? paths[ 0]: ""));
     }
     
     return null;
