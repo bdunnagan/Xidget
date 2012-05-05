@@ -16,6 +16,15 @@ import org.xidget.IXidget;
 public interface IPrintFeature
 {
   /**
+   * Perform a screen capture of the specified xidget with the specified scale.  The scale parameter is used 
+   * to enlarge (> 1) or shrink (< 1) the xidget.  The xidget must already be configured and bound.
+   * @param xidget The xidget.
+   * @param scale The scaling factor (> 0).
+   * @return Returns a platform-specific image capture of the xidget.
+   */
+  public Object capture( IXidget xidget, float scale);
+  
+  /**
    * Print the specified xidgets.
    * @param xidgets The xidgets to be printed.
    */
