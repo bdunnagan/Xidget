@@ -73,7 +73,6 @@ import org.xidget.config.TagProcessor;
 import org.xidget.config.ifeature.IXidgetFeature;
 import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IFocusFeature;
-import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
 import org.xidget.xpath.CapitalizeFunction;
 import org.xidget.xpath.DateAddFunction;
@@ -498,11 +497,6 @@ public final class Creator
     StatefulContext context = bindFeature.getBoundContext();
     if ( context == null) return null;
 
-    // reset parent layout
-    IXidget parent = xidget.getParent();
-    ILayoutFeature layoutFeature = parent.getFeature( ILayoutFeature.class);
-    if ( layoutFeature != null) layoutFeature.invalidate();
-    
     // destroy
     destroy( xidget);
     

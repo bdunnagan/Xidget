@@ -21,7 +21,6 @@ package org.xidget.binding;
 
 import org.xidget.IXidget;
 import org.xidget.config.TagProcessor;
-import org.xidget.ifeature.IWidgetContainerFeature;
 import org.xidget.ifeature.IWidgetFeature;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.ExpressionListener;
@@ -64,12 +63,6 @@ public class VisibleBindingRule implements IBindingRule
     {
       IWidgetFeature feature = xidget.getFeature( IWidgetFeature.class);
       feature.setVisible( newValue);
-      
-      if ( xidget.getParent() != null)
-      {
-        IWidgetContainerFeature containerFeature = xidget.getParent().getFeature( IWidgetContainerFeature.class);
-        if ( containerFeature != null) containerFeature.relayout();
-      }
     }
 
     private IXidget xidget;

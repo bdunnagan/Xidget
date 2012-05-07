@@ -23,7 +23,6 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.layout.IComputeNode;
 import org.xmodel.IModelObject;
-import org.xmodel.xpath.expression.StatefulContext;
 
 /**
  * An interface for the layout algorithm feature. This feature is responsible for computing new
@@ -35,15 +34,9 @@ public interface ILayoutFeature
   public enum Side { top, left, right, bottom, hcenter, vcenter};
   
   /**
-   * Discard cached layout information.
-   */
-  public void invalidate();
-  
-  /**
    * Layout the children of the container.
-   * @param context The widget context.
    */
-  public void layout( StatefulContext context);
+  public void layout();
     
   /**
    * Attach the specified xidget to its previous peer.

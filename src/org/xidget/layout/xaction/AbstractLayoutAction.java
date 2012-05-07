@@ -46,6 +46,7 @@ public abstract class AbstractLayoutAction extends GuardedAction
   {
     super.configure( document);
     xidgetsExpr = document.getExpression( "xidgets", true);
+    if ( xidgetsExpr == null) xidgetsExpr = document.getExpression( "xidget", true);
   }
 
   /* (non-Javadoc)

@@ -22,10 +22,22 @@ package org.xidget.layout;
 /**
  * A structure containing the margins of the inside of a container.
  */
-public class Bounds
+public final class Bounds
 {
   public Bounds()
   {
+    this.x = undefined;
+    this.y = undefined;
+    this.width = undefined;
+    this.height = undefined;
+  }
+  
+  public Bounds( Bounds bounds)
+  {
+    this.x = bounds.x;
+    this.y = bounds.y;
+    this.width = bounds.width;
+    this.height = bounds.height;
   }
   
   public Bounds( float x, float y, float width, float height)
@@ -34,6 +46,38 @@ public class Bounds
     this.y = y;
     this.width = width;
     this.height = height;
+  }
+  
+  /**
+   * @return Returns true if the specified coordinate is defined.
+   */
+  public boolean isXDefined()
+  {
+    return x != undefined;
+  }
+  
+  /**
+   * @return Returns true if the specified coordinate is defined.
+   */
+  public boolean isYDefined()
+  {
+    return y != undefined;
+  }
+  
+  /**
+   * @return Returns true if the specified coordinate is defined.
+   */
+  public boolean isWidthDefined()
+  {
+    return width != undefined;
+  }
+  
+  /**
+   * @return Returns true if the specified coordinate is defined.
+   */
+  public boolean isHeightDefined()
+  {
+    return height != undefined;
   }
   
   /**
@@ -51,17 +95,16 @@ public class Bounds
       String[] parts = string.split( "\\s*+,\\s*+");
       if ( parts.length == 2)
       {
-        width = Float.parseFloat( parts[ 0]);
-        height = Float.parseFloat( parts[ 1]);
+        width = parts[ 0].equals( "?")? undefined: Float.parseFloat( parts[ 0]);
+        height = parts[ 1].equals( "?")? undefined: Float.parseFloat( parts[ 1]);
         return true;
       }
       else if ( parts.length == 4)
       {
-        x = Float.parseFloat( parts[ 0]);
-        y = Float.parseFloat( parts[ 1]);
-        width = Float.parseFloat( parts[ 2]);
-        height = Float.parseFloat( parts[ 3]);
-        
+        x = parts[ 0].equals( "?")? undefined: Float.parseFloat( parts[ 0]);
+        y = parts[ 1].equals( "?")? undefined: Float.parseFloat( parts[ 1]);
+        width = parts[ 2].equals( "?")? undefined: Float.parseFloat( parts[ 2]);
+        height = parts[ 3].equals( "?")? undefined: Float.parseFloat( parts[ 3]);
         return true;
       }
     }
@@ -80,6 +123,8 @@ public class Bounds
   {
     return String.format( "%.0f, %.0f, %.0f, %.0f", x, y, width, height);
   }
+  
+  private final static float undefined = Float.POSITIVE_INFINITY;
   
   public float x;
   public float y;

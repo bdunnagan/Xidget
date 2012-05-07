@@ -50,13 +50,6 @@ public interface IWidgetContainerFeature
   public void removeWidget( IXidget child);
   
   /**
-   * Tell the container to layout its children again. The container will automatically layout
-   * its children when it is first made visible.  This method only needs to be called if the
-   * layout changes after the container is visible.
-   */
-  public void relayout();
-  
-  /**
    * Set the spacing between children within this container.
    * @param spacing The spacing.
    */

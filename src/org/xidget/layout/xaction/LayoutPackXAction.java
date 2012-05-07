@@ -23,6 +23,7 @@ import java.util.List;
 import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.ILayoutFeature.Side;
+import org.xmodel.log.SLog;
 import org.xmodel.xpath.expression.IContext;
 
 /**
@@ -37,7 +38,8 @@ public class LayoutPackXAction extends AbstractLayoutAction
   @Override
   protected void layout( IContext context, IXidget parent, List<IXidget> children, int spacing)
   {
-    ILayoutFeature feature = parent.getFeature( ILayoutFeature.class);
-    feature.packContainer( children, Side.right, 0);
+//    ILayoutFeature feature = parent.getFeature( ILayoutFeature.class);
+//    feature.packContainer( children, Side.right, 0);
+    SLog.warn( this, "Obsolete call to layoutPackX!");
   }
 }

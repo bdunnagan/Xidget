@@ -8,10 +8,9 @@ import org.xidget.IXidget;
 import org.xidget.ifeature.ILayoutFeature.Side;
 
 /**
- * An IComputeNode that braces one edge based on the other edge and the center, or braces the center
- * based on the two edges.
+ * An IComputeNode that braces one edge based on the other edge and the center, or braces the center based on the two edges.
  */
-public class InternalConsistenceBrace extends ComputeNode
+public class InternalCenterBrace extends ComputeNode
 {
   /**
    * Create an internal brace for the specified xidget. 
@@ -22,10 +21,9 @@ public class InternalConsistenceBrace extends ComputeNode
    * @param node2 The other node that is defined.
    * @param side2 The other side that is defined.
    */
-  public InternalConsistenceBrace( String name, IXidget xidget, IComputeNode node1, Side side1, IComputeNode node2, Side side2)
+  public InternalCenterBrace( String name, IXidget xidget, IComputeNode node1, Side side1, IComputeNode node2, Side side2)
   {
     this.name = name;
-    this.xidget = xidget;
     
     this.node1 = node1;
     this.side1 = side1;
@@ -43,6 +41,8 @@ public class InternalConsistenceBrace extends ComputeNode
   @Override
   public void setValue( float value)
   {
+    if ( !node1.hasValue() || !node2.hasValue()) return;
+      
     switch( side1)
     {
       case top:
@@ -136,11 +136,10 @@ public class InternalConsistenceBrace extends ComputeNode
    */
   public String toString()
   {
-    return String.format( "%s[%d] = %s <- %s, %s", name, getID(), printValue(), printDependencies(), xidget);
+    return String.format( "%s[%d] = %s <- %s", name, getID(), printValue(), printDependencies());
   }
   
   private String name;
-  private IXidget xidget;
   private IComputeNode node1;
   private Side side1;
   private IComputeNode node2;

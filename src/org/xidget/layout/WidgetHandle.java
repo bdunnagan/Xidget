@@ -54,9 +54,10 @@ public class WidgetHandle extends ComputeNode
    */
   public String toString()
   {
-    return String.format( "Handle-%s[%d] = %s (%d) <- %s, %s", side, getID(), printValue(), offset, printDependencies(), xidget);
+    String left = String.format( "%-8s[%d] = %6s", side.toString().toUpperCase(), getID(), printValue());
+    return String.format( "%10s | %s %+d (%s)", left, printDependencies(), offset, xidget);
   }
-  
+
   private IXidget xidget;
   private Side side;
   private int offset;
