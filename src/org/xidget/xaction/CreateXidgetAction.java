@@ -71,7 +71,7 @@ public class CreateXidgetAction extends GuardedAction
       IModelObject parentNode = (parentExpr != null)? parentExpr.queryFirst( context): null;
       IXidget parent = creator.findXidget( parentNode);
       int index = (indexExpr != null)? (int)indexExpr.evaluateNumber( context): -1;
-      List<IXidget> xidgets = creator.create( parent, index, configContext, bindContext);
+      List<IXidget> xidgets = creator.createAndBind( parent, index, configContext, bindContext);
       for( IXidget xidget: xidgets) 
       {
         IWidgetFeature widgetFeature = xidget.getFeature( IWidgetFeature.class);

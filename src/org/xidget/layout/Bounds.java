@@ -51,16 +51,16 @@ public class Bounds
       String[] parts = string.split( "\\s*+,\\s*+");
       if ( parts.length == 2)
       {
-        width = Float.parseFloat( parts[ 0]);
-        height = Float.parseFloat( parts[ 1]);
+        width = (parts[ 0].equals( "?"))? -1: Float.parseFloat( parts[ 0]);
+        height = (parts[ 1].equals( "?"))? -1: Float.parseFloat( parts[ 1]);
         return true;
       }
       else if ( parts.length == 4)
       {
-        x = Float.parseFloat( parts[ 0]);
-        y = Float.parseFloat( parts[ 1]);
-        width = Float.parseFloat( parts[ 2]);
-        height = Float.parseFloat( parts[ 3]);
+        x = (parts[ 0].equals( "?"))? -1: Float.parseFloat( parts[ 0]);
+        y = (parts[ 1].equals( "?"))? -1: Float.parseFloat( parts[ 1]);
+        width = (parts[ 2].equals( "?"))? -1: Float.parseFloat( parts[ 2]);
+        height = (parts[ 3].equals( "?"))? -1: Float.parseFloat( parts[ 3]);
         
         return true;
       }

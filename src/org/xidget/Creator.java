@@ -421,7 +421,7 @@ public final class Creator
    * @param configContext The configuration context.
    * @param bindContext The binding context.
    */
-  public List<IXidget> create( IXidget parent, int index, StatefulContext configContext, StatefulContext bindContext) throws TagException
+  public List<IXidget> createAndBind( IXidget parent, int index, StatefulContext configContext, StatefulContext bindContext) throws TagException
   {
     List<IXidget> xidgets = create( parent, index, configContext);
     
