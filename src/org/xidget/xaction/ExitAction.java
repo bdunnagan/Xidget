@@ -45,7 +45,8 @@ public class ExitAction extends GuardedAction
   @Override
   protected Object[] doAction( IContext context)
   {
-    System.exit( (int)exitExpr.evaluateNumber( context));
+    int code = (exitExpr != null)? (int)exitExpr.evaluateNumber( context): 0;
+    System.exit( code);
     return null;
   }
   
