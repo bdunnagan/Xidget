@@ -25,9 +25,6 @@ public abstract class Startup
    */
   public void start( IExpression path) throws Exception
   {
-    // configure the xidget toolkit
-    Creator.setToolkitClass( getToolkitClass());
-
     // get resource root
     StatefulContext resources = getResourceRoot();
     
@@ -42,11 +39,6 @@ public abstract class Startup
     script.run( resources);
   }
   
-  /**
-   * @return Returns the platform toolkit.
-   */
-  protected abstract Class<? extends IToolkit> getToolkitClass();
-
   /**
    * @return Returns the root of the resources.
    */
