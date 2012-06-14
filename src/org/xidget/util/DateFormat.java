@@ -140,8 +140,8 @@ public class DateFormat
       field = nextField( format, sb);
     }
     
-    
-    return sb.toString();
+    // handle "\n" and "\r"
+    return sb.toString().replace( "\\n", "\n").replace( "\\r", "\r");
   }
   
   /**
