@@ -125,7 +125,7 @@ public class CapitalizeFunction extends Function
    */
   private static String capitalize( String s)
   {
-    if ( s == null) return null;
+    if ( s == null || s.length() == 0) return null;
     
     StringBuilder sb = new StringBuilder();
     sb.append( Character.toUpperCase( s.charAt( 0)));

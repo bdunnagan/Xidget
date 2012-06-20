@@ -320,6 +320,12 @@ public abstract class ColumnWidthFeature implements IColumnWidthFeature
   {
     row++;
     
+    if ( row >= rows.size())
+    {
+      SLog.errorf( this, "Illegal index %d > %d.", row, rows.size());
+      return;
+    }
+    
     Integer[] widths = rows.get( row);
     
     // compute column width

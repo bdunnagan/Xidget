@@ -72,13 +72,13 @@ public class SelectionTagHandler implements ITagHandler
     feature.setMode( Mode.valueOf( Xlate.get( element, "mode", "ref")));
     
     // create variable binding if present
-    String variable = Xlate.get( element, "var", Xlate.get( element, "variable", (String)null));
-    if ( variable != null)
+    String var = Xlate.get( element, "var", (String)null);
+    if ( var != null)
     {
       //
       // Bind the selection variable in the context of the root of the tree.
       //
-      VariableBinding binding = new VariableBinding( xidget, variable);
+      VariableBinding binding = new VariableBinding( xidget, var);
       IBindFeature bindFeature = XidgetUtil.findTreeRoot( xidget).getFeature( IBindFeature.class);
       bindFeature.addBindingAfterChildren( binding);
     }

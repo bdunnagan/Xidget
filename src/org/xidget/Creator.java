@@ -453,10 +453,12 @@ public final class Creator
     
     // remove xidget from parent
     IXidget parent = root.getParent();
-    if ( parent != null) parent.getChildren().remove( root);
-    
-    // destroy widget hierarchy
-    creationFeature.destroyWidgets( parent);
+    if ( parent != null) 
+    {
+      parent.getChildren().remove( root);
+      // destroy widget hierarchy
+      creationFeature.destroyWidgets( parent);
+    }
   }
   
   /**
