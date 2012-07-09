@@ -18,7 +18,7 @@ import org.xmodel.log.Log;
 import org.xmodel.xpath.expression.ExactExpressionListener;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
-import org.xmodel.xpath.expression.StatefulContext;
+import org.xmodel.xpath.expression.SubContext;
 
 /**
  * Listener for nodes that contain an ordered list of points to be plotted.
@@ -162,7 +162,7 @@ public class PlotsListener extends SetDetailListener
       plotMap.put( node, plot);
 
       binding = true;
-      pointsExpr.addNotifyListener( new StatefulContext( context, node), pointsListener);
+      pointsExpr.addNotifyListener( new SubContext( context, node, 1, 1), pointsListener);
       binding = false;
 
       getPlotFeature().addPlot( plot);
@@ -181,10 +181,10 @@ public class PlotsListener extends SetDetailListener
     
     for( IModelObject node: nodes)
     {
+      pointsExpr.removeNotifyListener( new SubContext( context, node, 1, 1), pointsListener);
+      
       Plot plot = plotMap.remove( node);
       if ( plot != null) getPlotFeature().removePlot( plot); else log.error( "Duplicate call to remove nodes: "+nodes);
-
-      pointsExpr.removeListener( new StatefulContext( context, node), pointsListener);
     }
   }
   

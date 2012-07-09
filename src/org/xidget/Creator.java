@@ -75,19 +75,9 @@ import org.xidget.ifeature.IBindFeature;
 import org.xidget.ifeature.IFocusFeature;
 import org.xidget.ifeature.ILayoutFeature;
 import org.xidget.ifeature.IWidgetCreationFeature;
-import org.xidget.xpath.CapitalizeFunction;
-import org.xidget.xpath.DateAddFunction;
-import org.xidget.xpath.DateFormatFunction;
-import org.xidget.xpath.DateNowFunction;
-import org.xidget.xpath.DateParseFunction;
-import org.xidget.xpath.DateSetFunction;
-import org.xidget.xpath.FileExistsFunction;
-import org.xidget.xpath.FontsFunction;
-import org.xidget.xpath.IsFolderFunction;
-import org.xidget.xpath.ValidateXPathFunction;
+import org.xidget.xpath.Library;
 import org.xmodel.IModelObject;
 import org.xmodel.xpath.expression.StatefulContext;
-import org.xmodel.xpath.function.FunctionFactory;
 
 /**
  * A convenience class that provides methods for parsing a configuration file, 
@@ -220,7 +210,7 @@ public final class Creator
     processor.addHandler( "table", new SubTableTagHandler());
     
     // register functions
-    registerCustomXPaths();
+    Library.register();
   }
 
   /**
@@ -261,23 +251,6 @@ public final class Creator
   public TagProcessor getTagProcessor()
   {
     return processor;
-  }
-  
-  /**
-   * Register custom xpaths.
-   */
-  private void registerCustomXPaths()
-  {
-    FunctionFactory.getInstance().register( CapitalizeFunction.name, CapitalizeFunction.class);
-    FunctionFactory.getInstance().register( FileExistsFunction.name, FileExistsFunction.class);
-    FunctionFactory.getInstance().register( FontsFunction.name, FontsFunction.class);
-    FunctionFactory.getInstance().register( IsFolderFunction.name, IsFolderFunction.class);
-    FunctionFactory.getInstance().register( ValidateXPathFunction.name, ValidateXPathFunction.class);
-    FunctionFactory.getInstance().register( DateFormatFunction.name, DateFormatFunction.class);
-    FunctionFactory.getInstance().register( DateParseFunction.name, DateParseFunction.class);
-    FunctionFactory.getInstance().register( DateAddFunction.name, DateAddFunction.class);
-    FunctionFactory.getInstance().register( DateSetFunction.name, DateSetFunction.class);
-    FunctionFactory.getInstance().register( DateNowFunction.name, DateNowFunction.class);
   }
   
   /**

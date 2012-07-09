@@ -75,8 +75,9 @@ public class KeyTree<T>
   /**
    * Remove a binding from the tree.
    * @param keys The key configuration.
+   * @param binding The binding.
    */
-  public void unbind( String keys)
+  public void unbind( String keys, T binding)
   {
     Matcher matcher = regex.matcher( keys);
     if ( matcher.matches())
@@ -96,7 +97,7 @@ public class KeyTree<T>
       String g5 = matcher.group( 5);
       String[] primaries = g5.split( "\\s*,\\s*");
       
-      unbind( modifiers, primaries);
+      unbind( modifiers, primaries, binding);
     }
   }
   
@@ -145,25 +146,26 @@ public class KeyTree<T>
    * Unbind the specified key sequence(s).
    * @param modifiers The modifiers.
    * @param primaries The primaries.
+   * @param binding The binding.
    */
-  private void unbind( String[] modifiers, String[] primaries)
+  private void unbind( String[] modifiers, String[] primaries, T binding)
   {
     if ( modifiers.length < 2)
     {
       List<String> sequence = new ArrayList<String>();
       sequence.addAll( Arrays.asList( modifiers));
       sequence.addAll( Arrays.asList( primaries));
-      unbind( sequence);
+      unbind( sequence, binding);
     }
     else if ( modifiers.length == 2)
     {
       List<String> sequence = new ArrayList<String>();
       sequence.addAll( Arrays.asList( modifiers));
       sequence.addAll( Arrays.asList( primaries));
-      unbind( sequence);
+      unbind( sequence, binding);
       
       Collections.swap( sequence, 0, 1);
-      unbind( sequence);
+      unbind( sequence, binding);
     }
     else if ( modifiers.length == 3)
     {
@@ -173,9 +175,9 @@ public class KeyTree<T>
       
       for( int i=0; i<3; i++)
       {
-        unbind( sequence);
+        unbind( sequence, binding);
         Collections.swap( sequence, 1, 2);
-        unbind( sequence);
+        unbind( sequence, binding);
         Collections.swap( sequence, 0, 2);
       }
     }
@@ -206,14 +208,16 @@ public class KeyTree<T>
       iter = next;
     }
     
-    iter.binding = binding;
+    if ( iter.bindings == null) iter.bindings = new ArrayList<T>( 1);
+    iter.bindings.add( binding);
   }
   
   /**
    * Unbind the specified key sequence.
    * @param sequence The key sequence.
+   * @param binding The binding.
    */
-  private void unbind( List<String> sequence)
+  private void unbind( List<String> sequence, T binding)
   {
     TreeNode<T> iter = root;
     for( String key: sequence)
@@ -227,7 +231,7 @@ public class KeyTree<T>
     }
 
     // clear binding
-    iter.binding = null;
+    iter.bindings.remove( binding);
     
     // discard unused nodes
     while( iter != null && (iter.children == null || iter.children.size() == 0))
@@ -248,9 +252,9 @@ public class KeyTree<T>
   /**
    * Tell the map that the specified key was pressed.
    * @param key The key.
-   * @return Returns null or the binding.
+   * @return Returns null or the bindings.
    */
-  public T keyDown( String key)
+  public List<T> keyDown( String key)
   {
     TreeNode<T> next = null;
     if ( node.children != null)
@@ -261,8 +265,7 @@ public class KeyTree<T>
     
     if ( next != null)
     {
-      T binding = next.binding;
-      return binding;
+      return next.bindings;
     }
     else
     {
@@ -296,7 +299,7 @@ public class KeyTree<T>
     private String key;
     private TreeNode<U> parent;
     public Map<String, TreeNode<U>> children;
-    public U binding;
+    public List<U> bindings;
   }
     
   private final static String modifiers = 
