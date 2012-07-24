@@ -48,9 +48,10 @@ public class ProgressAction extends ScriptAction
     {
       if ( !isDebugging())
       {
-        for( IXAction action: getActions())
+        IXAction[] actions = getActions();
+        for( int i=0; i<actions.length; i++)
         {
-          ActionRunnable runnable = new ActionRunnable( context, action);
+          ActionRunnable runnable = new ActionRunnable( context, actions[ i]);
           result = runnable.invokeAndWait();
           if ( result != null) return;
         }
@@ -61,16 +62,17 @@ public class ProgressAction extends ScriptAction
         try
         {
           debugger.push( context, ProgressAction.this);
-          for( IXAction action: getActions())
+          IXAction[] actions = getActions();
+          for( int i=0; i<actions.length; i++)
           {
-            ActionRunnable runnable = new ActionRunnable( context, action);
+            ActionRunnable runnable = new ActionRunnable( context, actions[ i]);
             result = runnable.invokeAndWait();
             if ( result != null) return;
           }
         }
         finally
         {
-          debugger.pop();
+          debugger.pop( context);
         }
       }
     }
