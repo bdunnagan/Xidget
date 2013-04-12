@@ -135,6 +135,7 @@ public class DateFormat
         case Z:      sb.append( cal.getTimeZone().getDisplayName( true, TimeZone.SHORT)); break;
         case AM:     sb.append( cal.getDisplayName( Calendar.AM_PM, Calendar.SHORT, Locale.getDefault())); break;
         case AD:     sb.append( (cal.get( Calendar.ERA) == GregorianCalendar.AD)? "AD": "BC"); break;
+        case NONE:   break;
       }
       
       field = nextField( format, sb);
@@ -188,9 +189,9 @@ public class DateFormat
           parseNumber( date, cal, Calendar.DAY_OF_MONTH, 0); 
           break;
           
-        case DAY:    parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.SHORT, 3); break;
+        case DAY:     parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.SHORT, 3); break;
         case DAYFULL: parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.LONG); break;
-        case DDD:    parseNumber( date, cal, Calendar.DAY_OF_YEAR, 0); break;
+        case DDD:     parseNumber( date, cal, Calendar.DAY_OF_YEAR, 0); break;
         
         case h:
           parseNumber( date, cal, Calendar.HOUR, -1); 
@@ -241,6 +242,9 @@ public class DateFormat
           if ( parseIndex > date.length()) throw new ParseException( date, parseIndex);
           String ad = date.substring( parseIndex-2, parseIndex);
           cal.set( Calendar.ERA, ad.equals( "AD")? GregorianCalendar.AD: GregorianCalendar.BC);
+          break;
+          
+        case NONE:
           break;
       }
       
@@ -340,6 +344,9 @@ public class DateFormat
       case S:
       case SSS:
         return Calendar.MILLISECOND;
+        
+      default:
+        break;
     }
     
     return -1;
@@ -476,6 +483,7 @@ public class DateFormat
   {
     Map<String, Integer> map = calendar.getDisplayNames( field, style, Locale.getDefault());
     String s = date.substring( parseIndex, parseIndex + length);
+    parseIndex += length;
     Integer value = map.get( s);
     if ( value != null)
     {
