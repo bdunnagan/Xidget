@@ -34,6 +34,7 @@ import java.util.TimeZone;
  * day
  *   D       - 1 or 2 digits
  *   DD      - 2 digits padded
+ *   DW      - 1 digit day of week (0 = Monday, 7=Sunday)
  *   DAY     - abbreviated name of day of the week
  *   DAYFULL - full name of the day of of week
  *   DDD     - 1 to 3 digit day of year
@@ -77,6 +78,7 @@ public class DateFormat
     YW,
     D,
     DD,
+    DW,
     DAY,
     DAYFULL,
     DDD,
@@ -121,6 +123,7 @@ public class DateFormat
         case YW:     sb.append( cal.get( Calendar.WEEK_OF_YEAR)); break;
         case D:      sb.append( cal.get( Calendar.DAY_OF_MONTH)); break;
         case DD:     twoDigitPadding( cal.get( Calendar.DAY_OF_MONTH), sb); break;
+        case DW:     sb.append( (cal.get( Calendar.DAY_OF_WEEK) + 5) % 7); break;
         case DAY:    sb.append( cal.getDisplayName( Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())); break;
         case DAYFULL: sb.append( cal.getDisplayName( Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())); break;
         case DDD:    sb.append( cal.get( Calendar.DAY_OF_YEAR)); break;
@@ -189,6 +192,7 @@ public class DateFormat
           parseNumber( date, cal, Calendar.DAY_OF_MONTH, 0); 
           break;
           
+        case DW:      parseDayOfWeek( date, cal); break;
         case DAY:     parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.SHORT, 3); break;
         case DAYFULL: parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.LONG); break;
         case DDD:     parseNumber( date, cal, Calendar.DAY_OF_YEAR, 0); break;
@@ -471,6 +475,32 @@ public class DateFormat
   }
     
   /**
+   * Parse the day of week from the specified date string and use the result to set the calendar field.
+   * @param date The date string.
+   * @param calendar The calendar.   * @param delta The amount to add (subtract) from the parsed number.
+   */
+  private void parseDayOfWeek( String date, Calendar calendar) throws ParseException
+  {
+    int start = parseIndex;
+    
+    while( parseIndex < date.length())
+    {
+      if ( !Character.isDigit( date.charAt( parseIndex))) break;
+      parseIndex++;
+    }
+    
+    try
+    {
+      int value = Integer.parseInt( date.substring( start, parseIndex));
+      calendar.set( Calendar.DAY_OF_WEEK, ((value + 1) % 7) + 1);
+    }
+    catch( NumberFormatException e)
+    {
+      throw new ParseException( date, parseIndex);    
+    }
+  }
+    
+  /**
    * Parse a string field from the specified date and populate the calendar.
    * @param date The date string.
    * @param calendar The calendar.
@@ -527,9 +557,11 @@ public class DateFormat
   {
     int start = parseIndex;
     
-    char c = date.charAt( parseIndex++);
-    while( Character.isDigit( c) && parseIndex < date.length())
-      c = date.charAt( parseIndex++);
+    while( parseIndex < date.length())
+    {
+      if ( !Character.isDigit( date.charAt( parseIndex))) break;
+      parseIndex++;
+    }
     
     try
     {
@@ -550,7 +582,7 @@ public class DateFormat
   public static void main( String[] args) throws Exception
   {
     DateFormat util = new DateFormat();
-    String f = "[YY]/[M]/[DAYFULL]";
+    String f = "[M]/[D]/[YY]";
     String s = util.format( f, System.currentTimeMillis());
     System.out.println( s);
     
