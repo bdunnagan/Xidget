@@ -41,7 +41,7 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   public void setMode( Mode mode)
   {
     this.mode = mode;
-    if ( mode != Mode.ref) fkmap = new HashMap<String, FKItem>();
+    if ( mode != Mode.ref) fkmap = new HashMap<Object, FKItem>();
   }
 
   /* (non-Javadoc)
@@ -365,13 +365,13 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       case fk1:
       {
         IModelObject element = (IModelObject)selected;
-        FKItem fkItem = fkmap.get( element.getID());
+        FKItem fkItem = fkmap.get( element.getAttribute( "id"));
         if ( fkItem == null)
         {
           IModelObject fk = element.createObject( element.getType());
-          fk.setValue( element.getID());
+          fk.setValue( element.getAttribute( "id"));
           fkItem = new FKItem( element, fk);
-          fkmap.put( element.getID(), fkItem);
+          fkmap.put( element.getAttribute( "id"), fkItem);
         }
         return fkItem.model;
       }
@@ -379,13 +379,13 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
       case fk2:
       {
         IModelObject element = (IModelObject)selected;
-        FKItem fkItem = fkmap.get( element.getID());
+        FKItem fkItem = fkmap.get( element.getAttribute( "id"));
         if ( fkItem == null)
         {
           IModelObject fk = element.createObject( element.getType());
-          fk.setID( element.getID());
+          fk.setAttribute( "id", element.getAttribute( "id"));
           fkItem = new FKItem( element, fk);
-          fkmap.put( element.getID(), fkItem);
+          fkmap.put( element.getAttribute( "id"), fkItem);
         }
         return fkItem.model;
       }
@@ -419,5 +419,5 @@ public class SelectionUpdateFeature implements ISelectionUpdateFeature
   protected IXidget xidget;
   private boolean updating;
   private Mode mode;
-  private Map<String, FKItem> fkmap;
+  private Map<Object, FKItem> fkmap;
 }

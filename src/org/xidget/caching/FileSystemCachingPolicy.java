@@ -32,7 +32,6 @@ public class FileSystemCachingPolicy extends org.xmodel.caching.FileSystemCachin
   {
     IToolkit toolkit = Creator.getToolkit();
     addAssociation( toolkit.getImageFileAssociation());
-    addAssociation( new XipAssociation());
   }
 
   public FileSystemCachingPolicy( ICache cache)
@@ -40,6 +39,5 @@ public class FileSystemCachingPolicy extends org.xmodel.caching.FileSystemCachin
     super( cache);
     IToolkit toolkit = Creator.getToolkit();
     addAssociation( toolkit.getImageFileAssociation());
-    addAssociation( new XipAssociation());
   }
 }

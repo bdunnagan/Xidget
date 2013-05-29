@@ -152,11 +152,11 @@ public abstract class Xidget implements IXidget
     if ( config == null) return "unconfigured";
     
     StringBuilder sb = new StringBuilder();
-    if ( config.getID().length() > 0) 
+    if ( config.getAttribute( "id") != null) 
     {
       sb.append( config.getType());
       sb.append( "#");
-      sb.append( config.getID());
+      sb.append( config.getAttribute( "id"));
     }
     else
     {

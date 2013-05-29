@@ -289,8 +289,8 @@ public class TagProcessor
             replaceInserts( target);
 
             // make sure target has unique id
-            if ( target.getID().length() == 0)
-              target.setID( Identifier.generate( random, 12));
+            if ( target.getAttribute( "id") != null)
+              target.setAttribute( "id", Identifier.generate( random, 12));
             
             // insert
             parent.addChild( new Reference( target), insert++);

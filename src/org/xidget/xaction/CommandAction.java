@@ -158,7 +158,7 @@ public class CommandAction extends GuardedAction
       // add command to stack
       IModelObject entry = getDocument().getRoot().cloneTree();
       entry.setAttribute( "summary", summaryExpr.evaluateString( context));
-      entry.setID( ""+count++);
+      entry.setAttribute( "id", ""+count++);
       entry.setAttribute( "instance", command);
       entry.setAttribute( "time", dateFormat.format( new Date()));
       history.addChild( entry);

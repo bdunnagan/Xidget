@@ -208,9 +208,6 @@ public final class Creator
     // sub-tables and sub-trees
     processor.addHandler( "tree", new SubTreeTagHandler());
     processor.addHandler( "table", new SubTableTagHandler());
-    
-    // register functions
-    Library.register();
   }
 
   /**
@@ -627,8 +624,11 @@ public final class Creator
     private int index;
   }
   
+  static { Library.register();}
+  
   private static ThreadLocal<Creator> instances = new ThreadLocal<Creator>();
   private static Class<? extends IToolkit> toolkitClass;
+  
   private IToolkit toolkit;
   private TagProcessor processor;
   private Map<Object, IXidget> map;
