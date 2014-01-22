@@ -4,7 +4,6 @@
  */
 package org.xidget.xpath;
 
-import java.util.Calendar;
 import java.util.List;
 import org.xidget.util.DateFormat;
 import org.xidget.util.DateFormat.Field;
@@ -15,16 +14,15 @@ import org.xmodel.xpath.expression.IExpression;
 import org.xmodel.xpath.function.Function;
 
 /**
- * A custom XPath function that adds or subtracts from a date field.  The function takes three arguments:
+ * A custom XPath function that gets a date field.  The function takes three arguments:
  *   1. The absolute time in milliseconds.
  *   2. The field to be modified (see DateFormat for names of fields).
- *   3. The units to add or subtract.
  * 
  * The field argument is not bound.
  */
-public class DateAddFunction extends Function
+public class DateGetFunction extends Function
 {
-  public final static String name = "xi:date-add";
+  public final static String name = "xi:date-get";
   
   /* (non-Javadoc)
    * @see org.xmodel.xpath.expression.IExpression#getName()
@@ -50,22 +48,13 @@ public class DateAddFunction extends Function
   @Override
   public double evaluateNumber( IContext context) throws ExpressionException
   {
-    assertArgs( 3, 3);
+    assertArgs( 2, 2);
     
     long time = (long)getArgument( 0).evaluateNumber( context);
     String fieldName = getArgument( 1).evaluateString( context);
-    int units = (int)getArgument( 2).evaluateNumber( context);
-    
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis( time);
-
     Field field = DateFormat.parseFieldName( fieldName);
-    if ( field != null)
-    {
-      return (double)DateFormat.fieldAdd( time, field, units);
-    }
-    
-    return time;
+    if ( field == null) throw new ExpressionException( this, "Illegal field value: "+fieldName);
+    return DateFormat.fieldGet( time, field);
   }
 
   /* (non-Javadoc)

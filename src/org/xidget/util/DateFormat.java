@@ -21,7 +21,7 @@ import java.util.TimeZone;
  * year
  *   YY   - 2 digits
  *   YEAR - 1 to 4 digits
-   * 
+ * 
  * month
  *   M     - 1 or 2 digits
  *   MM    - 2 digits padded
@@ -269,7 +269,7 @@ public class DateFormat
    * @param units The units.
    * @return Returns the absolute time in milliseconds after modification.
    */
-  public static long addToField( long time, Field field, int units)
+  public static long fieldAdd( long time, Field field, int units)
   {
     Calendar calendar = Calendar.getInstance();
     calendar.setTimeInMillis( time);
@@ -288,7 +288,7 @@ public class DateFormat
    * @param units The units.
    * @return Returns the absolute time in milliseconds after modification.
    */
-  public static long setToField( long time, Field field, int units)
+  public static long fieldSet( long time, Field field, int units)
   {
     Calendar calendar = Calendar.getInstance();
     calendar.setTimeInMillis( time);
@@ -298,6 +298,23 @@ public class DateFormat
     
     calendar.set( calField, units);
     return calendar.getTimeInMillis();
+  }
+  
+  /**
+   * Get the specified field of the specified absolute time.
+   * @param time The absolute time.
+   * @param field The field.
+   * @return Returns the value of the field.
+   */
+  public static int fieldGet( long time, Field field)
+  {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis( time);
+    
+    int calField = getCalendarField( field);
+    if ( calField == -1) throw new IllegalArgumentException();
+
+    return calField;
   }
   
   /**

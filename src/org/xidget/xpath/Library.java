@@ -22,6 +22,7 @@ public class Library
     FunctionFactory.getInstance().register( DateParseFunction.name, DateParseFunction.class);
     FunctionFactory.getInstance().register( DateAddFunction.name, DateAddFunction.class);
     FunctionFactory.getInstance().register( DateSetFunction.name, DateSetFunction.class);
+    FunctionFactory.getInstance().register( DateGetFunction.name, DateSetFunction.class);
     FunctionFactory.getInstance().register( DateNowFunction.name, DateNowFunction.class);
   }
 }

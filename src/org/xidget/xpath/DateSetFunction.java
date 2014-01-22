@@ -4,11 +4,11 @@
  */
 package org.xidget.xpath;
 
-import java.util.Calendar;
 import java.util.List;
 import org.xidget.util.DateFormat;
 import org.xidget.util.DateFormat.Field;
 import org.xmodel.IModelObject;
+import org.xmodel.Xlate;
 import org.xmodel.xpath.expression.ExpressionException;
 import org.xmodel.xpath.expression.IContext;
 import org.xmodel.xpath.expression.IExpression;
@@ -53,16 +53,27 @@ public class DateSetFunction extends Function
     assertArgs( 3, 3);
     
     long time = (long)getArgument( 0).evaluateNumber( context);
-    String fieldName = getArgument( 1).evaluateString( context);
     int units = (int)getArgument( 2).evaluateNumber( context);
     
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis( time);
-
-    Field field = DateFormat.parseFieldName( fieldName);
-    if ( field != null)
+    if ( getArgument( 1).getType( context) == ResultType.NODES)
     {
-      return (double)DateFormat.setToField( time, field, units);
+      for( IModelObject node: getArgument( 1).evaluateNodes( context))
+      {
+        String fieldName = Xlate.get( node, "");
+        Field field = DateFormat.parseFieldName( fieldName);
+        if ( field == null) throw new ExpressionException( this, "Illegal field value: "+fieldName);
+        time = DateFormat.fieldSet( time, field, units);
+      }
+    }
+    else
+    {
+      String[] fieldNames = getArgument( 1).evaluateString( context).split(  "\\s*,\\s*");
+      for( String fieldName: fieldNames)
+      {
+        Field field = DateFormat.parseFieldName( fieldName);
+        if ( field == null) throw new ExpressionException( this, "Illegal field value: "+fieldName);
+        time = DateFormat.fieldSet( time, field, units);
+      }
     }
     
     return time;
