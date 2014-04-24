@@ -6,6 +6,7 @@ package org.xidget.xpath;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.xidget.util.DateFormat;
 import org.xmodel.IModelObject;
@@ -47,15 +48,20 @@ public class DateParseFunction extends Function
   @Override
   public double evaluateNumber( IContext context) throws ExpressionException
   {
-    assertArgs( 2, 2);
+    assertArgs( 2, 3);
     
-    IExpression format = getArgument( 0);
-    IExpression value = getArgument( 1);
+    IExpression formatExpr = getArgument( 0);
+    IExpression valueExpr = getArgument( 1);
+    IExpression timeZoneExpr = getArgument( 2);
     
     try
     {
+      String format = formatExpr.evaluateString( context);
+      String value = valueExpr.evaluateString( context);
+      String timeZoneAbbr = (timeZoneExpr != null)? timeZoneExpr.evaluateString( context): null;
+      TimeZone timeZone = (timeZoneAbbr != null)? TimeZone.getTimeZone( timeZoneAbbr): null;
       DateFormat util = new DateFormat();
-      return util.parse( format.evaluateString( context), value.evaluateString( context));
+      return util.parse( format, value, timeZone);
     }
     catch( Exception e)
     {

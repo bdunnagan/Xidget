@@ -104,7 +104,20 @@ public class DateFormat
    */
   public String format( String format, long date)
   {
-    Calendar cal = Calendar.getInstance();
+    return format( format, date, null);
+  }
+  
+  /**
+   * Format the specified numeric date using the specified xidget date formatting string.
+   * The encoding of the date into the numeric representation is platform-specific.
+   * @param format The format.
+   * @param date The number of milliseconds since January 1, 1970.
+   * @param timeZone The time zone.
+   * @return Returns the formatted string.
+   */
+  public String format( String format, long date, TimeZone timeZone)
+  {
+    Calendar cal = (timeZone == null)? Calendar.getInstance(): Calendar.getInstance( timeZone);
     cal.setTimeInMillis( date);
     
     formatIndex = 0;
@@ -158,7 +171,21 @@ public class DateFormat
    */
   public long parse( String format, String date) throws ParseException
   {
-    Calendar cal = Calendar.getInstance();
+    return parse( format, date, null);
+  }
+  
+  /**
+   * Parse the specified date string using the specified xidget date formatting string.
+   * The encoding of the returned value is a platform-specific numeric encoding representing
+   * milliseconds since some time in the past.
+   * @param format The format.
+   * @param date The formatted date string.
+   * @param timeZone The time zone.
+   * @return Returns the number of milliseconds since January 1, 1970.
+   */
+  public long parse( String format, String date, TimeZone timeZone) throws ParseException
+  {
+    Calendar cal = (timeZone == null)? Calendar.getInstance(): Calendar.getInstance( timeZone);
     cal.clear();
 
     formatIndex = 0;
