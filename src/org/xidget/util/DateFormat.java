@@ -202,49 +202,49 @@ public class DateFormat
       switch( field)
       {
         case YY:     parseYY( date, cal); break;
-        case YEAR:   parseNumber( date, cal, Calendar.YEAR, 0); break;
+        case YEAR:   parseNumber( date, 4, cal, Calendar.YEAR, 0); break;
         
         case M:
         case MM:
-          parseNumber( date, cal, Calendar.MONTH, -1); 
+          parseNumber( date, 2, cal, Calendar.MONTH, -1); 
           break;
         
         case MON:    parseString( date, cal, Calendar.MONTH, Calendar.SHORT, 3); break;
         case MONTH:  parseString( date, cal, Calendar.MONTH, Calendar.LONG); break;
         
-        case YW:     parseNumber( date, cal, Calendar.WEEK_OF_MONTH, 0); break;
+        case YW:     parseNumber( date, 1, cal, Calendar.WEEK_OF_MONTH, 0); break;
         
         case D:      
         case DD:
-          parseNumber( date, cal, Calendar.DAY_OF_MONTH, 0); 
+          parseNumber( date, 2, cal, Calendar.DAY_OF_MONTH, 0); 
           break;
           
         case DW:      parseDayOfWeek( date, cal); break;
         case DAY:     parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.SHORT, 3); break;
         case DAYFULL: parseString( date, cal, Calendar.DAY_OF_WEEK, Calendar.LONG); break;
-        case DDD:     parseNumber( date, cal, Calendar.DAY_OF_YEAR, 0); break;
+        case DDD:     parseNumber( date, 3, cal, Calendar.DAY_OF_YEAR, 0); break;
         
         case h:
-          parseNumber( date, cal, Calendar.HOUR, -1); 
+          parseNumber( date, 2, cal, Calendar.HOUR, -1); 
           break;
           
         case hh:
-          parseNumber( date, cal, Calendar.HOUR, 0); 
+          parseNumber( date, 2, cal, Calendar.HOUR_OF_DAY, 0); 
           break;
           
         case m:
         case mm:
-          parseNumber( date, cal, Calendar.MINUTE, 0); 
+          parseNumber( date, 2, cal, Calendar.MINUTE, 0); 
           break;
         
         case s:
         case ss:
-          parseNumber( date, cal, Calendar.SECOND, 0); 
+          parseNumber( date, 2, cal, Calendar.SECOND, 0); 
           break;
           
         case S:
         case SSS:
-          parseNumber( date, cal, Calendar.MILLISECOND, 0); 
+          parseNumber( date, 3, cal, Calendar.MILLISECOND, 0); 
           break;
         
         case Z:
@@ -493,15 +493,18 @@ public class DateFormat
   /**
    * Parse a number from the specified date string and use the result to set a calendar field.
    * @param date The date string.
+   * @param length -1 or the max number of chars to parse.
    * @param calendar The calendar.
    * @param field The calendar field.
    * @param delta The amount to add (subtract) from the parsed number.
    */
-  private void parseNumber( String date, Calendar calendar, int field, int delta) throws ParseException
+  private void parseNumber( String date, int length, Calendar calendar, int field, int delta) throws ParseException
   {
     int start = parseIndex;
+    int end = start + length;
+    if ( end > date.length()) end = date.length();
     
-    while( parseIndex < date.length())
+    while( parseIndex < end)
     {
       if ( !Character.isDigit( date.charAt( parseIndex))) break;
       parseIndex++;
